@@ -1,0 +1,29 @@
+package org.drachens.cmd.ban;
+
+import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.entity.Player;
+
+import java.util.UUID;
+
+import static org.drachens.Manager.ConfigFileManager.unBan;
+import static org.drachens.api.util.PlayerUtil.getUUIDFromName;
+
+public class UnbanCMD extends Command {
+    public UnbanCMD() {
+        super("unban");
+        var player = ArgumentType.String("player");
+        setCondition((sender,s)->sender.hasPermission("unban"));
+        setDefaultExecutor((sender, context)-> {
+            if(sender.hasPermission("unban")) sender.sendMessage("Usage: /unban player");
+        });
+        addSyntax((sender, context) -> {
+            if(!sender.hasPermission("unban"))return;
+            Player p = (Player) sender;
+            System.out.println(p.getUsername()+" has unbanned "+context.get(player));
+            UUID a = getUUIDFromName(context.get(player));
+            System.out.println(a);
+            unBan(a);
+        }, player);
+    }
+}

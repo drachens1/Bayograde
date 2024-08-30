@@ -1,0 +1,24 @@
+package org.drachens.cmd.whitelist;
+
+import net.minestom.server.command.builder.Command;
+import org.drachens.Manager.WhitelistManager;
+
+import static org.drachens.api.util.Messages.globalBroadcast;
+
+public class WhitelistToggleCMD extends Command {
+    public WhitelistToggleCMD(WhitelistManager whitelistManager) {
+        super("on","off");
+        setCondition((sender, s) -> sender.hasPermission("whitelist"));
+        setDefaultExecutor((sender,context)->{
+            globalBroadcast(context.getInput());
+            switch(context.getInput()){
+                case "whitelist on":
+                    whitelistManager.toggle(true);
+                    break;
+                case "whitelist off":
+                    whitelistManager.toggle(false);
+                    break;
+            }
+        });
+    }
+}
