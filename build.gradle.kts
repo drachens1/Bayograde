@@ -2,6 +2,8 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.0"
     kotlin("jvm")
+    `java-library`
+    `maven-publish`
 }
 
 group = "org.drachens"
@@ -38,5 +40,16 @@ tasks {
     shadowJar {
         mergeServiceFiles()
         archiveClassifier.set("")
+    }
+}
+
+publishing { //to run  ./gradlew publishToMavenLocal
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
     }
 }

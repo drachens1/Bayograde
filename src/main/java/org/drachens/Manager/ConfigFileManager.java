@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
-import org.drachens.cmd.whitelist.Whitelist;
+import org.drachens.cmd.Dev.whitelist.Whitelist;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -17,8 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static org.drachens.api.util.PermissionsUtil.playerOp;
-import static org.drachens.api.util.PlayerUtil.getPlayerFromUUID;
+import static org.drachens.util.PermissionsUtil.playerOp;
+import static org.drachens.util.PlayerUtil.getPlayerFromUUID;
 
 public class ConfigFileManager {
     private static ConfigurationNode banListNode;
@@ -35,6 +35,7 @@ public class ConfigFileManager {
     private static File msg;
     private static File cmd;
     private static Whitelist whitelist;
+    private static List<Process> processes = new ArrayList<>();
     public static void startup(){
         //Gets the file and loads it using YAML
         File banFile = new File("bans.yml");
@@ -67,8 +68,6 @@ public class ConfigFileManager {
                 System.err.println("Unable to load operator loader "+err.getMessage());
             }
         }
-
-        new File("plugins").mkdir(); //Sets up the plugin folder
 
         //To setup all the log stuff
         System.out.println("Creating logs");
@@ -302,6 +301,11 @@ public class ConfigFileManager {
         Scanner log = new Scanner(logMsg);
         if (!cmds.hasNextLine())cmd.delete();
         if (!log.hasNextLine())msg.delete();
+        for (Process pb : processes){
+            if (pb.isAlive()){
+                pb.destroy();
+            }
+        }
     }
     public static Whitelist getWhitelist(){
         return whitelist;

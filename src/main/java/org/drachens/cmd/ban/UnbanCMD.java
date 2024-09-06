@@ -7,7 +7,7 @@ import net.minestom.server.entity.Player;
 import java.util.UUID;
 
 import static org.drachens.Manager.ConfigFileManager.unBan;
-import static org.drachens.api.util.PlayerUtil.getUUIDFromName;
+import static org.drachens.util.PlayerUtil.getUUIDFromName;
 
 public class UnbanCMD extends Command {
     public UnbanCMD() {

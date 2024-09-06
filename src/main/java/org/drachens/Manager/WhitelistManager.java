@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.drachens.Manager.ConfigFileManager.*;
-import static org.drachens.api.util.Messages.globalBroadcast;
+import static org.drachens.util.Messages.globalBroadcast;
 
 public class WhitelistManager {
     public void addPlayer(UUID p){
