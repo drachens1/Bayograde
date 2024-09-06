@@ -1,0 +1,7 @@
+03/09/24 11:35 server:drachens has joined the game
+03/09/24 11:35 server:a
+03/09/24 11:35 server:org.drachens.cmd.Dev.testInv@511803c7
+03/09/24 11:35 server:c
+03/09/24 11:35 server:a
+03/09/24 11:35 server:org.drachens.cmd.Dev.testInv@7bb2f8f6
+03/09/24 11:35 server:c
