@@ -1,11 +1,11 @@
 package org.drachens.Manager;
 
-import org.drachens.dataClasses.Ban;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import org.drachens.cmd.Dev.whitelist.Whitelist;
+import org.drachens.dataClasses.Ban;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;

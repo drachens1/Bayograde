@@ -2,7 +2,6 @@ package org.drachens.cmd.Dev;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.item.ItemStack;
@@ -13,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.Messages.globalBroadcast;
 
 public class testInv extends InventoryGUI {
     @Override

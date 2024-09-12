@@ -1,0 +1,7 @@
+07/09/24 20:11 server:sweeville has joined the game
+07/09/24 20:11 server:[net.minestom.server.entity.Player@387cdcf5]
+07/09/24 20:11 server:null
+07/09/24 20:11 server:drachens has joined the game
+07/09/24 20:11 server:[net.minestom.server.entity.Player@2228b3aa, net.minestom.server.entity.Player@387cdcf5]
+07/09/24 20:11 server:null
+07/09/24 20:11 server:null

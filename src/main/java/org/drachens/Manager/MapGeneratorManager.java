@@ -1,6 +1,5 @@
 package org.drachens.Manager;
 
-import de.articdive.jnoise.core.api.modifiers.NoiseModifier;
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator;
 import de.articdive.jnoise.pipeline.JNoise;
 import it.unimi.dsi.fastutil.Pair;

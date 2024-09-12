@@ -9,8 +9,6 @@ import net.minestom.server.inventory.Inventory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.drachens.util.Messages.globalBroadcast;
-
 public class GUIManager {
     private final Map<Inventory, InventoryHandler> activeInventories = new HashMap<>();
 

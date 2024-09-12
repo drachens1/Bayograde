@@ -1,14 +1,9 @@
 package org.drachens.util;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.title.Title;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.FileWriter;
 import java.io.IOException;

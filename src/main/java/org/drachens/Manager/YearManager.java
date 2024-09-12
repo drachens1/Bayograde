@@ -1,7 +1,6 @@
 package org.drachens.Manager;
 
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
@@ -10,9 +9,7 @@ import net.minestom.server.event.EventNode;
 import net.minestom.server.instance.Instance;
 import org.drachens.events.NewDay;
 
-import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 import static org.drachens.util.KyoriUtil.compBuild;
 

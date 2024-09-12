@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Countries;
 
+import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import net.minestom.server.scoreboard.Team;
 import org.drachens.dataClasses.Economics.currency.Currencies;
@@ -10,10 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.drachens.util.KyoriUtil.getCountryMessages;
+import static org.drachens.util.KyoriUtil.replaceString;
+
 public class Country extends Team {
+    private final List<Player> players;
     private List<Province> cores;
     private List<Province> occupies;
-    private HashMap<CurrencyTypes, Currencies> currenciesMap;
+    private final HashMap<CurrencyTypes, Currencies> currenciesMap;
     private String name;
     private Material block;
     private Material border;
@@ -25,6 +30,7 @@ public class Country extends Team {
         this.name = name;
         this.block = block;
         this.border = border;
+        this.players = new ArrayList<>();
     }
     public List<Province> getCores(){
         return cores;
@@ -72,5 +78,20 @@ public class Country extends Team {
     }
     public void setBorder(Material border){
         this.border = border;
+    }
+    public void addPlayer(Player p){
+        this.addMember(p.getUsername());
+        this.players.add(p);
+        p.setTeam(this);
+        p.sendMessage(replaceString(getCountryMessages("countryJoin"),"%country%",this.name));
+    }
+    public void removePlayer(Player p){
+        this.removeMember(p.getUsername());
+        this.players.remove(p);
+        p.setTeam(null);
+        p.sendMessage(replaceString(getCountryMessages("countryLeave"),"%country%",this.name));
+    }
+    public List<Player> getPlayer(){
+        return players;
     }
 }

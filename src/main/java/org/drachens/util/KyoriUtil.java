@@ -1,63 +1,20 @@
 package org.drachens.util;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.intellij.lang.annotations.RegExp;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class KyoriUtil {
-    public static Component translate(Path wanted)  {
-        try {
-            String text = readFileToString(wanted);
-            return jsonTranslator(text);
-        }catch (IOException ignored){}
-        return null;
-    }
-    public static Component applyColour(Component component, TextColor colourr) {
-        if (component instanceof TextComponent) {
-            TextComponent textComponent = (TextComponent) component;
-            return textComponent.color(colourr);
-        }
-
-        return component.children(component.children().stream()
-                .map(child -> applyColour(child, colourr))
-                .collect(Collectors.toList()));
-    }
-    public static Component jsonTranslator(String json) {
-        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-        JsonElement colour = jsonObject.get("colour");
-
-        NamedTextColor colourF = NamedTextColor.RED;
-        if (colour != null && colour.isJsonPrimitive()) {
-            String colourName = colour.getAsString().toUpperCase();
-            colourF = NamedTextColor.NAMES.value(colourName);
-        }
-
-        GsonComponentSerializer gsonSerializer = GsonComponentSerializer.gson();
-        Component component = gsonSerializer.deserialize(json);
-
-        return applyColour(component, colourF);
-    }
-    public static String  readFileToString(Path filePath) throws IOException {
-        return new String(Files.readAllBytes(filePath));
-    }
     public static Component replaceString(Component component, @RegExp String from, String to) {
         return component.replaceText(builder -> builder
                 .match(from)
@@ -126,23 +83,6 @@ public class KyoriUtil {
     private static Component wargoal;
     private static Component countryMembers;
     private static Component countryWars;
-    public static void setup(){
-        wargoal = Component.text()
-                .append(Component.text(" \n- "))
-                .append(Component.text("%country%",NamedTextColor.GOLD))
-                .append(Component.text(" time left: %timeleftwar%",NamedTextColor.GOLD))
-                .build();
-        countryMembers = Component.text()
-                .append(Component.text("___________/",NamedTextColor.BLUE))
-                .append(Component.text("Members",NamedTextColor.GOLD))
-                .append(Component.text("\\__________\n",NamedTextColor.BLUE))
-                .build();
-        countryWars = Component.text()
-                .append(Component.text("___________/",NamedTextColor.BLUE))
-                .append(Component.text("Wars",NamedTextColor.GOLD))
-                .append(Component.text("\\__________\n",NamedTextColor.BLUE))
-                .build();
-    }
 
     public static Component getComponent(String wanted){
         return switch (wanted){
@@ -186,7 +126,8 @@ public class KyoriUtil {
     private static Component coopPrefix;
     private static Component researchPrefix;
     private static Component nationalAgendasPrefix;
-
+    private static Component countryJoin;
+    private static Component countryLeave;
     public static Component getPrefix(String wanted){
         return switch (wanted) {
             case "faction" -> factionPrefix;
@@ -197,6 +138,13 @@ public class KyoriUtil {
             case "coop" -> coopPrefix;
             case "research" -> researchPrefix;
             case "agenda" -> nationalAgendasPrefix;
+            default -> null;
+        };
+    }
+    public static Component getCountryMessages(String wanted){
+        return switch (wanted){
+            case "countryLeave" -> countryLeave;
+            case "countryJoin" -> countryJoin;
             default -> null;
         };
     }
@@ -241,6 +189,29 @@ public class KyoriUtil {
                 .append(Component.text(" | ",NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
                 .append(Component.text("AGENDA",NamedTextColor.GOLD, TextDecoration.BOLD))
                 .append(Component.text(" | ",NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+                .build();
+        countryJoin = Component.text()
+                .append(Component.text("You have left ",NamedTextColor.BLUE))
+                .append(Component.text("%country%",NamedTextColor.GOLD,TextDecoration.BOLD))
+                .build();
+        countryJoin = Component.text()
+                .append(Component.text("You have joined ",NamedTextColor.BLUE))
+                .append(Component.text("%country%",NamedTextColor.GOLD,TextDecoration.BOLD))
+                .build();
+        wargoal = Component.text()
+                .append(Component.text(" \n- "))
+                .append(Component.text("%country%",NamedTextColor.GOLD))
+                .append(Component.text(" time left: %timeleftwar%",NamedTextColor.GOLD))
+                .build();
+        countryMembers = Component.text()
+                .append(Component.text("___________/",NamedTextColor.BLUE))
+                .append(Component.text("Members",NamedTextColor.GOLD))
+                .append(Component.text("\\__________\n",NamedTextColor.BLUE))
+                .build();
+        countryWars = Component.text()
+                .append(Component.text("___________/",NamedTextColor.BLUE))
+                .append(Component.text("Wars",NamedTextColor.GOLD))
+                .append(Component.text("\\__________\n",NamedTextColor.BLUE))
                 .build();
     }
     public static Component compBuild(String msg, NamedTextColor colour, TextDecoration txtDec){
