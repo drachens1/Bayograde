@@ -28,6 +28,20 @@ public class Messages {
         }
     }
 
+    public static void globalBroadcast(Component msg){
+        System.out.println(msg);
+        logMsg("server", String.valueOf(msg),null);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
+            p.sendMessage(msg);
+        }
+    }
+
+    public static void playerSendMessage(Component msg){
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
+            p.sendMessage(msg);
+        }
+    }
+
     public static void broadcast(String msg, Instance world){
         System.out.println(msg);
         logMsg("server",msg,world);

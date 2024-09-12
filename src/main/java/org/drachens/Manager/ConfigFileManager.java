@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.drachens.util.PermissionsUtil.playerOp;
 import static org.drachens.util.PlayerUtil.getPlayerFromUUID;
+import static org.drachens.util.ServerUtil.start;
 
 public class ConfigFileManager {
     private static ConfigurationNode banListNode;
@@ -27,6 +28,8 @@ public class ConfigFileManager {
     private static final List<Ban> bans = new ArrayList<>();
     private static ConfigurationNode whitelistListNode;
     private static YamlConfigurationLoader whitelistLoader;    // contains all the whitelisted peoples as UUID's
+    private static ConfigurationNode permissionsNode;
+    private static YamlConfigurationLoader permissionsLoader;  // Has the permission groups that are created
     private static final HashMap<String,ConfigurationNode> playerDataNodes = new HashMap<>(); // UUID as a string for the name
     private static final HashMap<String,YamlConfigurationLoader> playerDataLoaders = new HashMap<>(); // contains all the players perms as UUID's for the name of the files
     private static final HashMap<String,File> playerDataFiles = new HashMap<>();
@@ -84,8 +87,20 @@ public class ConfigFileManager {
         fileExists(msg);
         System.out.println("Logs finished");
 
+        //Permissions
+        File permissions = new File("permissions.yml");
+        fileExists(permissions);
+        permissionsLoader = YamlConfigurationLoader.builder()
+                .file(permissions)
+                .build();
+        try {
+            permissionsNode = permissionsLoader.load();
+        } catch (ConfigurateException e) {
+            System.err.println("Unable to load permissions "+e.getMessage());
+        }
         loadBannedPeople();
         loadWhitelist();
+        start();
     }
     private static void loadBannedPeople(){// Loads all the banned people
         System.out.println("Banned list loading....");
@@ -313,22 +328,31 @@ public class ConfigFileManager {
     public static ConfigurationNode getWhitelistListNode(){
         return whitelistListNode;
     }
-
     public static void specificSave(String choice){
+        System.out.println("Specifically saving: "+choice);
         switch (choice){
             case "whitelist":
                 try {
                     whitelistLoader.save(whitelistListNode);
                 } catch (ConfigurateException e) {
-                    throw new RuntimeException(e);
+                    System.err.println("Error saving whitelist: "+e.getMessage());
                 }
                 break;
             case "ban":
                 try {
                     banLoader.save(banListNode);
                 } catch (ConfigurateException e) {
-                    throw new RuntimeException(e);
+                    System.err.println("Error saving ban: "+e.getMessage());
+                }
+            case "permissions":
+                try {
+                    permissionsLoader.save(permissionsNode);
+                } catch (ConfigurateException e) {
+                    System.err.println("Error saving permissions: "+e.getMessage());
                 }
         }
+    }
+    public static ConfigurationNode getPermissionsFile(){
+        return permissionsNode;
     }
 }

@@ -19,32 +19,44 @@ public class Province {
     private final List<Troop> troops = new ArrayList<>();
     private Country occupier;
     private final List<Country> core;
-    private boolean capturable;
+    private boolean capturable = true;
     private final Chunk chunk;
     private final ProvinceManager provinceManager;
-    private Material material;
     private PlaceableBuilds buildType;
-
+    private Material material;
+    private boolean city;
     public Province(Pos pos, Instance instance, List<Country> cores, Country occupier){
         this.pos = pos;
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
-        this.material = Material.fromId(instance.getBlock(pos).id());
         provinceManager = getProvinceManager();
     }
-
     public Province(int x, int y , int z, Instance instance, List<Country> cores, Country occupier){
         this.pos = new Pos(x,y,z);
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
-        this.material = Material.fromId(instance.getBlock(pos).id());
         provinceManager = getProvinceManager();
     }
-
+    public Province(int x, int y , int z, Instance instance){
+        this.pos = new Pos(x,y,z);
+        this.instance = instance;
+        this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        this.core = new ArrayList<>();
+        this.occupier = null;
+        provinceManager = getProvinceManager();
+    }
+    public Province(Pos pos, Instance instance){
+        this.pos = pos;
+        this.instance = instance;
+        this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        this.core = new ArrayList<>();
+        this.occupier = null;
+        provinceManager = getProvinceManager();
+    }
     public Pos getPos(){
         return pos;
     }
@@ -54,9 +66,6 @@ public class Province {
     public Instance getInstance(){
         return instance;
     }
-    public Material getMaterial(){
-        return material;
-    }
     public Boolean isCapturable(){
         return capturable;
     }
@@ -65,6 +74,8 @@ public class Province {
     }
     public void setOccupier(Country occupier){
         this.occupier = occupier;
+        occupier.addOccupied(this);
+        updateBorders(pos);
     }
     public List<Country> getCore(){
         return core;
@@ -85,7 +96,7 @@ public class Province {
         troops.add(troop);
     }
     public void capture(Country attacker){
-
+        this.buildType.onCaptured(attacker);
     }
     public PlaceableBuilds getBuildType(){
         return buildType;
@@ -95,5 +106,73 @@ public class Province {
     }
     public double distance(Province province){
         return getPos().distance(province.getPos());
+    }
+    public void setBlock(Material block){
+        instance.setBlock(pos,block.block());
+    }
+    public void setBorder(Material border){
+        instance.setBlock(pos,border.block());
+    }
+    public void setBlock(){
+        instance.setBlock(pos,occupier.getBlock().block());
+    }
+    public void setBorder(){
+        instance.setBlock(pos,occupier.getBorder().block());
+    }
+    public Material getMaterial(){
+        return material;
+    }
+    public void setMaterial(Material material){
+        this.material = material;
+    }
+    public boolean isCity(){
+        return city;
+    }
+    public void setCity(boolean city) {
+        this.city = city;
+    }
+    private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA,Material.GREEN_GLAZED_TERRACOTTA,Material.LIME_GLAZED_TERRACOTTA,
+            Material.YELLOW_GLAZED_TERRACOTTA,Material.RAW_GOLD_BLOCK,Material.GOLD_BLOCK,Material.EMERALD_BLOCK};
+    //6 = capital
+    public void setCity(int lvl) {
+        this.city = true;
+        this.setBlock(cities[lvl]);
+    }
+    public void updateBorders(Pos loc){
+        Pos[] directions = {
+                new Pos(-1, 0, 0), // West
+                new Pos(1, 0, 0),  // East
+                new Pos(0, 0, -1), // North
+                new Pos(0, 0, 1),   // South
+                new Pos(0,0,0) // current
+        };
+        for (Pos direction : directions){
+            Pos newLoc = loc.add(direction);
+            change(newLoc);
+        }
+    }
+    void change(Pos loc){
+        Province province = provinceManager.getProvince(loc);
+        if (province == null || province.isCity())return;
+        Country country = province.getOccupier();
+        if (country != null){
+            int[][] directions2 = {
+                    {-1, 0}, {1, 0}, {0, -1}, {0, 1},
+            };
+
+            for (int[] direction2 : directions2) {
+                int offsetX2 = direction2[0];
+                int offsetY2 = direction2[1];
+
+                Pos neighborLocation = loc.add(offsetX2, 0, offsetY2);
+
+                Province neighbourBlock = provinceManager.getProvince(neighborLocation);
+                if (neighbourBlock != null && neighbourBlock.isCapturable() && neighbourBlock.getOccupier() != country){
+                    province.setBorder();
+                    return;
+                }
+            }
+            province.setBlock();
+        }
     }
 }

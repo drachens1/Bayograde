@@ -243,6 +243,11 @@ public class KyoriUtil {
                 .append(Component.text(" | ",NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
                 .build();
     }
+    public static Component compBuild(String msg, NamedTextColor colour, TextDecoration txtDec){
+        return Component.text()
+                .append(Component.text(msg, colour,txtDec))
+                .build();
+    }
     public static Component compBuild(String msg, NamedTextColor colour){
         return Component.text()
                 .append(Component.text(msg, colour))
@@ -261,6 +266,12 @@ public class KyoriUtil {
         return Component.text()
                 .append(comp)
                 .append(comp2)
+                .build();
+    }
+
+    public static Component mergeComp(List<Component> comps){
+        return Component.text()
+                .append(comps)
                 .build();
     }
     public static Title titleBuild(String msg, NamedTextColor colour){

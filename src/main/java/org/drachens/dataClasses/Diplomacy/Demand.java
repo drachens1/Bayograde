@@ -6,9 +6,9 @@ import org.drachens.dataClasses.Provinces.Province;
 import java.util.List;
 
 public class Demand {
-    private List<Province> demandedProvinces;
-    private Country fromCountry;
-    private Country toCountry;
+    private final List<Province> demandedProvinces;
+    private final Country fromCountry;
+    private final Country toCountry;
     public Demand(List<Province> demandedProvinces, Country fromCountry, Country toCountry) {
         this.demandedProvinces = demandedProvinces;
         this.fromCountry = fromCountry;

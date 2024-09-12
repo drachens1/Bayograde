@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Economics.factory;
 
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -23,22 +24,39 @@ public class PlaceableFactory implements PlaceableBuilds {
     private void updateDisplay(){
         itemDisplay.setItem(itemBuilder(factoryType.getItem(),factoryType.getModelData()[current]));
     }
-    public void addFactory(int add){
-        if (canAddFactory(add)){
-            return;
-        }
-        current+=add;
-        if (current <= 0){
-            itemDisplay.delete();
-        }
-        updateDisplay();
-    }
     public boolean canAddFactory(int add){
         return current + add <= max;
     }
 
     @Override
+    public void onCaptured(Country capturer) {
+
+    }
+
+    @Override
+    public void onBombed(float dmg) {
+
+    }
+
+    @Override
     public void onDestroy() {
         itemDisplay.delete();
+    }
+
+    @Override
+    public void onConstruct() {
+
+    }
+
+    @Override
+    public void onUpgrade(int amount) {
+        if (canAddFactory(amount)){
+            return;
+        }
+        current+=amount;
+        if (current <= 0){
+            itemDisplay.delete();
+        }
+        updateDisplay();
     }
 }

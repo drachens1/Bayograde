@@ -11,18 +11,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static org.drachens.Manager.ConfigFileManager.getPlayerDataLoader;
-import static org.drachens.Manager.ConfigFileManager.getPlayersData;
+import static org.drachens.Manager.ConfigFileManager.*;
 
 public class PermissionsUtil {
     private static final List<Permission> operator = new ArrayList<>();
-    private static HashMap<String, List<Permission>> groups = new HashMap<>();
+    private static final HashMap<String, List<Permission>> groups = new HashMap<>();
     public static void setupPerms(){
         operator.add(new Permission("ban"));
         operator.add(new Permission("unban"));
         operator.add(new Permission("whitelist"));
         operator.add(new Permission("operator"));
         operator.add(new Permission("kill"));
+        operator.add(new Permission("editPermissions"));
+        operator.add(new Permission("gamemode"));
     }
 
     public static void playerOp(Player p){
@@ -52,11 +53,29 @@ public class PermissionsUtil {
             throw new RuntimeException(e);
         }
     }
+    public static void addPermissionGroup(String name, List<Permission> permss, boolean editFile){
+        groups.put(name,permss);
+        if (!editFile)return;
+        ConfigurationNode permNode = getPermissionsFile();
+        ConfigurationNode p = permNode.node("permissions").node(name);
+        for (Permission perm : permss){
+            try {
+                List<String> perms = p.getList(String.class);
+                if (perms == null) {
+                    perms = new ArrayList<>();
+                }
 
-    public static void addPermissionGroup(String name, List<Permission> perms){
-        groups.put(name,perms);
+                if (!perms.contains(perm.getPermissionName())) {
+                    perms.add(perm.getPermissionName());
+                }
+
+                p.setList(String.class,perms);
+            } catch (SerializationException e) {
+                System.err.println("Error adding permission group "+e.getMessage());
+            }
+        }
+        specificSave("permissions");
     }
-
     public static void playerAddPerm(String name, Player p){
         for (Permission perm : groups.get(name)){
             p.addPermission(perm);

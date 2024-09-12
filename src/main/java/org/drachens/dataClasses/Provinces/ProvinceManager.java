@@ -3,9 +3,10 @@ package org.drachens.dataClasses.Provinces;
 import net.minestom.server.coordinate.Pos;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ProvinceManager {
-    private HashMap<Pos, Province> provinceHashMap;
+    private final Map<Pos, Province> provinceHashMap;
     public ProvinceManager(){
         provinceHashMap = new HashMap<>();
     }
@@ -20,5 +21,9 @@ public class ProvinceManager {
 
     public void registerProvince(Pos pos, Province province){
         provinceHashMap.put(pos,province);
+    }
+
+    public Map<Pos, Province> getProvinceHashMap() {
+        return provinceHashMap;
     }
 }

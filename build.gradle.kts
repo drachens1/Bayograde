@@ -18,6 +18,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation(kotlin("stdlib-jdk8"))
 }
 

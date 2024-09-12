@@ -1,6 +1,6 @@
 package org.drachens.util;
 
-import net.minestom.server.item.Material;
+import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.Provinces.ProvinceManager;
@@ -10,9 +10,11 @@ import java.util.*;
 public class AStarPathfinder {
     private final Country country;
     private final ProvinceManager provinceManager;
-    public AStarPathfinder(Country country, ProvinceManager provinceManager) {
+    private final AStarPathfinderVoids pathfinderVoids;
+    public AStarPathfinder(Country country, ProvinceManager provinceManager, AStarPathfinderVoids pathfinderVoids) {
         this.country = country;
         this.provinceManager = provinceManager;
+        this.pathfinderVoids = pathfinderVoids;
     }
 
     public List<Province> findPath(Province start, Province goal, Country country) {
@@ -27,7 +29,7 @@ public class AStarPathfinder {
         Map<ProvinceKey, Node> allNodes = new HashMap<>();
 
         ProvinceKey startKey = new ProvinceKey(start);
-        Node startNode = new Node(start, null, 0, estimateDistance(start, goal), calculatePriority(start));
+        Node startNode = new Node(start, null, 0, estimateDistance(start, goal), pathfinderVoids.calcPrio(start));
         openSet.add(startNode);
         allNodes.put(startKey, startNode);
 
@@ -47,13 +49,13 @@ public class AStarPathfinder {
                 if (closedSet.contains(neighborKey)) continue;
 
                 double tentativeG = currentNode.getG() + currentProvince.distance(neighbor);
-                Node neighborNode = allNodes.getOrDefault(neighborKey, new Node(neighbor, null, Double.MAX_VALUE, estimateDistance(neighbor, goal), calculatePriority(neighbor)));
+                Node neighborNode = allNodes.getOrDefault(neighborKey, new Node(neighbor, null, Double.MAX_VALUE, estimateDistance(neighbor, goal), pathfinderVoids.calcPrio(neighbor)));
 
                 if (tentativeG < neighborNode.getG()) {
                     neighborNode.setPrevious(currentNode);
                     neighborNode.setG(tentativeG);
                     neighborNode.setF(tentativeG + neighborNode.getH());
-                    neighborNode.setPriority(calculatePriority(neighbor));
+                    neighborNode.setPriority(pathfinderVoids.calcPrio(neighbor));
 
                     if (!openSet.contains(neighborNode)) {
                         openSet.add(neighborNode);
@@ -64,15 +66,6 @@ public class AStarPathfinder {
         }
 
         return Collections.emptyList();
-    }
-
-    private double calculatePriority(Province Province) {
-        double priority = 0.0;
-        Material type = Province.getMaterial();
-        if (type == Material.BLUE_STAINED_GLASS) {
-            priority += 4;
-        }
-        return priority;
     }
 
     private List<Province> reconstructPath(Node node) {
@@ -98,16 +91,12 @@ public class AStarPathfinder {
             for (int dz : deltas) {
                 if (dx == 0 && dz == 0) continue;
                 Province check = provinceManager.getProvince(province.getPos().add(dx,0,dz));
-                if (isWalkable(check, country)) {
+                if (pathfinderVoids.isWalkable(check, country)) {
                     neighbors.add(check);
                 }
             }
         }
         return neighbors;
-    }
-
-    private boolean isWalkable(Province loc, Country country) {
-        return loc.getMaterial() == Material.BLUE_STAINED_GLASS || /*((country.warJustificationAgainst(loc.getOccupier()) || !country.activeGameMode.warJustification) ||*/ loc.getOccupier() == country/*)*/;
     }
 
     private static class Node {
