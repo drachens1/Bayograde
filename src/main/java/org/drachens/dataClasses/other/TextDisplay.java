@@ -2,89 +2,79 @@ package org.drachens.dataClasses.other;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.metadata.display.TextDisplayMeta;
-import net.minestom.server.instance.Instance;
-import org.drachens.dataClasses.Provinces.Province;
+import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
+import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
+import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
+import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 
-import java.util.List;
+import java.util.HashMap;
 
-public class TextDisplay extends Entity {
-    private Component text;
+public class TextDisplay extends Clientside {
+    public Pos location;
+    public Component text;
+    public int lineWidth;
+    public int backgroundColor;
+    public byte opacity;
+    public byte bitmask;
 
-    public TextDisplay(Component text, Pos pos, Instance instance) {
-        this(text, pos, instance, false);
-    }
+    public TextDisplay(Pos location, Component text, int lineWidth, int backgroundColor, byte opacity, byte bitmask, boolean storeViewers) {
+        super(storeViewers);
 
-    public TextDisplay(Component text, Pos pos, Instance instance, boolean invisible) {
-        super(EntityType.TEXT_DISPLAY);
+        this.location = location;
         this.text = text;
-        setInstance(instance, pos);
-        initializeDisplay();
-        this.setInvisible(invisible);
+        this.lineWidth = lineWidth;
+        this.backgroundColor = backgroundColor;
+        this.opacity = opacity;
+        this.bitmask = bitmask;
     }
 
-    public TextDisplay(Component text, Pos pos, Instance instance, List<Player> viewers) {
-        this(text, pos, instance, true);
-        for (Player p : viewers) {
-            this.addViewer(p);
-        }
+    @Override
+    public void addViewer(Player player) {
+        if (storeViewers)
+            VIEWERS.add(player.getUuid());
+
+        var conn = player.getPlayerConnection();
+
+        conn.sendPacket(new SpawnEntityPacket(
+                entityId,
+                uuid,
+                EntityType.TEXT_DISPLAY.id(),
+                location,
+                0f, 0, (short) 0, (short) 0, (short) 0
+        ));
+
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+
+        map.put(23, Metadata.Chat(this.text));
+        map.put(24, Metadata.VarInt(this.lineWidth));
+        map.put(25, Metadata.VarInt(this.backgroundColor));
+        map.put(26, Metadata.Byte(this.opacity));
+        map.put(27, Metadata.Byte(this.bitmask));
+
+        conn.sendPacket(new EntityMetaDataPacket(
+                this.entityId,
+                map
+        ));
+
+        conn.sendPacket(new EntityTeleportPacket(
+                this.entityId,
+                this.location,
+                false
+        ));
     }
 
-    public TextDisplay(Component text, Province province) {
-        this(text, province.getPos(), province.getInstance(), false);
-    }
+    @Override
+    public void removeViewer(Player player) {
+        if (storeViewers)
+            VIEWERS.remove(player.getUuid());
 
-    public TextDisplay(Component text, Province province, boolean invisible) {
-        this(text, province.getPos(), province.getInstance(), invisible);
-    }
+        var conn = player.getPlayerConnection();
 
-    public TextDisplay(Component text, Province province, List<Player> viewers) {
-        this(text, province.getPos(), province.getInstance(), true);
-        for (Player p : viewers) {
-            this.addViewer(p);
-        }
-    }
-
-    private void initializeDisplay() {
-        this.setCustomNameVisible(false);
-        this.setNoGravity(true);
-        if (this.getEntityMeta() instanceof TextDisplayMeta textDisplayMeta) {
-            textDisplayMeta.setText(text);
-
-        }
-    }
-
-    public void delete() {
-        this.remove();
-    }
-
-    public void move(Pos pos) {
-        this.teleport(pos);
-    }
-
-    public void move(Province province) {
-        this.teleport(province.getPos());
-    }
-
-    public void setText(Component text) {
-        this.text = text;
-        if (this.getEntityMeta() instanceof TextDisplayMeta textDisplayMeta) {
-            textDisplayMeta.setText(text);
-        }
-    }
-
-    public void hide(Player p) {
-        this.removeViewer(p);
-    }
-
-    public void show(Player p) {
-        this.addViewer(p);
-    }
-
-    public void setVisible(Boolean visible) {  // Renamed for clarity
-        this.setInvisible(!visible);
+        conn.sendPacket(new DestroyEntitiesPacket(
+                this.entityId
+        ));
     }
 }
