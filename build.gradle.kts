@@ -19,7 +19,6 @@ dependencies {
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("de.articdive:jnoise-pipeline:4.1.0")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 java {

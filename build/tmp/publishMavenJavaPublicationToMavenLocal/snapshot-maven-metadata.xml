@@ -3,25 +3,25 @@
   <groupId>org.drachens</groupId>
   <artifactId>defaultSystemMine</artifactId>
   <versioning>
-    <lastUpdated>20240914113047</lastUpdated>
+    <lastUpdated>20240914144027</lastUpdated>
     <snapshot>
       <localCopy>true</localCopy>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
-        <extension>jar</extension>
-        <value>1.0-SNAPSHOT</value>
-        <updated>20240914113047</updated>
-      </snapshotVersion>
-      <snapshotVersion>
         <extension>module</extension>
         <value>1.0-SNAPSHOT</value>
-        <updated>20240914113047</updated>
+        <updated>20240914144027</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.0-SNAPSHOT</value>
+        <updated>20240914144027</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
         <value>1.0-SNAPSHOT</value>
-        <updated>20240914113047</updated>
+        <updated>20240914144027</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

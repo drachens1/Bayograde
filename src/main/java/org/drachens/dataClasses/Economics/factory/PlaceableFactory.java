@@ -18,13 +18,13 @@ public class PlaceableFactory implements PlaceableBuilds {
     private final int max;
     private final Country occupier;
     public PlaceableFactory(FactoryType factoryType, Province province){
+        System.out.println("PLACED");
         this.factoryType = factoryType;
         this.province = province;
         this.current = 1;
         this.occupier = province.getOccupier();
         itemDisplay = new ItemDisplay(itemBuilder(factoryType.getItem(),factoryType.getModelData()[current]),province);
         this.max = factoryType.getMax(province.getMaterial());
-        province.setBuildType(this);
     }
     private void updateDisplay(){
         itemDisplay.setItem(itemBuilder(factoryType.getItem(),factoryType.getModelData()[current]));

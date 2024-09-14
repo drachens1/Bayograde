@@ -163,7 +163,6 @@ public class Country extends Team {
         return players;
     }
     public void cityCaptured(Province capturedCity){
-
     }
 
     public void addPlaceableFactory(PlaceableFactory placeableFactory){

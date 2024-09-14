@@ -1,5 +1,0 @@
-12/09/24 18:25 server:drachens has joined the game
-12/09/24 18:25 server:NOT COUNTRY : net.minestom.server.scoreboard.Team@17f43c20
-minecraft:overworld 12/09/24 18:25 server:null
-12/09/24 18:25 server:NOT COUNTRY : null
-minecraft:overworld 12/09/24 18:25 server:null

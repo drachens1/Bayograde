@@ -3,6 +3,7 @@ package org.drachens.dataClasses.Economics.factory;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +19,15 @@ public class FactoryType {
     public FactoryType(List<CurrencyTypes> currency, List<Float> production, int[] modelData, Material item, HashMap<Material, Integer> max){
         this.currency = currency;
         this.produce = production;
+        this.modelData = modelData;
+        this.item = item;
+        this.max = max;
+    }
+    public FactoryType(CurrencyTypes currency, Float production, int[] modelData, Material item, HashMap<Material, Integer> max){
+        this.currency = new ArrayList<>();
+        this.currency.add(currency);
+        this.produce = new ArrayList<>();
+        this.produce.add(production);
         this.modelData = modelData;
         this.item = item;
         this.max = max;

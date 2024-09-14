@@ -1,8 +1,0 @@
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 20
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 1
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 1
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 2
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 2
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 0
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed -2
-minecraft:overworld 12/09/24 16:21 drachens:flyspeed 1

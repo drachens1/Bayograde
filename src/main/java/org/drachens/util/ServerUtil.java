@@ -18,6 +18,8 @@ import net.minestom.server.event.player.*;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.inventory.TransactionOption;
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.scoreboard.Sidebar;
 import net.minestom.server.scoreboard.Team;
 import org.drachens.InventorySystem.GUIManager;
@@ -50,10 +52,7 @@ import org.drachens.events.CountryLeaveEvent;
 import org.drachens.events.NewDay;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.drachens.Manager.AchievementsManager.addPlayerToAdv;
 import static org.drachens.Manager.AchievementsManager.createAdvancements;
@@ -102,7 +101,7 @@ public class ServerUtil {
     }
     private static final List<Chunk> allowedChunks = new ArrayList<>();
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
-    public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies) {
+    public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies, ItemStack[] defaultPlayerItems) {
         initSrv();
         setup();
         //Create the instance(world)
@@ -167,6 +166,7 @@ public class ServerUtil {
             tabCreation(p);
             addPlayerToAdv(p);
 
+            p.getInventory().addItemStacks(Arrays.stream(defaultPlayerItems).toList(), TransactionOption.ALL);
             worldClassesHashMap.get(p.getInstance()).getYearManager().addPlayer(p);
 
             Team spectator = MinecraftServer.getTeamManager().getTeam("spectator");

@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.tag.Tag;
 
 import java.util.List;
 
@@ -14,10 +15,21 @@ public class ItemStackUtil {
         return ItemStack.of(material).builder()
                 .build();
     }
+    public static ItemStack itemBuilder(Material material, Component name){
+        return ItemStack.of(material).builder()
+                .customName(name)
+                .build();
+    }
+    public static ItemStack itemBuilder(Material material, Component name, int modelData){
+        return ItemStack.builder(material)
+                .customModelData(modelData)
+                .customName(name)
+                .build().withTag(Tag.Integer("CustomModelData"), modelData);
+    }
     public static ItemStack itemBuilder(Material material, int modelData){
         return ItemStack.of(material).builder()
                 .customModelData(modelData)
-                .build();
+                .build().withTag(Tag.Integer("CustomModelData"), modelData);
     }
     public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour){
         return ItemStack.of(material).builder()
@@ -25,18 +37,18 @@ public class ItemStackUtil {
                 .build();
     }
 
-    public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour, int itemMeta){
+    public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour, int modelData){
         return ItemStack.of(material).builder()
                 .customName(compBuild(name, colour))
-                .customModelData(itemMeta)
-                .build();
+                .customModelData(modelData)
+                .build().withTag(Tag.Integer("CustomModelData"), modelData);
     }
 
-    public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour, int itemMeta, List<Component> lore){
+    public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour, int modelData, List<Component> lore){
         return ItemStack.of(material).builder()
                 .customName(compBuild(name,colour))
-                .customModelData(itemMeta)
+                .customModelData(modelData)
                 .lore(lore)
-                .build();
+                .build().withTag(Tag.Integer("CustomModelData"), modelData);
     }
 }

@@ -10,7 +10,6 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.events.CaptureBlockEvent;
-import org.drachens.events.CountryJoinEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +89,10 @@ public class Province {
         }
         this.occupier = occupier;
         occupier.addOccupied(this);
-        if (isCity())occupier.addCity(this);
+        if (isCity()){
+            setCity(1);
+            occupier.addCity(this);
+        }
         if (buildType!=null){
             if (buildType instanceof PlaceableFactory pl){
                 occupier.addPlaceableFactory(pl);
@@ -133,15 +135,19 @@ public class Province {
         return getPos().distance(province.getPos());
     }
     public void setBlock(Material block){
+        material = block;
         instance.setBlock(pos,block.block());
     }
     public void setBorder(Material border){
+        material = border;
         instance.setBlock(pos,border.block());
     }
     public void setBlock(){
+        material = occupier.getBlock();
         instance.setBlock(pos,occupier.getBlock().block());
     }
     public void setBorder(){
+        material = occupier.getBorder();
         instance.setBlock(pos,occupier.getBorder().block());
     }
     public Material getMaterial(){
@@ -162,28 +168,31 @@ public class Province {
     public void setCity(int lvl) {
         this.city = true;
         this.setBlock(cities[lvl]);
+        material = cities[lvl];
     }
+    private final Pos[] directions = {
+            new Pos(-1, 0, 0), // West
+            new Pos(1, 0, 0),  // East
+            new Pos(0, 0, -1), // North
+            new Pos(0, 0, 1),   // South
+            new Pos(0,0,0) // current
+    };
     private void updateBorders(){
-        Pos[] directions = {
-                new Pos(-1, 0, 0), // West
-                new Pos(1, 0, 0),  // East
-                new Pos(0, 0, -1), // North
-                new Pos(0, 0, 1),   // South
-                new Pos(0,0,0) // current
-        };
+
         for (Pos direction : directions){
             Pos newLoc = this.getPos().add(direction);
             change(newLoc);
         }
     }
+    private final int[][] directions2 = {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
+    };
     private void change(Pos loc){
         Province province = provinceManager.getProvince(loc);
         if (province == null || province.isCity())return;
         Country country = province.getOccupier();
         if (country != null){
-            int[][] directions2 = {
-                    {-1, 0}, {1, 0}, {0, -1}, {0, 1},
-            };
+
 
             for (int[] direction2 : directions2) {
                 int offsetX2 = direction2[0];

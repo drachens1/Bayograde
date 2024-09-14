@@ -1,7 +1,0 @@
-minecraft:overworld 12/09/24 17:44 drachens:tp 0 0
-minecraft:overworld 12/09/24 17:45 drachens:tp 0 0
-minecraft:overworld 12/09/24 17:45 drachens:tp 9 9
-minecraft:overworld 12/09/24 17:45 drachens:tp 9 999
-minecraft:overworld 12/09/24 17:45 drachens:tp 9 99
-minecraft:overworld 12/09/24 17:45 drachens:tp 0 0
-minecraft:overworld 12/09/24 17:46 drachens:tp 0 0
