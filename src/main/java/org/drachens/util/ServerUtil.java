@@ -18,6 +18,7 @@ import net.minestom.server.event.player.*;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.scoreboard.Sidebar;
 import net.minestom.server.scoreboard.Team;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.*;
@@ -33,18 +34,26 @@ import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
+import org.drachens.cmd.TeleportCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.country.CountryCMD;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Economics.currency.Currencies;
+import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.Provinces.ProvinceManager;
 import org.drachens.dataClasses.WorldClasses;
+import org.drachens.events.CountryChangeEvent;
+import org.drachens.events.CountryJoinEvent;
+import org.drachens.events.CountryLeaveEvent;
+import org.drachens.events.NewDay;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.drachens.Manager.AchievementsManager.addPlayerToAdv;
 import static org.drachens.Manager.AchievementsManager.createAdvancements;
@@ -54,6 +63,7 @@ import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
 import static org.drachens.util.PermissionsUtil.setupPerms;
 import static org.drachens.util.PlayerUtil.addPlayerToCountryMap;
+import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class ServerUtil {
     private static MinecraftServer srv;
@@ -90,13 +100,11 @@ public class ServerUtil {
         System.out.println("Getting event handler");
         return globalEventHandler;
     }
-
+    private static final List<Chunk> allowedChunks = new ArrayList<>();
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
-
-    public static void setupAll(List<Command> cmd) {
+    public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies) {
         initSrv();
         setup();
-        setupPrefixes();
         //Create the instance(world)
         InstanceManager instMan = MinecraftServer.getInstanceManager();
         InstanceContainer instCon = instMan.createInstanceContainer();
@@ -123,9 +131,9 @@ public class ServerUtil {
             instance.setTime(0);
             CountryDataManager countryDataManager = new CountryDataManager(instance, new ArrayList<>());
             worldClassesHashMap.put(instance, new WorldClasses(
-                    new YearManager(0, 10, (long) 10.0, instance),
+                    new YearManager(0, 10, (long) 100.0, instance),
                     countryDataManager,
-                    new MapGeneratorManager(instance, provinceManager, countryDataManager)));
+                    new MapGeneratorManager(instance, provinceManager, countryDataManager,countries,defaultCurrencies)));
         }
 
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
@@ -199,6 +207,26 @@ public class ServerUtil {
         globEHandler.addChild(inventoryListener);
         WhitelistManager whitelistManager = new WhitelistManager();
 
+        globEHandler.addListener(PlayerMoveEvent.class,e -> {
+           final Player p = e.getPlayer();
+           if (!allowedChunks.contains(p.getChunk())){
+               p.sendMessage(mergeComp(getPrefixes("system"),getCountryMessages("outOfBounds")));
+               e.setCancelled(true);
+           }
+        });
+
+        globEHandler.addListener(PlayerStartDiggingEvent.class,e->{
+            Country playerCountry = getCountryFromPlayer(e.getPlayer());
+            if (playerCountry==null)return;
+            Province p = provinceManager.getProvince(new Pos(e.getBlockPosition()));
+            if (playerCountry==p.getOccupier())return;
+            e.getPlayer().sendMessage("captured");
+            p.capture(playerCountry);
+        });
+
+        globEHandler.addListener(CountryJoinEvent.class,e-> addPlayerToCountryMap(e.getP(),e.getJoined()));
+        globEHandler.addListener(CountryLeaveEvent.class, e-> addPlayerToCountryMap(e.getP(),null));
+        globEHandler.addListener(CountryChangeEvent.class, e-> addPlayerToCountryMap(e.getP(),e.getJoined()));
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Province p = provinceManager.getProvince(new Pos(e.getBlockPosition()));
@@ -210,7 +238,7 @@ public class ServerUtil {
             if (p.getOccupier() == null) {
                 e.getPlayer().sendMessage(Component.text()
                         .append(Component.text("_________/", NamedTextColor.BLUE))
-                        .append(Component.text("NEUTRAL", NamedTextColor.GOLD))
+                        .append(Component.text("Neutral", NamedTextColor.GOLD))
                         .append(Component.text("\\_________\n", NamedTextColor.BLUE))
                         .append(Component.text("Leader: \n"))
                 );
@@ -228,10 +256,40 @@ public class ServerUtil {
                     .appendNewline()
                     .append(Component.text()
                             .append(Component.text("[JOIN]", NamedTextColor.GOLD))
-                            .clickEvent(ClickEvent.runCommand("country join " + c.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country join " + c.getName()))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))
                     )
             );
+        });
+
+        globEHandler.addListener(NewDay.class, e->{
+            CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).getCountryDataManager();
+            for (Country country : countryDataManager.getCountries()){
+                Sidebar sb = new Sidebar(compBuild(country.getName(),NamedTextColor.BLUE));
+                sb.createLine(new Sidebar.ScoreboardLine(
+                        "title",
+                        compBuild("Currencies: ",NamedTextColor.BLUE),
+                        0
+                ));
+                int i = 0;
+                for (Map.Entry<CurrencyTypes, Currencies> entry : country.getCurrenciesMap().entrySet()){
+                    ArrayList<Component> components = new ArrayList<>();
+                    components.add(entry.getKey().getName());
+                    components.add(compBuild(" : ",NamedTextColor.BLUE));
+                    components.add(compBuild(entry.getValue().getAmount()+"",NamedTextColor.BLUE));
+                    components.add(entry.getKey().getSymbol());
+                    sb.createLine(new Sidebar.ScoreboardLine(
+                            entry.getValue().getName().examinableName(),
+                            mergeComp(components),
+                            i
+                    ));
+                    i++;
+                }
+                for (Player p : country.getPlayer()){
+                    sb.addViewer(p);
+                }
+                country.calculateIncrease();
+            }
         });
 
         //Register cmds
@@ -250,7 +308,7 @@ public class ServerUtil {
         MinecraftServer.getCommandManager().register(new FlyCMD());
         MinecraftServer.getCommandManager().register(new FlyspeedCMD());
         MinecraftServer.getCommandManager().register(new CountryCMD());
-
+        MinecraftServer.getCommandManager().register(new TeleportCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -266,9 +324,14 @@ public class ServerUtil {
 
         startup();
         new PermissionsManager();
-
+        setupPrefixes();
     }
-
+    public static void addChunk(Chunk chunk){
+        allowedChunks.add(chunk);
+    }
+    public static List<Chunk> getAllowedChunks(){
+        return allowedChunks;
+    }
     public static void start() {
         System.out.println("Server starting...");
         startSrv();
@@ -276,7 +339,7 @@ public class ServerUtil {
 
     private static void tabCreation(Player p) {
         final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
-        final Component footer = Component.text("----------------\n-----");
+        final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
     }
 
@@ -292,5 +355,4 @@ public class ServerUtil {
     public static WorldClasses getWorldClasses(Instance instance) {
         return worldClassesHashMap.get(instance);
     }
-
 }

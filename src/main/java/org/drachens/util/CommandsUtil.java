@@ -17,11 +17,9 @@ public class CommandsUtil {
         return suggestion;
     }
     public static List<String> getCountryNames(Instance instance){
-        System.out.println("4");
         return getWorldClasses(instance).getCountryDataManager().getNamesList();
     }
     public static Suggestion suggestions(List<String> suggestion, Suggestion suggestions){
-        System.out.println("Suggestions size"+suggestion.size());
         for (String s : suggestion) {
             s = s.substring(0,1).toUpperCase()+s.substring(1);
             suggestions.addEntry(new SuggestionEntry(s));

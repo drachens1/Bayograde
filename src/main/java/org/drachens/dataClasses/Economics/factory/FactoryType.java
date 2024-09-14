@@ -10,12 +10,12 @@ public class FactoryType {
     //The currencies it produces
     private final List<CurrencyTypes> currency;
     //The amount it costs
-    private final List<Integer> produce;
+    private final List<Float> produce;
     private final int[] modelData;
     private final Material item;
     //Max corrosponds to the material below
     private final HashMap<Material, Integer> max;
-    public FactoryType(List<CurrencyTypes> currency, List<Integer> production, int[] modelData, Material item, HashMap<Material, Integer> max){
+    public FactoryType(List<CurrencyTypes> currency, List<Float> production, int[] modelData, Material item, HashMap<Material, Integer> max){
         this.currency = currency;
         this.produce = production;
         this.modelData = modelData;
@@ -25,7 +25,7 @@ public class FactoryType {
     public List<CurrencyTypes> getCurrency(){
         return currency;
     }
-    public List<Integer> getProduction(){
+    public List<Float> getProduction(){
         return produce;
     }
     public int[] getModelData(){

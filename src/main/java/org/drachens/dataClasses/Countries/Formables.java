@@ -9,7 +9,9 @@ public class Formables {
     private List<Country> canForm;
     private List<Province> requiredProvinces;
     public Formables(String name, List<Country> canForm, List<Province> requiredProvinces){
-
+        this.name = name;
+        this.canForm = canForm;
+        this.requiredProvinces = requiredProvinces;
     }
     public String getName(){
         return name;

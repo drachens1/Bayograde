@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
+import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.instance.Instance;
 import org.drachens.events.NewDay;
@@ -14,14 +15,12 @@ import java.time.temporal.ChronoUnit;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class YearManager {
-    private BossBar yearBar;
-    private int startYear;
-    private int endYear;
-    private long dayLength;
-    private Instance instance;
+    private final BossBar yearBar;
+    private final int startYear;
+    private final long dayLength;
+    private final Instance instance;
     public YearManager(int startYear, int endYear, long dayLength, Instance instance){
         this.startYear = startYear;
-        this.endYear = endYear;
         this.dayLength = dayLength;
         this.instance = instance;
         yearBar = BossBar.bossBar(compBuild("",NamedTextColor.GOLD),0, BossBar.Color.RED, BossBar.Overlay.PROGRESS);
@@ -39,7 +38,6 @@ public class YearManager {
     public void run(){
         MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             int day = 0;
-            int week = 0;
             int month = 0;
             int year = startYear;
             final int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -55,8 +53,7 @@ public class YearManager {
                         year++;
                     }
                 }
-                EventNode<Event> dayNode = EventNode.all("day");
-                dayNode.call(new NewDay(day,week,month,year,instance));
+                EventDispatcher.call(new NewDay(day,month,year,instance));
             }
         }).repeat(dayLength, ChronoUnit.MILLIS).schedule();
     }

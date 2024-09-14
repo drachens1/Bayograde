@@ -9,15 +9,13 @@ public class NewDay implements Event, CancellableEvent {
     private final int day;
     private final int year;
     private final int month;
-    private final int week;
     private final Instance world;
 
-    public NewDay(int day, int week , int month, int year, Instance world) {
+    public NewDay(int day , int month, int year, Instance world) {
         this.day = day;
         this.year = year;
         this.month = month;
         this.cancelled = false;
-        this.week = week;
         this.world = world;
     }
 
@@ -33,10 +31,6 @@ public class NewDay implements Event, CancellableEvent {
 
     public int getMonth() {
         return month;
-    }
-
-    public int getWeek(){
-        return week;
     }
 
     @Override

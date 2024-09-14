@@ -1,9 +1,12 @@
 package org.drachens.cmd.country;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.events.CountryJoinEvent;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
@@ -21,14 +24,16 @@ public class JoinCMD extends Command {
             getSuggestionsBasedOnInput(suggestion,a[2],p.getInstance()).getEntries();
             System.out.println("After entry");
         });
+
         addSyntax((sender,context)->{
             if (!(sender instanceof Player p)){
                 return;
             }
-            if (getCountryNames(p.getInstance()).contains(context.get(countries))){
-                Country country = getWorldClasses(p.getInstance()).getCountryDataManager().getCountryFromName(context.get(countries));
-                country.addPlayer(p);
+            if (!getCountryNames(p.getInstance()).contains(context.get(countries))){
+                return;
             }
+            Country country = getWorldClasses(p.getInstance()).getCountryDataManager().getCountryFromName(context.get(countries));
+            country.changeCountry(p);
         },countries);
     }
 

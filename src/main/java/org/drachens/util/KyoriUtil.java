@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
@@ -128,7 +129,9 @@ public class KyoriUtil {
     private static Component nationalAgendasPrefix;
     private static Component countryJoin;
     private static Component countryLeave;
-    public static Component getPrefix(String wanted){
+    private static Component outOfBounds;
+    private static Component broadcastedCountryJoin;
+    public static Component getPrefixes(String wanted){
         return switch (wanted) {
             case "faction" -> factionPrefix;
             case "country" -> countryPrefix;
@@ -145,6 +148,8 @@ public class KyoriUtil {
         return switch (wanted){
             case "countryLeave" -> countryLeave;
             case "countryJoin" -> countryJoin;
+            case "outOfBounds" -> outOfBounds;
+            case "broadcastedCountryJoin" -> broadcastedCountryJoin;
             default -> null;
         };
     }
@@ -190,12 +195,17 @@ public class KyoriUtil {
                 .append(Component.text("AGENDA",NamedTextColor.GOLD, TextDecoration.BOLD))
                 .append(Component.text(" | ",NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
                 .build();
-        countryJoin = Component.text()
+        countryLeave = Component.text()
                 .append(Component.text("You have left ",NamedTextColor.BLUE))
                 .append(Component.text("%country%",NamedTextColor.GOLD,TextDecoration.BOLD))
                 .build();
         countryJoin = Component.text()
                 .append(Component.text("You have joined ",NamedTextColor.BLUE))
+                .append(Component.text("%country%",NamedTextColor.GOLD,TextDecoration.BOLD))
+                .build();
+        broadcastedCountryJoin = Component.text()
+                .append(Component.text("%player%",NamedTextColor.GOLD,TextDecoration.BOLD))
+                .append(Component.text(" has joined ",NamedTextColor.BLUE))
                 .append(Component.text("%country%",NamedTextColor.GOLD,TextDecoration.BOLD))
                 .build();
         wargoal = Component.text()
@@ -212,6 +222,15 @@ public class KyoriUtil {
                 .append(Component.text("___________/",NamedTextColor.BLUE))
                 .append(Component.text("Wars",NamedTextColor.GOLD))
                 .append(Component.text("\\__________\n",NamedTextColor.BLUE))
+                .build();
+        outOfBounds = Component.text()
+                .append(Component.text("You have went out of bounds! ",NamedTextColor.RED))
+                .append(Component.text()
+                        .append(Component.text("Click here",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .clickEvent(ClickEvent.runCommand("/tp 0 0"))
+                        .hoverEvent(HoverEvent.showText(compBuild("Click to teleport to spawn",NamedTextColor.GOLD)))
+                )
+                .append(Component.text(" To teleport to spawn",NamedTextColor.RED))
                 .build();
     }
     public static Component compBuild(String msg, NamedTextColor colour, TextDecoration txtDec){

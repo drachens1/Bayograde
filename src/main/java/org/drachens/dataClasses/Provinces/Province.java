@@ -1,16 +1,21 @@
 package org.drachens.dataClasses.Provinces;
 
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
+import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
+import org.drachens.events.CaptureBlockEvent;
+import org.drachens.events.CountryJoinEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.ServerUtil.getProvinceManager;
 
 public class Province {
@@ -73,9 +78,25 @@ public class Province {
         return occupier;
     }
     public void setOccupier(Country occupier){
+        Country current = getOccupier();
+        if (current != null){
+            current.removeOccupied(this);
+            if (isCity())current.removeCity(this);
+            if (buildType!=null){
+                if (buildType instanceof PlaceableFactory pl){
+                    current.removePlaceableFactory(pl);
+                }
+            }
+        }
         this.occupier = occupier;
         occupier.addOccupied(this);
-        updateBorders(pos);
+        if (isCity())occupier.addCity(this);
+        if (buildType!=null){
+            if (buildType instanceof PlaceableFactory pl){
+                occupier.addPlaceableFactory(pl);
+            }
+        }
+        updateBorders();
     }
     public List<Country> getCore(){
         return core;
@@ -96,7 +117,11 @@ public class Province {
         troops.add(troop);
     }
     public void capture(Country attacker){
-        this.buildType.onCaptured(attacker);
+        EventDispatcher.call(new CaptureBlockEvent(attacker,this.occupier,this));
+        if (buildType!=null) this.buildType.onCaptured(attacker);
+        setOccupier(attacker);
+        updateBorders();
+        globalBroadcast("capturedevent");
     }
     public PlaceableBuilds getBuildType(){
         return buildType;
@@ -138,7 +163,7 @@ public class Province {
         this.city = true;
         this.setBlock(cities[lvl]);
     }
-    public void updateBorders(Pos loc){
+    private void updateBorders(){
         Pos[] directions = {
                 new Pos(-1, 0, 0), // West
                 new Pos(1, 0, 0),  // East
@@ -147,11 +172,11 @@ public class Province {
                 new Pos(0,0,0) // current
         };
         for (Pos direction : directions){
-            Pos newLoc = loc.add(direction);
+            Pos newLoc = this.getPos().add(direction);
             change(newLoc);
         }
     }
-    void change(Pos loc){
+    private void change(Pos loc){
         Province province = provinceManager.getProvince(loc);
         if (province == null || province.isCity())return;
         Country country = province.getOccupier();

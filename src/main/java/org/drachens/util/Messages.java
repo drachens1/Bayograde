@@ -46,8 +46,17 @@ public class Messages {
             }
         }
     }
-
+    public static void broadcast(Component msg, Instance world){
+        System.out.println(msg);
+        logMsg("server",msg.insertion(),world);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
+            if (p.getInstance()==world){
+                p.sendMessage(msg);
+            }
+        }
+    }
     public static void logCmd(String playerName,String cmd, Instance w){
+        System.out.println(playerName+" : " +cmd);
         try {
             FileWriter f = new FileWriter(getLogCmds(),true);
             try {

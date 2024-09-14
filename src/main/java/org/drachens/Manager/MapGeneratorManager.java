@@ -3,6 +3,7 @@ package org.drachens.Manager;
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator;
 import de.articdive.jnoise.pipeline.JNoise;
 import it.unimi.dsi.fastutil.Pair;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -14,16 +15,19 @@ import org.drachens.dataClasses.Provinces.ProvinceManager;
 
 import java.util.*;
 
+import static org.drachens.util.ServerUtil.addChunk;
+
 public class MapGeneratorManager {
     private final Map<Pos, Province> landHashmap = new HashMap<>();
     private final ProvinceManager provinceManager;
     private final List<Material> BLOCKS = new ArrayList<>();
     private final List<String> countryNames = new ArrayList<>();
     private final List<Pair<Material, Material>> borderPlusBlock = new ArrayList<>();
-    private final  HashMap<CurrencyTypes, Currencies> currenciesHashMap = new HashMap<>();
+    private final HashMap<CurrencyTypes, Currencies> currenciesHashMap;
     private final CountryDataManager countryDataManager;
-    public MapGeneratorManager(Instance instance, ProvinceManager provinceManager,CountryDataManager countryDataManager) {
+    public MapGeneratorManager(Instance instance, ProvinceManager provinceManager,CountryDataManager countryDataManager, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies) {
         this.countryDataManager = countryDataManager;
+        currenciesHashMap = defaultCurrencies;
         JNoise baseNoise = JNoise.newBuilder()
                 .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(new Random().nextInt()).build())
                 .build();
@@ -75,7 +79,7 @@ public class MapGeneratorManager {
                 "Bhutan", "Bolivia", "Bosniaand_Herzegovina", "Botswana", "BouvetIsland", "Brazil", "BritishIndian_Ocean_Territory",
                 "BritishVirgin_Islands", "Brunei", "Bulgaria", "BurkinaFaso", "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "CapeVerde",
                 "CaymanIslands", "CentralAfrican_Republic", "Chad", "Chile", "China", "ChristmasIsland", "ClippertonIsland", "Cocos(Keeling)_Islands",
-                "Colombia", "Comoros", "Congo,Democratic_Republic_of_the", "Congo,Republic_of_the", "CookIslands", "CoralSea_Islands", "CostaRica",
+                "Colombia", "Comoros", "Democratic_Republic_of_the_Congo", "Republic_of_the_Congo", "CookIslands", "CoralSea_Islands", "CostaRica",
                 "Coted'Ivoire", "Croatia", "Cuba", "Cyprus", "CzechRepublic", "Denmark", "Dhekelia", "Djibouti", "Dominica", "DominicanRepublic", "Ecuador",
                 "Egypt", "ElSalvador", "EquatorialGuinea", "Eritrea", "Estonia", "Ethiopia", "EuropaIsland", "FalklandIslands_(Islas_Malvinas)", "FaroeIslands",
                 "Fiji", "Finland", "France", "FrenchGuiana", "FrenchPolynesia", "FrenchSouthern_and_Antarctic_Lands", "Gabon", "Gambia,The", "GazaStrip",
@@ -103,8 +107,8 @@ public class MapGeneratorManager {
         double baseScale = 0.01;
         double detailScale = 0.1;
         double threshold = 0.5;
-        for (int x = -100; x < 100; x++) {
-            for (int z = -100; z < 100; z++) {
+        for (int x = -96; x < 96; x++) {
+            for (int z = -96; z < 96; z++) {
                 double baseNoiseValue = baseNoise.evaluateNoise(x * baseScale, z * baseScale);
                 double detailNoiseValue = detailNoise.evaluateNoise(x * detailScale, z * detailScale);
 
@@ -113,31 +117,31 @@ public class MapGeneratorManager {
                 double normalizedValue = (combinedValue + 1) / 2.0;
                 Pos pos = new Pos(x, 0, z);
                 instance.loadChunk(pos);
+                Province province = new Province(pos, instance);
                 if (normalizedValue > threshold) {
-                    Province province = new Province(pos, instance);
                     province.setCapturable(false);
                     province.setBlock(Material.BLUE_STAINED_GLASS);
                     provinceManager.registerProvince(pos, province);
                 } else {
-                    Province province = new Province(pos, instance);
                     province.setBlock(Material.WHITE_TERRACOTTA);
                     provinceManager.registerProvince(pos, province);
                     landHashmap.put(pos,province);
                 }
+                addChunk(province.getChunk());
             }
         }
         this.provinceManager = provinceManager;
-        createCountries(60);
+        createCountries(countries);
     }
     public void createCountries(int num) {
         List<Country> countries = new ArrayList<>();
-
         for (int i = 0; i < num; i++) {
             Country newCount = createCountry();
             countries.add(newCount);
             countryDataManager.addCountry(newCount);
+            MinecraftServer.getTeamManager().getTeams().add(newCount);
         }
-        allocateProvincesUsingFloodFill(countries);
+        floodFill(countries);
     }
     private Country createCountry(){
         Material block = BLOCKS.get(new Random().nextInt(BLOCKS.size()));
@@ -161,7 +165,7 @@ public class MapGeneratorManager {
         countryNames.remove(countryName);
         return new Country(currenciesHashMap,countryName, block, border);
     }
-    public void allocateProvincesUsingFloodFill(List<Country> countries) {
+    public void floodFill(List<Country> countries) {
         Queue<Pos>[] factionQueues = new Queue[countries.size()];
         Set<Pos> visited = new HashSet<>();
 
@@ -174,6 +178,7 @@ public class MapGeneratorManager {
                 seedProvince.setOccupier(countries.get(i));
                 seedProvince.setCity(6);
                 visited.add(seedPos);
+                countries.get(i).setCapital(seedProvince);
             }
         }
 
@@ -278,59 +283,23 @@ public class MapGeneratorManager {
     int grMax = 2;
     private void generateCities(List<Country> countries){
         for (Country country : countries){
-            int gold = country.getOccupies().size()/160;
-            if (!(gold < 1))
-                for (int i = 0; i < gold; i++){
-                if (gold>gMax)break;
-                Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
-                if (p.isCity()){
-                    i--;
-                }else {
-                    p.setCity(5);
-                }
-            }
-            int raw_gold = country.getOccupies().size()/180;
-            if (!(raw_gold < 1))
-                for (int i = 0; i < raw_gold; i++){
-                if (raw_gold>rgMax)break;
-                Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
-                if (p.isCity()){
-                    i--;
-                }else {
-                    p.setCity(4);
-                }
-            }
-            int yellow = country.getOccupies().size()/200;
-            if (!(yellow < 1))
-                for (int i = 0; i < yellow; i++){
-                if (yellow>yMax)break;
-                Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
-                if (p.isCity()){
-                    i--;
-                }else {
-                    p.setCity(3);
-                }
-            }
-            int lime = country.getOccupies().size()/220;
-            if (!(lime < 1))
-                for (int i = 0; i < lime; i++){
-                if (lime>lMax)break;
-                Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
-                if (p.isCity()){
-                    i--;
-                }else {
-                    p.setCity(2);
-                }
-            }
-            int green = country.getOccupies().size()/240;
-            if (!(green < 1)) for (int i = 0; i < green; i++){
-                if (green>grMax)break;
-                Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
-                if (p.isCity()){
-                    i--;
-                }else {
-                    p.setCity(1);
-                }
+            cityTypeGen(160,5,gMax,country);
+            cityTypeGen(180,4,rgMax,country);
+            cityTypeGen(200,3,yMax,country);
+            cityTypeGen(220,2,lMax,country);
+            cityTypeGen(240,1,grMax,country);
+        }
+    }
+    private void cityTypeGen(int amount, int index, int max, Country country){
+        int t = country.getOccupies().size()/amount;
+        if (!(t < 1)) for (int i = 0; i < t; i++){
+            if (t>max)break;
+            Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
+            if (p.isCity()){
+                i--;
+            }else {
+                p.setCity(index);
+                country.addCity(p);
             }
         }
     }

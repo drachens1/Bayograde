@@ -7,7 +7,7 @@ import net.minestom.server.entity.Player;
 public class FlyspeedCMD extends Command {
     public FlyspeedCMD() {
         super("flyspeed");
-        var speed = ArgumentType.Float("<Flyspeed>");
+        var speed = ArgumentType.Float("Flyspeed");
         setDefaultExecutor((sender,context)->{
             sender.sendMessage("Proper usage: /flyspeed <number>");
         });
