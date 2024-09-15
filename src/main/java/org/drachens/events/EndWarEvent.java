@@ -3,17 +3,14 @@ package org.drachens.events;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
 
-public class CaptureBlockEvent implements Event, CancellableEvent {
+public class EndWarEvent implements Event, CancellableEvent {
     private final Country aggressor;
     private final Country defender;
-    private final Province attacked;
 
-    public CaptureBlockEvent(Country aggressor, Country occupier, Province attacked) {
+    public EndWarEvent(Country aggressor, Country occupier) {
         this.aggressor = aggressor;
         this.defender = occupier;
-        this.attacked = attacked;
     }
 
     public Country getAggressor() {
@@ -22,10 +19,6 @@ public class CaptureBlockEvent implements Event, CancellableEvent {
 
     public Country getDefender() {
         return defender;
-    }
-
-    public Province getAttacked() {
-        return attacked;
     }
 
     @Override

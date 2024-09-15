@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
+import static org.drachens.util.Messages.globalBroadcast;
 
 public class PlaceableFactory implements PlaceableBuilds {
     private final ItemDisplay itemDisplay;
@@ -32,7 +33,7 @@ public class PlaceableFactory implements PlaceableBuilds {
         this.occupier = province.getOccupier();
         province.setBuildType(this);
         occupier.addPlaceableFactory(this);
-        Pos pos = province.getPos().add(-0.5, 1.5, -0.5);
+        Pos pos = province.getPos().add(0.5, 1.5, 0.5);
         System.out.println(current);
         itemDisplay = new ItemDisplay(itemBuilder(factoryType.getItem(), factoryType.getModelData()[current - 1]), pos, ItemDisplay.DisplayType.GROUND, province.getInstance(), true);
         textDisplay = new TextDisplay(pos.add(0, 1, 0), province.getInstance(), compBuild(current + "", NamedTextColor.BLUE), 0, 0, "a".getBytes()[0], "b".getBytes()[0], true);
@@ -44,6 +45,7 @@ public class PlaceableFactory implements PlaceableBuilds {
     }
 
     private void updateDisplay() {
+        globalBroadcast(factoryType.getModelData()[current - 1]+"");
         itemDisplay.setItem(itemBuilder(factoryType.getItem(), factoryType.getModelData()[current - 1]));
         textDisplay.setText(compBuild(current + "", NamedTextColor.BLUE));
     }
@@ -73,10 +75,8 @@ public class PlaceableFactory implements PlaceableBuilds {
     @Override
     public void onUpgrade(int amount) {
         if (!canAddFactory(amount)) {
-            System.out.println("cant upgrade");
             return;
         }
-        System.out.println("can upgrade");
         current += amount;
         if (current <= 0) {
             itemDisplay.delete();

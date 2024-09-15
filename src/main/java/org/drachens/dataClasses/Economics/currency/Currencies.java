@@ -2,7 +2,7 @@ package org.drachens.dataClasses.Economics.currency;
 
 import net.kyori.adventure.text.Component;
 
-public class Currencies {
+public class Currencies implements Cloneable {
     private final CurrencyTypes currencyType;
     private float amount;
 
@@ -29,5 +29,12 @@ public class Currencies {
 
     public void minus(float minus) {
         amount -= minus;
+    }
+    public Currencies clone() {
+        try {
+            return (Currencies) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

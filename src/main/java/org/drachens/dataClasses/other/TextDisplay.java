@@ -1,7 +1,9 @@
 package org.drachens.dataClasses.other;
 
 import net.kyori.adventure.text.Component;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
@@ -12,6 +14,7 @@ import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import org.drachens.dataClasses.Provinces.Province;
 
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
 public class TextDisplay extends Clientside {
@@ -48,7 +51,10 @@ public class TextDisplay extends Clientside {
         this.text = text;
         updateForViewers();
     }
-
+    public void updatePosition(Pos pos){
+        this.location = pos;
+        updateForViewers();
+    }
     @Override
     public void addViewer(Player player) {
         if (storeViewers)

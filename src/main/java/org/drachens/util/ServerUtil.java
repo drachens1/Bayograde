@@ -135,7 +135,7 @@ public class ServerUtil {
             instance.setTime(0);
             CountryDataManager countryDataManager = new CountryDataManager(instance, new ArrayList<>());
             worldClassesHashMap.put(instance, new WorldClasses(
-                            new YearManager(0, 10, (long) 100.0, instance),
+                            new YearManager(0, 10, (long) 1000.0, instance),
                             countryDataManager,
                             new MapGeneratorManager(instance, provinceManager, countryDataManager, countries, defaultCurrencies),
                             new ClientEntsToLoad()
@@ -227,21 +227,13 @@ public class ServerUtil {
             }
         });
 
-        globEHandler.addListener(PlayerStartDiggingEvent.class, e -> {
-            Country playerCountry = getCountryFromPlayer(e.getPlayer());
-            if (playerCountry == null) return;
-            Province p = provinceManager.getProvince(new Pos(e.getBlockPosition()));
-            if (playerCountry == p.getOccupier()) return;
-            e.getPlayer().sendMessage("captured");
-            p.capture(playerCountry);
-        });
-
         globEHandler.addListener(CountryJoinEvent.class, e -> addPlayerToCountryMap(e.getP(), e.getJoined()));
         globEHandler.addListener(CountryLeaveEvent.class, e -> addPlayerToCountryMap(e.getP(), null));
         globEHandler.addListener(CountryChangeEvent.class, e -> addPlayerToCountryMap(e.getP(), e.getJoined()));
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Province p = provinceManager.getProvince(new Pos(e.getBlockPosition()));
+            if (!e.getPlayer().isSneaking())return;
             if (playerHasCooldown(e.getPlayer())) return;
             cooldown(e.getPlayer());
             if (!p.isCapturable()) {
@@ -273,9 +265,12 @@ public class ServerUtil {
                     )
             );
         });
-
+        final int[] week = {0};
         globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
+            week[0]++;
+            if (!(week[0] >= 7))return;
+            week[0] =0;
             for (Country country : countryDataManager.getCountries()) {
                 Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.BLUE));
                 sb.createLine(new Sidebar.ScoreboardLine(

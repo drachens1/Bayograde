@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Provinces;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Chunk;
@@ -14,6 +15,7 @@ import org.drachens.events.CaptureBlockEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.ServerUtil.getProvinceManager;
 
@@ -102,7 +104,7 @@ public class Province {
         Country current = getOccupier();
         if (current != null) {
             current.removeOccupied(this);
-            if (isCity()) current.removeCity(this);
+            if (isCity()) this.occupier.cityCaptured(occupier,this);
             if (buildType != null) {
                 if (buildType instanceof PlaceableFactory pl) {
                     current.removePlaceableFactory(pl);
@@ -123,6 +125,11 @@ public class Province {
         updateBorders();
     }
 
+    public void initialOccupier(Country occupier){
+        this.occupier = occupier;
+        occupier.addOccupied(this);
+        updateBorders();
+    }
     public List<Country> getCore() {
         return core;
     }
@@ -148,6 +155,7 @@ public class Province {
     }
 
     public void capture(Country attacker) {
+        occupier.sendActionBar(compBuild("You have been attacked at "+pos, NamedTextColor.RED));
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
         if (buildType != null) this.buildType.onCaptured(attacker);
         setOccupier(attacker);

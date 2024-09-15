@@ -38,7 +38,6 @@ public class ConfigFileManager {
     private static File msg;
     private static File cmd;
     private static Whitelist whitelist;
-    private static final List<Process> processes = new ArrayList<>();
 
     public static void startup() {
         //Gets the file and loads it using YAML
@@ -332,11 +331,6 @@ public class ConfigFileManager {
         Scanner log = new Scanner(logMsg);
         if (!cmds.hasNextLine()) cmd.delete();
         if (!log.hasNextLine()) msg.delete();
-        for (Process pb : processes) {
-            if (pb.isAlive()) {
-                pb.destroy();
-            }
-        }
     }
 
     public static Whitelist getWhitelist() {

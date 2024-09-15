@@ -86,7 +86,7 @@ public class MapGeneratorManager {
                 "BritishVirgin_Islands", "Brunei", "Bulgaria", "BurkinaFaso", "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "CapeVerde",
                 "CaymanIslands", "CentralAfrican_Republic", "Chad", "Chile", "China", "ChristmasIsland", "ClippertonIsland", "Cocos(Keeling)_Islands",
                 "Colombia", "Comoros", "Democratic_Republic_of_the_Congo", "Republic_of_the_Congo", "CookIslands", "CoralSea_Islands", "CostaRica",
-                "Coted'Ivoire", "Croatia", "Cuba", "Cyprus", "CzechRepublic", "Denmark", "Dhekelia", "Djibouti", "Dominica", "DominicanRepublic", "Ecuador",
+                "CotedIvoire", "Croatia", "Cuba", "Cyprus", "CzechRepublic", "Denmark", "Dhekelia", "Djibouti", "Dominica", "DominicanRepublic", "Ecuador",
                 "Egypt", "ElSalvador", "EquatorialGuinea", "Eritrea", "Estonia", "Ethiopia", "EuropaIsland", "FalklandIslands_(Islas_Malvinas)", "FaroeIslands",
                 "Fiji", "Finland", "France", "FrenchGuiana", "FrenchPolynesia", "FrenchSouthern_and_Antarctic_Lands", "Gabon", "Gambia,The", "GazaStrip",
                 "Georgia", "Germany", "Ghana", "Gibraltar", "GloriosoIslands", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey",
@@ -105,7 +105,8 @@ public class MapGeneratorManager {
                 "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidadand_Tobago", "TromelinIsland", "Tunisia", "Turkey", "Turkmenistan",
                 "Turksand_Caicos_Islands", "Tuvalu", "Uganda", "Ukraine", "UnitedArab_Emirates", "UnitedKingdom", "UnitedStates", "Uruguay", "Uzbekistan", "Vanuatu",
                 "Venezuela", "Vietnam", "VirginIslands", "WakeIsland", "Wallisand_Futuna", "WestBank", "WesternSahara", "Yemen", "Zambia", "Zimbabwe",
-                "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire"
+                "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire", "republic_of_the_belgorod_people",
+                "USSR", "Elementia"
         };
         Collections.addAll(BLOCKS, block);
         Collections.addAll(countryNames, countryName);
@@ -171,7 +172,11 @@ public class MapGeneratorManager {
         borderPlusBlock.add(bordersNblock);
         String countryName = countryNames.get(new Random().nextInt(countryNames.size()));
         countryNames.remove(countryName);
-        return new Country(currenciesHashMap, countryName, block, border);
+        HashMap<CurrencyTypes, Currencies> newCurrencies = new HashMap<>();
+        for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()){
+            newCurrencies.put(e.getKey(),e.getValue().clone());
+        }
+        return new Country(newCurrencies, countryName, block, border);
     }
 
     public void floodFill(List<Country> countries) {
@@ -184,7 +189,7 @@ public class MapGeneratorManager {
             factionQueues[i].add(seedPos);
             Province seedProvince = provinceManager.getProvince(seedPos);
             if (seedProvince != null && seedProvince.getOccupier() == null) {
-                seedProvince.setOccupier(countries.get(i));
+                seedProvince.initialOccupier(countries.get(i));
                 seedProvince.setCity(6);
                 visited.add(seedPos);
                 countries.get(i).setCapital(seedProvince);
@@ -204,7 +209,7 @@ public class MapGeneratorManager {
                         if (!visited.contains(neighbor) && landHashmap.containsKey(neighbor)) {
                             Province neighborProvince = provinceManager.getProvince(neighbor);
                             if (neighborProvince != null && neighborProvince.getOccupier() == null) {
-                                neighborProvince.setOccupier(countries.get(i));
+                                neighborProvince.initialOccupier(countries.get(i));
                                 visited.add(neighbor);
                                 factionQueues[i].add(neighbor);
                                 anyQueueHadExpansion = true;

@@ -5,6 +5,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.item.Material;
 import net.minestom.server.scoreboard.Team;
+import org.drachens.dataClasses.Economics.currency.Cost;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
@@ -32,7 +33,8 @@ public class Country extends Team {
     private Province capital;
     private float capitulationPoints;
     private float maxCapitulationPoints;
-
+    private boolean capitulated = false;
+    private List<Country> wars = new ArrayList<>();
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Material block, Material border) {
         super(name);
         this.cores = new ArrayList<>();
@@ -85,10 +87,12 @@ public class Country extends Team {
     }
 
     public void addCity(Province city) {
+        this.maxCapitulationPoints+=this.city.indexOf(city.getMaterial());
+        this.capitulationPoints+=this.city.indexOf(city.getMaterial());
         this.cities.add(city);
     }
-
     public void removeCity(Province city) {
+        this.capitulationPoints-=this.city.indexOf(city.getMaterial());
         this.cities.remove(city);
     }
 
@@ -189,7 +193,17 @@ public class Country extends Team {
         return players;
     }
 
-    public void cityCaptured(Province capturedCity) {
+    public void cityCaptured(Country attacker,Province capturedCity) {
+        removeCity(capturedCity);
+        if (!capitulated){
+            if (capital==capturedCity){
+                broadcast(mergeComp(getPrefixes("country"),compBuild(attacker.name+" has seized the "+name+" capital",NamedTextColor.RED)), capital.getInstance());
+            }
+        }
+        if (capitulationPoints <= maxCapitulationPoints*0.8 && !capitulated){
+            capitulated = true;
+            capitulate(attacker);
+        }
     }
 
     public void addPlaceableFactory(PlaceableFactory placeableFactory) {
@@ -218,5 +232,26 @@ public class Country extends Team {
                 }
             }
         }
+        for (Map.Entry<CurrencyTypes, Currencies> current : currenciesMap.entrySet()){
+            if (additionAmount.containsKey(current.getKey())){
+                float addition = additionAmount.get(current.getKey());
+                current.getValue().add(addition);
+            }
+        }
+    }
+    public void capitulate(Country attacker){
+        broadcast(mergeComp(getPrefixes("country"),compBuild(this.name+" has capitulated to "+attacker.name,NamedTextColor.RED)), capital.getInstance());
+        for (Province p : new ArrayList<>(this.occupies)){
+            p.setOccupier(attacker);
+        }
+    }
+    public void addCost(Cost cost){
+        currenciesMap.get(cost.getCurrencyType()).add(cost.getAmount());
+    }
+    public void removeCost(Cost cost){
+        currenciesMap.get(cost.getCurrencyType()).minus(cost.getAmount());
+    }
+    public boolean canMinusCost(Cost cost){
+        return currenciesMap.containsKey(cost.getCurrencyType()) && currenciesMap.get(cost.getCurrencyType()).getAmount()>cost.getAmount();
     }
 }
