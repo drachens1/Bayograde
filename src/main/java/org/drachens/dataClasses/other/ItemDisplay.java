@@ -4,26 +4,45 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
+import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
 
 
 public class ItemDisplay extends Clientside {
-    final ItemStack item;
-    final Pos pos;
-    final byte displayType;
+    ItemStack item;
+    Pos pos;
+    byte displayType;
 
-    public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, boolean storeViewers) {
-        super(storeViewers);
+    public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
+        super(storeViewers, instance);
 
         this.item = item;
         this.pos = pos;
         this.displayType = displayType.getSerialized();
+    }
+
+    public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers) {
+        super(storeViewers, province.getInstance());
+
+        this.item = item;
+        this.pos = province.getPos();
+        this.displayType = displayType.getSerialized();
+    }
+
+    public void delete() {
+        this.dispose();
+    }
+
+    public void setItem(ItemStack item) {
+        this.item = item;
+        updateForViewers();
     }
 
     @Override
@@ -79,8 +98,7 @@ public class ItemDisplay extends Clientside {
         HEAD(5),
         GUI(6),
         GROUND(7),
-        FIXED(8)
-        ;
+        FIXED(8);
 
         private final byte serialized;
 

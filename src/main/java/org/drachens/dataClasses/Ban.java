@@ -7,18 +7,22 @@ public class Ban {
     private final UUID player;
     private final Date end;
     private final String reason;
-    public Ban(UUID player, Date end, String reason){
-        this.end=end;
-        this.player=player;
+
+    public Ban(UUID player, Date end, String reason) {
+        this.end = end;
+        this.player = player;
         this.reason = reason;
     }
-    public UUID getPlayer(){
+
+    public UUID getPlayer() {
         return player;
     }
-    public Date getEnd(){
+
+    public Date getEnd() {
         return end;
     }
-    public String getReason(){
+
+    public String getReason() {
         return reason;
     }
 }

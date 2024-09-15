@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Economics.factory;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 
@@ -14,16 +15,21 @@ public class FactoryType {
     private final List<Float> produce;
     private final int[] modelData;
     private final Material item;
+    private final Component name;
     //Max corrosponds to the material below
     private final HashMap<Material, Integer> max;
-    public FactoryType(List<CurrencyTypes> currency, List<Float> production, int[] modelData, Material item, HashMap<Material, Integer> max){
+
+    public FactoryType(List<CurrencyTypes> currency, List<Float> production, int[] modelData, Material item, HashMap<Material, Integer> max, Component name) {
+        this.name = name;
         this.currency = currency;
         this.produce = production;
         this.modelData = modelData;
         this.item = item;
         this.max = max;
     }
-    public FactoryType(CurrencyTypes currency, Float production, int[] modelData, Material item, HashMap<Material, Integer> max){
+
+    public FactoryType(CurrencyTypes currency, Float production, int[] modelData, Material item, HashMap<Material, Integer> max, Component name) {
+        this.name = name;
         this.currency = new ArrayList<>();
         this.currency.add(currency);
         this.produce = new ArrayList<>();
@@ -32,19 +38,28 @@ public class FactoryType {
         this.item = item;
         this.max = max;
     }
-    public List<CurrencyTypes> getCurrency(){
+
+    public List<CurrencyTypes> getCurrency() {
         return currency;
     }
-    public List<Float> getProduction(){
+
+    public List<Float> getProduction() {
         return produce;
     }
-    public int[] getModelData(){
+
+    public int[] getModelData() {
         return modelData;
     }
-    public Material getItem(){
+
+    public Material getItem() {
         return item;
     }
-    public Integer getMax(Material material){
+
+    public Integer getMax(Material material) {
         return max.get(material);
+    }
+
+    public Component getName() {
+        return name;
     }
 }

@@ -9,18 +9,18 @@ import static org.drachens.util.PermissionsUtil.playerOp;
 public class operator extends Command {
     public operator() {
         super("operator", "op");
-        setDefaultExecutor((sender,context)-> sender.sendMessage("Usage /op <player>"));
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Usage /op <player>"));
 
         var player = ArgumentType.Entity("player");
-        addSyntax((sender,context)->{
+        addSyntax((sender, context) -> {
             Player p = context.get(player).findFirstPlayer(sender);
-            if (p == null){
+            if (p == null) {
                 sender.sendMessage("P is null");
                 return;
             }
-            sender.sendMessage("You have opped "+p.getUsername());
+            sender.sendMessage("You have opped " + p.getUsername());
             p.sendMessage("You have been opped");
             playerOp(p);
-        },player);
+        }, player);
     }
 }

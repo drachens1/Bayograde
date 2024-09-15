@@ -21,177 +21,208 @@ public class Province {
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
-    private Country occupier;
     private final List<Country> core;
-    private boolean capturable = true;
     private final Chunk chunk;
     private final ProvinceManager provinceManager;
+    private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
+            Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
+    private final Pos[] directions = {
+            new Pos(-1, 0, 0), // West
+            new Pos(1, 0, 0),  // East
+            new Pos(0, 0, -1), // North
+            new Pos(0, 0, 1),   // South
+            new Pos(0, 0, 0) // current
+    };
+    private final int[][] directions2 = {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
+    };
+    private Country occupier;
+    private boolean capturable = true;
     private PlaceableBuilds buildType;
     private Material material;
     private boolean city;
-    public Province(Pos pos, Instance instance, List<Country> cores, Country occupier){
+
+    public Province(Pos pos, Instance instance, List<Country> cores, Country occupier) {
         this.pos = pos;
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
         provinceManager = getProvinceManager();
     }
-    public Province(int x, int y , int z, Instance instance, List<Country> cores, Country occupier){
-        this.pos = new Pos(x,y,z);
+
+    public Province(int x, int y, int z, Instance instance, List<Country> cores, Country occupier) {
+        this.pos = new Pos(x, y, z);
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
         provinceManager = getProvinceManager();
     }
-    public Province(int x, int y , int z, Instance instance){
-        this.pos = new Pos(x,y,z);
+
+    public Province(int x, int y, int z, Instance instance) {
+        this.pos = new Pos(x, y, z);
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = new ArrayList<>();
         this.occupier = null;
         provinceManager = getProvinceManager();
     }
-    public Province(Pos pos, Instance instance){
+
+    public Province(Pos pos, Instance instance) {
         this.pos = pos;
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = new ArrayList<>();
         this.occupier = null;
         provinceManager = getProvinceManager();
     }
-    public Pos getPos(){
+
+    public Pos getPos() {
         return pos;
     }
-    public Chunk getChunk(){
+
+    public Chunk getChunk() {
         return chunk;
     }
-    public Instance getInstance(){
+
+    public Instance getInstance() {
         return instance;
     }
-    public Boolean isCapturable(){
+
+    public Boolean isCapturable() {
         return capturable;
     }
-    public Country getOccupier(){
+
+    public Country getOccupier() {
         return occupier;
     }
-    public void setOccupier(Country occupier){
+
+    public void setOccupier(Country occupier) {
         Country current = getOccupier();
-        if (current != null){
+        if (current != null) {
             current.removeOccupied(this);
-            if (isCity())current.removeCity(this);
-            if (buildType!=null){
-                if (buildType instanceof PlaceableFactory pl){
+            if (isCity()) current.removeCity(this);
+            if (buildType != null) {
+                if (buildType instanceof PlaceableFactory pl) {
                     current.removePlaceableFactory(pl);
                 }
             }
         }
         this.occupier = occupier;
         occupier.addOccupied(this);
-        if (isCity()){
+        if (isCity()) {
             setCity(1);
             occupier.addCity(this);
         }
-        if (buildType!=null){
-            if (buildType instanceof PlaceableFactory pl){
+        if (buildType != null) {
+            if (buildType instanceof PlaceableFactory pl) {
                 occupier.addPlaceableFactory(pl);
             }
         }
         updateBorders();
     }
-    public List<Country> getCore(){
+
+    public List<Country> getCore() {
         return core;
     }
-    public void addCore(Country country){
+
+    public void addCore(Country country) {
         core.add(country);
     }
-    public void removeCore(Country country){
+
+    public void removeCore(Country country) {
         core.remove(country);
     }
-    public void setCapturable(Boolean choice){
+
+    public void setCapturable(Boolean choice) {
         capturable = choice;
     }
-    public List<Troop> getTroops(){
+
+    public List<Troop> getTroops() {
         return troops;
     }
-    public void addTroop(Troop troop){
+
+    public void addTroop(Troop troop) {
         troops.add(troop);
     }
-    public void capture(Country attacker){
-        EventDispatcher.call(new CaptureBlockEvent(attacker,this.occupier,this));
-        if (buildType!=null) this.buildType.onCaptured(attacker);
+
+    public void capture(Country attacker) {
+        EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
+        if (buildType != null) this.buildType.onCaptured(attacker);
         setOccupier(attacker);
         updateBorders();
         globalBroadcast("capturedevent");
     }
-    public PlaceableBuilds getBuildType(){
+
+    public PlaceableBuilds getBuildType() {
         return buildType;
     }
-    public void setBuildType(PlaceableBuilds buildType){
+
+    public void setBuildType(PlaceableBuilds buildType) {
         this.buildType = buildType;
     }
-    public double distance(Province province){
+
+    public double distance(Province province) {
         return getPos().distance(province.getPos());
     }
-    public void setBlock(Material block){
+
+    public void setBlock(Material block) {
         material = block;
-        instance.setBlock(pos,block.block());
+        instance.setBlock(pos, block.block());
     }
-    public void setBorder(Material border){
+
+    public void setBorder(Material border) {
         material = border;
-        instance.setBlock(pos,border.block());
+        instance.setBlock(pos, border.block());
     }
-    public void setBlock(){
+
+    public void setBlock() {
         material = occupier.getBlock();
-        instance.setBlock(pos,occupier.getBlock().block());
+        instance.setBlock(pos, occupier.getBlock().block());
     }
-    public void setBorder(){
+
+    public void setBorder() {
         material = occupier.getBorder();
-        instance.setBlock(pos,occupier.getBorder().block());
+        instance.setBlock(pos, occupier.getBorder().block());
     }
-    public Material getMaterial(){
+
+    public Material getMaterial() {
         return material;
     }
-    public void setMaterial(Material material){
+
+    public void setMaterial(Material material) {
         this.material = material;
     }
-    public boolean isCity(){
+
+    public boolean isCity() {
         return city;
     }
+
     public void setCity(boolean city) {
         this.city = city;
     }
-    private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA,Material.GREEN_GLAZED_TERRACOTTA,Material.LIME_GLAZED_TERRACOTTA,
-            Material.YELLOW_GLAZED_TERRACOTTA,Material.RAW_GOLD_BLOCK,Material.GOLD_BLOCK,Material.EMERALD_BLOCK};
+
     //6 = capital
     public void setCity(int lvl) {
         this.city = true;
         this.setBlock(cities[lvl]);
         material = cities[lvl];
     }
-    private final Pos[] directions = {
-            new Pos(-1, 0, 0), // West
-            new Pos(1, 0, 0),  // East
-            new Pos(0, 0, -1), // North
-            new Pos(0, 0, 1),   // South
-            new Pos(0,0,0) // current
-    };
-    private void updateBorders(){
 
-        for (Pos direction : directions){
+    private void updateBorders() {
+
+        for (Pos direction : directions) {
             Pos newLoc = this.getPos().add(direction);
             change(newLoc);
         }
     }
-    private final int[][] directions2 = {
-            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
-    };
-    private void change(Pos loc){
+
+    private void change(Pos loc) {
         Province province = provinceManager.getProvince(loc);
-        if (province == null || province.isCity())return;
+        if (province == null || province.isCity()) return;
         Country country = province.getOccupier();
-        if (country != null){
+        if (country != null) {
 
 
             for (int[] direction2 : directions2) {
@@ -201,7 +232,7 @@ public class Province {
                 Pos neighborLocation = loc.add(offsetX2, 0, offsetY2);
 
                 Province neighbourBlock = provinceManager.getProvince(neighborLocation);
-                if (neighbourBlock != null && neighbourBlock.isCapturable() && neighbourBlock.getOccupier() != country){
+                if (neighbourBlock != null && neighbourBlock.isCapturable() && neighbourBlock.getOccupier() != country) {
                     province.setBorder();
                     return;
                 }

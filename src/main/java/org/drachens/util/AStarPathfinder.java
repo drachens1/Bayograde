@@ -11,6 +11,7 @@ public class AStarPathfinder {
     private final Country country;
     private final ProvinceManager provinceManager;
     private final AStarPathfinderVoids pathfinderVoids;
+
     public AStarPathfinder(Country country, ProvinceManager provinceManager, AStarPathfinderVoids pathfinderVoids) {
         this.country = country;
         this.provinceManager = provinceManager;
@@ -90,7 +91,7 @@ public class AStarPathfinder {
         for (int dx : deltas) {
             for (int dz : deltas) {
                 if (dx == 0 && dz == 0) continue;
-                Province check = provinceManager.getProvince(province.getPos().add(dx,0,dz));
+                Province check = provinceManager.getProvince(province.getPos().add(dx, 0, dz));
                 if (pathfinderVoids.isWalkable(check, country)) {
                     neighbors.add(check);
                 }
@@ -101,9 +102,9 @@ public class AStarPathfinder {
 
     private static class Node {
         private final Province Province;
+        private final double h;
         private Node previous;
         private double g;
-        private final double h;
         private double f;
         private double priority;
 

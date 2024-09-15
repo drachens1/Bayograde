@@ -8,12 +8,12 @@ public class FlyCMD extends Command {
     public FlyCMD() {
         super("fly");
         var choice = ArgumentType.Boolean("True or false");
-        setDefaultExecutor((sender,context)-> sender.sendMessage("Proper usage /fly <boolean>"));
-        addSyntax((sender,context)->{
-            if (!(sender instanceof Player p)){
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /fly <boolean>"));
+        addSyntax((sender, context) -> {
+            if (!(sender instanceof Player p)) {
                 return;
             }
             p.setFlying(context.get(choice));
-        },choice);
+        }, choice);
     }
 }

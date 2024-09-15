@@ -32,7 +32,7 @@ public abstract class InventoryGUI implements InventoryHandler {
     public void decorate(@NotNull Player player) {
         this.buttonMap.forEach((slot, button) -> {
             ItemStack icon = button.getIconCreator().apply(player);
-            this.inventory.setItemStack(slot,icon);
+            this.inventory.setItemStack(slot, icon);
         });
     }
 

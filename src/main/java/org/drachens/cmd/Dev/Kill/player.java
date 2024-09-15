@@ -8,12 +8,12 @@ import net.minestom.server.entity.damage.DamageType;
 public class player extends Command {
     public player() {
         super("player");
-        setCondition((sender,s)->sender.hasPermission("kill"));
-        setDefaultExecutor((sender,context)->{
-            if (!sender.hasPermission("kill"))return;
+        setCondition((sender, s) -> sender.hasPermission("kill"));
+        setDefaultExecutor((sender, context) -> {
+            if (!sender.hasPermission("kill")) return;
             Player p = (Player) sender;
-            for (Player e : p.getInstance().getPlayers()){
-                e.damage(new Damage(DamageType.SONIC_BOOM,e,p,e.getPosition(),100f));
+            for (Player e : p.getInstance().getPlayers()) {
+                e.damage(new Damage(DamageType.SONIC_BOOM, e, p, e.getPosition(), 100f));
             }
         });
     }

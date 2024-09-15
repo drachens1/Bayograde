@@ -15,19 +15,22 @@ public class BanCMD extends Command {
         var player = ArgumentType.String("player");
         var reason = ArgumentType.StringArray("reason");
         var duration = ArgumentType.Float("time (minutes)");
-        setCondition((sender,s)-> {
+        setCondition((sender, s) -> {
             return sender.hasPermission("ban");
         });
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             if (sender.hasPermission("ban")) sender.sendMessage("Usage /ban <player>");
         });
-        addSyntax((sender,context)->{
-            if (!sender.hasPermission("ban"))return;
+        addSyntax((sender, context) -> {
+            if (!sender.hasPermission("ban")) return;
             Player send = (Player) sender;
-            System.out.println(send.getUsername()+" has banned "+context.get(player));
+            System.out.println(send.getUsername() + " has banned " + context.get(player));
             UUID p = getUUIDFromName(context.get(player));
-            if (p == null){sender.sendMessage("Player is null");return;}
-            addBan(p,context.get(reason),context.get(duration));
-        },player,duration,reason);
+            if (p == null) {
+                sender.sendMessage("Player is null");
+                return;
+            }
+            addBan(p, context.get(reason), context.get(duration));
+        }, player, duration, reason);
     }
 }

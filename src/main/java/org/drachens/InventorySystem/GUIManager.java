@@ -16,32 +16,33 @@ public class GUIManager {
         this.registerHandledInventory(gui.getInventory(), gui);
         player.openInventory(gui.getInventory());
     }
-    public void registerHandledInventory(Inventory inventory, InventoryHandler handler){
+
+    public void registerHandledInventory(Inventory inventory, InventoryHandler handler) {
         this.activeInventories.put(inventory, handler);
     }
 
-    public  void unregisterInventory(Inventory inventory){
+    public void unregisterInventory(Inventory inventory) {
         this.activeInventories.remove(inventory);
     }
 
-    public void handleClick(InventoryClickEvent e){
+    public void handleClick(InventoryClickEvent e) {
         InventoryHandler handler = this.activeInventories.get(e.getInventory());
-        if (handler != null){
+        if (handler != null) {
             handler.onClick(e);
         }
     }
 
-    public void handleOpen(InventoryOpenEvent e){
+    public void handleOpen(InventoryOpenEvent e) {
         InventoryHandler handler = this.activeInventories.get(e.getInventory());
-        if (handler != null){
+        if (handler != null) {
             handler.onOpen(e);
         }
     }
 
-    public void handleClose(InventoryCloseEvent event){
+    public void handleClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
         InventoryHandler handler = this.activeInventories.get(inventory);
-        if (handler!=null){
+        if (handler != null) {
             handler.onClose(event);
             this.unregisterInventory(inventory);
         }

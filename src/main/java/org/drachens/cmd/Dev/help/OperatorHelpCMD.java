@@ -7,7 +7,7 @@ import static org.drachens.util.Messages.globalBroadcast;
 public class OperatorHelpCMD extends Command {
     public OperatorHelpCMD() {
         super("operator");
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             globalBroadcast("hi");
         });
     }

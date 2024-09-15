@@ -15,55 +15,57 @@ import static org.drachens.Manager.ConfigFileManager.getLogMsg;
 
 public class Messages {
 
-    public static void globalBroadcast(String msg){
+    public static void globalBroadcast(String msg) {
         System.out.println(msg);
-        logMsg("server",msg,null);
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
+        logMsg("server", msg, null);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
         }
     }
 
-    public static void globalBroadcast(Component msg){
+    public static void globalBroadcast(Component msg) {
         System.out.println(msg);
-        logMsg("server", String.valueOf(msg),null);
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
+        logMsg("server", String.valueOf(msg), null);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
         }
     }
 
-    public static void playerSendMessage(Component msg){
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
+    public static void playerSendMessage(Component msg) {
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
         }
     }
 
-    public static void broadcast(String msg, Instance world){
+    public static void broadcast(String msg, Instance world) {
         System.out.println(msg);
-        logMsg("server",msg,world);
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
-            if (p.getInstance()==world){
+        logMsg("server", msg, world);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+            if (p.getInstance() == world) {
                 p.sendMessage(msg);
             }
         }
     }
-    public static void broadcast(Component msg, Instance world){
+
+    public static void broadcast(Component msg, Instance world) {
         System.out.println(msg);
-        logMsg("server",msg.insertion(),world);
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()){
-            if (p.getInstance()==world){
+        logMsg("server", msg.insertion(), world);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+            if (p.getInstance() == world) {
                 p.sendMessage(msg);
             }
         }
     }
-    public static void logCmd(String playerName,String cmd, Instance w){
-        System.out.println(playerName+" : " +cmd);
+
+    public static void logCmd(String playerName, String cmd, Instance w) {
+        System.out.println(playerName + " : " + cmd);
         try {
-            FileWriter f = new FileWriter(getLogCmds(),true);
+            FileWriter f = new FileWriter(getLogCmds(), true);
             try {
-                if (w!=null){
-                    f.write(w.getDimensionName()+" "+getTime()+" "+playerName+":"+cmd);
-                }else {
-                    f.write(getTime()+" "+playerName+":"+cmd);
+                if (w != null) {
+                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + cmd);
+                } else {
+                    f.write(getTime() + " " + playerName + ":" + cmd);
                 }
                 f.write("\n");
                 f.close();
@@ -75,14 +77,14 @@ public class Messages {
         }
     }
 
-    public static void logMsg(String playerName, String msg, Instance w){
+    public static void logMsg(String playerName, String msg, Instance w) {
         try {
-            FileWriter f = new FileWriter(getLogMsg(),true);
+            FileWriter f = new FileWriter(getLogMsg(), true);
             try {
-                if (w!=null){
-                    f.write(w.getDimensionName()+" "+getTime()+" "+playerName+":"+msg);
-                }else {
-                    f.write(getTime()+" "+playerName+":"+msg);
+                if (w != null) {
+                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msg);
+                } else {
+                    f.write(getTime() + " " + playerName + ":" + msg);
                 }
                 f.write("\n");
                 f.close();
@@ -94,11 +96,12 @@ public class Messages {
         }
     }
 
-    public static String getTime(){
+    public static String getTime() {
         return new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date());
     }
-    public static void Console(String plugin,String log){
-        System.out.println(plugin+": "+log);
+
+    public static void Console(String plugin, String log) {
+        System.out.println(plugin + ": " + log);
     }
 
 }

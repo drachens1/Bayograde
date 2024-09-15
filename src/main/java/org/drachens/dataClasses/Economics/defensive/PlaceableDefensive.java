@@ -12,13 +12,14 @@ public class PlaceableDefensive implements PlaceableBuilds, warBuild {
     private final ItemDisplay itemDisplay;
     private final DefensiveTypes DefensiveTypes;
     private final Province province;
-    private int current;
-    private int max;
-    public PlaceableDefensive(DefensiveTypes DefensiveTypes, Province province){
+    private final int current;
+    private final int max;
+
+    public PlaceableDefensive(DefensiveTypes DefensiveTypes, Province province) {
         this.DefensiveTypes = DefensiveTypes;
         this.province = province;
         this.current = 1;
-        itemDisplay = new ItemDisplay(itemBuilder(DefensiveTypes.getItem(),DefensiveTypes.getModelData()[current]),province);
+        itemDisplay = new ItemDisplay(itemBuilder(DefensiveTypes.getItem(), DefensiveTypes.getModelData()[current]), province, ItemDisplay.DisplayType.GROUND, true);
         this.max = DefensiveTypes.getMaxLvl();
         province.setBuildType(this);
     }
@@ -36,11 +37,6 @@ public class PlaceableDefensive implements PlaceableBuilds, warBuild {
     @Override
     public void onDestroy() {
         itemDisplay.delete();
-    }
-
-    @Override
-    public void onConstruct() {
-
     }
 
     @Override

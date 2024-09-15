@@ -16,13 +16,13 @@ import static org.drachens.util.KyoriUtil.compBuild;
 public class testInv extends InventoryGUI {
     @Override
     protected Inventory createInventory() {
-        return new Inventory(InventoryType.CHEST_6_ROW,compBuild("test", NamedTextColor.RED));
+        return new Inventory(InventoryType.CHEST_6_ROW, compBuild("test", NamedTextColor.RED));
     }
 
     public void decorate(@NotNull Player player) {
-        this.addButton(0,test(itemBuilder(Material.GOLD_BLOCK,"smth",NamedTextColor.GOLD)));
-        this.addButton(0,test(itemBuilder(Material.GOLD_BLOCK,"smth",NamedTextColor.GOLD)));
-        this.addButton(3,test(itemBuilder(Material.GOLD_BLOCK,"smth",NamedTextColor.GOLD)));
+        this.addButton(0, test(itemBuilder(Material.GOLD_BLOCK, "smth", NamedTextColor.GOLD)));
+        this.addButton(0, test(itemBuilder(Material.GOLD_BLOCK, "smth", NamedTextColor.GOLD)));
+        this.addButton(3, test(itemBuilder(Material.GOLD_BLOCK, "smth", NamedTextColor.GOLD)));
         super.decorate(player);
     }
 

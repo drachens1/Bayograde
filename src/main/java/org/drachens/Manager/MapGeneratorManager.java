@@ -25,7 +25,13 @@ public class MapGeneratorManager {
     private final List<Pair<Material, Material>> borderPlusBlock = new ArrayList<>();
     private final HashMap<CurrencyTypes, Currencies> currenciesHashMap;
     private final CountryDataManager countryDataManager;
-    public MapGeneratorManager(Instance instance, ProvinceManager provinceManager,CountryDataManager countryDataManager, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies) {
+    int gMax = 4;
+    int rgMax = 2;
+    int yMax = 2;
+    int lMax = 2;
+    int grMax = 2;
+
+    public MapGeneratorManager(Instance instance, ProvinceManager provinceManager, CountryDataManager countryDataManager, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies) {
         this.countryDataManager = countryDataManager;
         currenciesHashMap = defaultCurrencies;
         JNoise baseNoise = JNoise.newBuilder()
@@ -101,8 +107,8 @@ public class MapGeneratorManager {
                 "Venezuela", "Vietnam", "VirginIslands", "WakeIsland", "Wallisand_Futuna", "WestBank", "WesternSahara", "Yemen", "Zambia", "Zimbabwe",
                 "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire"
         };
-                Collections.addAll(BLOCKS, block);
-        Collections.addAll(countryNames,countryName);
+        Collections.addAll(BLOCKS, block);
+        Collections.addAll(countryNames, countryName);
 
         double baseScale = 0.01;
         double detailScale = 0.1;
@@ -125,7 +131,7 @@ public class MapGeneratorManager {
                 } else {
                     province.setBlock(Material.WHITE_TERRACOTTA);
                     provinceManager.registerProvince(pos, province);
-                    landHashmap.put(pos,province);
+                    landHashmap.put(pos, province);
                 }
                 addChunk(province.getChunk());
             }
@@ -133,6 +139,7 @@ public class MapGeneratorManager {
         this.provinceManager = provinceManager;
         createCountries(countries);
     }
+
     public void createCountries(int num) {
         List<Country> countries = new ArrayList<>();
         for (int i = 0; i < num; i++) {
@@ -143,7 +150,8 @@ public class MapGeneratorManager {
         }
         floodFill(countries);
     }
-    private Country createCountry(){
+
+    private Country createCountry() {
         Material block = BLOCKS.get(new Random().nextInt(BLOCKS.size()));
         Material border = BLOCKS.get(new Random().nextInt(BLOCKS.size()));
         Pair<Material, Material> bordersNblock = new Pair<>() {
@@ -157,14 +165,15 @@ public class MapGeneratorManager {
                 return border;
             }
         };
-        if (borderPlusBlock.contains(bordersNblock)){
+        if (borderPlusBlock.contains(bordersNblock)) {
             return createCountry();
         }
         borderPlusBlock.add(bordersNblock);
         String countryName = countryNames.get(new Random().nextInt(countryNames.size()));
         countryNames.remove(countryName);
-        return new Country(currenciesHashMap,countryName, block, border);
+        return new Country(currenciesHashMap, countryName, block, border);
     }
+
     public void floodFill(List<Country> countries) {
         Queue<Pos>[] factionQueues = new Queue[countries.size()];
         Set<Pos> visited = new HashSet<>();
@@ -208,6 +217,7 @@ public class MapGeneratorManager {
         borderScan();
         generateCities(countries);
     }
+
     private List<Pos> getNeighbors(Pos pos) {
         List<Pos> neighbors = new ArrayList<>();
         int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
@@ -221,42 +231,45 @@ public class MapGeneratorManager {
     private Pos chooseStartingPos() {
         List<Pos> availablePositions = new ArrayList<>(landHashmap.keySet());
         Pos attempt = availablePositions.get(new Random().nextInt(availablePositions.size()));
-        if (landHashmap.get(attempt).getOccupier()!=null){
+        if (landHashmap.get(attempt).getOccupier() != null) {
             return chooseStartingPos();
         }
         return attempt;
     }
-    private void borderScan(){
-        Pos pos1 = new Pos(-100,0,-100);
-        Pos pos2 = new Pos(100,0,100);
+
+    private void borderScan() {
+        Pos pos1 = new Pos(-100, 0, -100);
+        Pos pos2 = new Pos(100, 0, 100);
         for (int x = Math.min((int) pos1.x(), (int) pos2.x()); x <= Math.max((int) pos1.x(), (int) pos2.x()); x++) {
             for (int z = Math.min((int) pos1.z(), (int) pos2.z()); z <= Math.max((int) pos1.z(), (int) pos2.z()); z++) {
-                Pos newLoc = new Pos(x,0,z);
+                Pos newLoc = new Pos(x, 0, z);
                 Province p = provinceManager.getProvince(newLoc);
-                if (p != null && p.getOccupier() != null){
+                if (p != null && p.getOccupier() != null) {
                     updateBorders(newLoc);
                 }
             }
         }
     }
-    public void updateBorders(Pos loc){
+
+    public void updateBorders(Pos loc) {
         Pos[] directions = {
                 new Pos(-1, 0, 0), // West
                 new Pos(1, 0, 0),  // East
                 new Pos(0, 0, -1), // North
                 new Pos(0, 0, 1),   // South
-                new Pos(0,0,0) // current
+                new Pos(0, 0, 0) // current
         };
-        for (Pos direction : directions){
+        for (Pos direction : directions) {
             Pos newLoc = loc.add(direction);
             change(newLoc);
         }
     }
-    void change(Pos loc){
+
+    void change(Pos loc) {
         Province province = provinceManager.getProvince(loc);
-        if (province == null || province.isCity())return;
+        if (province == null || province.isCity()) return;
         Country country = province.getOccupier();
-        if (country != null){
+        if (country != null) {
             int[][] directions2 = {
                     {-1, 0}, {1, 0}, {0, -1}, {0, 1},
             };
@@ -268,7 +281,7 @@ public class MapGeneratorManager {
                 Pos neighborLocation = loc.add(offsetX2, 0, offsetY2);
 
                 Province neighbourBlock = provinceManager.getProvince(neighborLocation);
-                if (neighbourBlock != null && neighbourBlock.isCapturable() && neighbourBlock.getOccupier() != country){
+                if (neighbourBlock != null && neighbourBlock.isCapturable() && neighbourBlock.getOccupier() != country) {
                     province.setBorder();
                     return;
                 }
@@ -276,28 +289,25 @@ public class MapGeneratorManager {
             province.setBlock();
         }
     }
-    int gMax = 4;
-    int rgMax = 2;
-    int yMax = 2;
-    int lMax = 2;
-    int grMax = 2;
-    private void generateCities(List<Country> countries){
-        for (Country country : countries){
-            cityTypeGen(160,5,gMax,country);
-            cityTypeGen(180,4,rgMax,country);
-            cityTypeGen(200,3,yMax,country);
-            cityTypeGen(220,2,lMax,country);
-            cityTypeGen(240,1,grMax,country);
+
+    private void generateCities(List<Country> countries) {
+        for (Country country : countries) {
+            cityTypeGen(160, 5, gMax, country);
+            cityTypeGen(180, 4, rgMax, country);
+            cityTypeGen(200, 3, yMax, country);
+            cityTypeGen(220, 2, lMax, country);
+            cityTypeGen(240, 1, grMax, country);
         }
     }
-    private void cityTypeGen(int amount, int index, int max, Country country){
-        int t = country.getOccupies().size()/amount;
-        if (!(t < 1)) for (int i = 0; i < t; i++){
-            if (t>max)break;
+
+    private void cityTypeGen(int amount, int index, int max, Country country) {
+        int t = country.getOccupies().size() / amount;
+        if (!(t < 1)) for (int i = 0; i < t; i++) {
+            if (t > max) break;
             Province p = country.getOccupies().get(new Random().nextInt(country.getOccupies().size()));
-            if (p.isCity()){
+            if (p.isCity()) {
                 i--;
-            }else {
+            } else {
                 p.setCity(index);
                 country.addCity(p);
             }

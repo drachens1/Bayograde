@@ -7,11 +7,11 @@ import static org.drachens.util.Messages.globalBroadcast;
 
 public class WhitelistToggleCMD extends Command {
     public WhitelistToggleCMD(WhitelistManager whitelistManager) {
-        super("on","off");
+        super("on", "off");
         setCondition((sender, s) -> sender.hasPermission("whitelist"));
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             globalBroadcast(context.getInput());
-            switch(context.getInput()){
+            switch (context.getInput()) {
                 case "whitelist on":
                     whitelistManager.toggle(true);
                     break;

@@ -7,23 +7,27 @@ public class DefensiveTypes {
     private final float defenseBonus;
     private final int[] modelData;
     private final Material item;
-    public DefensiveTypes(float defenseBonus, int maxLvl,int[] modelData, Material item){
+
+    public DefensiveTypes(float defenseBonus, int maxLvl, int[] modelData, Material item) {
         this.maxLvl = maxLvl;
         this.defenseBonus = defenseBonus;
         this.modelData = modelData;
         this.item = item;
     }
-    public int getMaxLvl(){
+
+    public int getMaxLvl() {
         return maxLvl;
     }
-    public float getDefenseBonus(){
+
+    public float getDefenseBonus() {
         return defenseBonus;
     }
 
-    public int[] getModelData(){
+    public int[] getModelData() {
         return modelData;
     }
-    public Material getItem(){
+
+    public Material getItem() {
         return item;
     }
 }

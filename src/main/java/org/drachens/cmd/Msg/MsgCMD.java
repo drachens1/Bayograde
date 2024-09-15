@@ -21,43 +21,45 @@ public class MsgCMD extends Command {
         super("msg");
         var player = ArgumentType.Entity("player");
         var msg = ArgumentType.StringArray("msg");
-        setDefaultExecutor((sender,context)-> sender.sendMessage("Proper usage: /msg <player> <msg>"));
-        addSyntax((sender,context)->{
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /msg <player> <msg>"));
+        addSyntax((sender, context) -> {
             Player p = (Player) sender;
             Player ps = context.get(player).findFirstPlayer(sender);
-            if (p==ps){
+            if (p == ps) {
                 p.sendMessage("You cannot msg yourself silly");
                 return;
             }
-            if (ps == null){
+            if (ps == null) {
                 p.sendMessage("Player not found");
                 return;
             }
-            msgBuild(p,ps,context.get(msg));
-            setPlayersLastMessanger(p,ps);
-        },player,msg);
+            msgBuild(p, ps, context.get(msg));
+            setPlayersLastMessanger(p, ps);
+        }, player, msg);
     }
-    private String buildString(String[] msg){
+
+    private String buildString(String[] msg) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (String s : msg){
+        for (String s : msg) {
             stringBuilder.append(s).append(" ");
         }
         return stringBuilder.toString();
     }
-    private void msgBuild(Player p, Player to, String[] msgs){
+
+    private void msgBuild(Player p, Player to, String[] msgs) {
         String msg = buildString(msgs);
         List<Component> toComp = new ArrayList<>();
-        toComp.add(compBuild("To ",NamedTextColor.GOLD,TextDecoration.BOLD));
-        toComp.add(compBuild(to.getUsername(),NamedTextColor.GOLD));
+        toComp.add(compBuild("To ", NamedTextColor.GOLD, TextDecoration.BOLD));
+        toComp.add(compBuild(to.getUsername(), NamedTextColor.GOLD));
         toComp.add(compBuild(" : ", NamedTextColor.GOLD));
-        toComp.add(compBuild(msg,NamedTextColor.GOLD));
+        toComp.add(compBuild(msg, NamedTextColor.GOLD));
         p.sendMessage(mergeComp(toComp));
         toComp.clear();
-        toComp.add(compBuild("From ",NamedTextColor.GOLD,TextDecoration.BOLD));
-        toComp.add(compBuild(to.getUsername(),NamedTextColor.GOLD));
+        toComp.add(compBuild("From ", NamedTextColor.GOLD, TextDecoration.BOLD));
+        toComp.add(compBuild(to.getUsername(), NamedTextColor.GOLD));
         toComp.add(compBuild(" : ", NamedTextColor.GOLD));
-        toComp.add(compBuild(msg,NamedTextColor.GOLD));
+        toComp.add(compBuild(msg, NamedTextColor.GOLD));
         to.sendMessage(mergeComp(toComp));
-        to.playSound(Sound.sound(SoundEvent.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.Source.MASTER,1f,1f));
+        to.playSound(Sound.sound(SoundEvent.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.Source.MASTER, 1f, 1f));
     }
 }

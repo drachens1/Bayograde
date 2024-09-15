@@ -5,10 +5,12 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
+import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
 
@@ -20,8 +22,8 @@ public class TextDisplay extends Clientside {
     public byte opacity;
     public byte bitmask;
 
-    public TextDisplay(Pos location, Component text, int lineWidth, int backgroundColor, byte opacity, byte bitmask, boolean storeViewers) {
-        super(storeViewers);
+    public TextDisplay(Pos location, Instance instance, Component text, int lineWidth, int backgroundColor, byte opacity, byte bitmask, boolean storeViewers) {
+        super(storeViewers, instance);
 
         this.location = location;
         this.text = text;
@@ -29,6 +31,22 @@ public class TextDisplay extends Clientside {
         this.backgroundColor = backgroundColor;
         this.opacity = opacity;
         this.bitmask = bitmask;
+    }
+
+    public TextDisplay(Province location, Component text, int lineWidth, int backgroundColor, byte opacity, byte bitmask, boolean storeViewers) {
+        super(storeViewers, location.getInstance());
+
+        this.location = location.getPos();
+        this.text = text;
+        this.lineWidth = lineWidth;
+        this.backgroundColor = backgroundColor;
+        this.opacity = opacity;
+        this.bitmask = bitmask;
+    }
+
+    public void setText(Component text) {
+        this.text = text;
+        updateForViewers();
     }
 
     @Override

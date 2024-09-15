@@ -11,7 +11,7 @@ import static org.drachens.Manager.ConfigFileManager.*;
 import static org.drachens.util.Messages.globalBroadcast;
 
 public class WhitelistManager {
-    public void addPlayer(UUID p){
+    public void addPlayer(UUID p) {
         //Handles the configuration part so it is persistent
         ConfigurationNode whitelistNode = getWhitelistListNode();
         ConfigurationNode whitelist = whitelistNode.node("whitelist");
@@ -25,13 +25,13 @@ public class WhitelistManager {
             player.setList(String.class, uuids);
             specificSave("whitelist");
         } catch (SerializationException e) {
-            System.out.println("Add player error "+e.getMessage());
+            System.out.println("Add player error " + e.getMessage());
         }
         //Handles the temporary part
         getWhitelist().addPlayer(p);
     }
 
-    public void removePlayer(UUID p){
+    public void removePlayer(UUID p) {
         //Handles the configuration part so it is persistent
         ConfigurationNode whitelistNode = getWhitelistListNode();
         ConfigurationNode whitelist = whitelistNode.node("whitelist");
@@ -45,14 +45,14 @@ public class WhitelistManager {
             player.setList(String.class, uuids);
             specificSave("whitelist");
         } catch (SerializationException e) {
-            System.out.println("Add player error "+e.getMessage());
+            System.out.println("Add player error " + e.getMessage());
         }
         //Handles the temporary part
         getWhitelist().removePlayer(p);
     }
 
-    public void toggle(boolean e){
-        globalBroadcast(e+"");
+    public void toggle(boolean e) {
+        globalBroadcast(e + "");
         //Handles the configuration part so it is persistent
         ConfigurationNode whitelistNode = getWhitelistListNode();
         ConfigurationNode whitelist = whitelistNode.node("whitelist");
@@ -61,7 +61,7 @@ public class WhitelistManager {
             actives.set(e);
             specificSave("whitelist");
         } catch (SerializationException ex) {
-            System.out.println("Toggle error "+ex.getMessage());
+            System.out.println("Toggle error " + ex.getMessage());
         }
 
 

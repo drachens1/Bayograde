@@ -4,18 +4,19 @@ import java.util.List;
 import java.util.UUID;
 
 public class Whitelist {
-    private boolean whitelist;
     private final List<UUID> players;
-    public Whitelist(List<UUID> players, boolean whitelist){
+    private boolean whitelist;
+
+    public Whitelist(List<UUID> players, boolean whitelist) {
         this.players = players;
         this.whitelist = whitelist;
     }
 
-    public void addPlayer(UUID p){
+    public void addPlayer(UUID p) {
         players.add(p);
     }
 
-    public void removePlayer(UUID p){
+    public void removePlayer(UUID p) {
         players.remove(p);
     }
 
@@ -23,11 +24,11 @@ public class Whitelist {
         return players;
     }
 
-    public boolean active(){
+    public boolean active() {
         return whitelist;
     }
 
-    public void setActive(boolean active){
+    public void setActive(boolean active) {
         whitelist = active;
     }
 }

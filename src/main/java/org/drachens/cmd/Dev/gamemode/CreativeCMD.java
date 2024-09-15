@@ -7,9 +7,9 @@ import net.minestom.server.entity.Player;
 public class CreativeCMD extends Command {
     public CreativeCMD() {
         super("creative");
-        setCondition((sender,s)->sender.hasPermission("gamemode"));
-        setDefaultExecutor((sender,context)->{
-            if (sender.hasPermission("gamemode")){
+        setCondition((sender, s) -> sender.hasPermission("gamemode"));
+        setDefaultExecutor((sender, context) -> {
+            if (sender.hasPermission("gamemode")) {
                 Player p = (Player) sender;
                 p.setGameMode(GameMode.CREATIVE);
             }

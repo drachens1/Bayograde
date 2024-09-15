@@ -7,13 +7,15 @@ public class WarJustification {
     private final Country againstCountry;
     private final float stabilityEffect;
     private final float expires;
-    public WarJustification(float timeLeft, Country againstCountry, float stabilityEffect, float expires){
-        this.timeLeft=timeLeft;
-        this.againstCountry=againstCountry;
-        this.stabilityEffect=stabilityEffect;
+
+    public WarJustification(float timeLeft, Country againstCountry, float stabilityEffect, float expires) {
+        this.timeLeft = timeLeft;
+        this.againstCountry = againstCountry;
+        this.stabilityEffect = stabilityEffect;
         this.expires = expires;
     }
-    public WarJustification(WarGoalType warGoalType, Country againstCountry){
+
+    public WarJustification(WarGoalType warGoalType, Country againstCountry) {
         this.timeLeft = warGoalType.getDuration();
         this.againstCountry = againstCountry;
         this.stabilityEffect = warGoalType.getStabilityEffect();
@@ -31,7 +33,8 @@ public class WarJustification {
     public float getStabilityEffect() {
         return stabilityEffect;
     }
-    public float getExpires(){
+
+    public float getExpires() {
         return expires;
     }
 }

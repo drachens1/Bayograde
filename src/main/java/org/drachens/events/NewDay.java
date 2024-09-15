@@ -5,13 +5,13 @@ import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.instance.Instance;
 
 public class NewDay implements Event, CancellableEvent {
-    private boolean cancelled;
     private final int day;
     private final int year;
     private final int month;
     private final Instance world;
+    private boolean cancelled;
 
-    public NewDay(int day , int month, int year, Instance world) {
+    public NewDay(int day, int month, int year, Instance world) {
         this.day = day;
         this.year = year;
         this.month = month;
@@ -19,7 +19,9 @@ public class NewDay implements Event, CancellableEvent {
         this.world = world;
     }
 
-    public Instance getWorld(){return world;}
+    public Instance getWorld() {
+        return world;
+    }
 
     public int getDay() {
         return day;

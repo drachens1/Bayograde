@@ -13,13 +13,13 @@ public class WhitelistAddCMD extends Command {
         super("add");
         var player = ArgumentType.String("player");
         setCondition((sender, s) -> sender.hasPermission("whitelist"));
-        setDefaultExecutor((sender,context)->{
-            if (sender.hasPermission("whitelist"))sender.sendMessage("Usage /whitelist add <player>");
+        setDefaultExecutor((sender, context) -> {
+            if (sender.hasPermission("whitelist")) sender.sendMessage("Usage /whitelist add <player>");
         });
-        addSyntax((sender,context)->{
+        addSyntax((sender, context) -> {
             UUID p = getUUIDFromName(context.get(player));
             whitelistManager.addPlayer(p);
-            sender.sendMessage(context.get(player)+" was added to the whitelist");
-        },player);
+            sender.sendMessage(context.get(player) + " was added to the whitelist");
+        }, player);
     }
 }

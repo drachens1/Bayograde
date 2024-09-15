@@ -1,35 +1,54 @@
 package org.drachens.dataClasses.Economics.factory;
 
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
+import org.drachens.dataClasses.other.TextDisplay;
 
 import java.util.HashMap;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
+import static org.drachens.util.KyoriUtil.compBuild;
 
 public class PlaceableFactory implements PlaceableBuilds {
     private final ItemDisplay itemDisplay;
+    private final TextDisplay textDisplay;
     private final FactoryType factoryType;
     private final Province province;
-    private int current;
     private final int max;
     private final Country occupier;
-    public PlaceableFactory(FactoryType factoryType, Province province){
+    private int current;
+
+    public PlaceableFactory(FactoryType factoryType, Province province) {
         System.out.println("PLACED");
         this.factoryType = factoryType;
         this.province = province;
         this.current = 1;
         this.occupier = province.getOccupier();
-        itemDisplay = new ItemDisplay(itemBuilder(factoryType.getItem(),factoryType.getModelData()[current]),province);
+        province.setBuildType(this);
+        occupier.addPlaceableFactory(this);
+        Pos pos = province.getPos().add(-0.5, 1.5, -0.5);
+        System.out.println(current);
+        itemDisplay = new ItemDisplay(itemBuilder(factoryType.getItem(), factoryType.getModelData()[current - 1]), pos, ItemDisplay.DisplayType.GROUND, province.getInstance(), true);
+        textDisplay = new TextDisplay(pos.add(0, 1, 0), province.getInstance(), compBuild(current + "", NamedTextColor.BLUE), 0, 0, "a".getBytes()[0], "b".getBytes()[0], true);
+        for (Player p : province.getInstance().getPlayers()) {
+            itemDisplay.addViewer(p);
+            textDisplay.addViewer(p);
+        }
         this.max = factoryType.getMax(province.getMaterial());
     }
-    private void updateDisplay(){
-        itemDisplay.setItem(itemBuilder(factoryType.getItem(),factoryType.getModelData()[current]));
+
+    private void updateDisplay() {
+        itemDisplay.setItem(itemBuilder(factoryType.getItem(), factoryType.getModelData()[current - 1]));
+        textDisplay.setText(compBuild(current + "", NamedTextColor.BLUE));
     }
-    public boolean canAddFactory(int add){
+
+    public boolean canAddFactory(int add) {
         return current + add <= max;
     }
 
@@ -52,26 +71,32 @@ public class PlaceableFactory implements PlaceableBuilds {
     }
 
     @Override
-    public void onConstruct() {
-        occupier.addPlaceableFactory(this);
-    }
-
-    @Override
     public void onUpgrade(int amount) {
-        if (canAddFactory(amount)){
+        if (!canAddFactory(amount)) {
+            System.out.println("cant upgrade");
             return;
         }
-        current+=amount;
-        if (current <= 0){
+        System.out.println("can upgrade");
+        current += amount;
+        if (current <= 0) {
             itemDisplay.delete();
+            textDisplay.dispose();
         }
         updateDisplay();
     }
 
-    public HashMap<CurrencyTypes, Float> onGenerate(){
+    public int lvl() {
+        return current;
+    }
+
+    public FactoryType getFactoryType() {
+        return factoryType;
+    }
+
+    public HashMap<CurrencyTypes, Float> onGenerate() {
         HashMap<CurrencyTypes, Float> currencyTypes = new HashMap<>();
-        for (int i = 0; i < factoryType.getCurrency().size(); i++){
-            currencyTypes.put(factoryType.getCurrency().get(i),factoryType.getProduction().get(i));
+        for (int i = 0; i < factoryType.getCurrency().size(); i++) {
+            currencyTypes.put(factoryType.getCurrency().get(i), factoryType.getProduction().get(i));
         }
         return currencyTypes;
     }

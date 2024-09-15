@@ -7,12 +7,12 @@ import net.minestom.server.entity.Player;
 public class notplayer extends Command {
     public notplayer() {
         super("!player");
-        setCondition((sender,s)->sender.hasPermission("kill"));
-        setDefaultExecutor((sender,context)->{
-            if (!sender.hasPermission("kill"))return;
+        setCondition((sender, s) -> sender.hasPermission("kill"));
+        setDefaultExecutor((sender, context) -> {
+            if (!sender.hasPermission("kill")) return;
             Player p = (Player) sender;
-            for (Entity e : p.getInstance().getEntities()){
-                if (!(e instanceof Player))e.remove();
+            for (Entity e : p.getInstance().getEntities()) {
+                if (!(e instanceof Player)) e.remove();
             }
         });
     }

@@ -8,26 +8,33 @@ public class Factions {
     private final Country creator;
     private String name;
     private List<Country> members;
-    public Factions(Country creator, String name){
+
+    public Factions(Country creator, String name) {
         this.creator = creator;
         this.name = name;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public Country getCreator(){
+
+    public Country getCreator() {
         return creator;
     }
-    public List<Country> getMembers(){
+
+    public List<Country> getMembers() {
         return members;
     }
-    public void addMember(Country country){
+
+    public void addMember(Country country) {
         members.add(country);
     }
-    public void removeMember(Country country){
+
+    public void removeMember(Country country) {
         members.remove(country);
     }
-    public void rename(String newName){
+
+    public void rename(String newName) {
         name = newName;
     }
 }

@@ -9,12 +9,12 @@ import org.drachens.InventorySystem.GUIManager;
 public class testCMD extends Command {
     public testCMD(GUIManager guiManager) {
         super("test");
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof Player p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof Player p)) {
                 return;
             }
-            guiManager.openGUI(new testInv(),p);
-            for (Team team : MinecraftServer.getTeamManager().getTeams()){
+            guiManager.openGUI(new testInv(), p);
+            for (Team team : MinecraftServer.getTeamManager().getTeams()) {
                 sender.sendMessage(team.getTeamName());
             }
         });

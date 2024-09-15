@@ -8,14 +8,14 @@ public class FlyspeedCMD extends Command {
     public FlyspeedCMD() {
         super("flyspeed");
         var speed = ArgumentType.Float("Flyspeed");
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             sender.sendMessage("Proper usage: /flyspeed <number>");
         });
-        addSyntax((sender,context)->{
-            if (!(sender instanceof Player p)){
+        addSyntax((sender, context) -> {
+            if (!(sender instanceof Player p)) {
                 return;
             }
             p.setFlyingSpeed(context.get(speed));
-        },speed);
+        }, speed);
     }
 }
