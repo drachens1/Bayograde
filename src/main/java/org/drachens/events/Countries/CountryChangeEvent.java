@@ -1,21 +1,27 @@
-package org.drachens.events;
+package org.drachens.events.Countries;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
 
-public class CountryLeaveEvent implements Event, CancellableEvent {
+public class CountryChangeEvent implements Event, CancellableEvent {
+    private final Country joined;
     private final Country left;
     private final Player p;
 
-    public CountryLeaveEvent(Country left, Player p) {
+    public CountryChangeEvent(Country joined, Country left, Player p) {
+        this.joined = joined;
         this.left = left;
         this.p = p;
     }
 
     public Player getP() {
         return p;
+    }
+
+    public Country getJoined() {
+        return joined;
     }
 
     public Country getLeft() {

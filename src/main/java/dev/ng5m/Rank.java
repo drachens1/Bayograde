@@ -3,7 +3,10 @@ package dev.ng5m;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.network.packet.server.play.TeamsPacket;
+import org.drachens.events.RankAddEvent;
+import org.drachens.events.RankRemoveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,6 @@ import java.util.function.Supplier;
 
 public class Rank {
     private final List<UUID> players = new ArrayList<>();
-
     public final Function<Player, Component> displayNameSupplier;
     public final Component prefix;
     public final Component suffix;
@@ -63,13 +65,13 @@ public class Rank {
         for (var viewer : Util.getAllOnlinePlayers()) {
             sendPackets(player.getUsername(), viewer);
         }
+        EventDispatcher.call(new RankAddEvent(player,this));
     }
 
     public void removePlayer(Player player) {
         Util.getAllOnlinePlayers().forEach(this::sendRemovePackets);
 
         this.players.remove(player.getUuid());
+        EventDispatcher.call(new RankRemoveEvent(player,this));
     }
-
-
 }

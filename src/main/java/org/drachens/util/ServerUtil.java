@@ -1,5 +1,6 @@
 package org.drachens.util;
 
+import dev.ng5m.Rank;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -22,7 +23,6 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.inventory.TransactionOption;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.scoreboard.Sidebar;
-import net.minestom.server.scoreboard.Team;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.*;
 import org.drachens.cmd.Dev.Kill.killCMD;
@@ -55,13 +55,16 @@ import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.Provinces.ProvinceManager;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
-import org.drachens.events.CountryChangeEvent;
-import org.drachens.events.CountryJoinEvent;
-import org.drachens.events.CountryLeaveEvent;
+import org.drachens.events.Countries.CountryChangeEvent;
+import org.drachens.events.Countries.CountryJoinEvent;
+import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.NewDay;
+import org.drachens.events.RankAddEvent;
+import org.drachens.events.RankRemoveEvent;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.drachens.Manager.AchievementsManager.addPlayerToAdv;
 import static org.drachens.Manager.AchievementsManager.createAdvancements;
@@ -112,6 +115,7 @@ public class ServerUtil {
         System.out.println("Getting event handler");
         return globalEventHandler;
     }
+    private static HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
 
     public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies, ItemStack[] defaultPlayerItems, List<IdeologyTypes> ideologyTypes, Ideology defaultIdeology, ScoreboardManager scoreboardManager) {
         initSrv();
@@ -158,6 +162,9 @@ public class ServerUtil {
             p.setRespawnPoint(new Pos(0, 1, 0));
         });
 
+        globEHandler.addListener(RankAddEvent.class,e-> playerRanks.get(e.getPlayer()).add(e.getRank()));
+        globEHandler.addListener(RankRemoveEvent.class, e-> playerRanks.get(e.getPlayer()).remove(e.getRank()));
+
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             final Player p = e.getPlayer();
             if (isBanned(p.getUuid())) {
@@ -171,9 +178,12 @@ public class ServerUtil {
                 return;
             }
             loadPermissions(p);
+            playerRanks.put(p,new ArrayList<>());
             getPlayersData(p.getUuid());
             addPlayerToCountryMap(p);
         });
+        Function<Player, Component> displayNameSupplier = Player::getName;
+        Rank r = new Rank(displayNameSupplier,compBuild("cool",NamedTextColor.BLUE),compBuild("cool2",NamedTextColor.BLUE),NamedTextColor.RED);
 
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             Player p = e.getPlayer();
@@ -187,10 +197,8 @@ public class ServerUtil {
 
             worldClassesHashMap.get(p.getInstance()).clientEntsToLoad().loadPlayer(p);
 
-            Team spectator = MinecraftServer.getTeamManager().getTeam("spectator");
-            spectator.addMember(p.getUsername());
-            p.setTeam(spectator);
             p.getInstance().enableAutoChunkLoad(false);
+            r.addPlayer(p);
         });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
@@ -201,15 +209,39 @@ public class ServerUtil {
             playerSave(p.getUuid());
         });
 
-        globEHandler.addListener(PlayerChatEvent.class, e -> {
+        Function<PlayerChatEvent, Component> chatEvent = e -> {
             final Player p = e.getPlayer();
-            String message = e.getMessage();
-            Component prefix = compBuild("bug", NamedTextColor.GRAY);
-            if (p.getTeam() != null) {
-                prefix = p.getTeam().getPrefix();
+            List<Component> components = new ArrayList<>();
+            Country c = getCountryFromPlayer(p);
+            Component prefix;
+            if (c==null){
+                prefix = compBuild("spectator", NamedTextColor.GRAY,TextDecoration.BOLD);
+            }else{
+                prefix = c.getPrefix();
             }
-            final Component a = prefix;
-            e.setChatFormat((sender) -> mergeComp(a, compBuild(p.getUsername() + ": " + message, NamedTextColor.GRAY)));
+            if (playerRanks.get(p)!=null){
+                Rank rank = playerRanks.get(p).getFirst();
+                components.add(rank.prefix);
+                components.add(Component.text(" "));
+                components.add(prefix);
+                components.add(Component.text(" "));
+                components.add(p.getName().color(rank.color));
+                components.add(Component.text(" : ",NamedTextColor.GRAY));
+                components.add(Component.text(e.getMessage(),NamedTextColor.GRAY));
+                components.add(Component.text(" "));
+                components.add(rank.suffix);
+            }else {
+                components.add(prefix);
+                components.add(Component.text(" "));
+                components.add(p.getName());
+                components.add(Component.text(" : ",NamedTextColor.GRAY));
+                components.add(Component.text(e.getMessage(),NamedTextColor.GRAY));
+            }
+            return mergeComp(components);
+        };
+
+        globEHandler.addListener(PlayerChatEvent.class, e -> {
+           e.setChatFormat(chatEvent);
         });
 
         globEHandler.addListener(PlayerCommandEvent.class, e -> {

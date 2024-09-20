@@ -5,22 +5,22 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.item.Material;
-import net.minestom.server.scoreboard.Team;
 import org.drachens.dataClasses.Economics.currency.Cost;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.dataClasses.Provinces.Province;
-import org.drachens.events.CountryChangeEvent;
-import org.drachens.events.CountryJoinEvent;
-import org.drachens.events.CountryLeaveEvent;
+import org.drachens.events.Countries.CountryChangeEvent;
+import org.drachens.events.Countries.CountryJoinEvent;
+import org.drachens.events.Countries.CountryLeaveEvent;
 
 import java.util.*;
 
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
+import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
-public class Country extends Team implements Cloneable{
+public class Country implements Cloneable{
     private final List<Player> players;
     private final HashMap<CurrencyTypes, Currencies> currenciesMap;
     private final List<Material> city = new ArrayList<>();
@@ -44,8 +44,8 @@ public class Country extends Team implements Cloneable{
     private CountryEnums.PreviousWar previousWar;
     private Ideology ideology;
     private boolean elections;
+    private Component prefix;
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies) {
-        super(name);
         this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
         this.currenciesMap = startingCurrencies;
@@ -182,8 +182,6 @@ public class Country extends Team implements Cloneable{
         p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryJoin"), "%country%", this.name)));
         broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryMessages("broadcastedCountryJoin"), "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
-        p.setTeam(this);
-        this.addMember(p.getUsername());
     }
 
     public void removePlayer(Player p, boolean left) {
@@ -193,14 +191,15 @@ public class Country extends Team implements Cloneable{
     }
 
     public void changeCountry(Player p) {
-        Team from = p.getTeam();
+        Country country = getCountryFromPlayer(p);
 
-        if (from instanceof Country country) {
-            if (country.getMembers().contains(p.getUsername())) {
+        if (country != null){
+            if (country.getPlayer().contains(p)) {
                 country.removePlayer(p, false);
             }
             EventDispatcher.call(new CountryChangeEvent(this, country, p));
         }
+
 
         addPlayer(p);
     }
@@ -327,8 +326,23 @@ public class Country extends Team implements Cloneable{
     public void setRelationsStyle(CountryEnums.RelationsStyle relationsStyle){
         this.relationsStyle = relationsStyle;
     }
-
     public CountryEnums.RelationsStyle getRelationsStyle() {
         return relationsStyle;
+    }
+    public void setPrefix(Component prefix){
+        this.prefix = prefix;
+    }
+    public Component getPrefix(){
+        return prefix;
+    }
+    public void sendMessage(Component msg){
+        for (Player p : players){
+            p.sendMessage(msg);
+        }
+    }
+    public void sendActionBar(Component msg){
+        for (Player p : players){
+            p.sendActionBar(msg);
+        }
     }
 }

@@ -4,7 +4,6 @@ import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGener
 import de.articdive.jnoise.pipeline.JNoise;
 import it.unimi.dsi.fastutil.Pair;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -172,7 +171,6 @@ public class MapGeneratorManager {
             Country newCount = createCountry();
             countries.add(newCount);
             countryDataManager.addCountry(newCount);
-            MinecraftServer.getTeamManager().getTeams().add(newCount);
         }
         floodFill(countries);
     }
@@ -201,7 +199,7 @@ public class MapGeneratorManager {
         for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()){
             newCurrencies.put(e.getKey(),e.getValue().clone());
         }
-        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE),block, border,defIdeology);
+        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE),block, border, (Ideology) defIdeology.clone());
     }
 
     public void floodFill(List<Country> countries) {

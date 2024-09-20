@@ -1,15 +1,16 @@
 package org.drachens.dataClasses.Countries;
 
 import it.unimi.dsi.fastutil.Pair;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Ideology implements Cloneable {
+public class Ideology {
     private IdeologyTypes currentIdeology;
     private HashMap<IdeologyTypes, Float> ideologies;
     public Ideology(HashMap<IdeologyTypes, Float> ideologies){
-        this.ideologies = ideologies;
+        this.ideologies = new HashMap<>(ideologies);
     }
     public IdeologyTypes getCurrentIdeology() {
         return currentIdeology;
@@ -28,14 +29,11 @@ public class Ideology implements Cloneable {
     }
 
     public void addIdeology(IdeologyTypes ideology, float percentage){
-        System.out.println(percentage);
-        if (ideologies.containsKey(ideology))percentage+=ideologies.get(ideology);
+        if (ideologies.containsKey(ideology)) percentage+=ideologies.get(ideology);
         if (percentage < 0f){
             percentage = 0;
         }else if (percentage>100f)percentage=100f;
-
         float timesAmount = percentage/100f;
-        System.out.println("Times amount: "+timesAmount);
         for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
             float currentPercentage = entry.getValue();
             ideologies.put(entry.getKey(), currentPercentage * timesAmount);
@@ -43,7 +41,6 @@ public class Ideology implements Cloneable {
         ideologies.put(ideology,percentage);
 
         changeLeadingIdeology();
-        System.out.println(ideologies);
     }
 
     public void changeLeadingIdeology(){
@@ -75,12 +72,7 @@ public class Ideology implements Cloneable {
         }
         currentIdeology = highest.left();
     }
-    @Override
-    protected Object clone()  {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+    public Ideology clone()  {
+        return new Ideology(ideologies);
     }
 }
