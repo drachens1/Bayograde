@@ -16,12 +16,13 @@ public class Util {
         return players;
     }
 
+    public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     public static String randomAlNum(int length) {
         StringBuilder sb = new StringBuilder(length);
 
         var random = new Random();
         for (int i = 0; i < length; i++) {
-            sb.append(random.nextInt(33, 127));
+            sb.append(alnum.charAt(random.nextInt(alnum.length())));
         }
 
         return sb.toString();
