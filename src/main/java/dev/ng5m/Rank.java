@@ -22,7 +22,7 @@ public class Rank {
     public final NamedTextColor color;
     private final String team;
 
-    public Rank(Function<Player, Component> displayNameSupplier, Component prefix, Component suffix, NamedTextColor color) {
+    public Rank(Function<Player, Component> displayNameSupplier, Component prefix, Component suffix, NamedTextColor color, String name) {
         this.displayNameSupplier = displayNameSupplier;
         this.prefix = prefix;
         this.suffix = suffix;

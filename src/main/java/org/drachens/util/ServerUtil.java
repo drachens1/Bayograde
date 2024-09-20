@@ -183,7 +183,7 @@ public class ServerUtil {
             addPlayerToCountryMap(p);
         });
         Function<Player, Component> displayNameSupplier = Player::getName;
-        Rank r = new Rank(displayNameSupplier,compBuild("cool",NamedTextColor.BLUE),compBuild("cool2",NamedTextColor.BLUE),NamedTextColor.RED);
+        Rank r = new Rank(displayNameSupplier,compBuild("cool",NamedTextColor.BLUE),compBuild("cool2",NamedTextColor.BLUE),NamedTextColor.RED, "cool");
 
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             Player p = e.getPlayer();
