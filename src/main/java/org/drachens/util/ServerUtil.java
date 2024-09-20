@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.Pos;
@@ -27,6 +28,9 @@ import org.drachens.Manager.*;
 import org.drachens.cmd.Dev.Kill.killCMD;
 import org.drachens.cmd.Dev.ListCMD;
 import org.drachens.cmd.Dev.Permissions.PermissionsCMD;
+import org.drachens.cmd.Dev.debug.CountryTypes.CountryHistoryCMD;
+import org.drachens.cmd.Dev.debug.CountryTypes.CountryTypesCMD;
+import org.drachens.cmd.Dev.debug.countryDebug.CountryDebugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
 import org.drachens.cmd.Dev.help.HelpCMD;
 import org.drachens.cmd.Dev.operator;
@@ -41,6 +45,8 @@ import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.country.CountryCMD;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.Ideology;
+import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.factory.FactoryType;
@@ -107,7 +113,7 @@ public class ServerUtil {
         return globalEventHandler;
     }
 
-    public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies, ItemStack[] defaultPlayerItems) {
+    public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies, ItemStack[] defaultPlayerItems, List<IdeologyTypes> ideologyTypes, Ideology defaultIdeology, ScoreboardManager scoreboardManager) {
         initSrv();
         setup();
         //Create the instance(world)
@@ -124,8 +130,10 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
 
-        //Mojang auth so online mode
+        //VELOCITAY
+        //VelocityProxy.enable("uZEnvlMqDPRr"); //TODO Change this to not be outed when adding it to the server
         MojangAuth.init();
+
 
         setupPerms();
         createAdvancements();
@@ -133,11 +141,11 @@ public class ServerUtil {
             instance.createInitializeWorldBorderPacket();
             instance.setWeather(Weather.CLEAR);
             instance.setTime(0);
-            CountryDataManager countryDataManager = new CountryDataManager(instance, new ArrayList<>());
+            CountryDataManager countryDataManager = new CountryDataManager(instance, new ArrayList<>(),ideologyTypes,defaultIdeology);
             worldClassesHashMap.put(instance, new WorldClasses(
                             new YearManager(0, 10, (long) 1000.0, instance),
                             countryDataManager,
-                            new MapGeneratorManager(instance, provinceManager, countryDataManager, countries, defaultCurrencies),
+                            new MapGeneratorManager(instance, provinceManager, countryDataManager, countries, defaultCurrencies,defaultIdeology),
                             new ClientEntsToLoad()
                     )
             );
@@ -269,29 +277,14 @@ public class ServerUtil {
         globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
             week[0]++;
-            if (!(week[0] >= 7))return;
-            week[0] =0;
+            if (!(week[0] >= 7))for (Country country : countryDataManager.getCountries())country.calculateIncrease();
+            week[0]=0;
+            for (Player p : e.getWorld().getPlayers()){
+                scoreboardManager.update(p);
+            }
             for (Country country : countryDataManager.getCountries()) {
-                Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.BLUE));
-                sb.createLine(new Sidebar.ScoreboardLine(
-                        "title",
-                        compBuild("Currencies: ", NamedTextColor.BLUE),
-                        0
-                ));
+                Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
                 int i = 0;
-                for (Map.Entry<CurrencyTypes, Currencies> entry : country.getCurrenciesMap().entrySet()) {
-                    ArrayList<Component> components = new ArrayList<>();
-                    components.add(entry.getKey().getName());
-                    components.add(compBuild(" : ", NamedTextColor.BLUE));
-                    components.add(compBuild(entry.getValue().getAmount() + "", NamedTextColor.BLUE));
-                    components.add(entry.getKey().getSymbol());
-                    sb.createLine(new Sidebar.ScoreboardLine(
-                            i + "",
-                            mergeComp(components),
-                            i
-                    ));
-                    i++;
-                }
                 HashMap<FactoryType, Integer> num = new HashMap<>();
                 for (PlaceableFactory placeableFactory : country.getPlaceableFactories()) {
                     if (num.containsKey(placeableFactory.getFactoryType())) {
@@ -317,7 +310,44 @@ public class ServerUtil {
                 for (Player p : country.getPlayer()) {
                     sb.addViewer(p);
                 }
-                country.calculateIncrease();
+                for (Map.Entry<IdeologyTypes, Float> entry : country.getIdeology().getIdeologies().entrySet()){
+                    ArrayList<Component> components = new ArrayList<>();
+                    components.add(entry.getKey().getName());
+                    components.add(compBuild(" : ", NamedTextColor.BLUE));
+                    components.add(compBuild(entry.getValue() + "", NamedTextColor.BLUE));
+                    sb.createLine(new Sidebar.ScoreboardLine(
+                            i + "",
+                            mergeComp(components),
+                            i
+                    ));
+                    i++;
+                }
+                sb.createLine(new Sidebar.ScoreboardLine(
+                        "ideologies",
+                        compBuild("Ideologies: ", NamedTextColor.BLUE),
+                        i
+                ));
+                i++;
+                for (Map.Entry<CurrencyTypes, Currencies> entry : country.getCurrenciesMap().entrySet()) {
+                    ArrayList<Component> components = new ArrayList<>();
+                    components.add(entry.getKey().getName());
+                    components.add(compBuild(" : ", NamedTextColor.BLUE));
+                    components.add(compBuild(entry.getValue().getAmount() + "", NamedTextColor.BLUE));
+                    components.add(entry.getKey().getSymbol());
+                    sb.createLine(new Sidebar.ScoreboardLine(
+                            i + "",
+                            mergeComp(components),
+                            i
+                    ));
+                    i++;
+                }
+
+                sb.createLine(new Sidebar.ScoreboardLine(
+                        "title",
+                        compBuild("Currencies: ", NamedTextColor.BLUE),
+                        i
+                ));
+                i++;
             }
         });
 
@@ -338,6 +368,9 @@ public class ServerUtil {
         MinecraftServer.getCommandManager().register(new FlyspeedCMD());
         MinecraftServer.getCommandManager().register(new CountryCMD());
         MinecraftServer.getCommandManager().register(new TeleportCMD());
+        MinecraftServer.getCommandManager().register(new CountryTypesCMD());
+        MinecraftServer.getCommandManager().register(new CountryHistoryCMD());
+        MinecraftServer.getCommandManager().register(new CountryDebugCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -346,8 +379,6 @@ public class ServerUtil {
         var schedular = MinecraftServer.getSchedulerManager();
         schedular.buildShutdownTask(() -> {
             System.out.println("Server shutting down");
-            instCon.saveChunksToStorage();
-            instMan.getInstances().forEach(Instance::saveChunksToStorage);
             shutdown();
         });
 

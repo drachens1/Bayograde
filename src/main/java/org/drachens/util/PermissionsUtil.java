@@ -25,6 +25,7 @@ public class PermissionsUtil {
         operator.add(new Permission("kill"));
         operator.add(new Permission("editPermissions"));
         operator.add(new Permission("gamemode"));
+        operator.add(new Permission("debug"));
     }
 
     public static void playerOp(Player p) {

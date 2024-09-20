@@ -7,6 +7,7 @@ public class CountryCMD extends Command {
         super("country", "c");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /<join|info|members|leader> <country>"));
         addSubcommand(new JoinCMD());
+        addSubcommand(new Tp());
         addSubcommand(new Info());
         addSubcommand(new Members());
         addSubcommand(new Leader());

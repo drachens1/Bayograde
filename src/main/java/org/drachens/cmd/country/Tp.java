@@ -9,10 +9,10 @@ import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
-public class JoinCMD extends Command {
-    public JoinCMD() {
-        super("join");
-        setDefaultExecutor((sender,context)-> sender.sendMessage("Default usage: /country join <country>"));
+public class Tp extends Command {
+    public Tp() {
+        super("tp");
+        setDefaultExecutor((sender,context)-> sender.sendMessage("Default usage: /country tp <country>"));
         var countries = ArgumentType.String("Countries");
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {
@@ -30,9 +30,7 @@ public class JoinCMD extends Command {
                 return;
             }
             Country country = getWorldClasses(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            country.changeCountry(p);
+            p.teleport(country.getCapital().getPos().withY(1));
         }, countries);
     }
-
 }
-

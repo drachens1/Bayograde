@@ -3,18 +3,24 @@ package org.drachens.Manager;
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator;
 import de.articdive.jnoise.pipeline.JNoise;
 import it.unimi.dsi.fastutil.Pair;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.CountryEnums;
+import org.drachens.dataClasses.Countries.Ideology;
+import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.Provinces.ProvinceManager;
+import org.drachens.dataClasses.territories.Continent;
 
 import java.util.*;
 
+import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.ServerUtil.addChunk;
 
 public class MapGeneratorManager {
@@ -25,14 +31,33 @@ public class MapGeneratorManager {
     private final List<Pair<Material, Material>> borderPlusBlock = new ArrayList<>();
     private final HashMap<CurrencyTypes, Currencies> currenciesHashMap;
     private final CountryDataManager countryDataManager;
-    int gMax = 4;
-    int rgMax = 2;
-    int yMax = 2;
-    int lMax = 2;
-    int grMax = 2;
-
-    public MapGeneratorManager(Instance instance, ProvinceManager provinceManager, CountryDataManager countryDataManager, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies) {
+    public final List<Continent> continents = new ArrayList<>();
+    private void setupHashmaps(){
+        int goldMax = 3;
+        int rgMax2 = 2;
+        int yMax2 = 2;
+        int lMax2 = 2;
+        int grMax2 = 2;
+        for (CountryEnums.Type e : CountryEnums.Type.values()){
+            System.out.println(e.name());
+            gMax.put(e,goldMax);
+            goldMax++;
+            rgMax.put(e,rgMax2);
+            yMax.put(e,yMax2);
+            lMax.put(e,lMax2);
+            grMax.put(e,grMax2);
+        }
+    }
+    HashMap<CountryEnums.Type, Integer> gMax = new HashMap<>(); //og = 4
+    HashMap<CountryEnums.Type, Integer> rgMax = new HashMap<>(); //og = 2
+    HashMap<CountryEnums.Type, Integer> yMax = new HashMap<>(); //og = 2
+    HashMap<CountryEnums.Type, Integer> lMax = new HashMap<>(); //og = 2
+    HashMap<CountryEnums.Type, Integer> grMax = new HashMap<>(); //og = 2
+    private final Ideology defIdeology;
+    public MapGeneratorManager(Instance instance, ProvinceManager provinceManager, CountryDataManager countryDataManager, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies, Ideology defIdeology) {
+        setupHashmaps();
         this.countryDataManager = countryDataManager;
+        this.defIdeology = defIdeology;
         currenciesHashMap = defaultCurrencies;
         JNoise baseNoise = JNoise.newBuilder()
                 .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(new Random().nextInt()).build())
@@ -176,17 +201,17 @@ public class MapGeneratorManager {
         for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()){
             newCurrencies.put(e.getKey(),e.getValue().clone());
         }
-        return new Country(newCurrencies, countryName, block, border);
+        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE),block, border,defIdeology);
     }
 
     public void floodFill(List<Country> countries) {
-        Queue<Pos>[] factionQueues = new Queue[countries.size()];
+        Queue<Pos>[] countryQueues = new Queue[countries.size()];
         Set<Pos> visited = new HashSet<>();
 
         for (int i = 0; i < countries.size(); i++) {
-            factionQueues[i] = new LinkedList<>();
+            countryQueues[i] = new LinkedList<>();
             Pos seedPos = chooseStartingPos();
-            factionQueues[i].add(seedPos);
+            countryQueues[i].add(seedPos);
             Province seedProvince = provinceManager.getProvince(seedPos);
             if (seedProvince != null && seedProvince.getOccupier() == null) {
                 seedProvince.initialOccupier(countries.get(i));
@@ -201,8 +226,8 @@ public class MapGeneratorManager {
             anyQueueHadExpansion = false;
 
             for (int i = 0; i < countries.size(); i++) {
-                if (!factionQueues[i].isEmpty()) {
-                    Pos currentPos = factionQueues[i].poll();
+                if (!countryQueues[i].isEmpty()) {
+                    Pos currentPos = countryQueues[i].poll();
                     List<Pos> neighbors = getNeighbors(currentPos);
 
                     for (Pos neighbor : neighbors) {
@@ -211,7 +236,7 @@ public class MapGeneratorManager {
                             if (neighborProvince != null && neighborProvince.getOccupier() == null) {
                                 neighborProvince.initialOccupier(countries.get(i));
                                 visited.add(neighbor);
-                                factionQueues[i].add(neighbor);
+                                countryQueues[i].add(neighbor);
                                 anyQueueHadExpansion = true;
                             }
                         }
@@ -219,6 +244,7 @@ public class MapGeneratorManager {
                 }
             }
         } while (anyQueueHadExpansion);
+        storiesGenerate(countries);
         borderScan();
         generateCities(countries);
     }
@@ -255,30 +281,29 @@ public class MapGeneratorManager {
             }
         }
     }
-
+    Pos[] directions = {
+            new Pos(-1, 0, 0), // West
+            new Pos(1, 0, 0),  // East
+            new Pos(0, 0, -1), // North
+            new Pos(0, 0, 1),   // South
+            new Pos(0, 0, 0) // current
+    };
     public void updateBorders(Pos loc) {
-        Pos[] directions = {
-                new Pos(-1, 0, 0), // West
-                new Pos(1, 0, 0),  // East
-                new Pos(0, 0, -1), // North
-                new Pos(0, 0, 1),   // South
-                new Pos(0, 0, 0) // current
-        };
         for (Pos direction : directions) {
             Pos newLoc = loc.add(direction);
             change(newLoc);
         }
     }
 
+    int[][] directions2 = {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
+    };
+
     void change(Pos loc) {
         Province province = provinceManager.getProvince(loc);
         if (province == null || province.isCity()) return;
         Country country = province.getOccupier();
         if (country != null) {
-            int[][] directions2 = {
-                    {-1, 0}, {1, 0}, {0, -1}, {0, 1},
-            };
-
             for (int[] direction2 : directions2) {
                 int offsetX2 = direction2[0];
                 int offsetY2 = direction2[1];
@@ -297,11 +322,11 @@ public class MapGeneratorManager {
 
     private void generateCities(List<Country> countries) {
         for (Country country : countries) {
-            cityTypeGen(160, 5, gMax, country);
-            cityTypeGen(180, 4, rgMax, country);
-            cityTypeGen(200, 3, yMax, country);
-            cityTypeGen(220, 2, lMax, country);
-            cityTypeGen(240, 1, grMax, country);
+            cityTypeGen(160, 5, gMax.get(country.getType()), country);
+            cityTypeGen(180, 4, rgMax.get(country.getType()), country);
+            cityTypeGen(200, 3, yMax.get(country.getType()), country);
+            cityTypeGen(220, 2, lMax.get(country.getType()), country);
+            cityTypeGen(240, 1, grMax.get(country.getType()), country);
         }
     }
 
@@ -317,5 +342,196 @@ public class MapGeneratorManager {
                 country.addCity(p);
             }
         }
+    }
+    private void storiesGenerate(List<Country> countries){
+        List<Integer> size = new ArrayList<>();
+        for (Country country : countries){
+            size.add(country.getOccupies().size());
+        }
+        float medianSize = calculateTopPercent(size,0.2f);
+        for (int b = 0; b < size.size(); b++){
+            if (size.get(b)>=medianSize){
+                countries.get(b).setType(CountryEnums.Type.major);
+            } else {
+                countries.get(b).setType(CountryEnums.Type.minor);
+            }
+        }
+        createContinent(countries,setSuperPower(countries));
+    }
+
+    public static Integer calculateTopPercent(List<Integer> numbers, float top) {
+        numbers.sort(Collections.reverseOrder());
+
+        int count = (int) Math.ceil(numbers.size() * top);
+
+        return numbers.get(count-1);
+    }
+    private Country setSuperPower(List<Country> countries){
+        Country biggest = countries.getFirst();
+        for (Country country : countries){
+            if (country.getOccupies().size()>biggest.getOccupies().size())biggest=country;
+        }
+        biggest.setType(CountryEnums.Type.superPower);
+        return biggest;
+    }
+    int maxCountries = 10;
+    private IdeologyTypes winnerOfThePrevWar;
+    private void createContinent(List<Country> countries, Country superPower){
+        winnerOfThePrevWar = countryDataManager.getIdeologyTypes().get(new Random().nextInt(0,countryDataManager.getIdeologyTypes().size()));
+        Continent mainContinent = new Continent();
+        continents.add(mainContinent);
+        Queue<Pos> continentQueue = new LinkedList<>();
+        Set<Pos> visited = new HashSet<>();
+
+        Pos seedPos = superPower.getCapital().getPos();
+        continentQueue.add(seedPos);
+        Province seedProvince = provinceManager.getProvince(seedPos);
+        mainContinent.addProvince(seedProvince);
+
+
+        boolean anyQueueHadExpansion;
+        int currentInCont = 0;
+        do {
+            anyQueueHadExpansion = false;
+
+            for (int i = 0; i < countries.size(); i++) {
+                if (!continentQueue.isEmpty()) {
+                    Pos currentPos = continentQueue.poll();
+                    List<Pos> neighbors = getNeighbors(currentPos);
+
+                    for (Pos neighbor : neighbors) {
+                        if (!visited.contains(neighbor) && landHashmap.containsKey(neighbor)) {
+                            Province neighborProvince = provinceManager.getProvince(neighbor);
+                            if (neighborProvince != null && neighborProvince.getOccupier() != null) {
+                                mainContinent.addProvince(neighborProvince);
+                                if (!mainContinent.getCountries().contains(neighborProvince.getOccupier())){
+                                    if (currentInCont >= maxCountries) break;
+                                    mainContinent.addCountry(neighborProvince.getOccupier());
+                                    currentInCont++;
+                                }
+                                visited.add(neighbor);
+                                continentQueue.add(neighbor);
+                                anyQueueHadExpansion = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } while (anyQueueHadExpansion);
+
+        for (Country country : countries){
+            country.getIdeology().changeLeadingIdeology();
+            if (country.getType().equals(CountryEnums.Type.major)){
+                historyAssignMajor(country);
+            }
+            else if (country.getType().equals(CountryEnums.Type.minor)) {
+                historyAssignMinors(country);
+            }
+            ideologyBoost(country);
+        }
+        historyAssignSuperPowers(superPower);
+        superPower.getIdeology().changeLeadingIdeology();
+    }
+    private void historyAssignMajor(Country country){
+        if (new Random().nextBoolean()){
+            country.setHistory(CountryEnums.History.colonialPower);
+        } else {
+            country.setHistory(CountryEnums.History.upAndComing);
+        }
+        leadershipStyle(country);
+        int num2 = new Random().nextInt(0,3);
+        switch (num2){
+            case 0:
+                country.setPreviousWar(CountryEnums.PreviousWar.winner);
+                break;
+            case 1:
+                country.setPreviousWar(CountryEnums.PreviousWar.loser);
+                country.setFocuses(CountryEnums.Focuses.war);
+                break;
+            case 2:
+                country.setPreviousWar(CountryEnums.PreviousWar.neutral);
+                break;
+        }
+        country.setElections(new Random().nextBoolean());
+        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)){
+            if (new Random().nextBoolean()){
+                country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
+            }else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        }else {
+            if (new Random().nextBoolean()){
+                country.setRelationsStyle(CountryEnums.RelationsStyle.friendly);
+            }else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        }
+    }
+
+    private void historyAssignMinors(Country country) {
+        if (new Random().nextBoolean()){
+            country.setHistory(CountryEnums.History.colony);
+        }else {
+            country.setHistory(CountryEnums.History.previousColonies);
+        }
+        leadershipStyle(country);
+        int num2 = new Random().nextInt(0,3);
+        switch (num2){
+            case 0:
+                country.setPreviousWar(CountryEnums.PreviousWar.winner);
+                break;
+            case 1:
+                country.setPreviousWar(CountryEnums.PreviousWar.loser);
+                country.setFocuses(CountryEnums.Focuses.war);
+                break;
+            case 2:
+                country.setPreviousWar(CountryEnums.PreviousWar.neutral);
+                break;
+        }
+        country.setElections(new Random().nextBoolean());
+        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)){
+            if (new Random().nextBoolean()){
+                country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
+            }else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        }else {
+            if (new Random().nextBoolean()){
+                country.setRelationsStyle(CountryEnums.RelationsStyle.friendly);
+            }else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        }
+    }
+
+    private void historyAssignSuperPowers(Country country){
+        leadershipStyle(country);
+        country.setHistory(CountryEnums.History.colonialPower);
+        country.setPreviousWar(CountryEnums.PreviousWar.winner);
+        country.setElections(new Random().nextBoolean());
+        country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+    }
+    private void leadershipStyle(Country country){
+        int num2 = new  Random().nextInt(0,5);
+        switch (num2){
+            case 0:
+                country.setFocuses(CountryEnums.Focuses.economy);
+                break;
+            case 1:
+                country.setFocuses(CountryEnums.Focuses.diverse);
+                break;
+            case 2:
+                country.setFocuses(CountryEnums.Focuses.military);
+                break;
+            case 3:
+                country.setFocuses(CountryEnums.Focuses.stability);
+                break;
+            case 4:
+                country.setFocuses(CountryEnums.Focuses.war);
+                break;
+        }
+    }
+    private void ideologyBoost(Country country){
+        country.getIdeology().addIdeology(winnerOfThePrevWar,new Random().nextFloat(0,50f));
     }
 }

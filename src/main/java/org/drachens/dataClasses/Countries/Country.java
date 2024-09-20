@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Countries;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -19,7 +20,7 @@ import java.util.*;
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
 
-public class Country extends Team {
+public class Country extends Team implements Cloneable{
     private final List<Player> players;
     private final HashMap<CurrencyTypes, Currencies> currenciesMap;
     private final List<Material> city = new ArrayList<>();
@@ -28,24 +29,34 @@ public class Country extends Team {
     private List<Province> occupies;
     private List<Province> cities;
     private String name;
+    private Component nameComponent;
     private Material block;
     private Material border;
     private Province capital;
     private float capitulationPoints;
     private float maxCapitulationPoints;
     private boolean capitulated = false;
-    private List<Country> wars = new ArrayList<>();
-    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Material block, Material border) {
+    private final List<Country> wars = new ArrayList<>();
+    private CountryEnums.Type type;
+    private CountryEnums.RelationsStyle relationsStyle;
+    private CountryEnums.History history;
+    private CountryEnums.Focuses focuses;
+    private CountryEnums.PreviousWar previousWar;
+    private Ideology ideology;
+    private boolean elections;
+    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies) {
         super(name);
         this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
         this.currenciesMap = startingCurrencies;
+        this.nameComponent = nameComponent;
         this.name = name;
         this.setPrefix(compBuild(name, NamedTextColor.BLUE));
         this.block = block;
         this.border = border;
         this.players = new ArrayList<>();
         this.cities = new ArrayList<>();
+        this.ideology = (Ideology) defaultIdeologies.clone();
         Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
                 Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
         city.addAll(Arrays.stream(tempCities).toList());
@@ -135,7 +146,12 @@ public class Country extends Team {
     public void setName(String name) {
         this.name = name;
     }
-
+    public Component getNameComponent() {
+        return nameComponent;
+    }
+    public void setName(Component name) {
+        this.nameComponent = name;
+    }
     public Material getBlock() {
         return block;
     }
@@ -253,5 +269,66 @@ public class Country extends Team {
     }
     public boolean canMinusCost(Cost cost){
         return currenciesMap.containsKey(cost.getCurrencyType()) && currenciesMap.get(cost.getCurrencyType()).getAmount()>cost.getAmount();
+    }
+    public void setType(CountryEnums.Type newType){
+        type = newType;
+    }
+    public CountryEnums.Type getType(){
+        return type;
+    }
+    public void setHistory(CountryEnums.History history){
+        this.history = history;
+    }
+    public CountryEnums.History getHistory(){
+        return history;
+    }
+
+    public Ideology getIdeology() {
+        return ideology;
+    }
+    public void setIdeology(Ideology ideology){
+        this.ideology= (Ideology) ideology.clone();
+    }
+    @Override
+    protected Object clone()  {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public List<Country> getWars(){
+        return wars;
+    }
+    public void addWar(Country country){
+        wars.add(country);
+    }
+    public void removeWar(Country country){
+        wars.remove(country);
+    }
+    public void setElections(Boolean choice){
+        this.elections = choice;
+    }
+    public boolean getElections(){
+        return elections;
+    }
+    public void setFocuses(CountryEnums.Focuses f){
+        this.focuses = f;
+    }
+    public CountryEnums.Focuses getFocuses(){
+        return focuses;
+    }
+    public void setPreviousWar(CountryEnums.PreviousWar p){
+        this.previousWar = p;
+    }
+    public CountryEnums.PreviousWar getPreviousWar(){
+        return previousWar;
+    }
+    public void setRelationsStyle(CountryEnums.RelationsStyle relationsStyle){
+        this.relationsStyle = relationsStyle;
+    }
+
+    public CountryEnums.RelationsStyle getRelationsStyle() {
+        return relationsStyle;
     }
 }

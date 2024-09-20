@@ -45,7 +45,7 @@ public class ReplyCMD extends Command {
         p.sendMessage(mergeComp(toComp));
         toComp.clear();
         toComp.add(compBuild("From ", NamedTextColor.GOLD, TextDecoration.BOLD));
-        toComp.add(compBuild(to.getUsername(), NamedTextColor.GOLD));
+        toComp.add(compBuild(p.getUsername(), NamedTextColor.GOLD));
         toComp.add(compBuild(" : ", NamedTextColor.GOLD));
         toComp.add(compBuild(msg, NamedTextColor.GOLD));
         to.sendMessage(mergeComp(toComp));
