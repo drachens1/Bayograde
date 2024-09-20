@@ -8,16 +8,20 @@ import net.minestom.server.network.packet.server.play.TeamsPacket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public abstract class Rank {
+public class Rank {
     private final List<UUID> players = new ArrayList<>();
 
+    public final Function<Player, Component> displayNameSupplier;
     public final Component prefix;
     public final Component suffix;
     public final NamedTextColor color;
     private final String team;
 
-    public Rank(Component prefix, Component suffix, NamedTextColor color) {
+    public Rank(Function<Player, Component> displayNameSupplier, Component prefix, Component suffix, NamedTextColor color) {
+        this.displayNameSupplier = displayNameSupplier;
         this.prefix = prefix;
         this.suffix = suffix;
         this.color = color;
@@ -33,7 +37,7 @@ public abstract class Rank {
 
         conn.sendPacket(new TeamsPacket(this.team,
                 new TeamsPacket.CreateTeamAction(
-                        null, (byte) 0, TeamsPacket.NameTagVisibility.ALWAYS, TeamsPacket.CollisionRule.ALWAYS,
+                        displayNameSupplier.apply(player), (byte) 0, TeamsPacket.NameTagVisibility.ALWAYS, TeamsPacket.CollisionRule.ALWAYS,
                         this.color, this.prefix, this.suffix, List.of()
                 )));
 
