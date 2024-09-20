@@ -3,6 +3,8 @@ package dev.ng5m;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,21 @@ public class Util {
         var random = new Random();
         for (int i = 0; i < length; i++) {
             sb.append(alnum.charAt(random.nextInt(alnum.length())));
+        }
+
+        return sb.toString();
+    }
+
+    public static String readFile(Path path) {
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            var lines = Files.readAllLines(path);
+            for (var line : lines) {
+                sb.append(line);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return sb.toString();
