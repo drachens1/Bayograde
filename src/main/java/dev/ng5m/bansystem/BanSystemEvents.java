@@ -6,13 +6,13 @@ import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.events.EventHandlerProviderManager;
 import net.minestom.server.event.player.AsyncPlayerPreLoginEvent;
 
-public class BanSystemEvents extends EventHandlerProvider {
+public class BanSystemEvents implements EventHandlerProvider {
 
     static {
         EventHandlerProviderManager.registerProvider(BanSystemEvents.class);
     }
 
-    @EventHandler(clazz = AsyncPlayerPreLoginEvent.class)
+    @EventHandler
     public static void onPreLogin(AsyncPlayerPreLoginEvent event) {
         var player = event.getPlayer();
 

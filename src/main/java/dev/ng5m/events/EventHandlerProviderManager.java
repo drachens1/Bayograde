@@ -20,13 +20,15 @@ public final class EventHandlerProviderManager {
             if (!(((mods & Modifier.STATIC) != 0) && ((mods & Modifier.PRIVATE) == 0))) continue;
             System.out.println(method.getName());
             if (!method.isAnnotationPresent(EventHandler.class)) continue;
-            var annotation = method.getAnnotation(EventHandler.class);
+//            var annotation = method.getAnnotation(EventHandler.class);
             var args = method.getParameterTypes();
             if (args.length != 1) continue;
 
-            if (!Event.class.isAssignableFrom(annotation.clazz())) continue;
+            if (!Event.class.isAssignableFrom(args[0])) continue;
 
-            MinecraftServer.getGlobalEventHandler().addListener(annotation.clazz(), event -> {
+            var wrapper = new Wrapper<>((Class<? extends Event>) args[0]);
+
+            MinecraftServer.getGlobalEventHandler().addListener(wrapper.eventClass(), event -> {
                 try {
                     method.invoke(null, event);
                 } catch (Exception e) {
@@ -48,6 +50,10 @@ public final class EventHandlerProviderManager {
         registerProviders(
                 BanSystemEvents.class
         );
+    }
+
+    private record Wrapper<E extends Event>(Class<E> eventClass) {
+
     }
 
 }

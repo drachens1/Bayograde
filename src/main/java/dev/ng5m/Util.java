@@ -1,5 +1,6 @@
 package dev.ng5m;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 
@@ -44,5 +45,9 @@ public class Util {
         }
 
         return sb.toString();
+    }
+
+    public static void broadcast(Component message) {
+        MinecraftServer.getInstanceManager().getInstances().forEach(instance -> instance.sendMessage(message));
     }
 }
