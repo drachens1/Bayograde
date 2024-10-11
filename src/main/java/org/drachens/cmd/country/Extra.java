@@ -17,7 +17,6 @@ public class Extra extends Command {
             }
             String[] a = context.getInput().split(" ");
             getSuggestionsBasedOnInput(suggestion, a[2], p.getInstance()).getEntries();
-            System.out.println("After entry");
         });
 
         addSyntax((sender, context) -> {

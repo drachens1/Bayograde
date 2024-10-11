@@ -1,15 +1,21 @@
 package org.drachens.dataClasses.Countries;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.item.Material;
-import org.drachens.dataClasses.Economics.currency.Cost;
+import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Currencies;
+import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
+import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.territories.Region;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
@@ -21,6 +27,7 @@ import static org.drachens.util.Messages.broadcast;
 import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class Country implements Cloneable{
+    private Leader leader;
     private final List<Player> players;
     private final HashMap<CurrencyTypes, Currencies> currenciesMap;
     private final List<Material> city = new ArrayList<>();
@@ -42,10 +49,20 @@ public class Country implements Cloneable{
     private CountryEnums.History history;
     private CountryEnums.Focuses focuses;
     private CountryEnums.PreviousWar previousWar;
-    private Ideology ideology;
-    private boolean elections;
+    private final Ideology ideology;
+    private final Election elections;
     private Component prefix;
-    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies) {
+    private Component description;
+    private float maxBoost = 1f;
+    private float capitulationBoostPercentage = 1f;
+    private float stabilityBaseBoost = 0f;
+    private float stabilityGainBoost = 0f;
+    private final List<Region> region = new ArrayList<>();
+    private final List<Modifier> modifiers = new ArrayList<>();
+    private final HashMap<CurrencyTypes, Float> economyBoosts = new HashMap<>();
+    private Country overlord = null;
+    private List<Country> puppets = new ArrayList<>();
+    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election) {
         this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
         this.currenciesMap = startingCurrencies;
@@ -56,10 +73,36 @@ public class Country implements Cloneable{
         this.border = border;
         this.players = new ArrayList<>();
         this.cities = new ArrayList<>();
-        this.ideology = (Ideology) defaultIdeologies.clone();
+        this.ideology = defaultIdeologies.clone(this);
+        this.elections = election;
         Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
                 Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
         city.addAll(Arrays.stream(tempCities).toList());
+    }
+    public void addModifier(Modifier modifier){
+        modifiers.add(modifier);
+        this.maxBoost+=modifier.getMaxBoost();
+        this.capitulationBoostPercentage+=modifier.getCapitulationBoostPercentage();
+        this.stabilityBaseBoost+=modifier.getStabilityBaseBoost();
+        this.stabilityGainBoost+=modifier.getStabilityGainBoost();
+        modifier.getCurrencyBoostList().forEach(this::addBoost);
+    }
+
+    public void removeModifier(Modifier modifier){
+        modifiers.remove(modifier);
+        this.maxBoost-=modifier.getMaxBoost();
+        this.capitulationBoostPercentage-=modifier.getCapitulationBoostPercentage();
+        this.stabilityBaseBoost-=modifier.getStabilityBaseBoost();
+        this.stabilityGainBoost-=modifier.getStabilityGainBoost();
+        modifier.getCurrencyBoostList().forEach(this::removeBoost);
+    }
+
+    public List<Modifier> getModifiers(){
+        return modifiers;
+    }
+
+    public boolean hasModifier(Modifier modifier){
+        return modifiers.contains(modifier);
     }
 
     public List<Province> getCores() {
@@ -86,7 +129,7 @@ public class Country implements Cloneable{
             points += this.city.indexOf(city.getMaterial());
         }
         maxCapitulationPoints = points;
-        capitulationPoints = points;
+        capitulationPoints = 0;
     }
 
     public List<Province> getCities() {
@@ -103,7 +146,8 @@ public class Country implements Cloneable{
         this.cities.add(city);
     }
     public void removeCity(Province city) {
-        this.capitulationPoints-=this.city.indexOf(city.getMaterial());
+        System.out.println(capitulationPoints+" + "+this.city.indexOf(city.getMaterial()));
+        this.capitulationPoints+=this.city.indexOf(city.getMaterial());
         this.cities.remove(city);
     }
 
@@ -215,7 +259,8 @@ public class Country implements Cloneable{
                 broadcast(mergeComp(getPrefixes("country"),compBuild(attacker.name+" has seized the "+name+" capital",NamedTextColor.RED)), capital.getInstance());
             }
         }
-        if (capitulationPoints <= maxCapitulationPoints*0.8 && !capitulated){
+        System.out.println(capitulationPoints+" : "+maxCapitulationPoints*(0.8*capitulationBoostPercentage)+" : "+0.8*capitulationBoostPercentage);
+        if (capitulationPoints >= maxCapitulationPoints*(0.8*capitulationBoostPercentage) && !capitulated){
             capitulated = true;
             capitulate(attacker);
         }
@@ -236,20 +281,32 @@ public class Country implements Cloneable{
     public void calculateIncrease() {
         HashMap<CurrencyTypes, Float> additionAmount = new HashMap<>();
         for (PlaceableFactory placeableFactory : placeableFactories) {
-            HashMap<CurrencyTypes, Float> newAdd = placeableFactory.onGenerate();
-            for (Map.Entry<CurrencyTypes, Float> e : newAdd.entrySet()) {
+            for (Map.Entry<CurrencyTypes, Float> e : placeableFactory.onGenerate().entrySet()) {
+                float current = e.getValue()*economyBoosts.get(e.getKey());
                 if (additionAmount.containsKey(e.getKey())) {
-                    float current = additionAmount.get(e.getKey());
-                    current += e.getValue();
+                    current += additionAmount.get(e.getKey());
                     additionAmount.put(e.getKey(), current);
                 } else {
-                    additionAmount.put(e.getKey(), e.getValue());
+                    additionAmount.put(e.getKey(), current);
                 }
             }
         }
+        boolean isPuppet = overlord!=null;
         for (Map.Entry<CurrencyTypes, Currencies> current : currenciesMap.entrySet()){
             if (additionAmount.containsKey(current.getKey())){
                 float addition = additionAmount.get(current.getKey());
+                if (isPuppet){
+                    float overlordPayment = addition*0.2f;
+                    overlord.addPayment(new Payment(current.getKey(),overlordPayment,Component.text()
+                            .append(Component.text("Your puppet: ",NamedTextColor.BLUE))
+                            .append(nameComponent)
+                            .append(Component.text("Has transferred you ",NamedTextColor.BLUE))
+                            .append(Component.text(overlordPayment,NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .build()
+                    ));
+                    current.getValue().add(addition*0.8f);
+                    return;
+                }
                 current.getValue().add(addition);
             }
         }
@@ -260,14 +317,20 @@ public class Country implements Cloneable{
             p.setOccupier(attacker);
         }
     }
-    public void addCost(Cost cost){
-        currenciesMap.get(cost.getCurrencyType()).add(cost.getAmount());
+    public void addPayment(Payment payment){
+        currenciesMap.get(payment.getCurrencyType()).add(payment.getAmount());
+        if (payment.getMessage()!=null){
+            sendActionBar(payment.getMessage());
+        }
     }
-    public void removeCost(Cost cost){
-        currenciesMap.get(cost.getCurrencyType()).minus(cost.getAmount());
+    public void removePayment(Payment payment){
+        currenciesMap.get(payment.getCurrencyType()).minus(payment.getAmount());
     }
-    public boolean canMinusCost(Cost cost){
-        return currenciesMap.containsKey(cost.getCurrencyType()) && currenciesMap.get(cost.getCurrencyType()).getAmount()>cost.getAmount();
+    public void subtractPayment(Payment payment){
+        currenciesMap.get(payment.getCurrencyType()).minus(payment.getAmount());
+    }
+    public boolean canMinusCost(Payment cost){
+        return currenciesMap.containsKey(cost.getCurrencyType()) && currenciesMap.get(cost.getCurrencyType()).getAmount()>=cost.getAmount();
     }
     public void setType(CountryEnums.Type newType){
         type = newType;
@@ -285,9 +348,6 @@ public class Country implements Cloneable{
     public Ideology getIdeology() {
         return ideology;
     }
-    public void setIdeology(Ideology ideology){
-        this.ideology= (Ideology) ideology.clone();
-    }
     @Override
     protected Object clone()  {
         try {
@@ -304,12 +364,6 @@ public class Country implements Cloneable{
     }
     public void removeWar(Country country){
         wars.remove(country);
-    }
-    public void setElections(Boolean choice){
-        this.elections = choice;
-    }
-    public boolean getElections(){
-        return elections;
     }
     public void setFocuses(CountryEnums.Focuses f){
         this.focuses = f;
@@ -344,5 +398,87 @@ public class Country implements Cloneable{
         for (Player p : players){
             p.sendActionBar(msg);
         }
+    }
+    public void setLeader(Leader leader){
+        this.leader = leader;
+        leader.getModifier().forEach((this::addModifier));
+
+        createInfo();
+    }
+    public Leader getLeader(){
+        return leader;
+    }
+    public void addBoost(CurrencyBoost currencyBoost){
+        if (economyBoosts.containsKey(currencyBoost.currencyTypes())){
+            economyBoosts.put(currencyBoost.currencyTypes(),economyBoosts.get(currencyBoost.currencyTypes())+currencyBoost.boost());
+        }else {
+            this.economyBoosts.put(currencyBoost.currencyTypes(),currencyBoost.boost()+1f);
+        }
+    }
+    public void removeBoost(CurrencyBoost currencyBoost){
+        if (economyBoosts.containsKey(currencyBoost.currencyTypes())){
+            economyBoosts.put(currencyBoost.currencyTypes(),economyBoosts.get(currencyBoost.currencyTypes())-currencyBoost.boost());
+        }
+    }
+    public void createInfo(){
+        List<Component> modifierComps = new ArrayList<>();
+        for (Modifier modifier : modifiers)
+            modifierComps.add(modifier.getName()); modifierComps.add(Component.text(", "));
+        this.description = Component.text()
+                .append(Component.text("_______/", NamedTextColor.BLUE))
+                .append(Component.text(getName(), NamedTextColor.GOLD))
+                .append(Component.text("\\_______", NamedTextColor.BLUE))
+                .appendNewline()
+                .append(Component.text("Leader: "))
+                .append(Component.text()
+                        .append(getLeader().getName())
+                        .clickEvent(ClickEvent.runCommand("/country leader "+getName()))
+                        .hoverEvent(HoverEvent.showText(getLeader().getDescription()))
+                )
+                .appendNewline()
+                .append(Component.text("Modifiers: "))
+                .append(modifierComps)
+                .appendNewline()
+                .appendNewline()
+                .append(Component.text()
+                        .append(Component.text("[JOIN]", NamedTextColor.GOLD))
+                        .clickEvent(ClickEvent.runCommand("/country join " + getName()))
+                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))
+                )
+                .build();
+    }
+    public Component getDescription(){
+        return description;
+    }
+
+    public Election getElections() {
+        return elections;
+    }
+
+    public void addRegion(Region region){
+        this.region.add(region);
+    }
+
+    public List<Region> getRegion(){
+        return region;
+    }
+    public float getMaxBoost(){
+        return maxBoost;
+    }
+    public List<Country> getPuppets(){
+        return puppets;
+    }
+    public void addPuppet(Country country){
+        puppets.add(country);
+    }
+    public void setOverlord(Country country){
+        this.overlord = country;
+    }
+    public Country getOverlord(){
+        return overlord;
+    }
+
+    public HashMap<CurrencyTypes, Float> getEconomyBoosts() {
+        return economyBoosts;
     }
 }

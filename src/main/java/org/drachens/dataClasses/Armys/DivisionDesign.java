@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Armys;
 
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Economics.currency.Cost;
+import org.drachens.dataClasses.Economics.currency.Payment;
 
 import java.util.List;
 
@@ -12,16 +12,16 @@ public class DivisionDesign {
     private float def;
     private float org;
     private float speed;
-    private List<Cost> cost;
+    private List<Payment> paymentList;
     private String name;
 
-    public DivisionDesign(String name, String[] design, float atk, float def, float org, float speed, List<Cost> cost, Country country) {
+    public DivisionDesign(String name, String[] design, float atk, float def, float org, float speed, List<Payment> paymentList, Country country) {
         this.design = design;
         this.atk = atk;
         this.def = def;
         this.org = org;
         this.speed = speed;
-        this.cost = cost;
+        this.paymentList = paymentList;
         this.country = country;
         this.name = name;
     }
@@ -66,12 +66,12 @@ public class DivisionDesign {
         this.speed = speed;
     }
 
-    public List<Cost> getCost() {
-        return cost;
+    public List<Payment> getCost() {
+        return paymentList;
     }
 
-    public void setCost(List<Cost> cost) {
-        this.cost = cost;
+    public void setCost(List<Payment> cost) {
+        this.paymentList = cost;
     }
 
     public String getName() {

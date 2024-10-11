@@ -33,7 +33,6 @@ public class CommandsUtil {
         List<String> suggestions = getCountryNames(i);
         input = input.trim();
         if (input.isEmpty()) return suggestions(suggestions, suggestionss);
-        System.out.println("suggestion input after and suggestions size:" + suggestions.size() + " Input length = " + input.length() + " input: " + input);
         String finalInput = input;
         return suggestions(suggestions.stream()
                 .filter(suggestion -> suggestion.toLowerCase().startsWith(finalInput))

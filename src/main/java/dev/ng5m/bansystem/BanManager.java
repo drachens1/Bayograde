@@ -11,7 +11,10 @@ import net.minestom.server.entity.Player;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.function.Function;
+
+import static org.drachens.util.PlayerUtil.getPlayerFromUUID;
 
 public class BanManager {
     private Function<Player, Component> banMessage = p -> Component.text("You have been banned from the server.");
@@ -61,21 +64,20 @@ public class BanManager {
         writeString(serialized);
     }
 
-    public void banPlayer(Player player, long duration) {
+    public void banPlayer(UUID player, long duration) {
         var root = removeEntry(player);
-        var uuid = player.getUuid();
 
-        root.add(uuid.toString(), new JsonPrimitive(System.currentTimeMillis() + duration));
+        root.add(player.toString(), new JsonPrimitive(System.currentTimeMillis() + duration));
 
         write(root);
+        getPlayerFromUUID(player).kick("Banned");
     }
 
-    public JsonObject removeEntry(Player player) {
-        var uuid = player.getUuid();
+    public JsonObject removeEntry(UUID player) {
         var root = getRoot();
 
-        if (root.has(uuid.toString()))
-            root.remove(uuid.toString());
+        if (root.has(player.toString()))
+            root.remove(player.toString());
 
         write(root);
         return root;
@@ -86,9 +88,6 @@ public class BanManager {
 
         if (!root.has(player.getUuid().toString()))
             return false;
-
-        System.out.println(root.get(player.getUuid().toString()).getAsLong());
-        System.out.println(System.currentTimeMillis());
 
         return System.currentTimeMillis() <= root.get(player.getUuid().toString()).getAsLong();
     }

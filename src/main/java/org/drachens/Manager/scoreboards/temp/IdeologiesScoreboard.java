@@ -8,4 +8,9 @@ public class IdeologiesScoreboard implements ContinentalScoreboards {
     public void update(Player p) {
 
     }
+
+    @Override
+    public void add(Player p) {
+
+    }
 }

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Rank {
     private final List<UUID> players = new ArrayList<>();

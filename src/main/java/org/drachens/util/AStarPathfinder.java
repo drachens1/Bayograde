@@ -1,9 +1,9 @@
 package org.drachens.util;
 
+import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Provinces.Province;
-import org.drachens.dataClasses.Provinces.ProvinceManager;
 
 import java.util.*;
 

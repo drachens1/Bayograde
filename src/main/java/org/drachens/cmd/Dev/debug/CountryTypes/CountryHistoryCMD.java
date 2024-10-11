@@ -17,12 +17,12 @@ import static org.drachens.util.KyoriUtil.mergeComp;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CountryHistoryCMD extends Command {
-    public CountryHistoryCMD() {
-        super("countryhistory");
-        setCondition((sender, permissionName) ->  sender.hasPermission("debug"));
+    public CountryHistoryCMD(String permission) {
+        super("history");
+        setCondition((sender, permissionName) ->  sender.hasPermission(permission));
         var type = ArgumentType.String("previousColonies | colony | colonialPower | upAndComing");
         type.setSuggestionCallback((sender, context, suggestion) -> {
-            if (!sender.hasPermission("debug"))return;
+            if (!sender.hasPermission(permission))return;
             suggestion.addEntry(new SuggestionEntry("previousColonies"));
             suggestion.addEntry(new SuggestionEntry("colony"));
             suggestion.addEntry(new SuggestionEntry("colonialPower"));
@@ -30,7 +30,7 @@ public class CountryHistoryCMD extends Command {
         });
         addSyntax((sender,context)->{
             if (!(sender instanceof Player p))return;
-            if (!sender.hasPermission("debug"))return;
+            if (!sender.hasPermission(permission))return;
             List<Component> components  = new ArrayList<>();
             CountryEnums.History choice = CountryEnums.History.valueOf(context.get(type));
             components.add(compBuild(context.get(type), NamedTextColor.BLUE));

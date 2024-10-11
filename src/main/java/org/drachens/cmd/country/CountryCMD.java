@@ -11,5 +11,6 @@ public class CountryCMD extends Command {
         addSubcommand(new Info());
         addSubcommand(new Members());
         addSubcommand(new Leader());
+        addSubcommand(new AllInformationCMD());
     }
 }

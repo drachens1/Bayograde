@@ -6,7 +6,6 @@ import net.minestom.server.event.Event;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 public final class EventHandlerProviderManager {
 
