@@ -16,7 +16,7 @@ public class BanSystemEvents implements EventHandlerProvider {
     public static void onPreLogin(AsyncPlayerPreLoginEvent event) {
         var player = event.getPlayer();
 
-        if (Constants.BAN_MANAGER.isBanned(player)) {
+        if (Constants.BAN_MANAGER.isBanned(player.getUuid())) {
             player.kick(Constants.BAN_MANAGER.getBanMessage().apply(player));
         }
     }

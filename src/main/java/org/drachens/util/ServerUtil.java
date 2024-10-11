@@ -177,7 +177,7 @@ public class ServerUtil {
 
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             final Player p = e.getPlayer();
-            Constants.BAN_MANAGER.isBanned(p);
+            Constants.BAN_MANAGER.isBanned(p.getUuid());
             if (ContinentalManagers.configFileManager.getWhitelist().active() && !ContinentalManagers.configFileManager.getWhitelist().getPlayers().contains(p.getUuid())) {
                 p.kick("You are not whitelisted");
                 System.out.println(p.getUsername() + " tried to join the game but isn't whitelisted");

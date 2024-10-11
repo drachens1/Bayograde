@@ -11,6 +11,7 @@ import net.minestom.server.entity.Player;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class BanManager {
@@ -61,23 +62,21 @@ public class BanManager {
         writeString(serialized);
     }
 
-    public void banPlayer(Player player, long duration) {
-        var root = removeEntry(player);
-        var uuid = player.getUuid();
+    public void banPlayer(UUID uuid, long duration) {
+        var root = removeEntry(uuid);
 
         root.add(uuid.toString(), new JsonPrimitive(System.currentTimeMillis() + duration));
 
         write(root);
     }
 
-    public void banPlayer(Player player, long duration, Component broadcast) {
+    public void banPlayer(UUID player, long duration, Component broadcast) {
         banPlayer(player, duration);
 
         Util.broadcast(broadcast);
     }
 
-    public JsonObject removeEntry(Player player) {
-        var uuid = player.getUuid();
+    public JsonObject removeEntry(UUID uuid) {
         var root = getRoot();
 
         if (root.has(uuid.toString()))
@@ -87,15 +86,12 @@ public class BanManager {
         return root;
     }
 
-    public boolean isBanned(Player player) {
+    public boolean isBanned(UUID player) {
         var root = getRoot();
 
-        if (!root.has(player.getUuid().toString()))
+        if (!root.has(player.toString()))
             return false;
 
-        System.out.println(root.get(player.getUuid().toString()).getAsLong());
-        System.out.println(System.currentTimeMillis());
-
-        return System.currentTimeMillis() <= root.get(player.getUuid().toString()).getAsLong();
+        return System.currentTimeMillis() <= root.get(player.toString()).getAsLong();
     }
 }
