@@ -5,6 +5,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
+import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -14,7 +15,6 @@ import java.util.HashMap;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.Messages.globalBroadcast;
 
 public class PlaceableFactory implements PlaceableBuilds {
     private final ItemDisplay itemDisplay;
@@ -24,9 +24,7 @@ public class PlaceableFactory implements PlaceableBuilds {
     private final int max;
     private final Country occupier;
     private int current;
-
     public PlaceableFactory(FactoryType factoryType, Province province) {
-        System.out.println("PLACED");
         this.factoryType = factoryType;
         this.province = province;
         this.current = 1;
@@ -41,17 +39,16 @@ public class PlaceableFactory implements PlaceableBuilds {
             itemDisplay.addViewer(p);
             textDisplay.addViewer(p);
         }
-        this.max = factoryType.getMax(province.getMaterial());
+        this.max = Math.round(factoryType.getMax(province.getMaterial())*province.getOccupier().getMaxBoost());
     }
 
     private void updateDisplay() {
-        globalBroadcast(factoryType.getModelData()[current - 1]+"");
         itemDisplay.setItem(itemBuilder(factoryType.getItem(), factoryType.getModelData()[current - 1]));
         textDisplay.setText(compBuild(current + "", NamedTextColor.BLUE));
     }
 
     public boolean canAddFactory(int add) {
-        return current + add <= max;
+        return current + add <= max*province.getOccupier().getMaxBoost();
     }
 
     @Override
@@ -95,9 +92,9 @@ public class PlaceableFactory implements PlaceableBuilds {
 
     public HashMap<CurrencyTypes, Float> onGenerate() {
         HashMap<CurrencyTypes, Float> currencyTypes = new HashMap<>();
-        for (int i = 0; i < factoryType.getCurrency().size(); i++) {
+        for (int i = 0; i < factoryType.getCurrency().size(); i++)
             currencyTypes.put(factoryType.getCurrency().get(i), factoryType.getProduction().get(i));
-        }
+
         return currencyTypes;
     }
 }

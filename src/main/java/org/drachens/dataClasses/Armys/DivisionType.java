@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
-import org.drachens.dataClasses.Economics.currency.Cost;
+import org.drachens.dataClasses.Economics.currency.Payment;
 
 public class DivisionType {
     private String name;
@@ -8,15 +8,15 @@ public class DivisionType {
     private float def;
     private float org;
     private float speed;
-    private Cost cost;
+    private Payment payment;
 
-    public DivisionType(String name, float atk, float def, float org, float speed, Cost cost) {
+    public DivisionType(String name, float atk, float def, float org, float speed, Payment payment) {
         this.name = name;
         this.atk = atk;
         this.def = def;
         this.org = org;
         this.speed = speed;
-        this.cost = cost;
+        this.payment = payment;
     }
 
     public float getAtk() {
@@ -51,12 +51,12 @@ public class DivisionType {
         this.speed = speed;
     }
 
-    public Cost getCost() {
-        return cost;
+    public Payment getCost() {
+        return payment;
     }
 
-    public void setCost(Cost cost) {
-        this.cost = cost;
+    public void setCost(Payment payment) {
+        this.payment = payment;
     }
 
     public String getName() {

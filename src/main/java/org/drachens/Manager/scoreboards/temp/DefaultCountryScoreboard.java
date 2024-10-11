@@ -8,4 +8,9 @@ public class DefaultCountryScoreboard  implements ContinentalScoreboards {
     public void update(Player p) {
 
     }
+
+    @Override
+    public void add(Player p) {
+
+    }
 }

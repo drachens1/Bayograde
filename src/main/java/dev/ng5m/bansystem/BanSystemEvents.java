@@ -18,10 +18,7 @@ public class BanSystemEvents implements EventHandlerProvider {
 
         if (Constants.BAN_MANAGER.isBanned(player)) {
             player.kick(Constants.BAN_MANAGER.getBanMessage().apply(player));
-            return;
         }
-
-        Constants.BAN_MANAGER.removeEntry(player);
     }
 
 }

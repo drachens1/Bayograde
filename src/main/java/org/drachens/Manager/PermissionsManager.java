@@ -1,19 +1,17 @@
 package org.drachens.Manager;
 
 import net.minestom.server.permission.Permission;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.drachens.Manager.ConfigFileManager.getPermissionsFile;
-import static org.drachens.util.PermissionsUtil.addPermissionGroup;
-
 public class PermissionsManager {
     public PermissionsManager() {
         System.out.println("Loading permission groups...");
-        ConfigurationNode perms = getPermissionsFile();
+        ConfigurationNode perms = ContinentalManagers.configFileManager.getPermissionsFile();
         if (perms == null) {
             System.err.println("Perms was null!");
             return;
@@ -26,7 +24,7 @@ public class PermissionsManager {
             for (Map.Entry<Object, ? extends ConfigurationNode> entry2 : group.childrenMap().entrySet()) {
                 groupsPermissions.add(new Permission(entry2.getKey().toString()));
             }
-            addPermissionGroup(entry.getKey().toString(), groupsPermissions, false);
+            ContinentalManagers.permissions.addPermissionGroup(entry.getKey().toString(), groupsPermissions, false);
         }
     }
 

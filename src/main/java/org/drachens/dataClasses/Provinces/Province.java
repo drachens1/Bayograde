@@ -6,6 +6,8 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
@@ -17,7 +19,6 @@ import java.util.List;
 
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.Messages.globalBroadcast;
-import static org.drachens.util.ServerUtil.getProvinceManager;
 
 public class Province {
     private final Instance instance;
@@ -50,7 +51,7 @@ public class Province {
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
-        provinceManager = getProvinceManager();
+        provinceManager = ContinentalManagers.world(instance).provinceManager();
     }
 
     public Province(int x, int y, int z, Instance instance, List<Country> cores, Country occupier) {
@@ -59,7 +60,7 @@ public class Province {
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
-        provinceManager = getProvinceManager();
+        provinceManager = ContinentalManagers.world(instance).provinceManager();
     }
 
     public Province(int x, int y, int z, Instance instance) {
@@ -68,7 +69,7 @@ public class Province {
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = new ArrayList<>();
         this.occupier = null;
-        provinceManager = getProvinceManager();
+        provinceManager = ContinentalManagers.world(instance).provinceManager();
     }
 
     public Province(Pos pos, Instance instance) {
@@ -77,7 +78,7 @@ public class Province {
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = new ArrayList<>();
         this.occupier = null;
-        provinceManager = getProvinceManager();
+        provinceManager = ContinentalManagers.world(instance).provinceManager();
     }
 
     public Pos getPos() {

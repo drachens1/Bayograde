@@ -1,12 +1,12 @@
 package org.drachens.cmd.ban;
 
+import dev.ng5m.Constants;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 
 import java.util.UUID;
 
-import static org.drachens.Manager.ConfigFileManager.addBan;
 import static org.drachens.util.PlayerUtil.getUUIDFromName;
 
 public class BanCMD extends Command {
@@ -14,7 +14,7 @@ public class BanCMD extends Command {
         super("ban");
         var player = ArgumentType.String("player");
         var reason = ArgumentType.StringArray("reason");
-        var duration = ArgumentType.Float("time (minutes)");
+        var duration = ArgumentType.Long("time (minutes)");
         setCondition((sender, s) -> {
             return sender.hasPermission("ban");
         });
@@ -30,7 +30,8 @@ public class BanCMD extends Command {
                 sender.sendMessage("Player is null");
                 return;
             }
-            addBan(p, context.get(reason), context.get(duration));
+            send.sendMessage("You have banned "+context.get(player));
+            Constants.BAN_MANAGER.banPlayer(p, context.get(duration));
         }, player, duration, reason);
     }
 }

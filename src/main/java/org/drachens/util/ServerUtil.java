@@ -1,13 +1,14 @@
 package org.drachens.util;
 
+import dev.ng5m.Constants;
 import dev.ng5m.Rank;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.command.CommandManager;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.coordinate.BlockVec;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
@@ -18,41 +19,47 @@ import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.extras.MojangAuth;
+import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.inventory.TransactionOption;
-import net.minestom.server.item.ItemStack;
 import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.InventorySystem.GUIManager;
-import org.drachens.Manager.*;
+import org.drachens.Manager.PermissionsManager;
+import org.drachens.Manager.WhitelistManager;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.MessageManager;
+import org.drachens.Manager.per_instance.CountryDataManager;
+import org.drachens.Manager.per_instance.ProvinceManager;
+import org.drachens.Manager.per_instance.vote.VotingManager;
+import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.cmd.Dev.Kill.killCMD;
 import org.drachens.cmd.Dev.ListCMD;
 import org.drachens.cmd.Dev.Permissions.PermissionsCMD;
-import org.drachens.cmd.Dev.debug.CountryTypes.CountryHistoryCMD;
-import org.drachens.cmd.Dev.debug.CountryTypes.CountryTypesCMD;
-import org.drachens.cmd.Dev.debug.countryDebug.CountryDebugCMD;
+import org.drachens.cmd.Dev.ResetCMD;
+import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
 import org.drachens.cmd.Dev.help.HelpCMD;
 import org.drachens.cmd.Dev.operator;
-import org.drachens.cmd.Dev.testCMD;
+import org.drachens.cmd.Dev.serverManagement.StopCMD;
 import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
 import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
+import org.drachens.cmd.SpawnCMD;
 import org.drachens.cmd.TeleportCMD;
+import org.drachens.cmd.TestCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.country.CountryCMD;
+import org.drachens.cmd.vote.VoteCMD;
+import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.factory.FactoryType;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
-import org.drachens.dataClasses.Provinces.Province;
-import org.drachens.dataClasses.Provinces.ProvinceManager;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.events.Countries.CountryChangeEvent;
@@ -61,19 +68,20 @@ import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.NewDay;
 import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
+import org.drachens.events.System.ResetEvent;
+import org.drachens.events.System.StartGameEvent;
+import org.drachens.interfaces.Voting.VotingOption;
 
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
-import static org.drachens.Manager.AchievementsManager.addPlayerToAdv;
-import static org.drachens.Manager.AchievementsManager.createAdvancements;
-import static org.drachens.Manager.ConfigFileManager.*;
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
-import static org.drachens.util.PermissionsUtil.playerOp;
-import static org.drachens.util.PermissionsUtil.setupPerms;
 import static org.drachens.util.PlayerUtil.addPlayerToCountryMap;
 import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
@@ -83,11 +91,9 @@ public class ServerUtil {
     private static final List<Player> cooldown = new ArrayList<>();
     private static MinecraftServer srv;
     private static GlobalEventHandler globalEventHandler;
-    private static ProvinceManager provinceManager;
 
     public static void setup() {
         globalEventHandler = MinecraftServer.getGlobalEventHandler();
-        provinceManager = new ProvinceManager();
     }
 
     public static void initSrv() {
@@ -107,53 +113,57 @@ public class ServerUtil {
         srv.start("0.0.0.0", 25565);
     }
 
-    public static ProvinceManager getProvinceManager() {
-        return provinceManager;
-    }
-
     public static GlobalEventHandler getEventHandler() {
         System.out.println("Getting event handler");
         return globalEventHandler;
     }
-    private static HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
 
-    public static void setupAll(List<Command> cmd, int countries, HashMap<CurrencyTypes, Currencies> defaultCurrencies, ItemStack[] defaultPlayerItems, List<IdeologyTypes> ideologyTypes, Ideology defaultIdeology, ScoreboardManager scoreboardManager) {
-        initSrv();
+    public static void stopSrv(){
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers())p.kick("Server closed");
+        MinecraftServer.stopCleanly();
+    }
+
+    private static final HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
+
+    public static void setupAll(List<Command> cmd, ScoreboardManager scoreboardManager) {
         setup();
+        setupPrefixes();
+
         //Create the instance(world)
         InstanceManager instMan = MinecraftServer.getInstanceManager();
         InstanceContainer instCon = instMan.createInstanceContainer();
 
-        GlobalEventHandler globEHandler = getEventHandler();
-
         //Generate the world
-        instCon.setGenerator(unit -> unit.modifier().fillHeight(0, -1, Block.LAPIS_BLOCK));
+        instCon.setGenerator(unit -> unit.modifier().fillHeight(-1,0,Block.LAPIS_BLOCK));
 
+        List<VotingOption> votingOptions = new ArrayList<>();
+        for (Map.Entry<String, VotingOption> entry : ContinentalManagers.defaultsStorer.voting.getVotingOptionHashMap().entrySet()){
+            votingOptions.add(entry.getValue());
+        }
+
+        for (Instance instance : MinecraftServer.getInstanceManager().getInstances()) {
+            instance.createInitializeWorldBorderPacket();
+            instance.setWeather(Weather.CLEAR);
+            instance.setTime(0);
+            worldClassesHashMap.put(instance, new WorldClasses(
+                            new CountryDataManager(instance,new ArrayList<>()),
+                            new ClientEntsToLoad(),
+                            new VotingManager(votingOptions,instance),
+                            new ProvinceManager()
+                    )
+            );
+        }
+        new MessageManager();
         //lighting
         instCon.setChunkSupplier(LightingChunk::new);
 
-        globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
+        GlobalEventHandler globEHandler = getEventHandler();
 
         //VELOCITAY
         //VelocityProxy.enable("uZEnvlMqDPRr"); //TODO Change this to not be outed when adding it to the server
         MojangAuth.init();
 
-
-        setupPerms();
-        createAdvancements();
-        for (Instance instance : MinecraftServer.getInstanceManager().getInstances()) {
-            instance.createInitializeWorldBorderPacket();
-            instance.setWeather(Weather.CLEAR);
-            instance.setTime(0);
-            CountryDataManager countryDataManager = new CountryDataManager(instance, new ArrayList<>(),ideologyTypes,defaultIdeology);
-            worldClassesHashMap.put(instance, new WorldClasses(
-                            new YearManager(0, 10, (long) 1000.0, instance),
-                            countryDataManager,
-                            new MapGeneratorManager(instance, provinceManager, countryDataManager, countries, defaultCurrencies,defaultIdeology),
-                            new ClientEntsToLoad()
-                    )
-            );
-        }
+        globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(true));
 
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
             //Gets the player
@@ -167,33 +177,38 @@ public class ServerUtil {
 
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (isBanned(p.getUuid())) {
-                p.kick(getBanMSG(p));
-                System.out.println(p.getUsername() + " tried to join the game but is banned");
-                return;
-            }
-            if (getWhitelist().active() && !getWhitelist().getPlayers().contains(p.getUuid())) {
+            Constants.BAN_MANAGER.isBanned(p);
+            if (ContinentalManagers.configFileManager.getWhitelist().active() && !ContinentalManagers.configFileManager.getWhitelist().getPlayers().contains(p.getUuid())) {
                 p.kick("You are not whitelisted");
                 System.out.println(p.getUsername() + " tried to join the game but isn't whitelisted");
                 return;
             }
-            loadPermissions(p);
+            ContinentalManagers.configFileManager.loadPermissions(p);
             playerRanks.put(p,new ArrayList<>());
-            getPlayersData(p.getUuid());
+            ContinentalManagers.configFileManager.getPlayersData(p.getUuid());
             addPlayerToCountryMap(p);
         });
+
         Function<Player, Component> displayNameSupplier = Player::getName;
-        Rank r = new Rank(displayNameSupplier,compBuild("cool",NamedTextColor.BLUE),compBuild("cool2",NamedTextColor.BLUE),NamedTextColor.RED);
+        Rank r = new Rank(displayNameSupplier,compBuild("cool",NamedTextColor.BLUE),compBuild("cool2",NamedTextColor.BLUE),NamedTextColor.RED, "cool");
 
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             Player p = e.getPlayer();
             p.setAllowFlying(true);
             globalBroadcast(p.getUsername() + " has joined the game");
+            scoreboardManager.getScoreboard("default").add(p);
             tabCreation(p);
-            addPlayerToAdv(p);
-            playerOp(p);
-            p.getInventory().addItemStacks(Arrays.stream(defaultPlayerItems).toList(), TransactionOption.ALL);
-            worldClassesHashMap.get(p.getInstance()).yearManager().addPlayer(p);
+            ContinentalManagers.achievementsManager.addPlayerToAdv(p);
+            ContinentalManagers.permissions.playerOp(p);
+            ContinentalManagers.world(p.getInstance()).votingManager().getVoteBar().addPlayer(p);
+            ContinentalManagers.inventoryManager.assignInventory(p,"default");
+            if(ContinentalManagers.yearManager.getYearBar(p.getInstance())!=null){
+                ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
+            }else {
+                System.out.println("year bar was null");
+                ContinentalManagers.yearManager.addBar(p.getInstance());
+                ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
+            }
 
             worldClassesHashMap.get(p.getInstance()).clientEntsToLoad().loadPlayer(p);
 
@@ -204,9 +219,9 @@ public class ServerUtil {
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
             final Player p = e.getPlayer();
             Country country = getCountryFromPlayer(p);
-            country.removePlayer(p, true);
+            if (country!=null) country.removePlayer(p, true);
             globalBroadcast(p.getUsername() + " has left the game");
-            playerSave(p.getUuid());
+            ContinentalManagers.configFileManager.playerSave(p.getUuid());
         });
 
         Function<PlayerChatEvent, Component> chatEvent = e -> {
@@ -240,9 +255,7 @@ public class ServerUtil {
             return mergeComp(components);
         };
 
-        globEHandler.addListener(PlayerChatEvent.class, e -> {
-           e.setChatFormat(chatEvent);
-        });
+        globEHandler.addListener(PlayerChatEvent.class, e -> e.setChatFormat(chatEvent));
 
         globEHandler.addListener(PlayerCommandEvent.class, e -> {
             final Player p = e.getPlayer();
@@ -261,7 +274,7 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (!allowedChunks.contains(p.getChunk())) {
+            if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(e.getInstance()).votingManager().getVoteBar().isShown()) {
                 p.sendMessage(mergeComp(getPrefixes("system"), getCountryMessages("outOfBounds")));
                 e.setCancelled(true);
             }
@@ -271,49 +284,10 @@ public class ServerUtil {
         globEHandler.addListener(CountryLeaveEvent.class, e -> addPlayerToCountryMap(e.getP(), null));
         globEHandler.addListener(CountryChangeEvent.class, e -> addPlayerToCountryMap(e.getP(), e.getJoined()));
 
-        globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
-            Province p = provinceManager.getProvince(new Pos(e.getBlockPosition()));
-            if (!e.getPlayer().isSneaking())return;
-            if (playerHasCooldown(e.getPlayer())) return;
-            cooldown(e.getPlayer());
-            if (!p.isCapturable()) {
-                return;
-            }
-            if (p.getOccupier() == null) {
-                e.getPlayer().sendMessage(Component.text()
-                        .append(Component.text("_________/", NamedTextColor.BLUE))
-                        .append(Component.text("Neutral", NamedTextColor.GOLD))
-                        .append(Component.text("\\_________\n", NamedTextColor.BLUE))
-                        .append(Component.text("Leader: \n"))
-                );
-                return;
-            }
-            Country c = p.getOccupier();
-            e.getPlayer().sendMessage(Component.text()
-                    .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(Component.text(c.getName(), NamedTextColor.GOLD))
-                    .append(Component.text("\\_______", NamedTextColor.BLUE))
-                    .appendNewline()
-                    .append(Component.text("Leader: "))
-                    .appendNewline()
-                    .appendNewline()
-                    .appendNewline()
-                    .append(Component.text()
-                            .append(Component.text("[JOIN]", NamedTextColor.GOLD))
-                            .clickEvent(ClickEvent.runCommand("/country join " + c.getName()))
-                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))
-                    )
-            );
-        });
-        final int[] week = {0};
         globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
-            week[0]++;
-            if (!(week[0] >= 7))for (Country country : countryDataManager.getCountries())country.calculateIncrease();
-            week[0]=0;
-            for (Player p : e.getWorld().getPlayers()){
-                scoreboardManager.update(p);
-            }
+
+            for (Country country : countryDataManager.getCountries())country.calculateIncrease();
             for (Country country : countryDataManager.getCountries()) {
                 Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
                 int i = 0;
@@ -343,17 +317,21 @@ public class ServerUtil {
                     sb.addViewer(p);
                 }
                 for (Map.Entry<IdeologyTypes, Float> entry : country.getIdeology().getIdeologies().entrySet()){
-                    ArrayList<Component> components = new ArrayList<>();
-                    components.add(entry.getKey().getName());
-                    components.add(compBuild(" : ", NamedTextColor.BLUE));
-                    components.add(compBuild(entry.getValue() + "", NamedTextColor.BLUE));
-                    sb.createLine(new Sidebar.ScoreboardLine(
-                            i + "",
-                            mergeComp(components),
-                            i
-                    ));
-                    i++;
+                    if (entry.getValue()>1){
+                        ArrayList<Component> components = new ArrayList<>();
+                        components.add(entry.getKey().getName());
+                        components.add(compBuild(" : ", NamedTextColor.BLUE));
+                        components.add(compBuild(Math.round(entry.getValue()) + "%", NamedTextColor.BLUE));
+                        sb.createLine(new Sidebar.ScoreboardLine(
+                                i + "",
+                                mergeComp(components),
+                                i
+                        ));
+                        i++;
+                    }
                 }
+                sb.createLine(new Sidebar.ScoreboardLine("total",compBuild("total"+country.getIdeology().total,NamedTextColor.GOLD),i));
+                i++;
                 sb.createLine(new Sidebar.ScoreboardLine(
                         "ideologies",
                         compBuild("Ideologies: ", NamedTextColor.BLUE),
@@ -362,8 +340,6 @@ public class ServerUtil {
                 i++;
                 for (Map.Entry<CurrencyTypes, Currencies> entry : country.getCurrenciesMap().entrySet()) {
                     ArrayList<Component> components = new ArrayList<>();
-                    components.add(entry.getKey().getName());
-                    components.add(compBuild(" : ", NamedTextColor.BLUE));
                     components.add(compBuild(entry.getValue().getAmount() + "", NamedTextColor.BLUE));
                     components.add(entry.getKey().getSymbol());
                     sb.createLine(new Sidebar.ScoreboardLine(
@@ -380,29 +356,65 @@ public class ServerUtil {
                         i
                 ));
                 i++;
+                for (Map.Entry<CurrencyTypes, Float> entry : country.getEconomyBoosts().entrySet()) {
+                    ArrayList<Component> components = new ArrayList<>();
+                    components.add(compBuild(entry.getValue() + "", NamedTextColor.BLUE));
+                    components.add(entry.getKey().getSymbol());
+                    sb.createLine(new Sidebar.ScoreboardLine(
+                            i + "",
+                            mergeComp(components),
+                            i
+                    ));
+                    i++;
+                }
+
+                sb.createLine(new Sidebar.ScoreboardLine(
+                        "tewjwr",
+                        compBuild("Boosts: ", NamedTextColor.BLUE),
+                        i
+                ));
             }
         });
 
+        List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
+        for (VotingOption votingOption : votingOptions)
+            votingOptionsCMD.add(new VotingOptionCMD(votingOption));
+
+
+        globEHandler.addListener(PlayerBlockInteractEvent.class, e->{
+            if (ContinentalManagers.world(e.getInstance()).votingManager().getWinner()!=null)ContinentalManagers.world(e.getInstance()).votingManager().getWinner().getWar().onClick(e);
+        });
+        globEHandler.addListener(PlayerUseItemEvent.class, e->{
+            if (ContinentalManagers.world(e.getInstance()).votingManager().getWinner()!=null)ContinentalManagers.world(e.getInstance()).votingManager().getWinner().getWar().onClick(e);
+        });
+        globEHandler.addListener(PlayerStartDiggingEvent.class, e->{
+            if (ContinentalManagers.world(e.getInstance()).votingManager().getWinner()!=null) ContinentalManagers.world(e.getInstance()).votingManager().getWinner().getWar().onClick(e);
+        });
+
+        CommandManager commandManager = MinecraftServer.getCommandManager();
+
         //Register cmds
-        MinecraftServer.getCommandManager().register(new HelpCMD());
-        MinecraftServer.getCommandManager().register(new operator());
-        MinecraftServer.getCommandManager().register(new BanCMD());
-        MinecraftServer.getCommandManager().register(new UnbanCMD());
-        MinecraftServer.getCommandManager().register(new ListCMD());
-        MinecraftServer.getCommandManager().register(new WhitelistCMD(whitelistManager));
-        MinecraftServer.getCommandManager().register(new testCMD(guiManager));
-        MinecraftServer.getCommandManager().register(new killCMD());
-        MinecraftServer.getCommandManager().register(new PermissionsCMD());
-        MinecraftServer.getCommandManager().register(new ReplyCMD());
-        MinecraftServer.getCommandManager().register(new MsgCMD());
-        MinecraftServer.getCommandManager().register(new GamemodeCMD());
-        MinecraftServer.getCommandManager().register(new FlyCMD());
-        MinecraftServer.getCommandManager().register(new FlyspeedCMD());
-        MinecraftServer.getCommandManager().register(new CountryCMD());
-        MinecraftServer.getCommandManager().register(new TeleportCMD());
-        MinecraftServer.getCommandManager().register(new CountryTypesCMD());
-        MinecraftServer.getCommandManager().register(new CountryHistoryCMD());
-        MinecraftServer.getCommandManager().register(new CountryDebugCMD());
+        commandManager.register(new HelpCMD());
+        commandManager.register(new operator());
+        commandManager.register(new BanCMD());
+        commandManager.register(new UnbanCMD());
+        commandManager.register(new ListCMD());
+        commandManager.register(new WhitelistCMD(whitelistManager));
+        commandManager.register(new killCMD());
+        commandManager.register(new PermissionsCMD());
+        commandManager.register(new ReplyCMD());
+        commandManager.register(new MsgCMD());
+        commandManager.register(new GamemodeCMD());
+        commandManager.register(new FlyCMD());
+        commandManager.register(new FlyspeedCMD());
+        commandManager.register(new CountryCMD());
+        commandManager.register(new TeleportCMD());
+        commandManager.register(new VoteCMD(votingOptionsCMD));
+        commandManager.register(new ResetCMD());
+        commandManager.register(new SpawnCMD());
+        commandManager.register(new TestCMD());
+        commandManager.register(new StopCMD());
+        commandManager.register(new debugCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -411,12 +423,32 @@ public class ServerUtil {
         var schedular = MinecraftServer.getSchedulerManager();
         schedular.buildShutdownTask(() -> {
             System.out.println("Server shutting down");
-            shutdown();
+            ContinentalManagers.configFileManager.shutdown();
         });
 
-        startup();
+        ContinentalManagers.configFileManager.startup();
         new PermissionsManager();
-        setupPrefixes();
+
+        globEHandler.addListener(ResetEvent.class,e->{
+            ClientEntsToLoad clientEntsToLoad = worldClassesHashMap.get(e.getInstance()).clientEntsToLoad();
+            clientEntsToLoad.reset();
+            for (Player p : e.getInstance().getPlayers()){
+                clientEntsToLoad.unloadPlayer(p);
+            }
+            Instance instance = e.getInstance();
+            CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());
+            worldClassesHashMap.put(instance, new WorldClasses(
+                    c,
+                    clientEntsToLoad,
+                    worldClassesHashMap.get(instance).votingManager(),
+                    worldClassesHashMap.get(instance).provinceManager()
+            ));
+        });
+
+        globEHandler.addListener(StartGameEvent.class,e->{
+
+        });
+
     }
 
     public static void addChunk(Chunk chunk) {
@@ -450,5 +482,8 @@ public class ServerUtil {
 
     public static WorldClasses getWorldClasses(Instance instance) {
         return worldClassesHashMap.get(instance);
+    }
+    public static Pos blockVecToPos(BlockVec blockVec){
+        return new Pos(blockVec.blockX(),blockVec.blockY(),blockVec.blockZ());
     }
 }

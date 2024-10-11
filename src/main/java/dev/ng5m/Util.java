@@ -6,18 +6,13 @@ import net.minestom.server.entity.Player;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class Util {
 
     public static List<Player> getAllOnlinePlayers() {
-        List<Player> players = new ArrayList<>();
-        MinecraftServer.getInstanceManager().getInstances()
-                .forEach(i -> players.addAll(i.getPlayers()));
-        return players;
+        return MinecraftServer.getConnectionManager().getOnlinePlayers().stream().toList();
     }
 
     public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

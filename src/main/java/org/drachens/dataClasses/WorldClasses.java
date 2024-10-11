@@ -1,10 +1,8 @@
 package org.drachens.dataClasses;
 
-import org.drachens.Manager.CountryDataManager;
-import org.drachens.Manager.MapGeneratorManager;
-import org.drachens.Manager.YearManager;
+import org.drachens.Manager.per_instance.CountryDataManager;
+import org.drachens.Manager.per_instance.ProvinceManager;
+import org.drachens.Manager.per_instance.vote.VotingManager;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 
-public record WorldClasses(YearManager yearManager, CountryDataManager countryDataManager,
-                           MapGeneratorManager mapGeneratorManager, ClientEntsToLoad clientEntsToLoad) {
-}
+public record WorldClasses(CountryDataManager countryDataManager, ClientEntsToLoad clientEntsToLoad, VotingManager votingManager, ProvinceManager provinceManager) { }

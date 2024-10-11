@@ -1,14 +1,14 @@
 package org.drachens.util;
 
-import org.drachens.dataClasses.Economics.currency.Cost;
+import org.drachens.dataClasses.Economics.currency.Payment;
 
 import java.util.List;
 
 public class EconomyUtil {
-    public static List<Cost> collapseCosts(List<Cost> costs) {
-        for (Cost cost : costs) {
-            costs.removeIf(cost::add);
+    public static List<Payment> collapseCosts(List<Payment> paymentList) {
+        for (Payment cost : paymentList) {
+            paymentList.removeIf(cost::add);
         }
-        return costs;
+        return paymentList;
     }
 }

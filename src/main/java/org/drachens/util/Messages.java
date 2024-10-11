@@ -4,14 +4,12 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
+import org.drachens.Manager.defaults.ContinentalManagers;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static org.drachens.Manager.ConfigFileManager.getLogCmds;
-import static org.drachens.Manager.ConfigFileManager.getLogMsg;
 
 public class Messages {
 
@@ -25,13 +23,7 @@ public class Messages {
 
     public static void globalBroadcast(Component msg) {
         System.out.println(msg);
-        logMsg("server", String.valueOf(msg), null);
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-            p.sendMessage(msg);
-        }
-    }
-
-    public static void playerSendMessage(Component msg) {
+        logMsg("server", msg, null);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
         }
@@ -48,8 +40,7 @@ public class Messages {
     }
 
     public static void broadcast(Component msg, Instance world) {
-        System.out.println(msg);
-        logMsg("server", msg.insertion(), world);
+        logMsg("server", msg,null);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
@@ -60,7 +51,7 @@ public class Messages {
     public static void logCmd(String playerName, String cmd, Instance w) {
         System.out.println(playerName + " : " + cmd);
         try {
-            FileWriter f = new FileWriter(getLogCmds(), true);
+            FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogCmds(), true);
             try {
                 if (w != null) {
                     f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + cmd);
@@ -79,7 +70,25 @@ public class Messages {
 
     public static void logMsg(String playerName, String msg, Instance w) {
         try {
-            FileWriter f = new FileWriter(getLogMsg(), true);
+            FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
+            try {
+                if (w != null) {
+                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msg);
+                } else {
+                    f.write(getTime() + " " + playerName + ":" + msg);
+                }
+                f.write("\n");
+                f.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void logMsg(String playerName, Component msg, Instance w) {
+        try {
+            FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
             try {
                 if (w != null) {
                     f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msg);
@@ -99,9 +108,4 @@ public class Messages {
     public static String getTime() {
         return new SimpleDateFormat("dd/MM/yy HH:mm").format(new Date());
     }
-
-    public static void Console(String plugin, String log) {
-        System.out.println(plugin + ": " + log);
-    }
-
 }

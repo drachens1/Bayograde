@@ -14,9 +14,9 @@ import static org.drachens.util.KyoriUtil.mergeComp;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CountryDebugCMD extends Command {
-    public CountryDebugCMD(){
-        super("countryDebug");
-        setCondition((sender, permissionName) ->  sender.hasPermission("debug"));
+    public CountryDebugCMD(String permission){
+        super("debug");
+        setCondition((sender, permissionName) ->  sender.hasPermission(permission));
         setDefaultExecutor((sender,context)->{
             if (!(sender instanceof Player p))return;
             List<Component> components  = new ArrayList<>();

@@ -12,18 +12,17 @@ import org.drachens.dataClasses.Countries.CountryEnums;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.KyoriUtil.mergeComp;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CountryTypesCMD extends Command {
-    public CountryTypesCMD() {
-        super("countryTypes");
-        setCondition((sender, permissionName) ->  sender.hasPermission("debug"));
+    public CountryTypesCMD(String permission) {
+        super("types");
+        setCondition((sender, permissionName) ->  sender.hasPermission(permission));
         var type = ArgumentType.String("superpower | major | minor");
         type.setSuggestionCallback((sender, context, suggestion) -> {
-            if (!sender.hasPermission("debug"))return;
+            if (!sender.hasPermission(permission))return;
             suggestion.addEntry(new SuggestionEntry("superPower"));
             suggestion.addEntry(new SuggestionEntry("major"));
             suggestion.addEntry(new SuggestionEntry("minor"));
@@ -31,7 +30,7 @@ public class CountryTypesCMD extends Command {
 
         addSyntax((sender,context)->{
             if (!(sender instanceof Player p))return;
-            if (!sender.hasPermission("debug"))return;
+            if (!sender.hasPermission(permission))return;
             List<Component> components  = new ArrayList<>();
             CountryEnums.Type choice = CountryEnums.Type.valueOf(context.get(type));
             components.add(compBuild(context.get(type), NamedTextColor.BLUE));

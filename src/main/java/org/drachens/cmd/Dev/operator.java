@@ -3,14 +3,13 @@ package org.drachens.cmd.Dev;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
-
-import static org.drachens.util.PermissionsUtil.playerOp;
+import org.drachens.Manager.defaults.ContinentalManagers;
 
 public class operator extends Command {
     public operator() {
         super("operator", "op");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Usage /op <player>"));
-
+        setCondition((sender,s)->sender.hasPermission("operator"));
         var player = ArgumentType.Entity("player");
         addSyntax((sender, context) -> {
             Player p = context.get(player).findFirstPlayer(sender);
@@ -20,7 +19,7 @@ public class operator extends Command {
             }
             sender.sendMessage("You have opped " + p.getUsername());
             p.sendMessage("You have been opped");
-            playerOp(p);
+            ContinentalManagers.permissions.playerOp(p);
         }, player);
     }
 }

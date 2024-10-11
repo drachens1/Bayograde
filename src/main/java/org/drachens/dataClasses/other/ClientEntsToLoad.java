@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ClientEntsToLoad {
-    private final HashMap<Instance, List<Clientside>> toLoad = new HashMap<>();
+    private HashMap<Instance, List<Clientside>> toLoad = new HashMap<>();
 
     public void loadPlayer(Player p) {
         if (!toLoad.containsKey(p.getInstance())) return;
@@ -18,6 +18,7 @@ public class ClientEntsToLoad {
     }
 
     public void unloadPlayer(Player p) {
+        if (!toLoad.containsKey(p.getInstance())) return;
         for (Clientside ents : toLoad.get(p.getInstance())) {
             ents.removeViewer(p);
         }
@@ -31,5 +32,9 @@ public class ClientEntsToLoad {
     public void removeClientSide(Instance instance, Clientside clientside) {
         if (!toLoad.containsKey(instance)) return;
         toLoad.get(instance).remove(clientside);
+    }
+
+    public void reset(){
+        toLoad = new HashMap<>();
     }
 }

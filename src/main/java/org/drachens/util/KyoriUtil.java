@@ -6,6 +6,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -238,7 +239,17 @@ public class KyoriUtil {
                 .build();
     }
 
+    public static Component compBuild(String msg, TextColor colour) {
+        return Component.text()
+                .append(Component.text(msg, colour))
+                .build();
+    }
     public static Component compBuild(String msg, NamedTextColor colour, TextDecoration txtDec) {
+        return Component.text()
+                .append(Component.text(msg, colour, txtDec))
+                .build();
+    }
+    public static Component compBuild(String msg, TextColor colour, TextDecoration txtDec) {
         return Component.text()
                 .append(Component.text(msg, colour, txtDec))
                 .build();
