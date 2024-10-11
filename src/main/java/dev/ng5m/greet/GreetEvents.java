@@ -1,6 +1,7 @@
 package dev.ng5m.greet;
 
 import dev.ng5m.Util;
+import dev.ng5m.bansystem.BanSystemEvents;
 import dev.ng5m.events.EventHandler;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.events.EventHandlerProviderManager;
@@ -8,6 +9,7 @@ import dev.ng5m.util.Configurable;
 import dev.ng5m.util.Hookable;
 import dev.ng5m.util.Settings;
 import net.kyori.adventure.text.Component;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 
@@ -15,6 +17,12 @@ import java.util.function.Function;
 
 public class GreetEvents extends Configurable<GreetEvents.GreetSettings> implements EventHandlerProvider,
         Hookable<GreetEvents, GreetEvents.GreetSettings> {
+
+    public static GreetSettings settings;
+
+    public GreetEvents() {
+
+    }
 
     public GreetEvents(GreetSettings settings) {
         super(settings);
@@ -24,17 +32,18 @@ public class GreetEvents extends Configurable<GreetEvents.GreetSettings> impleme
     public void onPlayerJoin(PlayerSpawnEvent event) {
         if (!event.isFirstSpawn()) return;
 
-        Util.broadcast(this.settings.joinMessage.apply(event));
+        Util.broadcast(settings.joinMessage.apply(event));
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent event) {
-        Util.broadcast(this.settings.leaveMessage.apply(event));
+        Util.broadcast(settings.leaveMessage.apply(event));
     }
 
     @Override
     public GreetEvents hook(GreetSettings settings) {
-        EventHandlerProviderManager.registerProvider(getClass());
+        GreetEvents.settings = settings;
+        EventHandlerProviderManager.registerProvider(getClass(), settings);
 
         return new GreetEvents(settings);
     }

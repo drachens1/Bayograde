@@ -24,6 +24,7 @@ import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.InventorySystem.GUIManager;
+import org.drachens.Main;
 import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -101,6 +102,8 @@ public class ServerUtil {
             return;
         }
         srv = MinecraftServer.init();
+
+        Main.initHooks();
     }
 
     public static void startSrv() {

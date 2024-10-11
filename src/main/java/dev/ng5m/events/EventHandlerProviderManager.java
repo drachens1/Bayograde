@@ -1,6 +1,8 @@
 package dev.ng5m.events;
 
+import dev.ng5m.Util;
 import dev.ng5m.bansystem.BanSystemEvents;
+import dev.ng5m.greet.GreetEvents;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 
@@ -9,15 +11,17 @@ import java.lang.reflect.Modifier;
 
 public final class EventHandlerProviderManager {
 
-    public static void registerProvider(Class<? extends EventHandlerProvider> provider) {
+    public static void registerProvider(Class<? extends EventHandlerProvider> provider, Object ... additionalCtorArgs) {
         if (MinecraftServer.process() == null)
             throw new UnsupportedOperationException("You need to MinecraftServer#init before registering providers");
 
         for (Method method : provider.getDeclaredMethods()) {
             var mods = method.getModifiers();
 
-            if (!(((mods & Modifier.STATIC) != 0) && ((mods & Modifier.PRIVATE) == 0))) continue;
+            if (Modifier.isPrivate(mods)) continue;
+
             System.out.println(method.getName());
+
             if (!method.isAnnotationPresent(EventHandler.class)) continue;
 //            var annotation = method.getAnnotation(EventHandler.class);
             var args = method.getParameterTypes();
@@ -29,7 +33,12 @@ public final class EventHandlerProviderManager {
 
             MinecraftServer.getGlobalEventHandler().addListener(wrapper.eventClass(), event -> {
                 try {
-                    method.invoke(null, event);
+                    if (Modifier.isStatic(mods))
+                        method.invoke(null, event);
+                    else {
+                        var instance = provider.getDeclaredConstructor(Util.toTypes(additionalCtorArgs)).newInstance(additionalCtorArgs);
+                        method.invoke(instance, event);
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

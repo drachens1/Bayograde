@@ -1,6 +1,9 @@
 package org.drachens;
 
+import dev.ng5m.Constants;
+import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProviderManager;
+import dev.ng5m.greet.GreetEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -312,5 +315,24 @@ public class Main {
             "McCarthy", "Salinas", "Ramsey", "Gentry", "Paul", "Parsons", "Ferrell", "Hodge", "Pace", "Sheppard",
             "Cherry", "Hayden", "Shaffer", "Mann", "Riddle", "Alexander", "Buck", "Clemons", "Blackwell", "McNeill",
     };
+
+    public static void initHooks() {
+        new GreetEvents().hook(
+                new GreetEvents.GreetSettings(
+                        event ->
+                        Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
+                                Util.colored("+", Constants.Colors.LIME).append(
+                                        Util.colored("] " + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
+                                )
+                        ),
+                        event ->
+                        Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
+                                Util.colored("-", Constants.Colors.RED).append(
+                                        Util.colored("]", Constants.Colors.LIGHT_GRAY)
+                                )
+                        ))
+        );
+
+    }
 }
 

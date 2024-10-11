@@ -45,4 +45,18 @@ public class Util {
     public static void broadcast(Component message) {
         MinecraftServer.getInstanceManager().getInstances().forEach(instance -> instance.sendMessage(message));
     }
+
+    public static Component colored(String text, Constants.Colors color) {
+        return Component.text(text).color(color.color);
+    }
+
+    public static Class<?>[] toTypes(Object ... o) {
+        Class<?>[] arr = new Class<?>[o.length];
+
+        for (int i = 0; i < o.length; i++) {
+            arr[i] = o[i].getClass();
+        }
+
+        return arr;
+    }
 }
