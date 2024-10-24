@@ -1,6 +1,5 @@
 package org.drachens.Manager.defaults.defaultsStorer;
 
-import org.drachens.dataClasses.Economics.factory.FactoryType;
 import org.drachens.interfaces.Voting.VotingOption;
 
 import java.util.HashMap;

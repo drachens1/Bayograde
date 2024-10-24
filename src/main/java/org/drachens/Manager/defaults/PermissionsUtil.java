@@ -32,12 +32,9 @@ public class PermissionsUtil {
     public void playerOp(Player p) {
         UUID playerID = p.getUuid();
         System.out.println(p.getUsername() + " was opped");
-
-        for (Permission perm : operator) {
-            p.addPermission(perm);
-        }
+        operator.forEach(p::addPermission);
         ConfigurationNode playerData = ContinentalManagers.configFileManager.getPlayersData(playerID);
-        ConfigurationNode permissions = playerData.node("permissions");
+        ConfigurationNode permissions = playerData.node("Permissions");
         try {
             List<String> perms = permissions.getList(String.class);
             if (perms == null) {
@@ -81,7 +78,7 @@ public class PermissionsUtil {
         ContinentalManagers.configFileManager.specificSave("permissions");
     }
 
-    public  void playerAddPerm(String name, Player p) {
+    public void playerAddPerm(String name, Player p) {
         for (Permission perm : groups.get(name)) {
             p.addPermission(perm);
         }
@@ -89,7 +86,7 @@ public class PermissionsUtil {
         System.out.println(p.getUsername() + " was added to group " + name);
 
         ConfigurationNode playerData = ContinentalManagers.configFileManager.getPlayersData(playerID);
-        ConfigurationNode permissions = playerData.node("permissions");
+        ConfigurationNode permissions = playerData.node("Permissions");
         try {
             List<String> perms = permissions.getList(String.class);
             if (perms == null) {
@@ -117,7 +114,7 @@ public class PermissionsUtil {
         System.out.println(p.getUsername() + " was added to group " + name);
 
         ConfigurationNode playerData = ContinentalManagers.configFileManager.getPlayersData(playerID);
-        ConfigurationNode permissions = playerData.node("permissions");
+        ConfigurationNode permissions = playerData.node("Permissions");
         try {
             List<String> perms = permissions.getList(String.class);
             if (perms == null) {

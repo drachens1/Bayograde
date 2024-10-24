@@ -2,7 +2,6 @@ package dev.ng5m.events;
 
 import dev.ng5m.Util;
 import dev.ng5m.bansystem.BanSystemEvents;
-import dev.ng5m.greet.GreetEvents;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 

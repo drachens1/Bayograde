@@ -13,7 +13,7 @@ import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public abstract class Clientside {
     public static final List<Clientside> INSTANCES = new ArrayList<>();
-    public final List<UUID> VIEWERS = new ArrayList<>();
+    public final List<Player> VIEWERS = new ArrayList<>();
     public final int entityId;
     public final UUID uuid;
     public final Instance instance;
@@ -38,16 +38,13 @@ public abstract class Clientside {
 
     public void updateForViewers() {
         if (!storeViewers) return;
-
-        for (var viewer : VIEWERS)
-            updateForViewer(MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(viewer));
+        new ArrayList<>(VIEWERS).forEach(this::updateForViewer);
     }
 
     public Clientside dispose() {
         INSTANCES.remove(this);
         if (storeViewers)
-            for (var viewer : this.VIEWERS)
-                removeViewer(MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(viewer));
+            new ArrayList<>(VIEWERS).forEach(this::removeViewer);
 
         return this;
     }

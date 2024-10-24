@@ -2,14 +2,15 @@ package org.drachens.dataClasses.other;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.metadata.display.TextDisplayMeta;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
-import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
-import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
-import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
+import net.minestom.server.network.packet.server.play.*;
+import net.minestom.server.network.player.PlayerConnection;
+import org.drachens.cmd.SpawnCMD;
 import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
@@ -55,9 +56,9 @@ public class TextDisplay extends Clientside {
     @Override
     public void addViewer(Player player) {
         if (storeViewers)
-            VIEWERS.add(player.getUuid());
+            VIEWERS.add(player);
 
-        var conn = player.getPlayerConnection();
+        PlayerConnection conn = player.getPlayerConnection();
 
         conn.sendPacket(new SpawnEntityPacket(
                 entityId,
@@ -90,7 +91,7 @@ public class TextDisplay extends Clientside {
     @Override
     public void removeViewer(Player player) {
         if (storeViewers)
-            VIEWERS.remove(player.getUuid());
+            VIEWERS.remove(player);
 
         var conn = player.getPlayerConnection();
 

@@ -6,12 +6,10 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.scoreboard.Team;
 import net.minestom.server.scoreboard.TeamManager;
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +25,9 @@ public class CountryDataManager {
     private final Instance instance;
     private Country superPower;
     private final HashMap<IdeologyTypes,List<Leader>> unusedLeaders = new HashMap<>();
+    private final HashMap<String, Factions> factionsHashMap = new HashMap<>();
+    private List<Factions> factions = new ArrayList<>();
+    private List<String> factionNames = new ArrayList<>();
     public CountryDataManager(Instance instance, List<Country> countries) {
         this.instance = instance;
         this.countries = countries;
@@ -74,16 +75,6 @@ public class CountryDataManager {
         countryHashMap.put(country.getName(), country);
         countryNameList.add(country.getName());
     }
-
-    public void reloadCountryNames() {
-        countryHashMap.clear();
-        countryNameList.clear();
-        for (Country country : countries) {
-            countryNameList.add(country.getName());
-            countryHashMap.put(country.getName(), country);
-        }
-    }
-
     public void setSuperPower(Country superPower) {
         this.superPower = superPower;
     }
@@ -102,5 +93,19 @@ public class CountryDataManager {
     }
     public List<Leader> getUnusedLeaders(IdeologyTypes ideologyTypes){
         return unusedLeaders.get(ideologyTypes);
+    }
+    public void addFaction(Factions factions){
+        this.factions.add(factions);
+        this.factionNames.add(factions.getName());
+        factionsHashMap.put(factions.getName().toLowerCase(), factions);
+    }
+    public Factions getFaction(String name){
+        return factionsHashMap.get(name.toLowerCase());
+    }
+    public List<String> getFactionNames(){
+        return factionNames;
+    }
+    public List<Factions> getFactions(){
+        return factions;
     }
 }

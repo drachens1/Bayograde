@@ -1,15 +1,16 @@
 package org.drachens.cmd.country;
 
-import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.BetterCommand.IndividualCMD;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
-import static org.drachens.util.ServerUtil.getWorldClasses;
+import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
-public class JoinCMD extends Command {
+public class JoinCMD extends IndividualCMD {
     public JoinCMD() {
         super("join");
         setDefaultExecutor((sender,context)-> sender.sendMessage("Default usage: /country join <country>"));
@@ -23,16 +24,19 @@ public class JoinCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof Player p)) {
+            if (!(sender instanceof Player p))
                 return;
-            }
-            if (!getCountryNames(p.getInstance()).contains(context.get(countries))) {
+            Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
+            if (country==null)
                 return;
-            }
-            Country country = getWorldClasses(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             country.changeCountry(p);
         }, countries);
     }
-
+    @Override
+    public boolean requirements(CommandSender sender) {
+        if (!(sender instanceof Player p))
+            return false;
+        return getCountryFromPlayer(p)==null;
+    }
 }
 

@@ -3,9 +3,10 @@ package org.drachens.dataClasses.Economics.factory;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
+import net.minestom.server.item.Material;
+import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
-import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -24,6 +25,10 @@ public class PlaceableFactory implements PlaceableBuilds {
     private final int max;
     private final Country occupier;
     private int current;
+    int[] constructionFrames = {2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30};
+    int[] smokeFrames = {31,32,33};
+    private final Animation constructionAnimation = new Animation(1, Material.CYAN_DYE,constructionFrames);
+    private Animation smokeAnimation = new Animation(1, Material.CYAN_DYE,smokeFrames);
     public PlaceableFactory(FactoryType factoryType, Province province) {
         this.factoryType = factoryType;
         this.province = province;
@@ -40,6 +45,7 @@ public class PlaceableFactory implements PlaceableBuilds {
             textDisplay.addViewer(p);
         }
         this.max = Math.round(factoryType.getMax(province.getMaterial())*province.getOccupier().getMaxBoost());
+        smokeAnimation.start(itemDisplay,true);
     }
 
     private void updateDisplay() {

@@ -9,8 +9,8 @@ import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.interfaces.War;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +21,8 @@ import static org.drachens.util.ServerUtil.blockVecToPos;
 
 
 public class ClickWarSystem implements War {
+    private final CurrencyTypes hits = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
+    private final Payment payment = new Payment(hits, 1);
     int[][] directions = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
@@ -55,14 +57,13 @@ public class ClickWarSystem implements War {
         if (country==null)return;
         Instance instance = e.getInstance();
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
-        if (province==null || province.getOccupier()==country)return;
-        CurrencyTypes hits = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
-        if (!country.canMinusCost(new Payment(hits,1))){
+        if (province==null || province.getOccupier()==country || province.isCapturable())return;
+        if (!country.canMinusCost(payment)){
             p.sendActionBar(compBuild("You cannot afford this", NamedTextColor.RED));
             return;
         }
         if (!AdjacentBlocks(province.getPos(),country,instance))return;
-        country.addPayment(new Payment(hits,1));
-        province.setOccupier(country);
+        country.removePayment(payment);
+        province.capture(country);
     }
 }

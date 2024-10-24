@@ -2,25 +2,30 @@ package org.drachens.dataClasses;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Modifier {
-    private final float maxBoost;
-    private final float capitulationBoostPercentage;
-    private final float stabilityBaseBoost;
-    private final float stabilityGainBoost;
-    private final List<CurrencyBoost> currencyBoostList;
-    private final Component name;
-    private final Component justCompName;
+public class Modifier implements Cloneable {
+    private float productionBoost;
+    private float maxBoost;
+    private float capitulationBoostPercentage;
+    private float stabilityBaseBoost;
+    private float stabilityGainBoost;
+    private List<CurrencyBoost> currencyBoostList;
+    private Component name;
+    private Component justCompName;
     private Component description;
     private Component startDescription;
-    private final TextColor textColor;
+    private TextColor textColor;
+    private float relationsBoost;
+    private float baseRelationsBoost;
+    private final List<Country> appliedCountries = new ArrayList<>();
+    private Modifier oldModifier;
     private Modifier(create c){
         this.justCompName = c.name;
         this.maxBoost = c.maxBoost;
@@ -28,6 +33,8 @@ public class Modifier {
         this.stabilityBaseBoost = c.stabilityBaseBoost;
         this.stabilityGainBoost = c.stabilityGainBoost;
         this.currencyBoostList = c.currencyBoostList;
+        this.relationsBoost = c.relationsBoost;
+        this.baseRelationsBoost = c.baseRelationsBoost;
         if (c.description!=null) this.startDescription = c.description;
         this.textColor = c.textColor;
         createDescription();
@@ -35,8 +42,8 @@ public class Modifier {
                 .append(c.name)
                 .hoverEvent(HoverEvent.showText(description))
                 .build();
+        oldModifier = this.clone();
     }
-
     public void createDescription(){
         List<Component> boostComp = new ArrayList<>();
         for (CurrencyBoost currencyBoost : currencyBoostList){
@@ -116,6 +123,22 @@ public class Modifier {
                         .build());
             }
         }
+        if (relationsBoost!=0f){
+            if (capitulationBoostPercentage > 0f){
+                boostComp.add(Component.text()
+                        .append(Component.text(capitulationBoostPercentage,NamedTextColor.GREEN))
+                        .append(Component.text("relations boost"))
+                        .appendNewline()
+                        .build());
+            }else {
+                boostComp.add(Component.text()
+                        .append(Component.text(capitulationBoostPercentage,NamedTextColor.RED))
+                        .append(Component.text("insert capitulation symbol"))
+                        .appendNewline()
+                        .build());
+            }
+        }
+
 
         if (startDescription == null){
             description = Component.text()
@@ -153,11 +176,9 @@ public class Modifier {
     public Component getName() {
         return name;
     }
-
     public Component getDescription() {
         return description;
     }
-
     public float getStabilityBaseBoost() {
         return stabilityBaseBoost;
     }
@@ -165,9 +186,95 @@ public class Modifier {
     public float getStabilityGainBoost() {
         return stabilityGainBoost;
     }
-
     public List<CurrencyBoost> getCurrencyBoostList() {
         return currencyBoostList;
+    }
+    public float getProductionBoost(){
+        return productionBoost;
+    }
+    public float getRelationsBoost(){
+        return relationsBoost;
+    }
+    public float getBaseRelationsBoost() {
+        return baseRelationsBoost;
+    }
+    public void setMaxBoost(float maxBoost) {
+        this.maxBoost = maxBoost;
+        update();
+    }
+
+    public void setCapitulationBoostPercentage(float capitulationBoostPercentage) {
+        this.capitulationBoostPercentage = capitulationBoostPercentage;
+        update();
+    }
+
+    public void setTextColor(TextColor textColor) {
+        this.textColor = textColor;
+        update();
+    }
+
+    public void setName(Component name) {
+        this.name = name;
+        update();
+    }
+
+    public void setDescription(Component description) {
+        this.description = description;
+        update();
+    }
+
+    public void setStabilityBaseBoost(float stabilityBaseBoost) {
+        this.stabilityBaseBoost = stabilityBaseBoost;
+        update();
+    }
+
+    public void setStabilityGainBoost(float stabilityGainBoost) {
+        this.stabilityGainBoost = stabilityGainBoost;
+        update();
+    }
+
+    public void setCurrencyBoostList(List<CurrencyBoost> currencyBoostList) {
+        this.currencyBoostList = currencyBoostList;
+        update();
+    }
+
+    public void setRelationsBoost(float relationsBoost) {
+        this.relationsBoost = relationsBoost;
+        update();
+    }
+
+    public void setBaseRelationsBoost(float baseRelationsBoost) {
+        this.baseRelationsBoost = baseRelationsBoost;
+        update();
+    }
+
+    public void setProductionBoost(float productionBoost){
+        this.productionBoost = productionBoost;
+        update();
+    }
+
+    public void addCountry(Country country){
+        this.appliedCountries.add(country);
+    }
+    public void removeCountry(Country country){
+        this.appliedCountries.remove(country);
+    }
+
+    public void update(){
+        for (Country country : appliedCountries){
+            country.updateModifier(this,oldModifier);
+        }
+        oldModifier = this.clone();
+    }
+
+    @Override
+    public Modifier clone() {
+        try {
+            Modifier clone = (Modifier) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 
     public static class create{
@@ -177,7 +284,10 @@ public class Modifier {
         private float capitulationBoostPercentage = 0f;
         private float stabilityBaseBoost = 0f;
         private float stabilityGainBoost = 0f;
+        private float relationsBoost = 0f;
+        private float baseRelationsBoost = 0f;
         private final List<CurrencyBoost> currencyBoostList = new ArrayList<>();
+        private float productionBoost = 0f;
         private TextColor textColor;
         public create(Component name){
             this.name = name;
@@ -210,8 +320,20 @@ public class Modifier {
             this.textColor = textColor;
             return this;
         }
+        public create setRelationsBoost(float amount){
+            relationsBoost = amount;
+            return this;
+        }
+        public create setBaseRelationsBoost(float amount){
+            baseRelationsBoost = amount;
+            return this;
+        }
         public create setTextColour(int r, int g, int b){
             this.textColor = TextColor.color(r,g,b);
+            return this;
+        }
+        public create setProductionBoost(float amount){
+            this.productionBoost = amount;
             return this;
         }
         public Modifier build(){

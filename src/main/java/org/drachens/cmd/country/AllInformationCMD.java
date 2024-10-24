@@ -4,16 +4,20 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Modifier;
+import org.drachens.interfaces.BetterCommand.IndividualCMD;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 
-public class AllInformationCMD extends Command {
+public class AllInformationCMD extends IndividualCMD {
     public AllInformationCMD() {
         super("all_information");
         var countries = ArgumentType.String("Countries");
@@ -26,13 +30,15 @@ public class AllInformationCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof Player p)) {
+            if (!(sender instanceof Player p))
                 return;
-            }
-            if (!getCountryNames(p.getInstance()).contains(context.get(countries))) {
-                return;
-            }
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
+            if (country==null)
+                return;
+            List<Component> modifierComps = new ArrayList<>();
+            for (Modifier modifier : country.getModifiers()){
+                modifierComps.add(modifier.getName()); modifierComps.add(Component.text(", "));
+            }
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(Component.text(getName(), NamedTextColor.GOLD))
@@ -72,7 +78,15 @@ public class AllInformationCMD extends Command {
                     .appendNewline()
                     .append(Component.text("Power: "))
                     .append(Component.text(country.getType().name()))
+                    .appendNewline()
+                    .append(Component.text("Modifiers: "))
+                    .append(modifierComps)
                     .build());
         }, countries);
+    }
+
+    @Override
+    public boolean requirements(CommandSender sender) {
+        return sender instanceof Player;
     }
 }

@@ -13,14 +13,16 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.PlaceableBuilds;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.events.CaptureBlockEvent;
+import org.drachens.events.StartWarEvent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.Messages.globalBroadcast;
 
-public class Province {
+public class Province implements Serializable {
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
@@ -44,41 +46,46 @@ public class Province {
     private PlaceableBuilds buildType;
     private Material material;
     private boolean city;
+    private List<Province> neighbours;
 
-    public Province(Pos pos, Instance instance, List<Country> cores, Country occupier) {
+    public Province(Pos pos, Instance instance, List<Country> cores, Country occupier, List<Province> neighbours) {
         this.pos = pos;
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
+        this.neighbours = neighbours;
     }
 
-    public Province(int x, int y, int z, Instance instance, List<Country> cores, Country occupier) {
+    public Province(int x, int y, int z, Instance instance, List<Country> cores, Country occupier, List<Province> neighbours) {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = cores;
         this.occupier = occupier;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
+        this.neighbours = neighbours;
     }
 
-    public Province(int x, int y, int z, Instance instance) {
+    public Province(int x, int y, int z, Instance instance, List<Province> neighbours) {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = new ArrayList<>();
         this.occupier = null;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
+        this.neighbours = neighbours;
     }
 
-    public Province(Pos pos, Instance instance) {
+    public Province(Pos pos, Instance instance, List<Province> neighbours) {
         this.pos = pos;
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.core = new ArrayList<>();
         this.occupier = null;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
+        this.neighbours = neighbours;
     }
 
     public Pos getPos() {
@@ -101,21 +108,25 @@ public class Province {
         return occupier;
     }
 
-    public void setOccupier(Country occupier) {
-        Country current = getOccupier();
-        if (current != null) {
-            current.removeOccupied(this);
-            if (isCity()) this.occupier.cityCaptured(occupier,this);
+    public void setOccupier(Country attacker) {
+        if (occupier != null) {
+            occupier.removeOccupied(this);
+            if (isCity())
+                this.occupier.cityCaptured(attacker,this);
+
             if (buildType != null) {
                 if (buildType instanceof PlaceableFactory pl) {
-                    current.removePlaceableFactory(pl);
+                    occupier.removePlaceableFactory(pl);
                 }
             }
         }
-        this.occupier = occupier;
+        this.occupier = attacker;
         occupier.addOccupied(this);
         if (isCity()) {
-            setCity(1);
+            if (attacker.isMajorCity(this))
+                this.setCity(attacker.getMajorCity(this));
+            else
+                setCity(1);
             occupier.addCity(this);
         }
         if (buildType != null) {
@@ -156,12 +167,13 @@ public class Province {
     }
 
     public void capture(Country attacker) {
+        if (!attacker.atWar(occupier))
+            EventDispatcher.call(new StartWarEvent(attacker,occupier));
         occupier.sendActionBar(compBuild("You have been attacked at "+pos, NamedTextColor.RED));
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
         if (buildType != null) this.buildType.onCaptured(attacker);
         setOccupier(attacker);
         updateBorders();
-        globalBroadcast("capturedevent");
     }
 
     public PlaceableBuilds getBuildType() {
@@ -211,6 +223,10 @@ public class Province {
     public void setCity(boolean city) {
         this.city = city;
     }
+    public void setCity(Material material){
+        this.setBlock(material);
+        Arrays.stream(cities).toList().indexOf(material);
+    }
 
     //6 = capital
     public void setCity(int lvl) {
@@ -248,5 +264,11 @@ public class Province {
             }
             province.setBlock();
         }
+    }
+    public void setNeighbours(List<Province> provinces){
+        this.neighbours = provinces;
+    }
+    public List<Province> getNeighbours(){
+        return neighbours;
     }
 }

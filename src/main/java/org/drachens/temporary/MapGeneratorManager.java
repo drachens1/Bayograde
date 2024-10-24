@@ -17,7 +17,7 @@ import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.territories.Continent;
 import org.drachens.dataClasses.territories.Region;
-import org.drachens.interfaces.MapGenerator;
+import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.Voting.VotingOption;
 
 import java.util.*;
@@ -25,7 +25,7 @@ import java.util.*;
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.ServerUtil.addChunk;
 
-public class MapGeneratorManager implements MapGenerator {
+public class MapGeneratorManager extends MapGen {
     HashMap<CountryEnums.Type, Integer> gMax = new HashMap<>(); //og = 4
     HashMap<CountryEnums.Type, Integer> rgMax = new HashMap<>(); //og = 2
     HashMap<CountryEnums.Type, Integer> yMax = new HashMap<>(); //og = 2
@@ -87,6 +87,7 @@ public class MapGeneratorManager implements MapGenerator {
         start();
     }
     public MapGeneratorManager() {
+        super(111,111);
         setupHashmaps();
         Material[] block = {
                 //Terracotta's
@@ -171,8 +172,8 @@ public class MapGeneratorManager implements MapGenerator {
         double baseScale = 0.01;
         double detailScale = 0.05;
         double threshold = 0.5;
-        for (int x = -111; x < 111; x++) {
-            for (int z = -111; z < 111; z++) {
+        for (int x = -getSizeX(); x < getSizeX(); x++) {
+            for (int z = -getSizeY(); z < getSizeY(); z++) {
                 double baseNoiseValue = baseNoise.evaluateNoise(x * baseScale, z * baseScale);
                 double detailNoiseValue = detailNoise.evaluateNoise(x * detailScale, z * detailScale);
 
@@ -181,7 +182,7 @@ public class MapGeneratorManager implements MapGenerator {
                 double normalizedValue = (combinedValue + 1) / 2.0;
                 Pos pos = new Pos(x, 0, z);
                 instance.loadChunk(pos);
-                Province province = new Province(pos, instance);
+                Province province = new Province(pos, instance,new ArrayList<>());
                 if (normalizedValue > threshold) {
                     province.setCapturable(false);
                     province.setBlock(Material.BLUE_STAINED_GLASS);
@@ -197,6 +198,7 @@ public class MapGeneratorManager implements MapGenerator {
         for (IdeologyTypes ideologyTypes : votingOption.getIdeologyTypes()){
             countryDataManager.setUnusedLeaders(ideologyTypes,ideologyTypes.getLeaders());
         }
+        setNeighbours();
         createCountries(countries);
     }
     private void createCountries(int num) {
@@ -234,7 +236,7 @@ public class MapGeneratorManager implements MapGenerator {
         for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()){
             newCurrencies.put(e.getKey(),e.getValue().clone());
         }
-        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE),block, border, defIdeology,defElection);
+        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE),block, border, defIdeology,defElection,instance);
     }
 
     public void floodFill(List<Country> countries) {
@@ -281,10 +283,9 @@ public class MapGeneratorManager implements MapGenerator {
         borderScan();
         generateCities(countries);
     }
-
+    int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
     private List<Pos> getNeighbors(Pos pos) {
         List<Pos> neighbors = new ArrayList<>();
-        int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
         for (int[] dir : directions) {
             Pos neighbor = new Pos(pos.blockX() + dir[0], pos.blockY(), pos.blockZ() + dir[2]);
             neighbors.add(neighbor);
@@ -314,7 +315,7 @@ public class MapGeneratorManager implements MapGenerator {
             }
         }
     }
-    Pos[] directions = {
+    Pos[] directions1 = {
             new Pos(-1, 0, 0), // West
             new Pos(1, 0, 0),  // East
             new Pos(0, 0, -1), // North
@@ -322,7 +323,7 @@ public class MapGeneratorManager implements MapGenerator {
             new Pos(0, 0, 0) // current
     };
     public void updateBorders(Pos loc) {
-        for (Pos direction : directions) {
+        for (Pos direction : directions1) {
             Pos newLoc = loc.add(direction);
             change(newLoc);
         }
@@ -374,6 +375,7 @@ public class MapGeneratorManager implements MapGenerator {
             } else {
                 p.setCity(index);
                 country.addCity(p);
+                country.addMajorCity(p,p.getMaterial());
             }
         }
     }
@@ -499,6 +501,7 @@ public class MapGeneratorManager implements MapGenerator {
         Region east = new Region("east", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
         ElectionTypesTemp.remove(east.getLeadingElectionType());
         ideologyTypesTemp.remove(east.getLeadingIdeology());
+        if (electionTypes.isEmpty())ElectionTypesTemp = new ArrayList<>(electionTypes);
         Region west = new Region("west", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
 
         Pos spawn = new Pos(0,0,0);
@@ -639,5 +642,18 @@ public class MapGeneratorManager implements MapGenerator {
     }
     private void ideologyBoost(Country country){
         country.getIdeology().addIdeology(winnerOfThePrevWar,new Random().nextFloat(0,50f));
+    }
+    private List<Province> getNeighbours(Province province){
+        List<Province> neighbour = new ArrayList<>();
+        for (int[] offset : directions2){
+            neighbour.add(provinceManager.getProvince(province.getPos().add(offset[0],0,offset[1])));
+        }
+        return neighbour;
+    }
+    private void setNeighbours(){
+        for (Map.Entry<Pos,Province> entry : provinceManager.getProvinceHashMap().entrySet()){
+            Province province = entry.getValue();
+            province.setNeighbours(getNeighbours(province));
+        }
     }
 }

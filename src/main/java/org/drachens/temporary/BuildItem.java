@@ -7,8 +7,8 @@ import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Economics.PlaceableBuilds;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.dataClasses.Economics.factory.FactoryType;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.interfaces.items.HotbarItemButton;
@@ -18,6 +18,7 @@ import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class BuildItem extends HotbarItemButton {
     private final Payment cost = new Payment(ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production"),5f);
+    private final FactoryType factoryType = ContinentalManagers.defaultsStorer.placeables.getFactoryType("civilian");
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the factory : 5 Production", NamedTextColor.RED))
             .build();
@@ -41,7 +42,7 @@ public class BuildItem extends HotbarItemButton {
             return;
         }
         if (province.getBuildType() == null) {
-            new PlaceableFactory(ContinentalManagers.defaultsStorer.placeables.getFactoryType("civilian"), province);
+            new PlaceableFactory(factoryType, province);
         }else {
             province.getBuildType().onUpgrade(1);
         }

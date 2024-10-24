@@ -1,6 +1,7 @@
 package org.drachens.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
@@ -14,7 +15,6 @@ import java.util.Date;
 public class Messages {
 
     public static void globalBroadcast(String msg) {
-        System.out.println(msg);
         logMsg("server", msg, null);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
@@ -22,7 +22,6 @@ public class Messages {
     }
 
     public static void globalBroadcast(Component msg) {
-        System.out.println(msg);
         logMsg("server", msg, null);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
@@ -30,7 +29,6 @@ public class Messages {
     }
 
     public static void broadcast(String msg, Instance world) {
-        System.out.println(msg);
         logMsg("server", msg, world);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
@@ -87,13 +85,15 @@ public class Messages {
         }
     }
     public static void logMsg(String playerName, Component msg, Instance w) {
+        String msgS = PlainTextComponentSerializer.plainText().serialize(msg);
+        System.out.println(playerName+" : "+msgS);
         try {
             FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
             try {
                 if (w != null) {
-                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msg);
+                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msgS);
                 } else {
-                    f.write(getTime() + " " + playerName + ":" + msg);
+                    f.write(getTime() + " " + playerName + ":" + msgS);
                 }
                 f.write("\n");
                 f.close();

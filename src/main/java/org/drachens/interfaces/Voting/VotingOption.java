@@ -4,7 +4,7 @@ import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.interfaces.MapGenerator;
+import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.War;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class VotingOption {
     Long dayLength;
     War war;
     String name;
-    MapGenerator mapGenerator;
+    MapGen mapGenerator;
     List<IdeologyTypes> ideologyTypes;
     List<ElectionTypes> electionTypes;
     HashMap<CurrencyTypes, Currencies> defaultCurrencies;
@@ -49,10 +49,10 @@ public class VotingOption {
     public War getWar(){
         return war;
     }
-    public void setMapGenerator(MapGenerator mapGenerator){
+    public void setMapGenerator(MapGen mapGenerator){
         this.mapGenerator = mapGenerator;
     }
-    public MapGenerator getMapGenerator(){
+    public MapGen getMapGenerator(){
         return mapGenerator;
     }
     public int getCountries(){
@@ -74,7 +74,7 @@ public class VotingOption {
         Long dayLength;
         War war;
         String name;
-        MapGenerator mapGenerator;
+        MapGen mapGenerator;
         List<ElectionTypes> electionTypes;
         List<IdeologyTypes> ideologyTypes = new ArrayList<>();
         HashMap<CurrencyTypes, Currencies> defaultCurrencies = new HashMap<>();
@@ -88,7 +88,7 @@ public class VotingOption {
             this.war = war;
             return this;
         }
-        public create setMapGenerator(MapGenerator mapGenerator){
+        public create setMapGenerator(MapGen mapGenerator){
             this.mapGenerator = mapGenerator;
             return this;
         }

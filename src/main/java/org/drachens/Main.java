@@ -28,12 +28,12 @@ import org.drachens.dataClasses.HotbarInventory;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.interfaces.Voting.VotingOption;
 import org.drachens.interfaces.items.HotbarItemButton;
-import org.drachens.temporary.BuildItem;
-import org.drachens.temporary.BuildItem2;
-import org.drachens.temporary.ClickWarSystem;
-import org.drachens.temporary.MapGeneratorManager;
+import org.drachens.temporary.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.ServerUtil.initSrv;
@@ -217,14 +217,23 @@ public class Main {
         modifiers.register(major,votingName+"major");
         modifiers.register(minor,votingName+"minor");
 
-        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L,"ww2")
+        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L,"ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
                 .setCountries(90)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(),"ww2");
+                .build(),"ww2_clicks");
+
+        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L,"ww2_troops")
+                .setMapGenerator(new MapGeneratorManager())
+                .setWar(new TroopWarSystem())
+                .setCountries(90)
+                .setDefaultCurrencies(c)
+                .setIdeologyTypes(ideologyTypesList)
+                .setElections(electionTypes)
+                .build(),"ww2_troops");
     }
 
     private static List<Leader> getLeaders(Modifier modifier){

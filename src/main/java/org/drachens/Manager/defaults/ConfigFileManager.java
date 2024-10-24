@@ -1,6 +1,5 @@
 package org.drachens.Manager.defaults;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import org.drachens.cmd.Dev.whitelist.Whitelist;
 import org.spongepowered.configurate.ConfigurateException;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.drachens.util.Messages.getTime;
 import static org.drachens.util.ServerUtil.start;
 
 public class ConfigFileManager {
@@ -28,9 +28,11 @@ public class ConfigFileManager {
     private  File msg;
     private  File cmd;
     private  Whitelist whitelist;
+    private File serverProperties;
+    private ConfigurationNode propertiesConfigurationNode;
+    private YamlConfigurationLoader propertiesLoader;
 
     public  void startup() {
-
         File playerData = new File("playerData");//Creates the parent directory
         playerData.mkdir();
 
@@ -47,6 +49,22 @@ public class ConfigFileManager {
             } catch (IOException err) {
                 System.err.println("Unable to load operator loader " + err.getMessage());
             }
+        }
+
+        serverProperties = new File("serverProperties.yml");
+        fileExists(serverProperties);
+        propertiesLoader = YamlConfigurationLoader.builder().file(serverProperties).build();
+        try {
+            propertiesConfigurationNode = propertiesLoader.load();
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
+        }
+
+        createDefaultsServerProperties(propertiesConfigurationNode);
+        try {
+            propertiesLoader.save(propertiesConfigurationNode);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
         }
 
         //To setup all the log stuff
@@ -75,6 +93,7 @@ public class ConfigFileManager {
         } catch (ConfigurateException e) {
             System.err.println("Unable to load permissions " + e.getMessage());
         }
+        createDefaultsPermissionLoader(permissionsNode);
         loadWhitelist();
         start();
     }
@@ -90,6 +109,12 @@ public class ConfigFileManager {
             whitelistListNode = whitelistLoader.load();
         } catch (ConfigurateException e) {
             System.out.println("Whitelist failed loading " + e.getMessage());
+        }
+        createDefaultsWhitelist(whitelistListNode);
+        try {
+            whitelistLoader.save(whitelistListNode);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
         }
         ConfigurationNode whitelisted = whitelistListNode.node("whitelist");
         ConfigurationNode actives = whitelisted.node("active");
@@ -127,7 +152,7 @@ public class ConfigFileManager {
         return playerDataLoaders.get(playerName);
     }
 
-    public  ConfigurationNode createPlayersData(String player) {
+    public ConfigurationNode createPlayersData(String player) {
         File playerData = new File("playerData/" + player);
         fileExists(playerData);
         System.out.println("creating player data file! " + player + " Name: " + playerData.getName());
@@ -136,21 +161,12 @@ public class ConfigFileManager {
                 .build();
         playerDataLoaders.put(playerData.getName(), temp);
         playerDataFiles.put(playerData.getName(), playerData);
-
         try {
             ConfigurationNode c = temp.load();
-            playerDataNodes.put(playerData.getName(), c);
-            //Creates the default info
-            ConfigurationNode general = c.node("general");
-            general.node("name").set(MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(UUID.fromString(player.replace(".yml", ""))));
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm");
-            general.node("joined").set(format.format(new Date()));
-            general.node("lastOnline").set(format.format(new Date()));
-            playerDataLoaders.get(playerData.getName()).save(playerDataNodes.get(playerData.getName()));
+            createDefaultsPlayerData(c,temp,playerData.getName(),player);
             return c;
-        } catch (IOException e) {
-            System.err.println("Unable to create the player datas " + e.getMessage());
-            return null;
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -188,7 +204,7 @@ public class ConfigFileManager {
     public  void loadPermissions(Player p) {
         UUID playerID = p.getUuid();
         ConfigurationNode wanted = getPlayersData(playerID);
-        ConfigurationNode permissions = wanted.node("permissions");
+        ConfigurationNode permissions = wanted.node("Permissions");
         try {
             List<String> perms = permissions.getList(String.class);
             if (perms == null) {
@@ -239,5 +255,79 @@ public class ConfigFileManager {
 
     public  ConfigurationNode getPermissionsFile() {
         return permissionsNode;
+    }
+    public ConfigurationNode getPropertiesConfigurationNode(){
+        return propertiesConfigurationNode;
+    }
+
+    private void createDefaultsServerProperties(ConfigurationNode serverProp){
+        try {
+            if (serverProp.node("server","port").isNull()){
+                serverProp.node("server","port").set(25565);
+            }
+            if (serverProp.node("server","host").isNull()){
+                serverProp.node("server","host").set("localHost");
+            }
+            if (serverProp.node("velocity","active").isNull()){
+                serverProp.node("velocity","active").set(false);
+            }
+            if (serverProp.node("velocity","secret").isNull()){
+                serverProp.node("velocity","secret").set("null");
+            }
+        } catch (SerializationException e) {
+            System.err.println("Properties defaults setting error "+e.getMessage());
+        }
+    }
+    private void createDefaultsWhitelist(ConfigurationNode whitelist){
+        try {
+            if (whitelist.node("whitelist","active").isNull()){
+                whitelist.node("whitelist","active").set(false);
+            }
+            if (whitelist.node("whitelist","players").isNull()){
+                whitelist.node("whitelist","players").set(new ArrayList<>());
+            }
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void createDefaultsPlayerData(ConfigurationNode playerData, YamlConfigurationLoader playerDataLoader, String username, String uuid){
+        try {
+            String time = getTime();
+            if (playerData.node("Player_Info","Identifiers","UUID").isNull()){
+                playerData.node("Player_Info","Identifiers","UUID").set(username);
+            }
+            if (playerData.node("Player_Info","Identifiers","Username").isNull()){
+                playerData.node("Player_Info","Identifiers","Username").set(uuid);
+            }
+            if (playerData.node("Player_Info","Activity","LastOnline").isNull()){
+                playerData.node("Player_Info","Activity","LastOnline").set(time);
+            }
+            if (playerData.node("Player_Info","Activity","FirstJoined").isNull()){
+                playerData.node("Player_Info","Activity","FirstJoined").set(time);
+            }
+            if (playerData.node("Permissions").isNull()){
+                playerData.node("Permissions").set("");
+            }
+            if (playerData.node("Cosmetics").isNull()){
+                playerData.node("Cosmetics").set("");
+            }
+            if (playerData.node("Achievements").isNull()){
+                playerData.node("Achievements").set("");
+            }
+            playerDataLoader.save(playerData);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createDefaultsPermissionLoader(ConfigurationNode permissionsNode){
+        try {
+            if (permissionsNode.node("permissions").isNull()){
+                permissionsNode.node("permissions").set(null);
+            }
+            permissionsLoader.save(permissionsNode);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

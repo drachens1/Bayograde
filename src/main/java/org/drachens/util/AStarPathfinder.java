@@ -10,15 +10,13 @@ import java.util.*;
 public class AStarPathfinder {
     private final Country country;
     private final ProvinceManager provinceManager;
-    private final AStarPathfinderVoids pathfinderVoids;
 
-    public AStarPathfinder(Country country, ProvinceManager provinceManager, AStarPathfinderVoids pathfinderVoids) {
+    public AStarPathfinder(Country country, ProvinceManager provinceManager) {
         this.country = country;
         this.provinceManager = provinceManager;
-        this.pathfinderVoids = pathfinderVoids;
     }
 
-    public List<Province> findPath(Province start, Province goal, Country country) {
+    public List<Province> findPath(Province start, Province goal, Country country, AStarPathfinderVoids pathfinderVoids) {
         Set<ProvinceKey> closedSet = new HashSet<>();
         PriorityQueue<Node> openSet = new PriorityQueue<>((n1, n2) -> {
             if (n1.getPriority() != n2.getPriority()) {
@@ -45,7 +43,7 @@ public class AStarPathfinder {
 
             closedSet.add(currentKey);
 
-            for (Province neighbor : getNeighbors(currentProvince, country)) {
+            for (Province neighbor : getNeighbors(currentProvince, country,pathfinderVoids)) {
                 ProvinceKey neighborKey = new ProvinceKey(neighbor);
                 if (closedSet.contains(neighborKey)) continue;
 
@@ -83,7 +81,7 @@ public class AStarPathfinder {
         return start.distance(goal);
     }
 
-    private List<Province> getNeighbors(Province province, Country country) {
+    private List<Province> getNeighbors(Province province, Country country, AStarPathfinderVoids pathfinderVoids) {
         List<Province> neighbors = new ArrayList<>();
         int[] deltas = {-1, 0, 1};
         int y = province.getPos().blockY();

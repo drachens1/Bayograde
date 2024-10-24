@@ -53,6 +53,7 @@ import org.drachens.cmd.TestCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.country.CountryCMD;
+import org.drachens.cmd.faction.FactionCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
@@ -63,6 +64,7 @@ import org.drachens.dataClasses.Economics.factory.FactoryType;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
+import org.drachens.dataClasses.other.Clientside;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
@@ -72,12 +74,10 @@ import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
 import org.drachens.interfaces.Voting.VotingOption;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.drachens.util.KyoriUtil.*;
@@ -107,13 +107,17 @@ public class ServerUtil {
     }
 
     public static void startSrv() {
-        System.out.println("Start ");
         if (srv == null || MinecraftServer.isStarted()) {
-            System.out.println("start 2");
             return;
         }
-        System.out.println("Start 3");
-        srv.start("0.0.0.0", 25565);
+        ConfigurationNode serverProperties = ContinentalManagers.configFileManager.getPropertiesConfigurationNode();
+        ConfigurationNode velocity = serverProperties.node("velocity");
+        if (velocity.node("active").getBoolean()){
+            VelocityProxy.enable(Objects.requireNonNull(velocity.node("secret").getString()));
+        }else
+            MojangAuth.init();
+        ConfigurationNode server = serverProperties.node("server");
+        srv.start(Objects.requireNonNull(server.node("host").getString()), server.node("port").getInt());
     }
 
     public static GlobalEventHandler getEventHandler() {
@@ -163,16 +167,15 @@ public class ServerUtil {
         GlobalEventHandler globEHandler = getEventHandler();
 
         //VELOCITAY
-        //VelocityProxy.enable("uZEnvlMqDPRr"); //TODO Change this to not be outed when adding it to the server
-        MojangAuth.init();
 
-        globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(true));
+        globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
 
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
             //Gets the player
             final Player p = e.getPlayer();
             e.setSpawningInstance(instCon);
             p.setRespawnPoint(new Pos(0, 1, 0));
+            ContinentalManagers.configFileManager.loadPermissions(p);
         });
 
         globEHandler.addListener(RankAddEvent.class,e-> playerRanks.get(e.getPlayer()).add(e.getRank()));
@@ -186,7 +189,6 @@ public class ServerUtil {
                 System.out.println(p.getUsername() + " tried to join the game but isn't whitelisted");
                 return;
             }
-            ContinentalManagers.configFileManager.loadPermissions(p);
             playerRanks.put(p,new ArrayList<>());
             ContinentalManagers.configFileManager.getPlayersData(p.getUuid());
             addPlayerToCountryMap(p);
@@ -198,7 +200,6 @@ public class ServerUtil {
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             Player p = e.getPlayer();
             p.setAllowFlying(true);
-            globalBroadcast(p.getUsername() + " has joined the game");
             scoreboardManager.getScoreboard("default").add(p);
             tabCreation(p);
             ContinentalManagers.achievementsManager.addPlayerToAdv(p);
@@ -283,13 +284,14 @@ public class ServerUtil {
             }
         });
 
+
         globEHandler.addListener(CountryJoinEvent.class, e -> addPlayerToCountryMap(e.getP(), e.getJoined()));
         globEHandler.addListener(CountryLeaveEvent.class, e -> addPlayerToCountryMap(e.getP(), null));
         globEHandler.addListener(CountryChangeEvent.class, e -> addPlayerToCountryMap(e.getP(), e.getJoined()));
 
+
         globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
-
             for (Country country : countryDataManager.getCountries())country.calculateIncrease();
             for (Country country : countryDataManager.getCountries()) {
                 Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
@@ -418,6 +420,7 @@ public class ServerUtil {
         commandManager.register(new TestCMD());
         commandManager.register(new StopCMD());
         commandManager.register(new debugCMD());
+        commandManager.register(new FactionCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -433,11 +436,11 @@ public class ServerUtil {
         new PermissionsManager();
 
         globEHandler.addListener(ResetEvent.class,e->{
+            CountryDataManager countryDataManager = worldClassesHashMap.get(e.getInstance()).countryDataManager();
+            countryDataManager.getCountries().forEach((Country::endGame));
             ClientEntsToLoad clientEntsToLoad = worldClassesHashMap.get(e.getInstance()).clientEntsToLoad();
+            new ArrayList<>(clientEntsToLoad.getClientSides(e.getInstance())).forEach((Clientside::dispose));
             clientEntsToLoad.reset();
-            for (Player p : e.getInstance().getPlayers()){
-                clientEntsToLoad.unloadPlayer(p);
-            }
             Instance instance = e.getInstance();
             CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());
             worldClassesHashMap.put(instance, new WorldClasses(

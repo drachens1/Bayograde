@@ -10,6 +10,7 @@ import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
+import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class ItemDisplay extends Clientside {
     ItemStack item;
     Pos pos;
     byte displayType;
-
+    HashMap<String, Animation> animationHashMap = new HashMap<>();
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
         super(storeViewers, instance);
 
@@ -35,9 +36,38 @@ public class ItemDisplay extends Clientside {
         this.pos = province.getPos();
         this.displayType = displayType.getSerialized();
     }
+    public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers, HashMap<String, Animation> animationHashMap) {
+        super(storeViewers, province.getInstance());
+
+        this.animationHashMap = animationHashMap;
+        this.item = item;
+        this.pos = province.getPos();
+        this.displayType = displayType.getSerialized();
+    }
+    public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
+        super(storeViewers, instance);
+
+        this.item = item;
+        this.pos = pos;
+        this.displayType = displayType.getSerialized();
+    }
+    public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers, HashMap<String, Animation> animationHashMap) {
+        super(storeViewers, instance);
+
+        this.animationHashMap = animationHashMap;
+        this.item = item;
+        this.pos = pos;
+        this.displayType = displayType.getSerialized();
+    }
 
     public void delete() {
         this.dispose();
+    }
+    public void addAnimation(String name, Animation animation){
+        this.animationHashMap.put(name,animation);
+    }
+    public Animation getAnimation(String name){
+        return animationHashMap.get(name);
     }
 
     public void setItem(ItemStack item) {
@@ -48,7 +78,7 @@ public class ItemDisplay extends Clientside {
     @Override
     public void addViewer(Player player) {
         if (storeViewers)
-            VIEWERS.add(player.getUuid());
+            VIEWERS.add(player);
 
         var conn = player.getPlayerConnection();
 
@@ -80,7 +110,7 @@ public class ItemDisplay extends Clientside {
     @Override
     public void removeViewer(Player player) {
         if (storeViewers)
-            VIEWERS.remove(player.getUuid());
+            VIEWERS.remove(player);
 
         var conn = player.getPlayerConnection();
 

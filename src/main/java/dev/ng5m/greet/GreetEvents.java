@@ -1,7 +1,6 @@
 package dev.ng5m.greet;
 
 import dev.ng5m.Util;
-import dev.ng5m.bansystem.BanSystemEvents;
 import dev.ng5m.events.EventHandler;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.events.EventHandlerProviderManager;
@@ -9,7 +8,6 @@ import dev.ng5m.util.Configurable;
 import dev.ng5m.util.Hookable;
 import dev.ng5m.util.Settings;
 import net.kyori.adventure.text.Component;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 

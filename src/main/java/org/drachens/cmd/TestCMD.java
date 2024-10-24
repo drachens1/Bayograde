@@ -7,6 +7,8 @@ import net.minestom.server.command.builder.Command;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class TestCMD extends Command {
+    int[] troopWalk = {1,2,3,4};
+    int[] attack = {1,2,3};
     public TestCMD() {
         super("test");
         setDefaultExecutor((sender,context)->{

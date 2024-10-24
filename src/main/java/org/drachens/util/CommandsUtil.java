@@ -10,15 +10,12 @@ import java.util.stream.Collectors;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CommandsUtil {
-    public static Suggestion getCountriesAutoComplete(Suggestion suggestion, Instance instance) {
-        for (String name : getWorldClasses(instance).countryDataManager().getNamesList()) {
-            suggestion.addEntry(new SuggestionEntry(name));
-        }
-        return suggestion;
-    }
 
     public static List<String> getCountryNames(Instance instance) {
         return getWorldClasses(instance).countryDataManager().getNamesList();
+    }
+    public static List<String> getFactionNames(Instance instance){
+        return getWorldClasses(instance).countryDataManager().getFactionNames();
     }
 
     public static Suggestion suggestions(List<String> suggestion, Suggestion suggestions) {
@@ -31,6 +28,15 @@ public class CommandsUtil {
 
     public static Suggestion getSuggestionsBasedOnInput(Suggestion suggestionss, String input, Instance i) {
         List<String> suggestions = getCountryNames(i);
+        input = input.trim();
+        if (input.isEmpty()) return suggestions(suggestions, suggestionss);
+        String finalInput = input;
+        return suggestions(suggestions.stream()
+                .filter(suggestion -> suggestion.toLowerCase().startsWith(finalInput))
+                .collect(Collectors.toList()), suggestionss);
+    }
+    public static Suggestion getFactionsSuggestionsBasedOnInput(Suggestion suggestionss, String input, Instance i) {
+        List<String> suggestions = getFactionNames(i);
         input = input.trim();
         if (input.isEmpty()) return suggestions(suggestions, suggestionss);
         String finalInput = input;

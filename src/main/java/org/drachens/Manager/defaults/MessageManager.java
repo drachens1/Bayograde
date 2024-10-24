@@ -8,9 +8,16 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.events.Factions.FactionCreateEvent;
+import org.drachens.events.Factions.FactionDeleteEvent;
+import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.events.StartWarEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
+
+import java.util.Objects;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.broadcast;
@@ -48,7 +55,7 @@ public class MessageManager {
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
             if (p==null)globalBroadcast("NULLl");
-            if (!e.getPlayer().isSneaking()||playerHasCooldown(e.getPlayer())||!p.isCapturable())return;
+            if (!e.getPlayer().isSneaking()||playerHasCooldown(e.getPlayer())||!Objects.requireNonNull(p).isCapturable())return;
             cooldown(e.getPlayer());
             if (p.getOccupier() == null) {
                 e.getPlayer().sendMessage(neutralComponent);
@@ -59,5 +66,55 @@ public class MessageManager {
         });
 
         globEHandler.addListener(ResetEvent.class,e->broadcast(gameOver,e.getInstance()));
+
+        globEHandler.addListener(StartWarEvent.class,e->{
+            Country defender = e.getDefender();
+            Country attacker = e.getAggressor();
+            defender.addWar(attacker);
+            attacker.addWar(defender);
+            broadcast(Component.text()
+                    .append(getPrefixes("country"))
+                    .append(attacker.getNameComponent())
+                    .append(Component.text(" started a war with ",NamedTextColor.RED))
+                    .append(defender.getNameComponent())
+                    .build(),
+                    defender.getCapital().getInstance());
+        });
+
+        globEHandler.addListener(FactionCreateEvent.class,e->{
+            Country creator = e.getCreator();
+            Factions factions = e.getNewFaction();
+            broadcast(Component.text()
+                    .append(getPrefixes("faction"))
+                    .append(creator.getNameComponent())
+                    .append(Component.text(" has created ",NamedTextColor.GREEN))
+                    .append(factions.getNameComponent())
+                    .build(),
+                    creator.getCapital().getInstance());
+        });
+
+        globEHandler.addListener(FactionDeleteEvent.class, e->{
+            Country deleter = e.getDeleter();
+            Factions factions = e.getDeletedFaction();
+            broadcast(Component.text()
+                            .append(getPrefixes("faction"))
+                            .append(deleter.getNameComponent())
+                            .append(Component.text(" has deleted ",NamedTextColor.GREEN))
+                            .append(factions.getNameComponent())
+                            .build(),
+                    deleter.getCapital().getInstance());
+        });
+
+        globEHandler.addListener(FactionJoinEvent.class, e->{
+            Country creator = e.getCountry();
+            Factions factions = e.getFaction();
+            broadcast(Component.text()
+                            .append(getPrefixes("faction"))
+                            .append(creator.getNameComponent())
+                            .append(Component.text(" has joined ",NamedTextColor.GREEN))
+                            .append(factions.getNameComponent())
+                            .build(),
+                    creator.getCapital().getInstance());
+        });
     }
 }

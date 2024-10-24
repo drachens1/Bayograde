@@ -5,13 +5,18 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
-import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Diplomacy.faction.FactionType;
+import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Provinces.Province;
@@ -19,6 +24,8 @@ import org.drachens.dataClasses.territories.Region;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
+import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.util.AStarPathfinder;
 
 import java.util.*;
 
@@ -32,6 +39,7 @@ public class Country implements Cloneable{
     private final HashMap<CurrencyTypes, Currencies> currenciesMap;
     private final List<Material> city = new ArrayList<>();
     private final List<PlaceableFactory> placeableFactories = new ArrayList<>();
+    private HashMap<FactionType, Factions> factionsHashMap = new HashMap<>();
     private List<Province> cores;
     private List<Province> occupies;
     private List<Province> cities;
@@ -62,7 +70,12 @@ public class Country implements Cloneable{
     private final HashMap<CurrencyTypes, Float> economyBoosts = new HashMap<>();
     private Country overlord = null;
     private List<Country> puppets = new ArrayList<>();
-    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election) {
+    private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
+    private float relationsBoost = 0f;
+    private float totalProductionBoost = 1f;
+    private final AStarPathfinder aStarPathfinder;
+    private final Instance instance;
+    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
         this.currenciesMap = startingCurrencies;
@@ -78,23 +91,48 @@ public class Country implements Cloneable{
         Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
                 Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
         city.addAll(Arrays.stream(tempCities).toList());
+        this.instance = instance;
+        aStarPathfinder = new AStarPathfinder(this, ContinentalManagers.world(instance).provinceManager());
     }
     public void addModifier(Modifier modifier){
+        if (modifiers.contains(modifier)){
+            System.out.println("ADD does contain");
+            return;
+        }
+        System.out.println("Added "+ PlainTextComponentSerializer.plainText().serialize(modifier.getName()));
         modifiers.add(modifier);
+        modifier.addCountry(this);
         this.maxBoost+=modifier.getMaxBoost();
         this.capitulationBoostPercentage+=modifier.getCapitulationBoostPercentage();
         this.stabilityBaseBoost+=modifier.getStabilityBaseBoost();
         this.stabilityGainBoost+=modifier.getStabilityGainBoost();
+        this.totalProductionBoost+=modifier.getProductionBoost();
         modifier.getCurrencyBoostList().forEach(this::addBoost);
+        createInfo();
+    }
+
+    public void updateModifier(Modifier modifier, Modifier old){
+        System.out.println("Update "+ PlainTextComponentSerializer.plainText().serialize(modifier.getName()));
+        removeModifier(old);
+        addModifier(modifier);
     }
 
     public void removeModifier(Modifier modifier){
+        if (!modifiers.contains(modifier)){
+            System.out.println("REMOVE doesnt contain");
+            return;
+        }
+
+        System.out.println("Removed "+ PlainTextComponentSerializer.plainText().serialize(modifier.getName()));
         modifiers.remove(modifier);
+        modifier.removeCountry(this);
         this.maxBoost-=modifier.getMaxBoost();
         this.capitulationBoostPercentage-=modifier.getCapitulationBoostPercentage();
         this.stabilityBaseBoost-=modifier.getStabilityBaseBoost();
         this.stabilityGainBoost-=modifier.getStabilityGainBoost();
+        this.totalProductionBoost-=modifier.getProductionBoost();
         modifier.getCurrencyBoostList().forEach(this::removeBoost);
+        createInfo();
     }
 
     public List<Modifier> getModifiers(){
@@ -282,7 +320,11 @@ public class Country implements Cloneable{
         HashMap<CurrencyTypes, Float> additionAmount = new HashMap<>();
         for (PlaceableFactory placeableFactory : placeableFactories) {
             for (Map.Entry<CurrencyTypes, Float> e : placeableFactory.onGenerate().entrySet()) {
-                float current = e.getValue()*economyBoosts.get(e.getKey());
+                float current = e.getValue();
+                if (economyBoosts.get(e.getKey())!=null){
+                    current = current*totalProductionBoost;
+                    current = current*economyBoosts.get(e.getKey());
+                }
                 if (additionAmount.containsKey(e.getKey())) {
                     current += additionAmount.get(e.getKey());
                     additionAmount.put(e.getKey(), current);
@@ -365,6 +407,9 @@ public class Country implements Cloneable{
     public void removeWar(Country country){
         wars.remove(country);
     }
+    public Boolean atWar(Country country){
+        return wars.contains(country);
+    }
     public void setFocuses(CountryEnums.Focuses f){
         this.focuses = f;
     }
@@ -422,8 +467,23 @@ public class Country implements Cloneable{
     }
     public void createInfo(){
         List<Component> modifierComps = new ArrayList<>();
-        for (Modifier modifier : modifiers)
+        for (Modifier modifier : modifiers){
             modifierComps.add(modifier.getName()); modifierComps.add(Component.text(", "));
+        }
+        Component leaderComp = Component.text()
+                .append(Component.text("Faction: ",NamedTextColor.BLUE))
+                .build();
+        List<Component> factionsComps = new ArrayList<>();
+        if (!factionsHashMap.isEmpty()){
+            for (Map.Entry<FactionType, Factions> e : factionsHashMap.entrySet()){
+                factionsComps.add(Component.text()
+                        .append(e.getKey().getName())
+                        .append(compBuild(" : ",NamedTextColor.WHITE))
+                        .append(e.getValue().getNameComponent())
+                        .build());
+            }
+        }
+
         this.description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text(getName(), NamedTextColor.GOLD))
@@ -439,12 +499,20 @@ public class Country implements Cloneable{
                 .append(Component.text("Modifiers: "))
                 .append(modifierComps)
                 .appendNewline()
+                .append(leaderComp)
+                .append(factionsComps)
                 .appendNewline()
                 .append(Component.text()
                         .append(Component.text("[JOIN]", NamedTextColor.GOLD))
                         .clickEvent(ClickEvent.runCommand("/country join " + getName()))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))
                 )
+                .build();
+
+        this.nameComponent = Component.text()
+                .append(Component.text(name,nameComponent.color()))
+                .clickEvent(ClickEvent.runCommand("/country info "+getName()))
+                .hoverEvent(description)
                 .build();
     }
     public Component getDescription(){
@@ -477,8 +545,53 @@ public class Country implements Cloneable{
     public Country getOverlord(){
         return overlord;
     }
-
     public HashMap<CurrencyTypes, Float> getEconomyBoosts() {
         return economyBoosts;
+    }
+    public void endGame(){
+        //aiCompetitor.kill();
+    }
+    public void addMajorCity(Province province, Material material){
+        majorCityBlocks.put(province,material);
+    }
+    public Material getMajorCity(Province province){
+        return majorCityBlocks.get(province);
+    }
+    public boolean isMajorCity(Province province){
+        return majorCityBlocks.containsKey(province);
+    }
+    public void setFaction(Factions factions){
+        this.factionsHashMap.put(factions.getFactionType(),factions);
+        factions.addMember(this);
+        createInfo();
+    }
+    public Factions getFaction(FactionType factionType){
+        return factionsHashMap.get(factionType);
+    }
+    public Factions getFaction(){
+        for (Map.Entry<FactionType, Factions> e : factionsHashMap.entrySet()){
+            return e.getValue();
+        }
+        return null;
+    }
+    public boolean canJoinFaction(FactionType factionType){
+        return !factionsHashMap.containsKey(factionType);
+    }
+    public void joinFaction(Factions factions){
+        if (!canJoinFaction(factions.getFactionType()))return;
+        setFaction(factions);
+        EventDispatcher.call(new FactionJoinEvent(factions,this));
+    }
+    public boolean isLeaderOfAFaction(){
+        for (Map.Entry<FactionType, Factions> e : factionsHashMap.entrySet())
+            if (e.getValue().getCreator()==this)
+                return true;
+        return false;
+    }
+    public AStarPathfinder getaStarPathfinder(){
+        return aStarPathfinder;
+    }
+    public Instance getInstance(){
+        return instance;
     }
 }
