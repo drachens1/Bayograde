@@ -2,15 +2,14 @@ package org.drachens.dataClasses.other;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
-import net.minestom.server.entity.Player;
-import net.minestom.server.entity.metadata.display.TextDisplayMeta;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.network.packet.server.play.*;
+import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
+import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
+import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
+import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import net.minestom.server.network.player.PlayerConnection;
-import org.drachens.cmd.SpawnCMD;
 import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
@@ -54,13 +53,11 @@ public class TextDisplay extends Clientside {
         updateForViewers();
     }
     @Override
-    public void addViewer(Player player) {
+    public void addViewer(PlayerConnection player) {
         if (storeViewers)
             VIEWERS.add(player);
 
-        PlayerConnection conn = player.getPlayerConnection();
-
-        conn.sendPacket(new SpawnEntityPacket(
+        player.sendPacket(new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
@@ -76,12 +73,12 @@ public class TextDisplay extends Clientside {
         map.put(26, Metadata.Byte(this.opacity));
         map.put(27, Metadata.Byte(this.bitmask));
 
-        conn.sendPacket(new EntityMetaDataPacket(
+        player.sendPacket(new EntityMetaDataPacket(
                 this.entityId,
                 map
         ));
 
-        conn.sendPacket(new EntityTeleportPacket(
+        player.sendPacket(new EntityTeleportPacket(
                 this.entityId,
                 this.location,
                 false
@@ -89,13 +86,11 @@ public class TextDisplay extends Clientside {
     }
 
     @Override
-    public void removeViewer(Player player) {
+    public void removeViewer(PlayerConnection player) {
         if (storeViewers)
             VIEWERS.remove(player);
 
-        var conn = player.getPlayerConnection();
-
-        conn.sendPacket(new DestroyEntitiesPacket(
+        player.sendPacket(new DestroyEntitiesPacket(
                 this.entityId
         ));
     }

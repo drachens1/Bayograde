@@ -35,7 +35,6 @@ public class ClientEntsToLoad {
     }
     public List<Clientside> getClientSides(Instance instance){
         return toLoad.get(instance);
-
     }
 
     public void reset(){

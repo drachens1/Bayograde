@@ -1,9 +1,9 @@
 package org.drachens.dataClasses.other;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.network.player.PlayerConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public abstract class Clientside {
     public static final List<Clientside> INSTANCES = new ArrayList<>();
-    public final List<Player> VIEWERS = new ArrayList<>();
+    public final List<PlayerConnection> VIEWERS = new ArrayList<>();
     public final int entityId;
     public final UUID uuid;
     public final Instance instance;
@@ -26,12 +26,17 @@ public abstract class Clientside {
         this.instance = instance;
         getWorldClasses(instance).clientEntsToLoad().addClientSide(instance, this);
     }
+    public void addViewer(Player p){
+        addViewer(p.getPlayerConnection());
+    }
+    public void removeViewer(Player p){
+        removeViewer(p.getPlayerConnection());
+    }
+    public abstract void addViewer(PlayerConnection player);
 
-    public abstract void addViewer(Player player);
+    public abstract void removeViewer(PlayerConnection player);
 
-    public abstract void removeViewer(Player player);
-
-    public void updateForViewer(Player player) {
+    public void updateForViewer(PlayerConnection player) {
         removeViewer(player);
         addViewer(player);
     }

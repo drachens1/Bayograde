@@ -3,14 +3,13 @@ package org.drachens.dataClasses.other;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
-import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
-import org.drachens.animation.Animation;
+import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
@@ -20,7 +19,6 @@ public class ItemDisplay extends Clientside {
     ItemStack item;
     Pos pos;
     byte displayType;
-    HashMap<String, Animation> animationHashMap = new HashMap<>();
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
         super(storeViewers, instance);
 
@@ -36,25 +34,9 @@ public class ItemDisplay extends Clientside {
         this.pos = province.getPos();
         this.displayType = displayType.getSerialized();
     }
-    public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers, HashMap<String, Animation> animationHashMap) {
-        super(storeViewers, province.getInstance());
-
-        this.animationHashMap = animationHashMap;
-        this.item = item;
-        this.pos = province.getPos();
-        this.displayType = displayType.getSerialized();
-    }
     public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
         super(storeViewers, instance);
 
-        this.item = item;
-        this.pos = pos;
-        this.displayType = displayType.getSerialized();
-    }
-    public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers, HashMap<String, Animation> animationHashMap) {
-        super(storeViewers, instance);
-
-        this.animationHashMap = animationHashMap;
         this.item = item;
         this.pos = pos;
         this.displayType = displayType.getSerialized();
@@ -63,26 +45,61 @@ public class ItemDisplay extends Clientside {
     public void delete() {
         this.dispose();
     }
-    public void addAnimation(String name, Animation animation){
-        this.animationHashMap.put(name,animation);
-    }
-    public Animation getAnimation(String name){
-        return animationHashMap.get(name);
+    public Pos getPos(){
+        return pos;
     }
 
     public void setItem(ItemStack item) {
         this.item = item;
-        updateForViewers();
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+
+        map.put(23, Metadata.ItemStack(item));
+        map.put(24, Metadata.Byte(displayType));
+
+        VIEWERS.forEach(player ->
+                player.sendPacket(new EntityMetaDataPacket(
+                        this.entityId,
+                        map
+                )));
     }
 
+    /*public void moveSmooth(Pos to, int time){
+        System.out.println("Move smooth");
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+
+        map.put(10,VarInt(time));
+        map.put(11,Vector3(to.asVec()));
+        map.put(23, Metadata.ItemStack(item));
+        map.put(24, Metadata.Byte(displayType));
+
+        VIEWERS.forEach(player ->
+                player.sendPacket(new EntityMetaDataPacket(
+                        this.entityId,
+                        map
+                )));
+    }*/
+
+    public void setPosWithOffset(Province province){
+        Pos pos = province.getPos();
+        pos = pos.add(0.5, 1.5, 0.5);
+        setPos(pos);
+    }
+    public void setPos(Pos pos){
+        this.pos = pos;
+        VIEWERS.forEach(player ->
+                player.sendPacket(new EntityTeleportPacket(
+                this.entityId,
+                this.pos,
+                false
+                )));
+
+    }
     @Override
-    public void addViewer(Player player) {
+    public void addViewer(PlayerConnection player) {
         if (storeViewers)
             VIEWERS.add(player);
 
-        var conn = player.getPlayerConnection();
-
-        conn.sendPacket(new SpawnEntityPacket(
+        player.sendPacket(new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -95,12 +112,12 @@ public class ItemDisplay extends Clientside {
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
 
-        conn.sendPacket(new EntityMetaDataPacket(
+        player.sendPacket(new EntityMetaDataPacket(
                 this.entityId,
                 map
         ));
 
-        conn.sendPacket(new EntityTeleportPacket(
+        player.sendPacket(new EntityTeleportPacket(
                 this.entityId,
                 this.pos,
                 false
@@ -108,13 +125,11 @@ public class ItemDisplay extends Clientside {
     }
 
     @Override
-    public void removeViewer(Player player) {
+    public void removeViewer(PlayerConnection player) {
         if (storeViewers)
             VIEWERS.remove(player);
 
-        var conn = player.getPlayerConnection();
-
-        conn.sendPacket(new DestroyEntitiesPacket(
+        player.sendPacket(new DestroyEntitiesPacket(
                 this.entityId
         ));
     }
