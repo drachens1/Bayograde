@@ -10,6 +10,7 @@ import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import net.minestom.server.network.player.PlayerConnection;
+import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class ItemDisplay extends Clientside {
     ItemStack item;
     Pos pos;
     byte displayType;
+    private AnimationType active;
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
         super(storeViewers, instance);
 
@@ -48,7 +50,13 @@ public class ItemDisplay extends Clientside {
     public Pos getPos(){
         return pos;
     }
-
+    public void setActive(AnimationType active){
+        cancelAnimation();
+        this.active = active;
+    }
+    private void cancelAnimation(){
+        if (active!=null)active.stop(this);
+    }
     public void setItem(ItemStack item) {
         this.item = item;
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();

@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
-public class DynamicAnimation implements AnimationType {
+public class DynamicAnimation extends AnimationType {
     private final Material item;
     private final int[][] frames;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
@@ -22,8 +22,9 @@ public class DynamicAnimation implements AnimationType {
         this.frames = frames;
     }
 
-    public void start(ItemDisplay itemDisplay, boolean repeat) {
+    public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
         scheduleNextFrame(itemDisplay, 0, repeat);
+        return this;
     }
 
     private void scheduleNextFrame(ItemDisplay itemDisplay, int current, boolean repeat) {
@@ -52,6 +53,7 @@ public class DynamicAnimation implements AnimationType {
         if (task != null) {
             task.cancel();
             taskHashMap.remove(itemDisplay);
+            itemDisplay.setItem(itemBuilder(item,frames[0][1]));
         }
     }
     private long getDelay(int current){
