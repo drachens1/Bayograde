@@ -8,12 +8,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
-import org.drachens.Manager.defaults.defaultsStorer.Placeables;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.Manager.scoreboards.temp.DefaultScoreboard;
@@ -23,7 +21,6 @@ import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Economics.factory.FactoryType;
 import org.drachens.dataClasses.HotbarInventory;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.interfaces.Voting.VotingOption;
@@ -43,9 +40,6 @@ public class Main {
     public static void main(String[] args) {
         completeStartup();
     }
-    private static List<VotingOption> votingOptions = new ArrayList<>();
-    private static final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
-            Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
     public static void completeStartup(){
         initSrv();
 
@@ -53,31 +47,19 @@ public class Main {
 
         ContinentalManagers.defaultsStorer.currencies.register(production);
 
-        HashMap<Material, Integer> max = new HashMap<>();
-        for (int i = 0; i < cities.length; i++) max.put(cities[i], i + 2);
-        int[] modelDatas = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-        List<String> produces = new ArrayList<>();
-        produces.add("production");
-
         createWW2VotingOption();
 
-        List<Float> producesAmount = new ArrayList<>();
-        producesAmount.add(5f);
-
-        FactoryType civilian = new FactoryType(produces, producesAmount, modelDatas, Material.CYAN_DYE, max, compBuild("Factories", NamedTextColor.BLUE),"civilian");
-
-        Placeables placeables = ContinentalManagers.defaultsStorer.placeables;
-
-        placeables.register(civilian);
 
         HashMap<String, ContinentalScoreboards> continentalScoreboards = new HashMap<>();
         ScoreboardManager scoreboardManager = new ScoreboardManager();
         continentalScoreboards.put("default",new DefaultScoreboard(scoreboardManager));
         scoreboardManager.setScoreboards(continentalScoreboards);
 
+        new Factory();
+
         EventHandlerProviderManager.hook();
         ContinentalManagers.defaultsStorer.currencies.register(production);
-        HotbarItemButton[] items = {new BuildItem(), new BuildItem2()};
+        HotbarItemButton[] items = {new BuildItem(), new BuildItem2(), new TroopMover()};
         ContinentalManagers.inventoryManager.registerInventory("default",new HotbarInventory(items));
 
         setupAll(new ArrayList<>(),scoreboardManager);
@@ -85,6 +67,19 @@ public class Main {
 
     private static void createWW2VotingOption(){
         CurrencyTypes production = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
+
+        Modifier exampleModifier = new Modifier.create(compBuild("Example",NamedTextColor.GOLD))
+                .setDescription(compBuild("description",NamedTextColor.BLUE))
+                .addCurrencyBoost(new CurrencyBoost(production,10f))
+                .addMaxBoost(1f)
+                .addCapitulationBoostPercentage(2f)
+                .addStabilityBaseBoost(3f)
+                .addStabilityGainBoost(4f)
+                .setRelationsBoost(5f)
+                .setBaseRelationsBoost(6f)
+                .setProductionBoost(7f)
+                .setMaxBuildingSlotBoost(2f)
+                .build();
 
         Modifier fascistModifier = new Modifier.create(compBuild("War", TextColor.color(204,0,0), TextDecoration.BOLD))
                 .addCurrencyBoost(new CurrencyBoost(production,0.1f))
@@ -135,13 +130,13 @@ public class Main {
         Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;//Name system = votingName-modifier
 
         modifiers.register(fascistModifier,votingName+"fascistModifier");
-        modifiers.register(centristModifier,votingName+"fascistModifier");
-        modifiers.register(anarchistModifier,votingName+"fascistModifier");
-        modifiers.register(conservatistModifer,votingName+"fascistModifier");
-        modifiers.register(socialistModifier,votingName+"fascistModifier");
-        modifiers.register(liberalModifier,votingName+"fascistModifier");
-        modifiers.register(capitalistModifier,votingName+"fascistModifier");
-
+        modifiers.register(centristModifier,votingName+"centristModifier");
+        modifiers.register(anarchistModifier,votingName+"anarchistModifier");
+        modifiers.register(conservatistModifer,votingName+"conservatistModifier");
+        modifiers.register(socialistModifier,votingName+"socialistModifier");
+        modifiers.register(liberalModifier,votingName+"liberalModifier");
+        modifiers.register(capitalistModifier,votingName+"capitalistModifier");
+        modifiers.register(exampleModifier,votingName+"example");
 
         IdeologyTypes fascist = new IdeologyTypes(TextColor.color(0,0,0),"F","Fascist",getLeaders(fascistModifier),fascistModifier);
         IdeologyTypes neutral = new IdeologyTypes(TextColor.color(165,157,157),"N","Centrist", getLeaders(centristModifier),centristModifier);
@@ -217,6 +212,7 @@ public class Main {
         modifiers.register(major,votingName+"major");
         modifiers.register(minor,votingName+"minor");
 
+        System.out.println("voting");
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L,"ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())

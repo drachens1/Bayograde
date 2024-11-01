@@ -12,13 +12,13 @@ import java.util.List;
 
 public class Modifier implements Cloneable {
     private float productionBoost;
-    private float maxBoost;
     private float capitulationBoostPercentage;
     private float stabilityBaseBoost;
     private float stabilityGainBoost;
+    private float maxBuildingSlotBoost;
     private List<CurrencyBoost> currencyBoostList;
     private Component name;
-    private Component justCompName;
+    private final Component justCompName;
     private Component description;
     private Component startDescription;
     private TextColor textColor;
@@ -28,13 +28,13 @@ public class Modifier implements Cloneable {
     private Modifier oldModifier;
     private Modifier(create c){
         this.justCompName = c.name;
-        this.maxBoost = c.maxBoost;
         this.capitulationBoostPercentage = c.capitulationBoostPercentage;
         this.stabilityBaseBoost = c.stabilityBaseBoost;
         this.stabilityGainBoost = c.stabilityGainBoost;
         this.currencyBoostList = c.currencyBoostList;
         this.relationsBoost = c.relationsBoost;
         this.baseRelationsBoost = c.baseRelationsBoost;
+        this.maxBuildingSlotBoost = c.maxBuildingSlotBoost;
         if (c.description!=null) this.startDescription = c.description;
         this.textColor = c.textColor;
         createDescription();
@@ -49,31 +49,16 @@ public class Modifier implements Cloneable {
         for (CurrencyBoost currencyBoost : currencyBoostList){
             if (currencyBoost.boost()>0){
                 boostComp.add(Component.text()
-                        .append(Component.text(currencyBoost.boost()*100, NamedTextColor.GREEN))
+                        .append(Component.text("+"+Math.round(currencyBoost.boost()*100), NamedTextColor.GREEN))
                         .append(Component.text("%", NamedTextColor.GREEN))
                         .append(currencyBoost.currencyTypes().getSymbol())
                         .appendNewline()
                         .build());
             }else {
                 boostComp.add(Component.text()
-                        .append(Component.text(currencyBoost.boost()*100, NamedTextColor.RED))
+                        .append(Component.text(Math.round(currencyBoost.boost()*100), NamedTextColor.RED))
                         .append(Component.text("%", NamedTextColor.RED))
                         .append(currencyBoost.currencyTypes().getSymbol())
-                        .appendNewline()
-                        .build());
-            }
-        }
-        if (maxBoost!=0f){
-            if (maxBoost>0f){
-                boostComp.add(Component.text()
-                        .append(Component.text(maxBoost,NamedTextColor.GREEN))
-                        .append(Component.text("Insert factory max symbol"))
-                        .appendNewline()
-                        .build());
-            }else {
-                boostComp.add(Component.text()
-                        .append(Component.text(maxBoost,NamedTextColor.RED))
-                        .append(Component.text("Insert factory max symbol"))
                         .appendNewline()
                         .build());
             }
@@ -81,14 +66,14 @@ public class Modifier implements Cloneable {
         if (stabilityBaseBoost!=0f){
             if (stabilityBaseBoost > 0f){
                 boostComp.add(Component.text()
-                        .append(Component.text(stabilityBaseBoost,NamedTextColor.GREEN))
-                        .append(Component.text("insert stability symbol"))
+                        .append(Component.text("+"+stabilityBaseBoost+"%",NamedTextColor.GREEN))
+                        .append(Component.text("\uD83D\uDC36"))
                         .appendNewline()
                         .build());
             }else {
                 boostComp.add(Component.text()
-                        .append(Component.text(stabilityBaseBoost,NamedTextColor.RED))
-                        .append(Component.text("insert stability symbol"))
+                        .append(Component.text(stabilityBaseBoost+"%",NamedTextColor.RED))
+                        .append(Component.text("\uD83D\uDC36"))
                         .appendNewline()
                         .build());
             }
@@ -96,14 +81,14 @@ public class Modifier implements Cloneable {
         if (stabilityGainBoost!=0f){
             if (stabilityGainBoost > 0f){
                 boostComp.add(Component.text()
-                        .append(Component.text(stabilityBaseBoost,NamedTextColor.GREEN))
-                        .append(Component.text("insert stability gain symbol"))
+                        .append(Component.text("+"+Math.round(stabilityGainBoost*100)+"%",NamedTextColor.GREEN))
+                        .append(Component.text("\uD83D\uDC39"))
                         .appendNewline()
                         .build());
             }else {
                 boostComp.add(Component.text()
-                        .append(Component.text(stabilityBaseBoost,NamedTextColor.RED))
-                        .append(Component.text("insert stability gain symbol"))
+                        .append(Component.text(Math.round(stabilityGainBoost*100)+"%",NamedTextColor.RED))
+                        .append(Component.text("\uD83D\uDC39"))
                         .appendNewline()
                         .build());
             }
@@ -111,31 +96,47 @@ public class Modifier implements Cloneable {
         if (capitulationBoostPercentage!=0f){
             if (capitulationBoostPercentage > 0f){
                 boostComp.add(Component.text()
-                        .append(Component.text(capitulationBoostPercentage,NamedTextColor.GREEN))
-                        .append(Component.text("insert capitulation symbol"))
+                        .append(Component.text("+"+Math.round(capitulationBoostPercentage*100)+"%",NamedTextColor.GREEN))
+                        .append(Component.text("\uD83D\uDC3B"))
                         .appendNewline()
                         .build());
             }else {
                 boostComp.add(Component.text()
-                        .append(Component.text(capitulationBoostPercentage,NamedTextColor.RED))
-                        .append(Component.text("insert capitulation symbol"))
+                        .append(Component.text(Math.round(capitulationBoostPercentage*100)+"%",NamedTextColor.RED))
+                        .append(Component.text("\uD83D\uDC3B"))
                         .appendNewline()
                         .build());
             }
         }
         if (relationsBoost!=0f){
-            if (capitulationBoostPercentage > 0f){
+            if (relationsBoost > 0f){
                 boostComp.add(Component.text()
-                        .append(Component.text(capitulationBoostPercentage,NamedTextColor.GREEN))
+                        .append(Component.text("+"+Math.round(relationsBoost*100)+"%",NamedTextColor.GREEN))
                         .append(Component.text("relations boost"))
                         .appendNewline()
                         .build());
             }else {
                 boostComp.add(Component.text()
-                        .append(Component.text(capitulationBoostPercentage,NamedTextColor.RED))
-                        .append(Component.text("insert capitulation symbol"))
+                        .append(Component.text(Math.round(relationsBoost*100)+"%",NamedTextColor.RED))
+                        .append(Component.text("relations boost"))
                         .appendNewline()
                         .build());
+            }
+        }
+        if (maxBuildingSlotBoost!=0f){
+            if (maxBuildingSlotBoost > 0f){
+                boostComp.add(Component.text()
+                        .append(Component.text("+"+Math.round(maxBuildingSlotBoost*100)+"%",NamedTextColor.GREEN))
+                        .append(Component.text("\uD83D\uDC30"))
+                        .appendNewline()
+                        .build());
+            }else {
+                boostComp.add(Component.text()
+                    .append(Component.text(Math.round(maxBuildingSlotBoost*100)+"%",NamedTextColor.RED))
+                    .append(Component.text("\uD83E\uDD8A"))
+                    .appendNewline()
+                    .build());
+
             }
         }
 
@@ -147,6 +148,7 @@ public class Modifier implements Cloneable {
                     .append(Component.text("\\_______",NamedTextColor.BLUE))
                     .appendNewline()
                     .append(Component.text("Boosts: "))
+                    .appendNewline()
                     .append(boostComp)
                     .build();
         }else {
@@ -156,6 +158,7 @@ public class Modifier implements Cloneable {
                     .append(Component.text("\\_______",NamedTextColor.BLUE))
                     .appendNewline()
                     .append(Component.text("Boosts: "))
+                    .appendNewline()
                     .append(boostComp)
                     .appendNewline()
                     .append(startDescription)
@@ -164,8 +167,8 @@ public class Modifier implements Cloneable {
 
     }
 
-    public float getMaxBoost(){
-        return maxBoost;
+    public float getMaxBuildingSlotBoost(){
+        return maxBuildingSlotBoost;
     }
     public float getCapitulationBoostPercentage(){
         return capitulationBoostPercentage;
@@ -198,8 +201,8 @@ public class Modifier implements Cloneable {
     public float getBaseRelationsBoost() {
         return baseRelationsBoost;
     }
-    public void setMaxBoost(float maxBoost) {
-        this.maxBoost = maxBoost;
+    public void setMaxBuildingSlotBoost(float maxBoost) {
+        this.maxBuildingSlotBoost = maxBoost;
         update();
     }
 
@@ -278,6 +281,7 @@ public class Modifier implements Cloneable {
     }
 
     public static class create{
+        private float maxBuildingSlotBoost = 0f;
         private final Component name;
         private Component description;
         private float maxBoost = 0f;
@@ -334,6 +338,10 @@ public class Modifier implements Cloneable {
         }
         public create setProductionBoost(float amount){
             this.productionBoost = amount;
+            return this;
+        }
+        public create setMaxBuildingSlotBoost(float maxBuildingSlotBoost){
+            this.maxBuildingSlotBoost = maxBuildingSlotBoost;
             return this;
         }
         public Modifier build(){

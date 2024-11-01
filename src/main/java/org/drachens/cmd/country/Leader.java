@@ -3,15 +3,15 @@ package org.drachens.cmd.country;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.interfaces.BetterCommand.IndividualCMD;
 
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 
-public class Leader extends IndividualCMD {
+public class Leader extends Command {
     public Leader() {
         super("leader");
         var countries = ArgumentType.String("Countries");
@@ -38,7 +38,6 @@ public class Leader extends IndividualCMD {
         }, countries);
     }
 
-    @Override
     public boolean requirements(CommandSender sender) {
         return sender instanceof Player;
     }

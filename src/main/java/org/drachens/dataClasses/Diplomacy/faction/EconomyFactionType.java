@@ -13,10 +13,13 @@ import java.util.List;
 
 import static org.drachens.util.KyoriUtil.compBuild;
 
-public class EconomyFactionType implements FactionType  {
+public class EconomyFactionType extends Factions {
     private Modifier factionModifier;
-    private Factions factions;
     private final Component name = compBuild("Economy",NamedTextColor.GOLD);
+
+    public EconomyFactionType(Country creator, String name) {
+        super(creator, name);
+    }
 
     @Override
     public Component getName() {
@@ -24,11 +27,10 @@ public class EconomyFactionType implements FactionType  {
     }
     @Override
     public void setFactions(Factions factions){
-        this.factions = factions;
-        this.factionModifier = new Modifier.create(compBuild(factions.getName(), NamedTextColor.GREEN))
+        this.factionModifier = new Modifier.create(compBuild(getStringName(), NamedTextColor.GREEN))
                 .setDescription(compBuild("The bonuses from the economic faction",NamedTextColor.GRAY))
                 .build();
-        factions.getMembers().forEach((country -> country.addModifier(factionModifier)));
+        getMembers().forEach((country -> country.addModifier(factionModifier)));
         updateFactionModifier();
     }
 
@@ -48,9 +50,9 @@ public class EconomyFactionType implements FactionType  {
     public void updateFactionModifier(){
         float totalDistance = 0f;
         int numOfCountries = 0;
-        Instance instance = factions.getCreator().getCapital().getInstance();
-        for (Country country : factions.getMembers()){
-            List<Country> countries = new ArrayList<>(factions.getMembers());
+        Instance instance = getCreator().getCapital().getInstance();
+        for (Country country : getMembers()){
+            List<Country> countries = new ArrayList<>(getMembers());
             countries.remove(country);
             numOfCountries++;
             for (Country country1 : countries){

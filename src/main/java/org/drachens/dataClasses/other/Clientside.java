@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.other;
 
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
@@ -18,12 +19,14 @@ public abstract class Clientside {
     public final UUID uuid;
     public final Instance instance;
     public boolean storeViewers;
+    public Pos pos;
 
-    public Clientside(boolean storeViewers, Instance instance) {
+    public Clientside(boolean storeViewers, Instance instance, Pos pos) {
         this.storeViewers = storeViewers;
         this.entityId = Entity.generateId();
         this.uuid = UUID.randomUUID();
         this.instance = instance;
+        this.pos = pos;
         getWorldClasses(instance).clientEntsToLoad().addClientSide(instance, this);
     }
     public void addViewer(Player p){

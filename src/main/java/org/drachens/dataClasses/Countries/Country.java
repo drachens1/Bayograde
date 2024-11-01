@@ -5,28 +5,34 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Diplomacy.faction.FactionType;
+import org.drachens.dataClasses.Armys.Troop;
+import org.drachens.dataClasses.BuildTypes;
+import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.dataClasses.Economics.currency.Currencies;
-import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
-import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
+import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
+import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.Economics.currency.*;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.other.Clientside;
+import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.dataClasses.territories.Region;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.temporary.Factory;
 import org.drachens.util.AStarPathfinder;
 
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.drachens.util.KyoriUtil.*;
@@ -34,12 +40,14 @@ import static org.drachens.util.Messages.broadcast;
 import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class Country implements Cloneable{
+    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private Leader leader;
     private final List<Player> players;
-    private final HashMap<CurrencyTypes, Currencies> currenciesMap;
+    private HashMap<CurrencyTypes, Currencies> currenciesMap;
     private final List<Material> city = new ArrayList<>();
-    private final List<PlaceableFactory> placeableFactories = new ArrayList<>();
-    private HashMap<FactionType, Factions> factionsHashMap = new HashMap<>();
+    private final HashMap<BuildTypes, List<Building>> buildTypesListHashMap = new HashMap<>();
+    private EconomyFactionType economyFactionType;
+    private MilitaryFactionType militaryFactionType;
     private List<Province> cores;
     private List<Province> occupies;
     private List<Province> cities;
@@ -61,7 +69,7 @@ public class Country implements Cloneable{
     private final Election elections;
     private Component prefix;
     private Component description;
-    private float maxBoost = 1f;
+    private float maxBuildingSlotBoost = 1f;
     private float capitulationBoostPercentage = 1f;
     private float stabilityBaseBoost = 0f;
     private float stabilityGainBoost = 0f;
@@ -75,6 +83,9 @@ public class Country implements Cloneable{
     private float totalProductionBoost = 1f;
     private final AStarPathfinder aStarPathfinder;
     private final Instance instance;
+    private List<Clientside> clientsides = new ArrayList<>();
+    private List<Clientside> allyTroopClientsides = new ArrayList<>();
+    private List<Troop> troops = new ArrayList<>();
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
@@ -95,14 +106,12 @@ public class Country implements Cloneable{
         aStarPathfinder = new AStarPathfinder(this, ContinentalManagers.world(instance).provinceManager());
     }
     public void addModifier(Modifier modifier){
-        if (modifiers.contains(modifier)){
-            System.out.println("ADD does contain");
+        if (modifiers.contains(modifier))
             return;
-        }
-        System.out.println("Added "+ PlainTextComponentSerializer.plainText().serialize(modifier.getName()));
+
         modifiers.add(modifier);
         modifier.addCountry(this);
-        this.maxBoost+=modifier.getMaxBoost();
+        this.maxBuildingSlotBoost+=modifier.getMaxBuildingSlotBoost();
         this.capitulationBoostPercentage+=modifier.getCapitulationBoostPercentage();
         this.stabilityBaseBoost+=modifier.getStabilityBaseBoost();
         this.stabilityGainBoost+=modifier.getStabilityGainBoost();
@@ -112,21 +121,17 @@ public class Country implements Cloneable{
     }
 
     public void updateModifier(Modifier modifier, Modifier old){
-        System.out.println("Update "+ PlainTextComponentSerializer.plainText().serialize(modifier.getName()));
         removeModifier(old);
         addModifier(modifier);
     }
 
     public void removeModifier(Modifier modifier){
-        if (!modifiers.contains(modifier)){
-            System.out.println("REMOVE doesnt contain");
+        if (!modifiers.contains(modifier))
             return;
-        }
 
-        System.out.println("Removed "+ PlainTextComponentSerializer.plainText().serialize(modifier.getName()));
         modifiers.remove(modifier);
         modifier.removeCountry(this);
-        this.maxBoost-=modifier.getMaxBoost();
+        this.maxBuildingSlotBoost-=modifier.getMaxBuildingSlotBoost();
         this.capitulationBoostPercentage-=modifier.getCapitulationBoostPercentage();
         this.stabilityBaseBoost-=modifier.getStabilityBaseBoost();
         this.stabilityGainBoost-=modifier.getStabilityGainBoost();
@@ -184,7 +189,6 @@ public class Country implements Cloneable{
         this.cities.add(city);
     }
     public void removeCity(Province city) {
-        System.out.println(capitulationPoints+" + "+this.city.indexOf(city.getMaterial()));
         this.capitulationPoints+=this.city.indexOf(city.getMaterial());
         this.cities.remove(city);
     }
@@ -264,12 +268,14 @@ public class Country implements Cloneable{
         p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryJoin"), "%country%", this.name)));
         broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryMessages("broadcastedCountryJoin"), "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
+        clientsides.forEach(clientside ->  clientside.addViewer(p));
     }
 
     public void removePlayer(Player p, boolean left) {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
         this.players.remove(p);
         p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryLeave"), "%country%", this.name)));
+        clientsides.forEach(clientside ->  clientside.removeViewer(p));
     }
 
     public void changeCountry(Player p) {
@@ -304,52 +310,56 @@ public class Country implements Cloneable{
         }
     }
 
-    public void addPlaceableFactory(PlaceableFactory placeableFactory) {
-        placeableFactories.add(placeableFactory);
-    }
-
-    public void removePlaceableFactory(PlaceableFactory placeableFactory) {
-        placeableFactories.remove(placeableFactory);
-    }
-
-    public List<PlaceableFactory> getPlaceableFactories() {
-        return placeableFactories;
-    }
-
     public void calculateIncrease() {
         HashMap<CurrencyTypes, Float> additionAmount = new HashMap<>();
-        for (PlaceableFactory placeableFactory : placeableFactories) {
-            for (Map.Entry<CurrencyTypes, Float> e : placeableFactory.onGenerate().entrySet()) {
-                float current = e.getValue();
-                if (economyBoosts.get(e.getKey())!=null){
-                    current = current*totalProductionBoost;
-                    current = current*economyBoosts.get(e.getKey());
+        List<Building> buildings = buildTypesListHashMap.get(ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory"));
+        if (buildings!=null)
+            buildings.forEach((building -> {
+                if (building.getBuildTypes() instanceof Factory factory){
+                    Payments payments1 = factory.generate(building);
+                    List<Component> comps = new ArrayList<>();
+                    payments1.getPayments().forEach((payment -> {
+                        float addition = payment.getAmount();
+                        if (economyBoosts.get(payment.getCurrencyType())!=null){
+                            addition = addition*totalProductionBoost;
+                            addition = addition*economyBoosts.get(payment.getCurrencyType());
+                        }
+                        if (additionAmount.containsKey(payment.getCurrencyType())){
+                            additionAmount.put(payment.getCurrencyType(),additionAmount.get(payment.getCurrencyType())+addition);
+                        }else {
+                            additionAmount.put(payment.getCurrencyType(),addition);
+                        }
+                        comps.add(Component.text(addition));
+                        comps.add(payment.getCurrencyType().getSymbol());
+                        comps.add(Component.newline());
+                    }));
+                    createFloatingText(building,Component.text().append(comps).build());
                 }
-                if (additionAmount.containsKey(e.getKey())) {
-                    current += additionAmount.get(e.getKey());
-                    additionAmount.put(e.getKey(), current);
-                } else {
-                    additionAmount.put(e.getKey(), current);
-                }
-            }
-        }
+            }));
         boolean isPuppet = overlord!=null;
-        for (Map.Entry<CurrencyTypes, Currencies> current : currenciesMap.entrySet()){
-            if (additionAmount.containsKey(current.getKey())){
-                float addition = additionAmount.get(current.getKey());
-                if (isPuppet){
-                    float overlordPayment = addition*0.2f;
-                    overlord.addPayment(new Payment(current.getKey(),overlordPayment,Component.text()
-                            .append(Component.text("Your puppet: ",NamedTextColor.BLUE))
-                            .append(nameComponent)
-                            .append(Component.text("Has transferred you ",NamedTextColor.BLUE))
-                            .append(Component.text(overlordPayment,NamedTextColor.GOLD, TextDecoration.BOLD))
-                            .build()
-                    ));
-                    current.getValue().add(addition*0.8f);
-                    return;
+        if (isPuppet){
+            for (Map.Entry<CurrencyTypes, Float> addition : additionAmount.entrySet()){
+                float add = addition.getValue()*0.8f;
+                float overlordPayment = addition.getValue()*0.2f;
+                if (currenciesMap.containsKey(addition.getKey())){
+                    currenciesMap.get(addition.getKey()).add(add);
+                }else {
+                    currenciesMap.put(addition.getKey(),new Currencies(addition.getKey(),add));
                 }
-                current.getValue().add(addition);
+                overlord.addPayment(new Payment(addition.getKey(),overlordPayment,Component.text()
+                        .append(Component.text("Your puppet: ",NamedTextColor.BLUE))
+                        .append(nameComponent)
+                        .append(Component.text("Has transferred you ",NamedTextColor.BLUE))
+                        .append(Component.text(overlordPayment,NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .build()));
+            }
+        }else {
+            for (Map.Entry<CurrencyTypes, Float> addition : additionAmount.entrySet()){
+                if (currenciesMap.containsKey(addition.getKey())){
+                    currenciesMap.get(addition.getKey()).add(addition.getValue());
+                }else {
+                    currenciesMap.put(addition.getKey(),new Currencies(addition.getKey(),addition.getValue()));
+                }
             }
         }
     }
@@ -365,14 +375,38 @@ public class Country implements Cloneable{
             sendActionBar(payment.getMessage());
         }
     }
+    public void addPayments(Payments payments){
+        currenciesMap = payments.addPayments(currenciesMap);
+    }
+    public void removePayments(Payments payments){
+        currenciesMap = payments.minusPayments(currenciesMap);
+    }
     public void removePayment(Payment payment){
         currenciesMap.get(payment.getCurrencyType()).minus(payment.getAmount());
     }
-    public void subtractPayment(Payment payment){
-        currenciesMap.get(payment.getCurrencyType()).minus(payment.getAmount());
+    public float subtractMaximumAmountPossible(Payment payment){
+        float currentBalance = currenciesMap.get(payment.getCurrencyType()).getAmount();
+        float withRemoved = currentBalance-payment.getAmount();
+        if (withRemoved<0)return Math.abs(withRemoved);
+        return 0f;
     }
     public boolean canMinusCost(Payment cost){
         return currenciesMap.containsKey(cost.getCurrencyType()) && currenciesMap.get(cost.getCurrencyType()).getAmount()>=cost.getAmount();
+    }
+    public boolean canMinusCosts(Payments cost){
+        for (Payment payment : cost.getPayments())
+            if (currenciesMap.containsKey(payment.getCurrencyType()) && currenciesMap.get(payment.getCurrencyType()).getAmount()<payment.getAmount())
+                return false;
+
+        return true;
+    }
+    public void addTextDisplay(TextDisplay textDisplay){
+        players.forEach(textDisplay::addViewer);
+        this.clientsides.add(textDisplay);
+    }
+    public void removeTextDisplay(TextDisplay textDisplay){
+        players.forEach(textDisplay::removeViewer);
+        this.clientsides.remove(textDisplay);
     }
     public void setType(CountryEnums.Type newType){
         type = newType;
@@ -474,14 +508,21 @@ public class Country implements Cloneable{
                 .append(Component.text("Faction: ",NamedTextColor.BLUE))
                 .build();
         List<Component> factionsComps = new ArrayList<>();
-        if (!factionsHashMap.isEmpty()){
-            for (Map.Entry<FactionType, Factions> e : factionsHashMap.entrySet()){
-                factionsComps.add(Component.text()
-                        .append(e.getKey().getName())
-                        .append(compBuild(" : ",NamedTextColor.WHITE))
-                        .append(e.getValue().getNameComponent())
-                        .build());
-            }
+        EconomyFactionType economyFactionType1 = getEconomyFactionType();
+        if (economyFactionType1!=null){
+            factionsComps.add(Component.text()
+                    .append(economyFactionType1.getName())
+                    .append(compBuild(" : ",NamedTextColor.WHITE))
+                    .append(economyFactionType1.getNameComponent())
+                    .build());
+        }
+        MilitaryFactionType militaryFactionType1 = getMilitaryFactionType();
+        if (militaryFactionType1!=null){
+            factionsComps.add(Component.text()
+                    .append(militaryFactionType1.getName())
+                    .append(compBuild(" : ",NamedTextColor.WHITE))
+                    .append(militaryFactionType1.getNameComponent())
+                    .build());
         }
 
         this.description = Component.text()
@@ -530,8 +571,8 @@ public class Country implements Cloneable{
     public List<Region> getRegion(){
         return region;
     }
-    public float getMaxBoost(){
-        return maxBoost;
+    public float getMaxBuildingSlotBoost(){
+        return maxBuildingSlotBoost;
     }
     public List<Country> getPuppets(){
         return puppets;
@@ -560,38 +601,136 @@ public class Country implements Cloneable{
     public boolean isMajorCity(Province province){
         return majorCityBlocks.containsKey(province);
     }
-    public void setFaction(Factions factions){
-        this.factionsHashMap.put(factions.getFactionType(),factions);
-        factions.addMember(this);
-        createInfo();
+    public void setEconomyFactionType(EconomyFactionType economyFactionType){
+        this.economyFactionType = economyFactionType;
     }
-    public Factions getFaction(FactionType factionType){
-        return factionsHashMap.get(factionType);
+    public void setMilitaryFactionType(MilitaryFactionType militaryFactionType){
+        this.militaryFactionType = militaryFactionType;
     }
-    public Factions getFaction(){
-        for (Map.Entry<FactionType, Factions> e : factionsHashMap.entrySet()){
-            return e.getValue();
-        }
-        return null;
+    public boolean canJoinAFaction(){
+        return getEconomyFactionType()==null || getMilitaryFactionType()==null;
     }
-    public boolean canJoinFaction(FactionType factionType){
-        return !factionsHashMap.containsKey(factionType);
+    public boolean canJoinFaction(Factions factions){
+        return (factions instanceof MilitaryFactionType && getMilitaryFactionType()==null) || (factions instanceof EconomyFactionType && getEconomyFactionType()==null) ;
+    }
+    public void joinMilitaryFaction(MilitaryFactionType militaryFactionType){
+        if (!canJoinFaction(militaryFactionType))return;
+        setMilitaryFactionType(militaryFactionType);
+        EventDispatcher.call(new FactionJoinEvent(militaryFactionType,this));
+    }
+    public void joinEconomyFaction(EconomyFactionType economyFactionType){
+        if (!canJoinFaction(economyFactionType))return;
+        setEconomyFactionType(economyFactionType);
+        EventDispatcher.call(new FactionJoinEvent(economyFactionType,this));
     }
     public void joinFaction(Factions factions){
-        if (!canJoinFaction(factions.getFactionType()))return;
-        setFaction(factions);
-        EventDispatcher.call(new FactionJoinEvent(factions,this));
+        if (factions instanceof EconomyFactionType){
+            joinEconomyFaction((EconomyFactionType) factions);
+        }else
+            joinMilitaryFaction((MilitaryFactionType) factions);
+    }
+    public EconomyFactionType getEconomyFactionType(){
+        return economyFactionType;
+    }
+    public MilitaryFactionType getMilitaryFactionType(){
+        return militaryFactionType;
     }
     public boolean isLeaderOfAFaction(){
-        for (Map.Entry<FactionType, Factions> e : factionsHashMap.entrySet())
-            if (e.getValue().getCreator()==this)
-                return true;
-        return false;
+        return isEconomyFactionLeader() || isMilitaryFactionLeader();
+    }
+    public boolean isEconomyFactionLeader(){
+        return economyFactionType!=null && economyFactionType.getLeader()==this;
+    }
+    public boolean isMilitaryFactionLeader(){
+        return militaryFactionType!=null && militaryFactionType.getLeader()==this;
     }
     public AStarPathfinder getaStarPathfinder(){
         return aStarPathfinder;
     }
     public Instance getInstance(){
         return instance;
+    }
+    public boolean isMilitaryAlly(Country country){
+        return militaryFactionType!=null && militaryFactionType.getMembers().contains(country);
+    }
+    public boolean isInAMilitaryFaction(){
+        return militaryFactionType==null;
+    }
+    public boolean isInAnEconomicFaction(){
+        return economyFactionType==null;
+    }
+    public boolean isInAllFactions(){
+        return isInAMilitaryFaction()&&isInAnEconomicFaction();
+    }
+    public void addBuilding(Building building){
+        clientsides.add(building.getItemDisplay());
+        players.forEach(player -> building.getItemDisplay().addViewer(player));
+        if (buildTypesListHashMap.containsKey(building.getBuildTypes())){
+            List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
+            buildings.add(building);
+            buildTypesListHashMap.put(building.getBuildTypes(),buildings);
+            return;
+        }
+        List<Building> buildings = new ArrayList<>();
+        buildings.add(building);
+        buildTypesListHashMap.put(building.getBuildTypes(),buildings);
+    }
+    public void removeBuilding(Building building){
+        players.forEach(player -> building.getItemDisplay().removeViewer(player));
+        if (buildTypesListHashMap.containsKey(building.getBuildTypes())){
+            List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
+            buildings.remove(building);
+            buildTypesListHashMap.put(building.getBuildTypes(),buildings);
+        }
+        clientsides.remove(building.getItemDisplay());
+    }
+    public List<Building> getBuildings(BuildTypes buildTypes){
+        return buildTypesListHashMap.get(buildTypes);
+    }
+    public void addTroop(Troop troop){
+        players.forEach(player -> troop.getTroop().addViewer(player));
+        troops.add(troop);
+        clientsides.add(troop.getTroop());
+        clientsides.add(troop.getAlly());
+    }
+    public void removeTroop(Troop troop){
+        players.forEach(player -> troop.getTroop().removeViewer(player));
+        troops.remove(troop);
+        clientsides.remove(troop.getTroop());
+    }
+    private void createFloatingText(Building building, Component text){
+        Province province = building.getProvince();
+        Long initialDelay = new Random().nextLong(0,200);
+        scheduler.buildTask(()->{
+            TextDisplay textDisplay = new TextDisplay.create(province,text)
+                    .setFollowPlayer(true)
+                    .setLineWidth(40)
+                    .withOffset()
+                    .build();
+            addTextDisplay(textDisplay);
+            scheduler.buildTask(()->{
+                textDisplay.moveNoRotation(new Pos(0,4,0),40,true);
+            }).delay(initialDelay+new Random().nextLong(0,200), ChronoUnit.MILLIS).schedule();
+        }).delay(initialDelay,ChronoUnit.MILLIS).schedule();
+    }
+
+    public void loadClientsides(List<Clientside> clientsides){
+        clientsides.forEach(clientside -> players.forEach(clientside::addViewer));
+        this.clientsides.addAll(clientsides);
+    }
+    public void unloadClientsides(List<Clientside> clientsides){
+        clientsides.forEach(clientside -> players.forEach(clientside::removeViewer));
+        this.clientsides.removeAll(clientsides);
+    }
+    public List<Clientside> getAlliedTroopClientsides(){
+        return allyTroopClientsides;
+    }
+    public void loadClientside(Clientside clientside){
+        players.forEach(clientside::addViewer);
+        this.clientsides.add(clientside);
+    }
+    public void unloadClientside(Clientside clientside){
+        players.forEach(clientside::removeViewer);
+        this.clientsides.remove(clientside);
     }
 }

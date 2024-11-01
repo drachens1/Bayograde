@@ -1,15 +1,15 @@
 package org.drachens.cmd.country;
 
 import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.interfaces.BetterCommand.IndividualCMD;
 
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 
-public class Extra extends IndividualCMD {
+public class Extra extends Command {
     public Extra() {
         super("extra");
         var countries = ArgumentType.String("Countries");
@@ -30,7 +30,6 @@ public class Extra extends IndividualCMD {
         }, countries);
     }
 
-    @Override
     public boolean requirements(CommandSender sender) {
         return sender instanceof Player;
     }

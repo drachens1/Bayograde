@@ -33,14 +33,12 @@ import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
+import org.drachens.cmd.Dev.*;
 import org.drachens.cmd.Dev.Kill.killCMD;
-import org.drachens.cmd.Dev.ListCMD;
 import org.drachens.cmd.Dev.Permissions.PermissionsCMD;
-import org.drachens.cmd.Dev.ResetCMD;
 import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
 import org.drachens.cmd.Dev.help.HelpCMD;
-import org.drachens.cmd.Dev.operator;
 import org.drachens.cmd.Dev.serverManagement.StopCMD;
 import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
 import org.drachens.cmd.Fly.FlyCMD;
@@ -56,12 +54,12 @@ import org.drachens.cmd.country.CountryCMD;
 import org.drachens.cmd.faction.FactionCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
+import org.drachens.dataClasses.BuildTypes;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
+import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Economics.factory.FactoryType;
-import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -289,35 +287,33 @@ public class ServerUtil {
         globEHandler.addListener(CountryLeaveEvent.class, e -> addPlayerToCountryMap(e.getP(), null));
         globEHandler.addListener(CountryChangeEvent.class, e -> addPlayerToCountryMap(e.getP(), e.getJoined()));
 
-
+        BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
         globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
             for (Country country : countryDataManager.getCountries())country.calculateIncrease();
             for (Country country : countryDataManager.getCountries()) {
                 Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
                 int i = 0;
-                HashMap<FactoryType, Integer> num = new HashMap<>();
-                for (PlaceableFactory placeableFactory : country.getPlaceableFactories()) {
-                    if (num.containsKey(placeableFactory.getFactoryType())) {
-                        int a = num.get(placeableFactory.getFactoryType());
-                        a += placeableFactory.lvl();
-                        num.put(placeableFactory.getFactoryType(), a);
-                    } else {
-                        num.put(placeableFactory.getFactoryType(), placeableFactory.lvl());
-                    }
+                int num = 0;
+                List<Building> buildings = country.getBuildings(buildTypes);
+                if (buildings!=null){
+                    for (Building building : buildings)
+                        num+=building.getCurrentLvl();
                 }
-                for (Map.Entry<FactoryType, Integer> entry : num.entrySet()) {
+
+                if (num>=0){
                     ArrayList<Component> components = new ArrayList<>();
-                    components.add(entry.getKey().getName());
+                    components.add(compBuild("Factory",NamedTextColor.BLUE));
                     components.add(compBuild(" : ", NamedTextColor.BLUE));
-                    components.add(compBuild(entry.getValue() + "", NamedTextColor.BLUE));
+                    components.add(compBuild(num + "", NamedTextColor.BLUE));
                     sb.createLine(new Sidebar.ScoreboardLine(
                             i + "",
                             mergeComp(components),
                             i
                     ));
-                    i++;
                 }
+
+                i++;
                 for (Player p : country.getPlayer()) {
                     sb.addViewer(p);
                 }
@@ -421,6 +417,8 @@ public class ServerUtil {
         commandManager.register(new StopCMD());
         commandManager.register(new debugCMD());
         commandManager.register(new FactionCMD());
+        commandManager.register(new SummonCMD());
+        commandManager.register(new ItemDisplayCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

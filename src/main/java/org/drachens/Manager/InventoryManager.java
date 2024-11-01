@@ -3,6 +3,7 @@ package org.drachens.Manager;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import org.drachens.dataClasses.HotbarInventory;
@@ -46,6 +47,14 @@ public class InventoryManager {
         globEHandler.addListener(PlayerUseItemOnBlockEvent.class, e->{
             Player p = e.getPlayer();
             if (!e.getItemStack().isAir() && !playersCooldown.contains(p)){
+                cooldown(p);
+                activeHotBar.get(p).getItems().get(p.getHeldSlot()).onUse(e);
+            }
+        });
+
+        globEHandler.addListener(PlayerStartDiggingEvent.class, e->{
+            Player p = e.getPlayer();
+            if (!p.getItemInMainHand().isAir() && !playersCooldown.contains(p)){
                 cooldown(p);
                 activeHotBar.get(p).getItems().get(p.getHeldSlot()).onUse(e);
             }

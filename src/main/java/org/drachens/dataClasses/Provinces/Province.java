@@ -10,8 +10,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Economics.PlaceableBuilds;
-import org.drachens.dataClasses.Economics.factory.PlaceableFactory;
+import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
 import org.drachens.events.StartWarEvent;
 
@@ -31,6 +30,7 @@ public class Province implements Serializable {
     private final ProvinceManager provinceManager;
     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
             Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
+    private Building building;
     private final Pos[] directions = {
             new Pos(-1, 0, 0), // West
             new Pos(1, 0, 0),  // East
@@ -43,7 +43,6 @@ public class Province implements Serializable {
     };
     private Country occupier;
     private boolean capturable = true;
-    private PlaceableBuilds buildType;
     private Material material;
     private boolean city;
     private List<Province> neighbours;
@@ -113,12 +112,9 @@ public class Province implements Serializable {
             occupier.removeOccupied(this);
             if (isCity())
                 this.occupier.cityCaptured(attacker,this);
-
-            if (buildType != null) {
-                if (buildType instanceof PlaceableFactory pl) {
-                    occupier.removePlaceableFactory(pl);
-                }
-            }
+        }
+        if (building != null) {
+            building.capture(attacker);
         }
         this.occupier = attacker;
         occupier.addOccupied(this);
@@ -128,11 +124,6 @@ public class Province implements Serializable {
             else
                 setCity(1);
             occupier.addCity(this);
-        }
-        if (buildType != null) {
-            if (buildType instanceof PlaceableFactory pl) {
-                occupier.addPlaceableFactory(pl);
-            }
         }
         updateBorders();
     }
@@ -166,22 +157,26 @@ public class Province implements Serializable {
         troops.add(troop);
     }
 
+    public void removeTroop(Troop troop){
+        troops.remove(troop);
+    }
+
     public void capture(Country attacker) {
         if (!attacker.atWar(occupier))
             EventDispatcher.call(new StartWarEvent(attacker,occupier));
         occupier.sendActionBar(compBuild("You have been attacked at "+pos, NamedTextColor.RED));
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
-        if (buildType != null) this.buildType.onCaptured(attacker);
+        if (building != null) this.building.capture(attacker);
         setOccupier(attacker);
         updateBorders();
     }
 
-    public PlaceableBuilds getBuildType() {
-        return buildType;
+    public Building getBuilding() {
+        return building;
     }
 
-    public void setBuildType(PlaceableBuilds buildType) {
-        this.buildType = buildType;
+    public void setBuildType(Building building) {
+        this.building = building;
     }
 
     public double distance(Province province) {
@@ -270,5 +265,11 @@ public class Province implements Serializable {
     }
     public List<Province> getNeighbours(){
         return neighbours;
+    }
+    public void addBuilding(Building building){
+        this.building = building;
+    }
+    public void removeBuilding(){
+        building = null;
     }
 }

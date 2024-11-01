@@ -1,16 +1,16 @@
 package org.drachens.cmd.country;
 
 import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.interfaces.BetterCommand.IndividualCMD;
 
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
-public class JoinCMD extends IndividualCMD {
+public class JoinCMD extends Command {
     public JoinCMD() {
         super("join");
         setDefaultExecutor((sender,context)-> sender.sendMessage("Default usage: /country join <country>"));
@@ -32,7 +32,6 @@ public class JoinCMD extends IndividualCMD {
             country.changeCountry(p);
         }, countries);
     }
-    @Override
     public boolean requirements(CommandSender sender) {
         if (!(sender instanceof Player p))
             return false;

@@ -2,40 +2,52 @@ package org.drachens.dataClasses.Armys;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.timer.Scheduler;
+import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 
-import static org.drachens.util.ItemStackUtil.itemBuilder;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class Troop {
     private final ItemDisplay troop;
     private ItemDisplay ally;
-    private ItemDisplay enemey;
-    private final Province province;
+    private ItemDisplay enemy;
+    private Province province;
     private final TroopType troopType;
     private final Country country;
     private final AStarPathfinderVoids troopPathing;
-    public Troop(Province province, Country country, TroopType troopType, AStarPathfinderVoids troopPathing) {
-        this.troopPathing = troopPathing;
-        this.troopType = troopType;
-        this.country = country;
-        Pos pos = province.getPos().add(0.5, 1.5, 0.5);
-        this.troop = new ItemDisplay(itemBuilder(troopType.getItem(), troopType.getModelData()), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
-        this.province = province;
-        MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
-    }
+    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
+    private Task task;
+    private Battle battle;
+    private float strength;
+    private float health;
+    private float damage;
+    private float defence;
+    private float speed;
+    private DivisionDesign design;
 
-    public Troop(Province province, Country country, TroopType troopType, int troop, int ally, int enemy, AStarPathfinderVoids troopPathing) {
+    public Troop(Province province, TrainedTroop trainedTroop, AStarPathfinderVoids troopPathing) {
         this.troopPathing = troopPathing;
-        this.troopType = troopType;
-        this.country = country;
+        this.troopType = trainedTroop.getTroopType();
+        this.country = trainedTroop.getCountry();
         Pos pos = province.getPos().add(0.5, 1.5, 0.5);
-        this.troop = new ItemDisplay(itemBuilder(troopType.getItem(), troop), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
-        this.ally = new ItemDisplay(itemBuilder(troopType.getItem(), ally), province, ItemDisplay.DisplayType.GROUND, true);
-        this.enemey = new ItemDisplay(itemBuilder(troopType.getItem(), enemy), province, ItemDisplay.DisplayType.GROUND, true);
+        this.troop = new ItemDisplay(troopType.getOwnTroop(),pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
+        this.ally = new ItemDisplay(troopType.getAllyTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
+        this.enemy = new ItemDisplay(troopType.getEnemyTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
         this.province = province;
+        this.design = trainedTroop.getDesign();
+        this.strength = trainedTroop.getStrength();
+        this.health = design.getHp();
+        this.damage = design.getAtk();
+        this.defence = design.getDef();
+        this.speed = design.getSpeed();
+        this.country.addTroop(this);
+        province.addTroop(this);
+        MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
     }
 
     public Province getProvince() {
@@ -47,7 +59,7 @@ public class Troop {
     }
 
     public ItemDisplay getEnemey() {
-        return enemey;
+        return enemy;
     }
 
     public ItemDisplay getTroop() {
@@ -55,15 +67,82 @@ public class Troop {
     }
 
     public void move(Province to){
-        troopType.getMoveAnimation().start(troop,true);
-        country.getaStarPathfinder().findPath(this.province,to,country,troopPathing);
-        troopType.getMoveAnimation().stop(troop);
+        if (task!=null && task.isAlive())task.cancel();
+        troopType.getMoveAnimation().start(troop,true).onFinish(troop,()->troop.setItem(troopType.getOwnTroop()));
+         task = scheduler.buildTask(new Runnable() {
+            final List<Province> path = country.getaStarPathfinder().findPath(province,to,country,troopPathing);
+            int current = 0;
+            @Override
+            public void run() {
+                if (path.size()<=current){
+                    task.cancel();
+                    troopType.getMoveAnimation().stop(troop);
+                    return;
+                }
+                moveBlock(path.get(current));
+                current++;
+            }
+        }).repeat(1200, ChronoUnit.MILLIS).schedule();
+    }
+    public void moveBlock(Province to){
+        if (!canMove(to))return;
+
+        if (to.getOccupier()==country||to.getOccupier().isMilitaryAlly(country)){
+            moveToFriendly(to);
+        }else
+            moveToEnemy(to);
+
+
+    }
+    public boolean canMove(Province province){
+        return province!=null && province.isCapturable();
+    }
+    public void moveToFriendly(Province to){
+        move(to,province);
+        troop.moveSmooth(to,20);
+        province = to;
+    }
+    public void moveToEnemy(Province to){
+        if (!to.getTroops().isEmpty()){
+            attack(to);
+        }
+        troop.moveSmooth(to,20);
+        move(to,province);
+        province = to;
+        province.setOccupier(country);
+    }
+    public void move(Province to, Province from){
+        from.removeTroop(this);
+        to.addTroop(this);
     }
     public void attack(Province to){
-
+        new Battle(to,this);
     }
-
-    public void testAnimation(){
-        this.troopType.getMoveAnimation().start(troop,true);
+    public void joinBattle(Battle battle){
+        troopType.getShootingAnimation().stop(troop);
+        setBattle(battle);
+    }
+    public void setBattle(Battle battle){
+        this.battle = battle;
+    }
+    public Battle getBattle(){
+        return battle;
+    }
+    public float getHealth(){
+        return health;
+    }
+    public float getDefence(){
+        return defence;
+    }
+    public float getStrength(){
+        return damage;
+    }
+    public float getDamage() {
+        return damage;
+    }
+    public void kill(){
+        troop.delete();
+        ally.delete();
+        enemy.delete();
     }
 }

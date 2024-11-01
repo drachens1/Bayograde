@@ -6,6 +6,11 @@ public class Payment {
     private final CurrencyTypes currencyType;
     private float amount;
     private Component message;
+    public Payment(Payment payment){
+        this.amount = payment.getAmount();
+        this.currencyType = payment.getCurrencyType();
+        this.message = payment.getMessage();
+    }
     public Payment(CurrencyTypes currencyType, float amount) {
         this.currencyType = currencyType;
         this.amount = amount;
@@ -41,5 +46,11 @@ public class Payment {
             return true;
         }
         return false;
+    }
+    public void multiply(int multiply){
+        amount*=multiply;
+    }
+    public void multiply(float multiply){
+        amount*=multiply;
     }
 }

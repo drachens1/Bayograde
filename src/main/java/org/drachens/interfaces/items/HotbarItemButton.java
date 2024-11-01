@@ -1,8 +1,11 @@
 package org.drachens.interfaces.items;
 
+import net.minestom.server.event.player.PlayerStartDiggingEvent;
+import net.minestom.server.event.player.PlayerUseItemEvent;
+import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.ItemStack;
 
-public abstract class HotbarItemButton implements HotbarItem {
+public abstract class HotbarItemButton {
     int modelData;
     ItemStack item;
     public HotbarItemButton(int modelData, ItemStack item){
@@ -15,4 +18,7 @@ public abstract class HotbarItemButton implements HotbarItem {
     public int getModelData(){
         return modelData;
     }
+    public abstract void onUse(PlayerUseItemEvent e);
+    public abstract void onUse(PlayerUseItemOnBlockEvent e);
+    public abstract void onUse(PlayerStartDiggingEvent e);
 }

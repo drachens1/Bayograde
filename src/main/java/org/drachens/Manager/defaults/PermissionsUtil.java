@@ -27,6 +27,7 @@ public class PermissionsUtil {
         operator.add(new Permission("reset"));
         operator.add(new Permission("stop"));
         operator.add(new Permission("restart"));
+        operator.add(new Permission("summon"));
     }
 
     public void playerOp(Player p) {

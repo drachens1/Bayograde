@@ -96,8 +96,13 @@ public class CountryDataManager {
     }
     public void addFaction(Factions factions){
         this.factions.add(factions);
-        this.factionNames.add(factions.getName());
-        factionsHashMap.put(factions.getName().toLowerCase(), factions);
+        this.factionNames.add(factions.getStringName());
+        factionsHashMap.put(factions.getStringName(), factions);
+    }
+    public void removeFaction(Factions factions){
+        this.factions.remove(factions);
+        this.factionNames.remove(factions.getStringName());
+        factionsHashMap.remove(factions.getStringName());
     }
     public Factions getFaction(String name){
         return factionsHashMap.get(name.toLowerCase());

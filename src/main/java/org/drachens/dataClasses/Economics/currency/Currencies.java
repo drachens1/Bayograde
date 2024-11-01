@@ -29,6 +29,14 @@ public class Currencies implements Cloneable {
         amount += add;
     }
 
+    public void add(Payment payment){
+        amount+=payment.getAmount();
+    }
+
+    public void minus(Payment payment){
+        amount-=payment.getAmount();
+    }
+
     public void minus(float minus) {
         amount -= minus;
     }

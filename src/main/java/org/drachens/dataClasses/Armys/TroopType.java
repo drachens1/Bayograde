@@ -1,19 +1,22 @@
 package org.drachens.dataClasses.Armys;
 
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
-import org.drachens.animation.Animation;
 import org.drachens.animation.AnimationType;
-import org.drachens.animation.DynamicAnimation;
+
+import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class TroopType {
     private final AnimationType moveAnimation;
     private final AnimationType shootingAnimation;
     private final AnimationType standstillAnimation;
-    private final Material item;
-    private final int modelData;
-    public TroopType(int modelData, Material item, AnimationType moveAnimation, AnimationType shootingAnimation, AnimationType standstillAnimation){
-        this.item = item;
-        this.modelData = modelData;
+    private final ItemStack ownTroop;
+    private final ItemStack allyTroop;
+    private final ItemStack enemyTroop;
+    public TroopType(int friendlyModelData, Material friendlyItem, int allyModelData, Material allyItem, int enemyModelData, Material enemyItem, AnimationType moveAnimation, AnimationType shootingAnimation, AnimationType standstillAnimation){
+        ownTroop = itemBuilder(friendlyItem,friendlyModelData);
+        allyTroop = itemBuilder(allyItem, allyModelData);
+        enemyTroop = itemBuilder(enemyItem,enemyModelData);
         this.moveAnimation = moveAnimation;
         this.shootingAnimation = shootingAnimation;
         this.standstillAnimation = standstillAnimation;
@@ -27,10 +30,13 @@ public class TroopType {
     public AnimationType getStandstillAnimation(){
         return standstillAnimation;
     }
-    public Material getItem(){
-        return item;
+    public ItemStack getOwnTroop(){
+        return ownTroop;
     }
-    public int getModelData(){
-        return modelData;
+    public ItemStack getAllyTroop(){
+        return allyTroop;
+    }
+    public ItemStack getEnemyTroop(){
+        return enemyTroop;
     }
 }

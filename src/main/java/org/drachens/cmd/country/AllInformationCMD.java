@@ -5,19 +5,19 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.interfaces.BetterCommand.IndividualCMD;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
 
-public class AllInformationCMD extends IndividualCMD {
+public class AllInformationCMD extends Command {
     public AllInformationCMD() {
         super("all_information");
         var countries = ArgumentType.String("Countries");
@@ -85,7 +85,6 @@ public class AllInformationCMD extends IndividualCMD {
         }, countries);
     }
 
-    @Override
     public boolean requirements(CommandSender sender) {
         return sender instanceof Player;
     }

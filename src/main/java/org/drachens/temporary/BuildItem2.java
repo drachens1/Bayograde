@@ -1,5 +1,6 @@
 package org.drachens.temporary;
 
+import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
@@ -20,5 +21,10 @@ public class BuildItem2 extends HotbarItemButton {
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         e.getPlayer().sendMessage("cd");
+    }
+
+    @Override
+    public void onUse(PlayerStartDiggingEvent e) {
+
     }
 }

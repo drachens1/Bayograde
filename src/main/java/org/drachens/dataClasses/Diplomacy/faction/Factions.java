@@ -4,20 +4,21 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.instance.Instance;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.Country;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Factions {
+public abstract class Factions {
     private final Country creator;
     private String name;
     private Component description;
     private List<Country> members;
     private Component nameComponent;
-    private final FactionType factionType;
-    public Factions(Country creator, String name, FactionType factionType) {
-        this.factionType = factionType;
+    public Factions(Country creator, String name) {
         this.creator = creator;
         this.name = name;
         this.members = new ArrayList<>();
@@ -30,20 +31,16 @@ public class Factions {
                         .clickEvent(ClickEvent.runCommand("/faction info "+name))
                 )
                 .build();
-        factionType.setFactions(this);
     }
     public void createDescription(){
         description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
-                .append(Component.text(getName(), NamedTextColor.GOLD))
+                .append(Component.text(name, NamedTextColor.GOLD))
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Leader: "))
                 .append(creator.getNameComponent())
                 .build();
-    }
-    public String getName() {
-        return name;
     }
     public Component getDescription(){
         return description;
@@ -60,12 +57,14 @@ public class Factions {
     public void addMember(Country country) {
         if (members.contains(country))return;
         members.add(country);
-        factionType.countryJoins(country);
     }
 
     public void removeMember(Country country) {
         if (!members.contains(country))return;
         members.remove(country);
+    }
+    public String getStringName(){
+        return name;
     }
 
     public void rename(String newName) {
@@ -74,7 +73,18 @@ public class Factions {
     public Component getNameComponent(){
         return nameComponent;
     }
-    public FactionType getFactionType(){
-        return factionType;
+
+    public abstract Component getName();
+
+    public abstract void setFactions(Factions factions);
+    public abstract void countryJoins(Country country);
+    public abstract void countryLeaves(Country country);
+    public Country getLeader(){
+        return creator;
+    }
+    public void delete(){
+        Instance instance = creator.getInstance();
+        CountryDataManager countryDataManager = ContinentalManagers.world(instance).countryDataManager();
+        countryDataManager.removeFaction(this);
     }
 }

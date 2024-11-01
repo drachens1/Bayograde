@@ -14,6 +14,7 @@ import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Countries.*;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.territories.Continent;
 import org.drachens.dataClasses.territories.Region;
@@ -203,6 +204,7 @@ public class MapGeneratorManager extends MapGen {
     }
     private void createCountries(int num) {
         List<Country> countries = new ArrayList<>();
+
         for (int i = 0; i < num; i++) {
             Country newCount = createCountry();
             countries.add(newCount);
@@ -475,6 +477,8 @@ public class MapGeneratorManager extends MapGen {
             }
         } while (anyQueueHadExpansion);
 
+        Modifier modifier = modifiers.getModifier("ww2-example");
+        if (modifier==null)System.out.println("NULL");
         for (Country country : countries){
             country.getIdeology().changeLeadingIdeology();
             if (country.getType().equals(CountryEnums.Type.major)){
@@ -484,6 +488,7 @@ public class MapGeneratorManager extends MapGen {
                 historyAssignMinors(country);
             }
             ideologyBoost(country);
+            country.addModifier(modifier);
         }
         historyAssignSuperPowers(superPower);
         superPower.getIdeology().changeLeadingIdeology();
