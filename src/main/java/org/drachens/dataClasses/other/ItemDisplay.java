@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.other;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
@@ -13,35 +14,39 @@ import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Provinces.Province;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
+
+import static org.drachens.util.OtherUtil.yawToQuat;
 
 
 public class ItemDisplay extends Clientside {
     ItemStack item;
-    Pos pos;
     byte displayType;
     private AnimationType active;
+    private EntityTeleportPacket entityTeleportPacket;
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
-        super(storeViewers, instance);
+        super(storeViewers, instance,pos);
 
         this.item = item;
-        this.pos = pos;
         this.displayType = displayType.getSerialized();
+        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
     }
 
     public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers) {
-        super(storeViewers, province.getInstance());
+        super(storeViewers, province.getInstance(),province.getPos());
 
         this.item = item;
-        this.pos = province.getPos();
         this.displayType = displayType.getSerialized();
+        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
     }
     public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
-        super(storeViewers, instance);
+        super(storeViewers, instance,pos);
 
         this.item = item;
-        this.pos = pos;
         this.displayType = displayType.getSerialized();
+        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
     }
 
     public void delete() {
@@ -61,31 +66,38 @@ public class ItemDisplay extends Clientside {
         this.item = item;
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
 
+
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
+        EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(
+                this.entityId,
+                map
+        );
 
         VIEWERS.forEach(player ->
-                player.sendPacket(new EntityMetaDataPacket(
-                        this.entityId,
-                        map
-                )));
+                player.sendPacket(entityMetaDataPacket1));
     }
 
-    /*public void moveSmooth(Pos to, int time){
-        System.out.println("Move smooth");
+    public void moveSmooth(Province to, int time){
+        moveSmooth(to.getPos(),time);
+    }
+    public void moveSmooth(Pos to, int time){
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+        to = to.add(0.5, 0, 0.5);
+        double yaw = Math.atan2(to.x() - pos.x(), to.z() - pos.z()) * (180 / Math.PI);
 
-        map.put(10,VarInt(time));
-        map.put(11,Vector3(to.asVec()));
-        map.put(23, Metadata.ItemStack(item));
-        map.put(24, Metadata.Byte(displayType));
+        float[] quart = yawToQuat(yaw);
 
-        VIEWERS.forEach(player ->
-                player.sendPacket(new EntityMetaDataPacket(
-                        this.entityId,
-                        map
-                )));
-    }*/
+        map.put(8,Metadata.VarInt(0));
+        map.put(9,Metadata.VarInt(time));//duration in ticks
+        map.put(11,Metadata.Vector3(to.sub(pos.x(),0,pos.z())));
+        map.put(13,Metadata.Quaternion(quart));
+        map.put(14,Metadata.Quaternion(quart));
+
+        EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId,map);
+        VIEWERS.forEach(player->
+                player.sendPacket(entityMetaDataPacket1));
+    }
 
     public void setPosWithOffset(Province province){
         Pos pos = province.getPos();
@@ -94,13 +106,14 @@ public class ItemDisplay extends Clientside {
     }
     public void setPos(Pos pos){
         this.pos = pos;
+        entityTeleportPacket =new EntityTeleportPacket(this.entityId, this.pos, false);
         VIEWERS.forEach(player ->
-                player.sendPacket(new EntityTeleportPacket(
-                this.entityId,
-                this.pos,
-                false
-                )));
+                player.sendPacket(entityTeleportPacket));
 
+    }
+
+    public void destroy(Long delay){
+        MinecraftServer.getSchedulerManager().buildTask(this::dispose).delay(delay, ChronoUnit.MILLIS);
     }
     @Override
     public void addViewer(PlayerConnection player) {
@@ -117,6 +130,8 @@ public class ItemDisplay extends Clientside {
 
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
 
+        map.put(8,Metadata.VarInt(-1));
+        map.put(11,Metadata.Vector3(new Pos(0,0,0)));
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
 
@@ -125,11 +140,7 @@ public class ItemDisplay extends Clientside {
                 map
         ));
 
-        player.sendPacket(new EntityTeleportPacket(
-                this.entityId,
-                this.pos,
-                false
-        ));
+        player.sendPacket(entityTeleportPacket);
     }
 
     @Override
