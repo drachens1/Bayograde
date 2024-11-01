@@ -1,5 +1,6 @@
 package org.drachens.cmd.faction;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -19,7 +20,6 @@ import java.util.Objects;
 
 import static org.drachens.util.CommandsUtil.getFactionsSuggestionsBasedOnInput;
 import static org.drachens.util.Messages.globalBroadcast;
-import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class FactionCMD extends Command {
     public FactionCMD() {
@@ -51,7 +51,7 @@ public class FactionCMD extends Command {
 
         addSyntax((sender, context) -> {
             if (!notInAFaction(sender)) return;
-            Player player = (Player) sender;
+            CPlayer player = (CPlayer) sender;
             if (!Objects.equals(context.get(join), "join")) return;
 
             Factions faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
@@ -60,7 +60,7 @@ public class FactionCMD extends Command {
                 return;
             }
 
-            Country country = getCountryFromPlayer(player);
+            Country country = player.getCountry();
             country.joinFaction(faction);
             EventDispatcher.call(new FactionJoinEvent(faction, country));
         }, join, factions);
@@ -87,8 +87,8 @@ public class FactionCMD extends Command {
 
         addSyntax((sender, context) -> {
             if (!notInAFaction(sender)) return;
-            Player player = (Player) sender;
-            Country country = getCountryFromPlayer(player);
+            CPlayer player = (CPlayer) sender;
+            Country country = player.getCountry();
             String factionName = context.get(nameArg);
 
             CountryDataManager countryDataManager = ContinentalManagers.world(player.getInstance()).countryDataManager();
@@ -132,8 +132,8 @@ public class FactionCMD extends Command {
 
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof Player player) {
-                        Country country = getCountryFromPlayer(player);
+                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
+                        Country country = player.getCountry();
                         if (country != null) {
                             if (country.getEconomyFactionType() != null) {
                                 suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
@@ -147,8 +147,8 @@ public class FactionCMD extends Command {
 
         addSyntax((sender, context) -> {
             if (!leaderOfAFaction(sender)) return;
-            Player player = (Player) sender;
-            Country country = getCountryFromPlayer(player);
+            CPlayer player = (CPlayer) sender;
+            Country country = player.getCountry();
             Factions factionToDelete = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
             if (factionToDelete != null && factionToDelete.getCreator() == country)
                 factionToDelete.delete();
@@ -158,16 +158,16 @@ public class FactionCMD extends Command {
     }
 
     private boolean leaderOfAFaction(CommandSender sender) {
-        if (sender instanceof Player player) {
-            Country country = getCountryFromPlayer(player);
+        if (sender instanceof CPlayer player) {
+            Country country = player.getCountry();
             return country != null && country.isLeaderOfAFaction();
         }
         return false;
     }
 
     private boolean notInAFaction(CommandSender sender) {
-        if (sender instanceof Player player) {
-            Country country = getCountryFromPlayer(player);
+        if (sender instanceof CPlayer player) {
+            Country country = player.getCountry();
             return country == null || !country.isInAllFactions();
         }
         return false;

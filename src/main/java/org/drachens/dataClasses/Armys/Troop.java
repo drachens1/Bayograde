@@ -35,7 +35,7 @@ public class Troop {
         this.troopType = trainedTroop.getTroopType();
         this.country = trainedTroop.getCountry();
         Pos pos = province.getPos().add(0.5, 1.5, 0.5);
-        this.troop = new ItemDisplay(troopType.getOwnTroop(),pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
+        this.troop = new ItemDisplay(troopType.getOwnTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
         this.ally = new ItemDisplay(troopType.getAllyTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
         this.enemy = new ItemDisplay(troopType.getEnemyTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
         this.province = province;
@@ -66,15 +66,16 @@ public class Troop {
         return troop;
     }
 
-    public void move(Province to){
-        if (task!=null && task.isAlive())task.cancel();
-        troopType.getMoveAnimation().start(troop,true).onFinish(troop,()->troop.setItem(troopType.getOwnTroop()));
-         task = scheduler.buildTask(new Runnable() {
-            final List<Province> path = country.getaStarPathfinder().findPath(province,to,country,troopPathing);
+    public void move(Province to) {
+        if (task != null && task.isAlive()) task.cancel();
+        troopType.getMoveAnimation().start(troop, true).onFinish(troop, () -> troop.setItem(troopType.getOwnTroop()));
+        task = scheduler.buildTask(new Runnable() {
+            final List<Province> path = country.getaStarPathfinder().findPath(province, to, country, troopPathing);
             int current = 0;
+
             @Override
             public void run() {
-                if (path.size()<=current){
+                if (path.size() <= current) {
                     task.cancel();
                     troopType.getMoveAnimation().stop(troop);
                     return;
@@ -84,63 +85,77 @@ public class Troop {
             }
         }).repeat(1200, ChronoUnit.MILLIS).schedule();
     }
-    public void moveBlock(Province to){
-        if (!canMove(to))return;
 
-        if (to.getOccupier()==country||to.getOccupier().isMilitaryAlly(country)){
+    public void moveBlock(Province to) {
+        if (!canMove(to)) return;
+
+        if (to.getOccupier() == country || to.getOccupier().isMilitaryAlly(country)) {
             moveToFriendly(to);
-        }else
+        } else
             moveToEnemy(to);
 
 
     }
-    public boolean canMove(Province province){
-        return province!=null && province.isCapturable();
+
+    public boolean canMove(Province province) {
+        return province != null && province.isCapturable();
     }
-    public void moveToFriendly(Province to){
-        move(to,province);
-        troop.moveSmooth(to,20);
+
+    public void moveToFriendly(Province to) {
+        move(to, province);
+        troop.moveSmooth(to, 20);
         province = to;
     }
-    public void moveToEnemy(Province to){
-        if (!to.getTroops().isEmpty()){
+
+    public void moveToEnemy(Province to) {
+        if (!to.getTroops().isEmpty()) {
             attack(to);
         }
-        troop.moveSmooth(to,20);
-        move(to,province);
+        troop.moveSmooth(to, 20);
+        move(to, province);
         province = to;
         province.setOccupier(country);
     }
-    public void move(Province to, Province from){
+
+    public void move(Province to, Province from) {
         from.removeTroop(this);
         to.addTroop(this);
     }
-    public void attack(Province to){
-        new Battle(to,this);
+
+    public void attack(Province to) {
+        new Battle(to, this);
     }
-    public void joinBattle(Battle battle){
+
+    public void joinBattle(Battle battle) {
         troopType.getShootingAnimation().stop(troop);
         setBattle(battle);
     }
-    public void setBattle(Battle battle){
+
+    public void setBattle(Battle battle) {
         this.battle = battle;
     }
-    public Battle getBattle(){
+
+    public Battle getBattle() {
         return battle;
     }
-    public float getHealth(){
+
+    public float getHealth() {
         return health;
     }
-    public float getDefence(){
+
+    public float getDefence() {
         return defence;
     }
-    public float getStrength(){
+
+    public float getStrength() {
         return damage;
     }
+
     public float getDamage() {
         return damage;
     }
-    public void kill(){
+
+    public void kill() {
         troop.delete();
         ally.delete();
         enemy.delete();

@@ -4,6 +4,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
+import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.inventory.Inventory;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class GUIManager {
         this.activeInventories.remove(inventory);
     }
 
-    public void handleClick(InventoryClickEvent e) {
+    public void handleClick(InventoryPreClickEvent e) {
         InventoryHandler handler = this.activeInventories.get(e.getInventory());
         if (handler != null) {
             handler.onClick(e);

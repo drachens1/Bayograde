@@ -1,5 +1,6 @@
 package org.drachens.temporary;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -11,7 +12,6 @@ import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.interfaces.items.HotbarItemButton;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class BuildItem extends HotbarItemButton {
     private BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
@@ -27,7 +27,7 @@ public class BuildItem extends HotbarItemButton {
     }
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
-        Country country = getCountryFromPlayer(e.getPlayer());
+        Country country = ((CPlayer) e.getPlayer()).getCountry();
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
         if (country == null || province==null)return;
         if (province.getBuilding()!=null){

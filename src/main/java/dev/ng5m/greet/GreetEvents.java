@@ -1,6 +1,7 @@
 package dev.ng5m.greet;
 
 import dev.ng5m.Util;
+import dev.ng5m.cosmetic.gui.PerPlayerCosmeticsGUI;
 import dev.ng5m.events.EventHandler;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.events.EventHandlerProviderManager;
@@ -10,6 +11,7 @@ import dev.ng5m.util.Settings;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
+import org.drachens.InventorySystem.GUIManager;
 
 import java.util.function.Function;
 
@@ -31,6 +33,11 @@ public class GreetEvents extends Configurable<GreetEvents.GreetSettings> impleme
         if (!event.isFirstSpawn()) return;
 
         Util.broadcast(settings.joinMessage.apply(event));
+
+        var a = new PerPlayerCosmeticsGUI();
+        a.decorate(event.getPlayer());
+        new GUIManager().openGUI(a, event.getPlayer());
+
     }
 
     @EventHandler

@@ -1,5 +1,6 @@
 package org.drachens.cmd.Msg;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,7 +15,6 @@ import java.util.List;
 
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.KyoriUtil.mergeComp;
-import static org.drachens.util.PlayerUtil.setPlayersLastMessanger;
 
 public class MsgCMD extends Command {
     public MsgCMD() {
@@ -23,7 +23,7 @@ public class MsgCMD extends Command {
         var msg = ArgumentType.StringArray("msg");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /msg <player> <msg>"));
         addSyntax((sender, context) -> {
-            Player p = (Player) sender;
+            CPlayer p = (CPlayer) sender;
             Player ps = context.get(player).findFirstPlayer(sender);
             if (p == ps) {
                 p.sendMessage("You cannot msg yourself silly");
@@ -34,7 +34,7 @@ public class MsgCMD extends Command {
                 return;
             }
             msgBuild(p, ps, context.get(msg));
-            setPlayersLastMessanger(p, ps);
+            p.setLastMessenger(ps);
         }, player, msg);
     }
 

@@ -1,12 +1,12 @@
 package org.drachens.cmd.faction;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.entity.Player;
 import org.drachens.dataClasses.Countries.Country;
 
 import java.util.List;
 
-import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class Invite {
     public Invite() {
@@ -18,9 +18,9 @@ public class Invite {
     }
 
     public boolean requirements(CommandSender sender) {
-        if (!(sender instanceof Player p))return false;
-        Country country = getCountryFromPlayer(p);
-        if (country == null)return false;
+        if (!(sender instanceof CPlayer p)) return false;
+        Country country = p.getCountry();
+        if (country == null) return false;
         return country.isLeaderOfAFaction();
     }
 

@@ -1,5 +1,6 @@
 package org.drachens;
 
+import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProviderManager;
@@ -8,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.MinecraftServer;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
@@ -40,10 +42,11 @@ public class Main {
     public static void main(String[] args) {
         completeStartup();
     }
-    public static void completeStartup(){
+
+    public static void completeStartup() {
         initSrv();
 
-        CurrencyTypes production = new CurrencyTypes(compBuild("production", TextColor.color(255, 165, 0)),compBuild("\uD83D\uDC35",TextColor.color(255, 165, 0)),"production");
+        CurrencyTypes production = new CurrencyTypes(compBuild("production", TextColor.color(255, 165, 0)), compBuild("\uD83D\uDC35", TextColor.color(255, 165, 0)), "production");
 
         ContinentalManagers.defaultsStorer.currencies.register(production);
 
@@ -52,7 +55,7 @@ public class Main {
 
         HashMap<String, ContinentalScoreboards> continentalScoreboards = new HashMap<>();
         ScoreboardManager scoreboardManager = new ScoreboardManager();
-        continentalScoreboards.put("default",new DefaultScoreboard(scoreboardManager));
+        continentalScoreboards.put("default", new DefaultScoreboard(scoreboardManager));
         scoreboardManager.setScoreboards(continentalScoreboards);
 
         new Factory();
@@ -60,17 +63,17 @@ public class Main {
         EventHandlerProviderManager.hook();
         ContinentalManagers.defaultsStorer.currencies.register(production);
         HotbarItemButton[] items = {new BuildItem(), new BuildItem2(), new TroopMover()};
-        ContinentalManagers.inventoryManager.registerInventory("default",new HotbarInventory(items));
+        ContinentalManagers.inventoryManager.registerInventory("default", new HotbarInventory(items));
 
-        setupAll(new ArrayList<>(),scoreboardManager);
+        setupAll(new ArrayList<>(), scoreboardManager);
     }
 
-    private static void createWW2VotingOption(){
+    private static void createWW2VotingOption() {
         CurrencyTypes production = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
 
-        Modifier exampleModifier = new Modifier.create(compBuild("Example",NamedTextColor.GOLD))
-                .setDescription(compBuild("description",NamedTextColor.BLUE))
-                .addCurrencyBoost(new CurrencyBoost(production,10f))
+        Modifier exampleModifier = new Modifier.create(compBuild("Example", NamedTextColor.GOLD))
+                .setDescription(compBuild("description", NamedTextColor.BLUE))
+                .addCurrencyBoost(new CurrencyBoost(production, 10f))
                 .addMaxBoost(1f)
                 .addCapitulationBoostPercentage(2f)
                 .addStabilityBaseBoost(3f)
@@ -81,70 +84,70 @@ public class Main {
                 .setMaxBuildingSlotBoost(2f)
                 .build();
 
-        Modifier fascistModifier = new Modifier.create(compBuild("War", TextColor.color(204,0,0), TextDecoration.BOLD))
-                .addCurrencyBoost(new CurrencyBoost(production,0.1f))
+        Modifier fascistModifier = new Modifier.create(compBuild("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
+                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
                 .addStabilityBaseBoost(10f)
                 .addStabilityGainBoost(-0.1f)
                 .addCapitulationBoostPercentage(5f)
-                .setTextColour(204,0,0)
+                .setTextColour(204, 0, 0)
                 .build();
 
-        Modifier centristModifier = new Modifier.create(compBuild("Centrist",TextColor.color(96,96,96),TextDecoration.BOLD))
+        Modifier centristModifier = new Modifier.create(compBuild("Centrist", TextColor.color(96, 96, 96), TextDecoration.BOLD))
                 .addStabilityBaseBoost(50f)
                 .addCapitulationBoostPercentage(-5f)
-                .addCurrencyBoost(new CurrencyBoost(production,0.2f))
-                .setTextColour(96,96,96)
+                .addCurrencyBoost(new CurrencyBoost(production, 0.2f))
+                .setTextColour(96, 96, 96)
                 .build();
 
-        Modifier anarchistModifier = new Modifier.create(compBuild("Anarchist",TextColor.color(7,154,12)))
+        Modifier anarchistModifier = new Modifier.create(compBuild("Anarchist", TextColor.color(7, 154, 12)))
                 .addStabilityBaseBoost(-100f)
                 .addStabilityGainBoost(-5f)
                 .addCapitulationBoostPercentage(0.5f)
-                .addCurrencyBoost(new CurrencyBoost(production,5f))
-                .setTextColour(7,154,12)
+                .addCurrencyBoost(new CurrencyBoost(production, 5f))
+                .setTextColour(7, 154, 12)
                 .build();
 
-        Modifier conservatistModifer = new Modifier.create(compBuild("Conservatism",TextColor.color(204,0,0)))
+        Modifier conservatistModifer = new Modifier.create(compBuild("Conservatism", TextColor.color(204, 0, 0)))
                 .addStabilityBaseBoost(1)
-                .setTextColour(204,0,0)
+                .setTextColour(204, 0, 0)
                 .build();
 
-        Modifier socialistModifier = new Modifier.create(compBuild("Socialist",TextColor.color(255,0,0)))
+        Modifier socialistModifier = new Modifier.create(compBuild("Socialist", TextColor.color(255, 0, 0)))
                 .addStabilityGainBoost(0.2f)
                 .addStabilityBaseBoost(40f)
-                .addCurrencyBoost(new CurrencyBoost(production,0.2f))
-                .setTextColour(255,0,0)
+                .addCurrencyBoost(new CurrencyBoost(production, 0.2f))
+                .setTextColour(255, 0, 0)
                 .build();
 
-        Modifier liberalModifier = new Modifier.create(compBuild("Liberalist",TextColor.color(51,253,255)))
-                .setTextColour(51,253,255)
+        Modifier liberalModifier = new Modifier.create(compBuild("Liberalist", TextColor.color(51, 253, 255)))
+                .setTextColour(51, 253, 255)
                 .build();
 
-        Modifier capitalistModifier = new Modifier.create(compBuild("Capitalist",TextColor.color(0,153,0)))
+        Modifier capitalistModifier = new Modifier.create(compBuild("Capitalist", TextColor.color(0, 153, 0)))
                 .addStabilityBaseBoost(-10f)
-                .addCurrencyBoost(new CurrencyBoost(production,0.5f))
-                .setTextColour(0,153,0)
+                .addCurrencyBoost(new CurrencyBoost(production, 0.5f))
+                .setTextColour(0, 153, 0)
                 .build();
 
         String votingName = "ww2-";
         Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;//Name system = votingName-modifier
 
-        modifiers.register(fascistModifier,votingName+"fascistModifier");
-        modifiers.register(centristModifier,votingName+"centristModifier");
-        modifiers.register(anarchistModifier,votingName+"anarchistModifier");
-        modifiers.register(conservatistModifer,votingName+"conservatistModifier");
-        modifiers.register(socialistModifier,votingName+"socialistModifier");
-        modifiers.register(liberalModifier,votingName+"liberalModifier");
-        modifiers.register(capitalistModifier,votingName+"capitalistModifier");
-        modifiers.register(exampleModifier,votingName+"example");
+        modifiers.register(fascistModifier, votingName + "fascistModifier");
+        modifiers.register(centristModifier, votingName + "centristModifier");
+        modifiers.register(anarchistModifier, votingName + "anarchistModifier");
+        modifiers.register(conservatistModifer, votingName + "conservatistModifier");
+        modifiers.register(socialistModifier, votingName + "socialistModifier");
+        modifiers.register(liberalModifier, votingName + "liberalModifier");
+        modifiers.register(capitalistModifier, votingName + "capitalistModifier");
+        modifiers.register(exampleModifier, votingName + "example");
 
-        IdeologyTypes fascist = new IdeologyTypes(TextColor.color(0,0,0),"F","Fascist",getLeaders(fascistModifier),fascistModifier);
-        IdeologyTypes neutral = new IdeologyTypes(TextColor.color(165,157,157),"N","Centrist", getLeaders(centristModifier),centristModifier);
-        IdeologyTypes anarchist = new IdeologyTypes(TextColor.color(7,154,12),"A","Anarchism",getLeaders(anarchistModifier),anarchistModifier);
-        IdeologyTypes conservatism = new IdeologyTypes(TextColor.color(204,0,0),"C","Conservative",getLeaders(conservatistModifer),conservatistModifer);
-        IdeologyTypes socialist = new IdeologyTypes(TextColor.color(255,0,0),"S","Socialist",getLeaders(socialistModifier),socialistModifier);
-        IdeologyTypes liberalist = new IdeologyTypes(TextColor.color(51,253,255),"L","Liberalist", getLeaders(liberalModifier),liberalModifier);
-        IdeologyTypes capitalist = new IdeologyTypes(TextColor.color(0,153,0),"C","Capitalist", getLeaders(capitalistModifier),capitalistModifier);
+        IdeologyTypes fascist = new IdeologyTypes(TextColor.color(0, 0, 0), "F", "Fascist", getLeaders(fascistModifier), fascistModifier);
+        IdeologyTypes neutral = new IdeologyTypes(TextColor.color(165, 157, 157), "N", "Centrist", getLeaders(centristModifier), centristModifier);
+        IdeologyTypes anarchist = new IdeologyTypes(TextColor.color(7, 154, 12), "A", "Anarchism", getLeaders(anarchistModifier), anarchistModifier);
+        IdeologyTypes conservatism = new IdeologyTypes(TextColor.color(204, 0, 0), "C", "Conservative", getLeaders(conservatistModifer), conservatistModifer);
+        IdeologyTypes socialist = new IdeologyTypes(TextColor.color(255, 0, 0), "S", "Socialist", getLeaders(socialistModifier), socialistModifier);
+        IdeologyTypes liberalist = new IdeologyTypes(TextColor.color(51, 253, 255), "L", "Liberalist", getLeaders(liberalModifier), liberalModifier);
+        IdeologyTypes capitalist = new IdeologyTypes(TextColor.color(0, 153, 0), "C", "Capitalist", getLeaders(capitalistModifier), capitalistModifier);
 
         Ideologies ideologies = ContinentalManagers.defaultsStorer.ideologies;
 
@@ -164,10 +167,10 @@ public class Main {
         ideologyTypesList.add(liberalist);
         ideologyTypesList.add(capitalist);
 
-        ElectionTypes democratic = new ElectionTypes(TextColor.color(0,0,255),"Democratic");
-        ElectionTypes authorotarian = new ElectionTypes(TextColor.color(64,64,64),"Authoritarian");
-        ElectionTypes totalitarian = new ElectionTypes(TextColor.color(0,0,0),"Totalitarian");
-        ElectionTypes republic = new ElectionTypes(TextColor.color(0,102,204),"Republic");
+        ElectionTypes democratic = new ElectionTypes(TextColor.color(0, 0, 255), "Democratic");
+        ElectionTypes authorotarian = new ElectionTypes(TextColor.color(64, 64, 64), "Authoritarian");
+        ElectionTypes totalitarian = new ElectionTypes(TextColor.color(0, 0, 0), "Totalitarian");
+        ElectionTypes republic = new ElectionTypes(TextColor.color(0, 102, 204), "Republic");
 
         Elections elections = ContinentalManagers.defaultsStorer.elections;
 
@@ -184,63 +187,64 @@ public class Main {
         electionTypes.add(republic);
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
-        c.put(production,new Currencies(production,10f));
+        c.put(production, new Currencies(production, 10f));
 
-        Modifier superPower = new Modifier.create(compBuild("Super Power",NamedTextColor.GOLD,TextDecoration.BOLD))
+        Modifier superPower = new Modifier.create(compBuild("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .addStabilityBaseBoost(10f)
-                .addCurrencyBoost(new CurrencyBoost(production,0.3f))
+                .addCurrencyBoost(new CurrencyBoost(production, 0.3f))
                 .setDescription(Component.text()
-                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.",TextColor.color(128,128,128),TextDecoration.ITALIC))
+                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
                         .build())
                 .build();
 
-        Modifier major = new Modifier.create(compBuild("Major",NamedTextColor.GOLD,TextDecoration.BOLD))
+        Modifier major = new Modifier.create(compBuild("Major", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .addStabilityBaseBoost(5f)
-                .addCurrencyBoost(new CurrencyBoost(production,0.1f))
+                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
                 .setDescription(Component.text()
-                        .append(Component.text("This nation is a major power its below super power but above minor.",TextColor.color(128,128,128),TextDecoration.ITALIC))
+                        .append(Component.text("This nation is a major power its below super power but above minor.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
                         .build())
                 .build();
 
-        Modifier minor = new Modifier.create(compBuild("Minor",NamedTextColor.GOLD,TextDecoration.BOLD))
+        Modifier minor = new Modifier.create(compBuild("Minor", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .setDescription(Component.text()
-                        .append(Component.text("Just a wee lil nation.",TextColor.color(128,128,128),TextDecoration.ITALIC))
+                        .append(Component.text("Just a wee lil nation.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
                         .build())
                 .build();
 
-        modifiers.register(superPower,votingName+"superpower");
-        modifiers.register(major,votingName+"major");
-        modifiers.register(minor,votingName+"minor");
+        modifiers.register(superPower, votingName + "superpower");
+        modifiers.register(major, votingName + "major");
+        modifiers.register(minor, votingName + "minor");
 
         System.out.println("voting");
-        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L,"ww2_clicks")
+        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
                 .setCountries(90)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(),"ww2_clicks");
+                .build(), "ww2_clicks");
 
-        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L,"ww2_troops")
+        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
                 .setCountries(90)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(),"ww2_troops");
+                .build(), "ww2_troops");
     }
 
-    private static List<Leader> getLeaders(Modifier modifier){
+    private static List<Leader> getLeaders(Modifier modifier) {
         List<Leader> leaders = new ArrayList<>();
-        for (int i = 0; i < 100; i++){
-            leaders.add(new Leader.create(compBuild(getName(),modifier.getTextColor())).addModifier(modifier).build());
+        for (int i = 0; i < 100; i++) {
+            leaders.add(new Leader.create(compBuild(getName(), modifier.getTextColor())).addModifier(modifier).build());
         }
         return leaders;
     }
-    private static String getName(){
-        return firstName[new Random().nextInt(0,firstName.length)]+" "+lastName[new Random().nextInt(0,lastName.length)];
+
+    private static String getName() {
+        return firstName[new Random().nextInt(0, firstName.length)] + " " + lastName[new Random().nextInt(0, lastName.length)];
     }
 
     private static String[] firstName = {
@@ -322,20 +326,22 @@ public class Main {
     };
 
     public static void initHooks() {
+        MinecraftServer.getConnectionManager().setPlayerProvider(CPlayer::new);
+
         new GreetEvents().hook(
                 new GreetEvents.GreetSettings(
                         event ->
-                        Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
-                                Util.colored("+", Constants.Colors.LIME).append(
-                                        Util.colored("] " + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
-                                )
-                        ),
+                                Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
+                                        Util.colored("+", Constants.Colors.LIME).append(
+                                                Util.colored("] " + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
+                                        )
+                                ),
                         event ->
-                        Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
-                                Util.colored("-", Constants.Colors.RED).append(
-                                        Util.colored("]", Constants.Colors.LIGHT_GRAY)
-                                )
-                        ))
+                                Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
+                                        Util.colored("-", Constants.Colors.RED).append(
+                                                Util.colored("]", Constants.Colors.LIGHT_GRAY)
+                                        )
+                                ))
         );
 
     }

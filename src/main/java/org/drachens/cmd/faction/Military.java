@@ -1,5 +1,6 @@
 package org.drachens.cmd.faction;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -11,15 +12,13 @@ import org.drachens.events.Factions.FactionCreateEvent;
 
 import java.util.List;
 
-import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
-
 public class Military {
     public Military(String cmd) {
     }
 
     public void causes(CommandSender sender, String input) {
-        Player p = (Player) sender;
-        Country country = getCountryFromPlayer(p);
+        CPlayer p = (CPlayer) sender;
+        Country country = p.getCountry();
         String name = input;
         CountryDataManager countryDataManager = ContinentalManagers.world(p.getInstance()).countryDataManager();
         MilitaryFactionType factions = new MilitaryFactionType(country,name);

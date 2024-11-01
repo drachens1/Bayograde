@@ -1,20 +1,22 @@
 package org.drachens.cmd.Msg;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.sound.SoundEvent;
+import org.drachens.util.PlayerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.KyoriUtil.mergeComp;
-import static org.drachens.util.PlayerUtil.getPlayersLastMessanger;
 
 public class ReplyCMD extends Command {
     public ReplyCMD() {
@@ -22,8 +24,10 @@ public class ReplyCMD extends Command {
         var msg = ArgumentType.StringArray("msg");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /r <msg>"));
         addSyntax((sender, context) -> {
-            Player p = (Player) sender;
-            msgBuild(p, getPlayersLastMessanger(p), context.get(msg));
+            CPlayer p = (CPlayer) sender;
+            msgBuild(
+                    p, PlayerUtil.getPlayerFromUUID(p.getLastMessenger()),
+                    context.get(msg));
         }, msg);
     }
 

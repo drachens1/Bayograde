@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Countries;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -37,7 +38,6 @@ import java.util.*;
 
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
-import static org.drachens.util.PlayerUtil.getCountryFromPlayer;
 
 public class Country implements Cloneable{
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
@@ -262,7 +262,7 @@ public class Country implements Cloneable{
         this.capital = capital;
     }
 
-    public void addPlayer(Player p) {
+    public void addPlayer(CPlayer p) {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         this.players.add(p);
         p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryJoin"), "%country%", this.name)));
@@ -278,8 +278,8 @@ public class Country implements Cloneable{
         clientsides.forEach(clientside ->  clientside.removeViewer(p));
     }
 
-    public void changeCountry(Player p) {
-        Country country = getCountryFromPlayer(p);
+    public void changeCountry(CPlayer p) {
+        Country country = p.getCountry();
 
         if (country != null){
             if (country.getPlayer().contains(p)) {

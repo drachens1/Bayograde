@@ -4,6 +4,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
+import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public abstract class InventoryGUI implements InventoryHandler {
     }
 
     @Override
-    public void onClick(InventoryClickEvent event) {
+    public void onClick(InventoryPreClickEvent event) {
         event.getPlayer().openInventory(Objects.requireNonNull(event.getInventory()));
         int slot = event.getSlot();
         InventoryButton button = this.buttonMap.get(slot);
