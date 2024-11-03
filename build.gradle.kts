@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom-snapshots:789befee31")
+    implementation("net.minestom:minestom-snapshots:c148954a47")
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("com.google.code.gson:gson:2.11.0")

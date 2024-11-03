@@ -1,22 +1,22 @@
 package org.drachens.dataClasses.other;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
+import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
-import net.minestom.server.network.player.PlayerConnection;
+import net.minestom.server.utils.PacketUtils;
 import org.drachens.animation.AnimationType;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Provinces.Province;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.drachens.util.OtherUtil.yawToQuat;
 
@@ -74,8 +74,7 @@ public class ItemDisplay extends Clientside {
                 map
         );
 
-        VIEWERS.forEach(player ->
-                player.sendPacket(entityMetaDataPacket1));
+        PacketUtils.sendGroupedPacket(VIEWERS,entityMetaDataPacket1);
     }
 
     public void moveSmooth(Province to, int time){
@@ -95,8 +94,7 @@ public class ItemDisplay extends Clientside {
         map.put(14,Metadata.Quaternion(quart));
 
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId,map);
-        VIEWERS.forEach(player->
-                player.sendPacket(entityMetaDataPacket1));
+        PacketUtils.sendGroupedPacket(VIEWERS,entityMetaDataPacket1);
     }
 
     public void setPosWithOffset(Province province){
@@ -107,20 +105,17 @@ public class ItemDisplay extends Clientside {
     public void setPos(Pos pos){
         this.pos = pos;
         entityTeleportPacket =new EntityTeleportPacket(this.entityId, this.pos, false);
-        VIEWERS.forEach(player ->
-                player.sendPacket(entityTeleportPacket));
+        PacketUtils.sendGroupedPacket(VIEWERS,entityTeleportPacket);
 
     }
 
-    public void destroy(Long delay){
-        MinecraftServer.getSchedulerManager().buildTask(this::dispose).delay(delay, ChronoUnit.MILLIS);
-    }
     @Override
-    public void addViewer(PlayerConnection player) {
+    public void addCountry(Country country) {
+        List<Player> players = country.getPlayer();
         if (storeViewers)
-            VIEWERS.add(player);
+            VIEWERS.addAll(players);
 
-        player.sendPacket(new SpawnEntityPacket(
+        PacketUtils.sendGroupedPacket(players,new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -135,20 +130,59 @@ public class ItemDisplay extends Clientside {
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
 
-        player.sendPacket(new EntityMetaDataPacket(
+        PacketUtils.sendGroupedPacket(players,new EntityMetaDataPacket(
                 this.entityId,
                 map
         ));
 
-        player.sendPacket(entityTeleportPacket);
+        PacketUtils.sendGroupedPacket(players,entityTeleportPacket);
     }
 
     @Override
-    public void removeViewer(PlayerConnection player) {
+    public void removeCountry(Country country) {
+        List<Player> players = country.getPlayer();
         if (storeViewers)
-            VIEWERS.remove(player);
+            VIEWERS.removeAll(players);
 
-        player.sendPacket(new DestroyEntitiesPacket(
+        PacketUtils.sendGroupedPacket(players,new DestroyEntitiesPacket(
+                this.entityId
+        ));
+    }
+
+    @Override
+    public void addViewer(Player p) {
+        if (storeViewers)
+            VIEWERS.add(p);
+
+        PacketUtils.sendPacket(p,new SpawnEntityPacket(
+                entityId,
+                uuid,
+                EntityType.ITEM_DISPLAY.id(),
+                pos,
+                0f, 0, (short) 0, (short) 0, (short) 0
+        ));
+
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+
+        map.put(8,Metadata.VarInt(-1));
+        map.put(11,Metadata.Vector3(new Pos(0,0,0)));
+        map.put(23, Metadata.ItemStack(item));
+        map.put(24, Metadata.Byte(displayType));
+
+        PacketUtils.sendPacket(p,new EntityMetaDataPacket(
+                this.entityId,
+                map
+        ));
+
+        PacketUtils.sendPacket(p,entityTeleportPacket);
+    }
+
+    @Override
+    public void removeViewer(Player p) {
+        if (storeViewers)
+            VIEWERS.remove(p);
+
+        PacketUtils.sendPacket(p,new DestroyEntitiesPacket(
                 this.entityId
         ));
     }

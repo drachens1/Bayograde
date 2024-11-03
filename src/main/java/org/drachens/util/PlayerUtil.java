@@ -4,13 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
-import org.drachens.dataClasses.Countries.Country;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerUtil {
@@ -40,9 +38,4 @@ public class PlayerUtil {
     public static Player getPlayerFromUUID(UUID player) {
         return MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(player);
     }
-
-    public static Player getPlayerFromName(String name) {
-        return MinecraftServer.getConnectionManager().findOnlinePlayer(name);
-    }
-
 }

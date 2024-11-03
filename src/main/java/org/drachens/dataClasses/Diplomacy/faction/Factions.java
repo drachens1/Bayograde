@@ -16,14 +16,15 @@ public abstract class Factions {
     private final Country creator;
     private String name;
     private Component description;
-    private List<Country> members;
+    private final List<Country> members;
     private Component nameComponent;
     public Factions(Country creator, String name) {
         this.creator = creator;
         this.name = name;
         this.members = new ArrayList<>();
-        members.add(creator);
+        addMember(creator);
         createDescription();
+        ContinentalManagers.world(creator.getInstance()).countryDataManager().addFaction(this);
         nameComponent = Component.text()
                 .append(Component.text()
                         .append(Component.text(name,NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -33,6 +34,13 @@ public abstract class Factions {
                 .build();
     }
     public void createDescription(){
+        nameComponent = Component.text()
+                .append(Component.text()
+                        .append(Component.text(name,NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .hoverEvent(description)
+                        .clickEvent(ClickEvent.runCommand("/faction info "+name))
+                )
+                .build();
         description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text(name, NamedTextColor.GOLD))
@@ -41,9 +49,6 @@ public abstract class Factions {
                 .append(Component.text("Leader: "))
                 .append(creator.getNameComponent())
                 .build();
-    }
-    public Component getDescription(){
-        return description;
     }
 
     public Country getCreator() {
@@ -54,14 +59,16 @@ public abstract class Factions {
         return members;
     }
 
-    public void addMember(Country country) {
+    protected void addMember(Country country) {
         if (members.contains(country))return;
         members.add(country);
+        country.createInfo();
     }
 
-    public void removeMember(Country country) {
+    protected void removeMember(Country country) {
         if (!members.contains(country))return;
         members.remove(country);
+        country.createInfo();
     }
     public String getStringName(){
         return name;

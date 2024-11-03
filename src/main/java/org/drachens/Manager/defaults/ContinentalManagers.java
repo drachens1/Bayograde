@@ -2,6 +2,7 @@ package org.drachens.Manager.defaults;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
+import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.AchievementsManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.YearManager;
@@ -17,6 +18,7 @@ public class ContinentalManagers {
     public static final YearManager yearManager = new YearManager(MinecraftServer.getInstanceManager().getInstances().stream().toList());
     public static final DefaultsStorer defaultsStorer = new DefaultsStorer();
     public static final InventoryManager inventoryManager = new InventoryManager();
+    public static final GUIManager guiManager = new GUIManager();
     public static WorldClasses world(Instance instance){
         return getWorldClasses(instance);
     }

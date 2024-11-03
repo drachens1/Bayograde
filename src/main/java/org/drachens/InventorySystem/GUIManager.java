@@ -1,7 +1,6 @@
 package org.drachens.InventorySystem;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -27,8 +26,11 @@ public class GUIManager {
     }
 
     public void handleClick(InventoryPreClickEvent e) {
+        System.out.println("1");
         InventoryHandler handler = this.activeInventories.get(e.getInventory());
+        System.out.println(activeInventories);
         if (handler != null) {
+            System.out.println("2");
             handler.onClick(e);
         }
     }

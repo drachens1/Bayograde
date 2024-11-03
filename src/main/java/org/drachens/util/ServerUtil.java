@@ -12,10 +12,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.BlockVec;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.EventNode;
 import net.minestom.server.event.GlobalEventHandler;
-import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -49,16 +46,15 @@ import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.SpawnCMD;
 import org.drachens.cmd.TeleportCMD;
-import org.drachens.cmd.TestCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.country.CountryCMD;
 import org.drachens.cmd.faction.FactionCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
-import org.drachens.dataClasses.BuildTypes;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
+import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
@@ -67,7 +63,6 @@ import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
-import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.NewDay;
 import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
@@ -174,6 +169,7 @@ public class ServerUtil {
             e.setSpawningInstance(instCon);
             p.setRespawnPoint(new Pos(0, 1, 0));
             ContinentalManagers.configFileManager.loadPermissions(p);
+
         });
 
         globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer()).add(e.getRank()));
@@ -263,14 +259,12 @@ public class ServerUtil {
             logCmd(p.getUsername(), e.getCommand(), p.getInstance());
         });
 
-        GUIManager guiManager = new GUIManager();
-        EventNode<Event> inventoryListener = EventNode.all("all");
+        GUIManager guiManager = ContinentalManagers.guiManager;
 
-        inventoryListener.addListener(InventoryPreClickEvent.class, guiManager::handleClick)
+        globEHandler.addListener(InventoryPreClickEvent.class, guiManager::handleClick)
                 .addListener(InventoryOpenEvent.class, guiManager::handleOpen)
                 .addListener(InventoryCloseEvent.class, guiManager::handleClose);
 
-        globEHandler.addChild(inventoryListener);
         WhitelistManager whitelistManager = new WhitelistManager();
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
@@ -415,7 +409,6 @@ public class ServerUtil {
         commandManager.register(new VoteCMD(votingOptionsCMD));
         commandManager.register(new ResetCMD());
         commandManager.register(new SpawnCMD());
-        commandManager.register(new TestCMD());
         commandManager.register(new StopCMD());
         commandManager.register(new debugCMD());
         commandManager.register(new FactionCMD());

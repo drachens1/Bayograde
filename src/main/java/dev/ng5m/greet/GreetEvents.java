@@ -11,7 +11,7 @@ import dev.ng5m.util.Settings;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
-import org.drachens.InventorySystem.GUIManager;
+import org.drachens.Manager.defaults.ContinentalManagers;
 
 import java.util.function.Function;
 
@@ -36,7 +36,7 @@ public class GreetEvents extends Configurable<GreetEvents.GreetSettings> impleme
 
         var a = new PerPlayerCosmeticsGUI();
         a.decorate(event.getPlayer());
-        new GUIManager().openGUI(a, event.getPlayer());
+        ContinentalManagers.guiManager.openGUI(a, event.getPlayer());
 
     }
 

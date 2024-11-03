@@ -36,16 +36,14 @@ public class EconomyFactionType extends Factions {
 
     @Override
     public void countryJoins(Country country) {
+        addMember(country);
         country.addModifier(factionModifier);
     }
 
     @Override
     public void countryLeaves(Country country) {
+        removeMember(country);
         country.removeModifier(factionModifier);
-    }
-
-    public Modifier getFactionModifier(){
-        return factionModifier;
     }
     public void updateFactionModifier(){
         float totalDistance = 0f;

@@ -15,10 +15,10 @@ import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.BuildTypes;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
+import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.*;
 import org.drachens.dataClasses.Modifier;
@@ -71,6 +71,7 @@ public class Country implements Cloneable{
     private Component description;
     private float maxBuildingSlotBoost = 1f;
     private float capitulationBoostPercentage = 1f;
+    private float stability;
     private float stabilityBaseBoost = 0f;
     private float stabilityGainBoost = 0f;
     private final List<Region> region = new ArrayList<>();
@@ -621,6 +622,7 @@ public class Country implements Cloneable{
     public void joinEconomyFaction(EconomyFactionType economyFactionType){
         if (!canJoinFaction(economyFactionType))return;
         setEconomyFactionType(economyFactionType);
+        economyFactionType.countryJoins(this);
         EventDispatcher.call(new FactionJoinEvent(economyFactionType,this));
     }
     public void joinFaction(Factions factions){
@@ -654,17 +656,17 @@ public class Country implements Cloneable{
         return militaryFactionType!=null && militaryFactionType.getMembers().contains(country);
     }
     public boolean isInAMilitaryFaction(){
-        return militaryFactionType==null;
+        return militaryFactionType!=null;
     }
     public boolean isInAnEconomicFaction(){
-        return economyFactionType==null;
+        return economyFactionType!=null;
     }
     public boolean isInAllFactions(){
         return isInAMilitaryFaction()&&isInAnEconomicFaction();
     }
     public void addBuilding(Building building){
         clientsides.add(building.getItemDisplay());
-        players.forEach(player -> building.getItemDisplay().addViewer(player));
+        building.getItemDisplay().addCountry(this);
         if (buildTypesListHashMap.containsKey(building.getBuildTypes())){
             List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
             buildings.add(building);
@@ -688,19 +690,19 @@ public class Country implements Cloneable{
         return buildTypesListHashMap.get(buildTypes);
     }
     public void addTroop(Troop troop){
-        players.forEach(player -> troop.getTroop().addViewer(player));
+        troop.getTroop().addCountry(this);
         troops.add(troop);
         clientsides.add(troop.getTroop());
         clientsides.add(troop.getAlly());
     }
     public void removeTroop(Troop troop){
-        players.forEach(player -> troop.getTroop().removeViewer(player));
+        troop.getTroop().removeCountry(this);
         troops.remove(troop);
         clientsides.remove(troop.getTroop());
     }
     private void createFloatingText(Building building, Component text){
         Province province = building.getProvince();
-        Long initialDelay = new Random().nextLong(0,200);
+        long initialDelay = new Random().nextLong(0,200);
         scheduler.buildTask(()->{
             TextDisplay textDisplay = new TextDisplay.create(province,text)
                     .setFollowPlayer(true)
@@ -708,8 +710,9 @@ public class Country implements Cloneable{
                     .withOffset()
                     .build();
             addTextDisplay(textDisplay);
-            scheduler.buildTask(()->{
+            scheduler.buildTask(()-> {
                 textDisplay.moveNoRotation(new Pos(0,4,0),40,true);
+                textDisplay.destroy(3995L);
             }).delay(initialDelay+new Random().nextLong(0,200), ChronoUnit.MILLIS).schedule();
         }).delay(initialDelay,ChronoUnit.MILLIS).schedule();
     }

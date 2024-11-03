@@ -2,17 +2,14 @@ package org.drachens.cmd.faction;
 
 import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
-import net.minestom.server.entity.Player;
+import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
 
-import java.util.List;
 
-
-public class Kick {
+public class Kick extends Command {
     public Kick() {
-    }
-
-    public void causes(CommandSender sender, String input) {
+        super("kick");
+        setCondition((sender,s)->requirements(sender));
 
     }
 
@@ -21,9 +18,5 @@ public class Kick {
         Country country = p.getCountry();
         if (country == null) return false;
         return country.isLeaderOfAFaction();
-    }
-
-    public List<String> generateAutoComp(CommandSender sender) {
-        return null;
     }
 }

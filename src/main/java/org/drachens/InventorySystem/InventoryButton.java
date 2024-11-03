@@ -1,7 +1,6 @@
 package org.drachens.InventorySystem;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.item.ItemStack;
 

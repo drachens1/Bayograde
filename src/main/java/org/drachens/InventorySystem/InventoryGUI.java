@@ -1,7 +1,6 @@
 package org.drachens.InventorySystem;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.inventory.InventoryClickEvent;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -39,6 +38,7 @@ public abstract class InventoryGUI implements InventoryHandler {
 
     @Override
     public void onClick(InventoryPreClickEvent event) {
+        event.setCancelled(true);
         event.getPlayer().openInventory(Objects.requireNonNull(event.getInventory()));
         int slot = event.getSlot();
         InventoryButton button = this.buttonMap.get(slot);

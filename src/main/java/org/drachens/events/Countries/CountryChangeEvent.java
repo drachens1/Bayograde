@@ -1,7 +1,6 @@
 package org.drachens.events.Countries;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;

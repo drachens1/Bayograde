@@ -1,7 +1,6 @@
 package org.drachens.temporary;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 
 public class TroopWarSystem implements War {
-    int[] troopWalk = {1, 2, 3, 4};
     int[][] attack = {{3000, 1}, {200, 2}, {300, 3}};
     int[] moving = {5, 4, 6, 4};
     private final TroopType troopType;
@@ -59,6 +57,6 @@ public class TroopWarSystem implements War {
         if (province == null || !(province.getOccupier() == country)) return;
         System.out.println("spawn troop");
         TrainedTroop trainedTroop = new TrainedTroop(troopType, new DivisionDesign("design", new HashMap<>(), null, country), 10f);
-        Troop troop = new Troop(province, trainedTroop, troopPathing);
+        new Troop(province, trainedTroop, troopPathing);
     }
 }

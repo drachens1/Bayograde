@@ -24,7 +24,6 @@ public final class GUIUtils {
                     .creator(player -> item.apply(fx, rows - 1))
                     .consumer(event -> {
                         System.out.println("Clicked");
-                        event.setCancelled(true);
                     }));
         }
 
@@ -33,5 +32,4 @@ public final class GUIUtils {
             inventoryGUI.getInventory().setItemStack(y * 9 + 8, item.apply(8, y));
         }
     }
-
 }

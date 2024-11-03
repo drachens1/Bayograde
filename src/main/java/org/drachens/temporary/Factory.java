@@ -2,34 +2,26 @@ package org.drachens.temporary;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
-import net.minestom.server.timer.Scheduler;
-import org.checkerframework.checker.units.qual.C;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
 import org.drachens.animation.Animation;
-import org.drachens.dataClasses.BuildTypes;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
-import org.drachens.dataClasses.other.TextDisplay;
 
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashMap;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class Factory extends BuildTypes {
-    private Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private final Payments produces;
     int[] constructionFrames = {2,3,4,5};
     int[] smokeFrames = {6,7,8};
