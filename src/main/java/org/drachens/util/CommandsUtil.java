@@ -26,18 +26,21 @@ public class CommandsUtil {
         return suggestions;
     }
 
-    public static Suggestion getSuggestionsBasedOnInput(Suggestion suggestionss, String input, Instance i) {
+    public static Suggestion getSuggestionsBasedOnInput(Suggestion suggestionss, String input, int index, Instance i) {
         List<String> suggestions = getCountryNames(i);
-        input = input.trim();
+        input = cutInput(input,index);
         if (input.isEmpty()) return suggestions(suggestions, suggestionss);
         String finalInput = input;
         return suggestions(suggestions.stream()
                 .filter(suggestion -> suggestion.toLowerCase().startsWith(finalInput))
                 .collect(Collectors.toList()), suggestionss);
     }
-    public static Suggestion getFactionsSuggestionsBasedOnInput(Suggestion suggestionss, String input, Instance i) {
+    public static String cutInput(String input, int index){
+        return input.split(" ")[index].trim();
+    }
+    public static Suggestion getFactionsSuggestionsBasedOnInput(Suggestion suggestionss, String input, int index, Instance i) {
         List<String> suggestions = getFactionNames(i);
-        input = input.trim();
+        input = cutInput(input, index);
         if (input.isEmpty()) return suggestions(suggestions, suggestionss);
         String finalInput = input;
         return suggestions(suggestions.stream()

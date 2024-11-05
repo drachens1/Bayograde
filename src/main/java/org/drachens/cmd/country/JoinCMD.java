@@ -19,8 +19,7 @@ public class JoinCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            String[] a = context.getInput().split(" ");
-            getSuggestionsBasedOnInput(suggestion, a[2], p.getInstance()).getEntries();
+            getSuggestionsBasedOnInput(suggestion, context.getInput(), 2, p.getInstance()).getEntries();
         });
 
         addSyntax((sender, context) -> {

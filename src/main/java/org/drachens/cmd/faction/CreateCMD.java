@@ -21,10 +21,16 @@ public class CreateCMD extends Command {
         setCondition((sender,s)->notInAFaction(sender));
 
         var type = ArgumentType.Word("type")
-                .from("Economy", "Military")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    suggestion.addEntry(new SuggestionEntry("Economy"));
-                    suggestion.addEntry(new SuggestionEntry("Military"));
+                    if (sender instanceof CPlayer player){
+                        Country country = player.getCountry();
+                        if (country ==null)return;
+                        if (!country.isInAnEconomicFaction())
+                            suggestion.addEntry(new SuggestionEntry("Economy"));
+                        if (!country.isInAMilitaryFaction())
+                            suggestion.addEntry(new SuggestionEntry("Military"));
+                    }
+
                 });
 
         var nameArg = ArgumentType.String("factionName");

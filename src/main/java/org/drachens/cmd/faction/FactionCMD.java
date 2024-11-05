@@ -13,9 +13,13 @@ public class FactionCMD extends Command {
         addSubcommand(new JoinCMD());
         addSubcommand(new CreateCMD());
         addSubcommand(new DeleteCMD());
-        addSubcommand(new Kick());
+        addSubcommand(new KickCMD());
+        addSubcommand(new InviteCMD());
+        addSubcommand(new SetLeaderCMD());
+        addSubcommand(new LeaveCMD());
+        addSubcommand(new InfoCMD());
 
-        var smth = ArgumentType.String("Factions")
+        var smth = ArgumentType.String("type...")
                         .setSuggestionCallback((sender,context,suggestion)->{
                             Player p = (Player) sender;
                             p.refreshCommands();

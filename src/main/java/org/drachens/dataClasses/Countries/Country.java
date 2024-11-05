@@ -30,6 +30,7 @@ import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.interfaces.MapGen;
 import org.drachens.temporary.Factory;
 import org.drachens.util.AStarPathfinder;
 
@@ -38,8 +39,10 @@ import java.util.*;
 
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
+import static org.drachens.util.Messages.globalBroadcast;
 
 public class Country implements Cloneable{
+    private final MapGen mapGen;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private Leader leader;
     private final List<Player> players;
@@ -105,10 +108,16 @@ public class Country implements Cloneable{
         city.addAll(Arrays.stream(tempCities).toList());
         this.instance = instance;
         aStarPathfinder = new AStarPathfinder(this, ContinentalManagers.world(instance).provinceManager());
+        this.mapGen = ContinentalManagers.world(instance).votingManager().getWinner().getMapGenerator();
     }
     public void addModifier(Modifier modifier){
-        if (modifiers.contains(modifier))
+        addModifier(modifier,false);
+    }
+    public void addModifier(Modifier modifier, boolean update){
+        if (modifiers.contains(modifier)){
+
             return;
+        }
 
         modifiers.add(modifier);
         modifier.addCountry(this);
@@ -118,12 +127,12 @@ public class Country implements Cloneable{
         this.stabilityGainBoost+=modifier.getStabilityGainBoost();
         this.totalProductionBoost+=modifier.getProductionBoost();
         modifier.getCurrencyBoostList().forEach(this::addBoost);
-        createInfo();
+        if (!update) createInfo();
     }
 
     public void updateModifier(Modifier modifier, Modifier old){
         removeModifier(old);
-        addModifier(modifier);
+        addModifier(modifier,true);
     }
 
     public void removeModifier(Modifier modifier){
@@ -500,17 +509,21 @@ public class Country implements Cloneable{
             economyBoosts.put(currencyBoost.currencyTypes(),economyBoosts.get(currencyBoost.currencyTypes())-currencyBoost.boost());
         }
     }
+
     public void createInfo(){
+        if (mapGen.isGenerating(instance)) return;
+        globalBroadcast("updated info");
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : modifiers){
             modifierComps.add(modifier.getName()); modifierComps.add(Component.text(", "));
         }
         Component leaderComp = Component.text()
-                .append(Component.text("Faction: ",NamedTextColor.BLUE))
+                .append(Component.text("Faction: "))
                 .build();
+
         List<Component> factionsComps = new ArrayList<>();
         EconomyFactionType economyFactionType1 = getEconomyFactionType();
-        if (economyFactionType1!=null){
+        if (isInAnEconomicFaction()){
             factionsComps.add(Component.text()
                     .append(economyFactionType1.getName())
                     .append(compBuild(" : ",NamedTextColor.WHITE))
@@ -518,7 +531,7 @@ public class Country implements Cloneable{
                     .build());
         }
         MilitaryFactionType militaryFactionType1 = getMilitaryFactionType();
-        if (militaryFactionType1!=null){
+        if (isInAMilitaryFaction()){
             factionsComps.add(Component.text()
                     .append(militaryFactionType1.getName())
                     .append(compBuild(" : ",NamedTextColor.WHITE))
@@ -618,12 +631,14 @@ public class Country implements Cloneable{
         if (!canJoinFaction(militaryFactionType))return;
         setMilitaryFactionType(militaryFactionType);
         EventDispatcher.call(new FactionJoinEvent(militaryFactionType,this));
+        createInfo();
     }
     public void joinEconomyFaction(EconomyFactionType economyFactionType){
         if (!canJoinFaction(economyFactionType))return;
         setEconomyFactionType(economyFactionType);
-        economyFactionType.countryJoins(this);
+        economyFactionType.addCountry(this);
         EventDispatcher.call(new FactionJoinEvent(economyFactionType,this));
+        createInfo();
     }
     public void joinFaction(Factions factions){
         if (factions instanceof EconomyFactionType){
@@ -654,6 +669,9 @@ public class Country implements Cloneable{
     }
     public boolean isMilitaryAlly(Country country){
         return militaryFactionType!=null && militaryFactionType.getMembers().contains(country);
+    }
+    public boolean isInAFaction(){
+        return isInAMilitaryFaction() || isInAnEconomicFaction();
     }
     public boolean isInAMilitaryFaction(){
         return militaryFactionType!=null;

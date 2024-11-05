@@ -14,41 +14,32 @@ import java.util.List;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class EconomyFactionType extends Factions {
-    private Modifier factionModifier;
     private final Component name = compBuild("Economy",NamedTextColor.GOLD);
 
     public EconomyFactionType(Country creator, String name) {
-        super(creator, name);
+        super(creator, name,new Modifier.create(compBuild(name, NamedTextColor.GREEN))
+                .setDescription(compBuild("The bonuses from the economic faction",NamedTextColor.GRAY))
+                .build());
     }
 
     @Override
     public Component getName() {
         return name;
     }
+
     @Override
-    public void setFactions(Factions factions){
-        this.factionModifier = new Modifier.create(compBuild(getStringName(), NamedTextColor.GREEN))
-                .setDescription(compBuild("The bonuses from the economic faction",NamedTextColor.GRAY))
-                .build();
-        getMembers().forEach((country -> country.addModifier(factionModifier)));
+    public void addMember(Country country) {
         updateFactionModifier();
     }
 
     @Override
-    public void countryJoins(Country country) {
-        addMember(country);
-        country.addModifier(factionModifier);
-    }
-
-    @Override
-    public void countryLeaves(Country country) {
-        removeMember(country);
-        country.removeModifier(factionModifier);
+    public void removeMember(Country country) {
+        updateFactionModifier();
     }
     public void updateFactionModifier(){
         float totalDistance = 0f;
         int numOfCountries = 0;
-        Instance instance = getCreator().getCapital().getInstance();
+        Instance instance = getLeader().getCapital().getInstance();
         for (Country country : getMembers()){
             List<Country> countries = new ArrayList<>(getMembers());
             countries.remove(country);
@@ -58,7 +49,7 @@ public class EconomyFactionType extends Factions {
             }
         }
         float boost = calculateBoost(totalDistance,numOfCountries,instance);
-        factionModifier.setProductionBoost(boost);
+        getModifier().setProductionBoost(boost);
     }
     private float calculateBoost(float distance, int numOfCountries, Instance instance){
         if (numOfCountries==1)return 0f;

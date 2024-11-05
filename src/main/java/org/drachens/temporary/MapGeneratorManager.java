@@ -4,9 +4,11 @@ import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGener
 import de.articdive.jnoise.pipeline.JNoise;
 import it.unimi.dsi.fastutil.Pair;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
 import org.drachens.Manager.per_instance.CountryDataManager;
@@ -21,9 +23,11 @@ import org.drachens.dataClasses.territories.Region;
 import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.Voting.VotingOption;
 
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.drachens.util.KyoriUtil.compBuild;
+import static org.drachens.util.Messages.logMsg;
 import static org.drachens.util.ServerUtil.addChunk;
 
 public class MapGeneratorManager extends MapGen {
@@ -61,19 +65,27 @@ public class MapGeneratorManager extends MapGen {
     private Ideology defIdeology;
     private Election defElection;
     private int countries;
-    private boolean generating = false;
     private List<ElectionTypes> electionTypes;
     private List<IdeologyTypes> ideologyTypes;
     private VotingOption votingOption;
+    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     @Override
     public void generate(Instance instance, VotingOption votingOption) {
-        if (generating) return;
+        if (isGenerating(instance)){
+            logMsg("server","Tried to generate a new map when a map was generating",instance);
+            return;
+        }
+
+        addGenerating(instance);
         this.votingOption = votingOption;
-        generating = true;
         this.instance = instance;
         this.provinceManager = ContinentalManagers.world(instance).provinceManager();
         provinceManager.reset();
         this.countryDataManager = ContinentalManagers.world(instance).countryDataManager();
+        scheduler.buildTask(()->{
+            removeGenerating(instance);
+            countryDataManager.getCountries().forEach(Country::createInfo);
+        }).delay(2, ChronoUnit.SECONDS).schedule();
         this.countries = votingOption.getCountries();
         this.currenciesHashMap = new HashMap<>(votingOption.getDefaultCurrencies());
         continents = new ArrayList<>();
@@ -623,7 +635,6 @@ public class MapGeneratorManager extends MapGen {
         country.setPreviousWar(CountryEnums.PreviousWar.winner);
         //country.setElections(new Random().nextBoolean());
         country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
-        generating = false;
     }
     private void leadershipStyle(Country country){
         int num2 = new  Random().nextInt(0,5);

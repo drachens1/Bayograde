@@ -20,10 +20,10 @@ public class DeleteCMD extends Command {
                     if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country != null) {
-                            if (country.getEconomyFactionType() != null) {
+                            if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
                                 suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
                             }
-                            if (country.getMilitaryFactionType() != null) {
+                            if (country.getMilitaryFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
                                 suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
                             }
                         }
@@ -35,7 +35,7 @@ public class DeleteCMD extends Command {
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             Factions factionToDelete = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
-            if (factionToDelete != null && factionToDelete.getCreator() == country)
+            if (factionToDelete != null && factionToDelete.isLeader(country))
                 factionToDelete.delete();
         }, factions);
     }

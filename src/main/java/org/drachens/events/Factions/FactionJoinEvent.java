@@ -5,22 +5,7 @@ import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
-public class FactionJoinEvent implements Event, CancellableEvent {
-    private final Country country;
-    private final Factions faction;
-
-    public FactionJoinEvent(Factions faction, Country country) {
-        this.faction = faction;
-        this.country = country;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public Factions getFaction() {
-        return faction;
-    }
+public record FactionJoinEvent(Factions faction, Country country) implements Event, CancellableEvent {
 
     @Override
     public boolean isCancelled() {

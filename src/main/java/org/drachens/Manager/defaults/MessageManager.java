@@ -1,6 +1,8 @@
 package org.drachens.Manager.defaults;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
@@ -10,9 +12,7 @@ import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Provinces.Province;
-import org.drachens.events.Factions.FactionCreateEvent;
-import org.drachens.events.Factions.FactionDeleteEvent;
-import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.events.Factions.*;
 import org.drachens.events.StartWarEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
@@ -106,15 +106,64 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionJoinEvent.class, e->{
-            Country creator = e.getCountry();
-            Factions factions = e.getFaction();
+            Country creator = e.country();
             broadcast(Component.text()
                             .append(getPrefixes("faction"))
                             .append(creator.getNameComponent())
                             .append(Component.text(" has joined ",NamedTextColor.GREEN))
-                            .append(factions.getNameComponent())
+                            .append(e.faction().getNameComponent())
                             .build(),
                     creator.getCapital().getInstance());
+        });
+
+        globEHandler.addListener(FactionInviteEvent.class, e->{
+            Factions factions = e.getFaction();
+            Country invited = e.getInvited();
+            factions.sendMessage(Component.text()
+                            .append(getPrefixes("faction"))
+                            .append(invited.getNameComponent())
+                            .append(Component.text(" has been invited to the faction",NamedTextColor.GREEN))
+                    .build());
+            invited.sendMessage(Component.text()
+                            .append(getPrefixes("faction"))
+                            .append(Component.text()
+                                .append(Component.text(" you have been invited to join",NamedTextColor.GREEN))
+                                .clickEvent(ClickEvent.runCommand("faction join "+factions.getStringName()))
+                                .hoverEvent(HoverEvent.showText(Component.text("Click to join the faction",NamedTextColor.GOLD)))
+                            .build())
+                            .append(factions.getName())
+
+                    .build());
+        });
+
+        globEHandler.addListener(FactionKickEvent.class, e->{
+            Factions factions = e.getFaction();
+            Country country = e.getCountry();
+            factions.sendMessage(Component.text()
+                            .append(getPrefixes("faction"))
+                            .append(country.getNameComponent())
+                            .append(Component.text(" was kicked from the faction",NamedTextColor.RED))
+                    .build());
+            country.sendMessage(Component.text()
+                            .append(getPrefixes("faction"))
+                            .append(Component.text("You were kicked from "))
+                    .append(factions.getName())
+                    .build());
+        });
+
+        globEHandler.addListener(FactionSetLeaderEvent.class, e->{
+            Factions factions = e.faction();
+            Country country = e.country();
+            factions.sendMessage(Component.text()
+                    .append(getPrefixes("faction"))
+                    .append(country.getNameComponent())
+                    .append(Component.text(" has became the leader of the faction",NamedTextColor.GREEN))
+                    .build());
+            country.sendMessage(Component.text()
+                    .append(getPrefixes("faction"))
+                    .append(Component.text("assigned you as its leader "))
+                    .append(factions.getName())
+                    .build());
         });
     }
 }
