@@ -1,5 +1,6 @@
 package org.drachens.Manager.defaults;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -13,6 +14,7 @@ import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.events.Countries.CountryCoopPlayerEvent;
 import org.drachens.events.Countries.CountrySetLeaderEvent;
 import org.drachens.events.Factions.*;
 import org.drachens.events.StartWarEvent;
@@ -173,5 +175,20 @@ public class MessageManager {
                         .append(Component.text("The leader is now ",NamedTextColor.GREEN))
                         .append(Component.text(e.newLeader().getUsername()))
                 .build()));
+
+        globEHandler.addListener(CountryCoopPlayerEvent.class,e->{
+            CPlayer cPlayer = e.p();
+            Country country = e.inviter();
+            cPlayer.sendMessage(Component.text()
+                    .append(getPrefixes("country"))
+                    .append(Component.text("You have been invited to join ",NamedTextColor.GREEN))
+                    .append(country.getNameComponent())
+                    .build());
+            country.sendMessage(Component.text()
+                            .append(getPrefixes("country"))
+                            .append(Component.text(cPlayer.getUsername()))
+                            .append(Component.text(" has been invited to join the faction",NamedTextColor.GREEN))
+                    .build());
+        });
     }
 }

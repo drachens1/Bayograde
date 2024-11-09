@@ -34,10 +34,7 @@ public class SetLeaderCMD extends Command {
             String player = context.get(players);
             CPlayer senders = (CPlayer) sender;
             CPlayer p = (CPlayer) getOnlinePlayerFromName(player);
-            if (p==null){
-                System.out.println("SMTH");
-                return;
-            }
+            if (p==null) return;
             if (p.getCountry()==null || p.getCountry()!=senders.getCountry())return;
             Country country = p.getCountry();
             EventDispatcher.call(new CountrySetLeaderEvent(country,p));

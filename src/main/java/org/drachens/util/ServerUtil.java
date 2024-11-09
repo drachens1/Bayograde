@@ -278,7 +278,7 @@ public class ServerUtil {
 
         globEHandler.addListener(CountryJoinEvent.class, e -> e.getP().setCountry(e.getJoined()));
 //        globEHandler.addListener(CountryLeaveEvent.class, e -> addPlayerToCountryMap(e.getP(), null)); unnecessary
-        globEHandler.addListener(CountryChangeEvent.class, e -> e.getP().setCountry(e.getJoined()));
+        globEHandler.addListener(CountryChangeEvent.class, e -> e.p().setCountry(e.joined()));
 
         BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
         globEHandler.addListener(NewDay.class, e -> {
