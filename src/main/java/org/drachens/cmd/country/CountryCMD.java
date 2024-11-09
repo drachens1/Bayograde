@@ -1,8 +1,9 @@
 package org.drachens.cmd.country;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
+import org.drachens.cmd.country.manage.ManageCMD;
 
 public class CountryCMD extends Command {
     public CountryCMD() {
@@ -15,10 +16,14 @@ public class CountryCMD extends Command {
         addSubcommand(new Leader());
         addSubcommand(new AllInformationCMD());
         addSubcommand(new Extra());
-    }
+        addSubcommand(new ManageCMD());
 
-    public boolean requirements(CommandSender sender) {
-        if (sender instanceof Player) return true;
-        return false;
+        var smth = ArgumentType.String("type...")
+
+                .setSuggestionCallback((sender,context,suggestion)->{
+                    Player p = (Player) sender;
+                    p.refreshCommands();
+                });
+        addSyntax((sender,context)->{},smth);
     }
 }

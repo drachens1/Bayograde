@@ -7,7 +7,7 @@ import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 
-import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
+import static org.drachens.util.CommandsUtil.*;
 
 public class Members extends Command {
     public Members() {
@@ -18,7 +18,7 @@ public class Members extends Command {
                 return;
             }
             String[] a = context.getInput().split(" ");
-            getSuggestionsBasedOnInput(suggestion, context.getInput(), 2, p.getInstance()).getEntries();
+            getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(p.getInstance()));
         });
 
         addSyntax((sender, context) -> {

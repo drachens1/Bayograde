@@ -12,6 +12,9 @@ import java.net.URL;
 import java.util.UUID;
 
 public class PlayerUtil {
+    public static Player getOnlinePlayerFromName(String name){
+        return MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(name);
+    }
     public static UUID getUUIDFromName(String playerName) {
         try {
             URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + playerName);

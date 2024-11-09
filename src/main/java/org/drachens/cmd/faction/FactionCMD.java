@@ -3,6 +3,7 @@ package org.drachens.cmd.faction;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
+import org.drachens.cmd.faction.manage.*;
 
 public class FactionCMD extends Command {
     public FactionCMD() {
@@ -12,12 +13,10 @@ public class FactionCMD extends Command {
 
         addSubcommand(new JoinCMD());
         addSubcommand(new CreateCMD());
-        addSubcommand(new DeleteCMD());
-        addSubcommand(new KickCMD());
-        addSubcommand(new InviteCMD());
-        addSubcommand(new SetLeaderCMD());
         addSubcommand(new LeaveCMD());
         addSubcommand(new InfoCMD());
+        addSubcommand(new AcceptCMD());
+        addSubcommand(new ManageCMD());
 
         var smth = ArgumentType.String("type...")
                         .setSuggestionCallback((sender,context,suggestion)->{

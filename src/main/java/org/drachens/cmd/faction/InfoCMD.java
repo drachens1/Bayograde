@@ -6,7 +6,7 @@ import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
-import static org.drachens.util.CommandsUtil.getFactionsSuggestionsBasedOnInput;
+import static org.drachens.util.CommandsUtil.*;
 
 public class InfoCMD extends Command {
     public InfoCMD() {
@@ -17,7 +17,7 @@ public class InfoCMD extends Command {
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     Player p = (Player) sender;
-                    getFactionsSuggestionsBasedOnInput(suggestion, context.getInput(),2, p.getInstance());
+                    getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getFactionNames(p.getInstance()));
                 });
 
         addSyntax((sender,s)->{

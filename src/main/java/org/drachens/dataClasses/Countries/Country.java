@@ -42,6 +42,7 @@ import static org.drachens.util.Messages.broadcast;
 import static org.drachens.util.Messages.globalBroadcast;
 
 public class Country implements Cloneable{
+    private Player playerLeader;
     private final MapGen mapGen;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private Leader leader;
@@ -87,9 +88,10 @@ public class Country implements Cloneable{
     private float totalProductionBoost = 1f;
     private final AStarPathfinder aStarPathfinder;
     private final Instance instance;
-    private List<Clientside> clientsides = new ArrayList<>();
-    private List<Clientside> allyTroopClientsides = new ArrayList<>();
-    private List<Troop> troops = new ArrayList<>();
+    private final List<Clientside> clientsides = new ArrayList<>();
+    private final List<Clientside> allyTroopClientsides = new ArrayList<>();
+    private final List<Troop> troops = new ArrayList<>();
+    private final List<String> factionInvites = new ArrayList<>();
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
@@ -279,6 +281,8 @@ public class Country implements Cloneable{
         broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryMessages("broadcastedCountryJoin"), "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         clientsides.forEach(clientside ->  clientside.addViewer(p));
+        if (playerLeader==null)
+            setPlayerLeader(p);
     }
 
     public void removePlayer(Player p, boolean left) {
@@ -286,6 +290,12 @@ public class Country implements Cloneable{
         this.players.remove(p);
         p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryLeave"), "%country%", this.name)));
         clientsides.forEach(clientside ->  clientside.removeViewer(p));
+        if (isPlayerLeader(p)){
+            if (players.isEmpty()){
+                setPlayerLeader(null);
+            }else
+                setPlayerLeader(players.getFirst());
+        }
     }
 
     public void changeCountry(CPlayer p) {
@@ -753,5 +763,23 @@ public class Country implements Cloneable{
     public void unloadClientside(Clientside clientside){
         players.forEach(clientside::removeViewer);
         this.clientsides.remove(clientside);
+    }
+    public void inviteToFaction(Factions factions){
+        factionInvites.add(factions.getStringName());
+    }
+    public void removeInviteToFaction(Factions factions){
+        factionInvites.remove(factions.getStringName());
+    }
+    public List<String> getInvitedToFactions(){
+        return factionInvites;
+    }
+    public Player getPlayerLeader(){
+        return playerLeader;
+    }
+    public void setPlayerLeader(Player player){
+        this.playerLeader = player;
+    }
+    public boolean isPlayerLeader(Player player){
+        return playerLeader==player;
     }
 }

@@ -15,7 +15,9 @@ import org.drachens.dataClasses.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
+import static org.drachens.util.CommandsUtil.getCountryNames;
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+
 
 public class AllInformationCMD extends Command {
     public AllInformationCMD() {
@@ -25,7 +27,7 @@ public class AllInformationCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            getSuggestionsBasedOnInput(suggestion, context.getInput(), 2, p.getInstance()).getEntries();
+            getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(p.getInstance()));
         });
 
         addSyntax((sender, context) -> {

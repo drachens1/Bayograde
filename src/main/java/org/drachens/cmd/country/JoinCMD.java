@@ -8,7 +8,7 @@ import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 
-import static org.drachens.util.CommandsUtil.getSuggestionsBasedOnInput;
+import static org.drachens.util.CommandsUtil.*;
 
 public class JoinCMD extends Command {
     public JoinCMD() {
@@ -19,7 +19,7 @@ public class JoinCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            getSuggestionsBasedOnInput(suggestion, context.getInput(), 2, p.getInstance()).getEntries();
+            getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(p.getInstance()));
         });
 
         addSyntax((sender, context) -> {

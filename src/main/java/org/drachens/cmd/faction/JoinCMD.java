@@ -11,7 +11,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.events.Factions.FactionJoinEvent;
 
-import static org.drachens.util.CommandsUtil.getFactionsSuggestionsBasedOnInput;
+import static org.drachens.util.CommandsUtil.*;
 
 public class JoinCMD extends Command {
     public JoinCMD() {
@@ -22,7 +22,7 @@ public class JoinCMD extends Command {
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (notInAFaction(sender) && sender instanceof Player player) {
-                        getFactionsSuggestionsBasedOnInput(suggestion, context.getInput(), 2, player.getInstance());
+                        getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(player.getInstance()));
                     }
                 });
 

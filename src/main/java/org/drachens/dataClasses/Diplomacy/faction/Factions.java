@@ -105,7 +105,7 @@ public abstract class Factions {
         invites.add(country);
         EventDispatcher.call(new FactionInviteEvent(country,this));
     }
-    public boolean isInvited(Country country){
+    public boolean hasInvited(Country country){
         return invites.contains(country);
     }
     public void removeInvite(Country country){

@@ -7,11 +7,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.events.Countries.CountrySetLeaderEvent;
 import org.drachens.events.Factions.*;
 import org.drachens.events.StartWarEvent;
 import org.drachens.events.System.ResetEvent;
@@ -128,7 +130,7 @@ public class MessageManager {
                             .append(getPrefixes("faction"))
                             .append(Component.text()
                                 .append(Component.text(" you have been invited to join",NamedTextColor.GREEN))
-                                .clickEvent(ClickEvent.runCommand("faction join "+factions.getStringName()))
+                                .clickEvent(ClickEvent.runCommand("faction accept "+factions.getStringName()))
                                 .hoverEvent(HoverEvent.showText(Component.text("Click to join the faction",NamedTextColor.GOLD)))
                             .build())
                             .append(factions.getName())
@@ -165,5 +167,11 @@ public class MessageManager {
                     .append(factions.getName())
                     .build());
         });
+
+        globEHandler.addListener(CountrySetLeaderEvent.class, e-> e.country().sendMessage(Component.text()
+                        .append(getPrefixes("country"))
+                        .append(Component.text("The leader is now ",NamedTextColor.GREEN))
+                        .append(Component.text(e.newLeader().getUsername()))
+                .build()));
     }
 }
