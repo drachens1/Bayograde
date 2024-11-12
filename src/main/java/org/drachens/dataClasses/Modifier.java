@@ -13,8 +13,6 @@ import java.util.List;
 public class Modifier implements Cloneable {
     private float productionBoost;
     private float capitulationBoostPercentage;
-    private float stabilityBaseBoost;
-    private float stabilityGainBoost;
     private float maxBuildingSlotBoost;
     private List<CurrencyBoost> currencyBoostList;
     private Component name;
@@ -29,8 +27,6 @@ public class Modifier implements Cloneable {
     private Modifier(create c){
         this.justCompName = c.name;
         this.capitulationBoostPercentage = c.capitulationBoostPercentage;
-        this.stabilityBaseBoost = c.stabilityBaseBoost;
-        this.stabilityGainBoost = c.stabilityGainBoost;
         this.currencyBoostList = c.currencyBoostList;
         this.relationsBoost = c.relationsBoost;
         this.baseRelationsBoost = c.baseRelationsBoost;
@@ -59,36 +55,6 @@ public class Modifier implements Cloneable {
                         .append(Component.text(Math.round(currencyBoost.boost()*100), NamedTextColor.RED))
                         .append(Component.text("%", NamedTextColor.RED))
                         .append(currencyBoost.currencyTypes().getSymbol())
-                        .appendNewline()
-                        .build());
-            }
-        }
-        if (stabilityBaseBoost!=0f){
-            if (stabilityBaseBoost > 0f){
-                boostComp.add(Component.text()
-                        .append(Component.text("+"+stabilityBaseBoost+"%",NamedTextColor.GREEN))
-                        .append(Component.text("\uD83D\uDC36"))
-                        .appendNewline()
-                        .build());
-            }else {
-                boostComp.add(Component.text()
-                        .append(Component.text(stabilityBaseBoost+"%",NamedTextColor.RED))
-                        .append(Component.text("\uD83D\uDC36"))
-                        .appendNewline()
-                        .build());
-            }
-        }
-        if (stabilityGainBoost!=0f){
-            if (stabilityGainBoost > 0f){
-                boostComp.add(Component.text()
-                        .append(Component.text("+"+Math.round(stabilityGainBoost*100)+"%",NamedTextColor.GREEN))
-                        .append(Component.text("\uD83D\uDC39"))
-                        .appendNewline()
-                        .build());
-            }else {
-                boostComp.add(Component.text()
-                        .append(Component.text(Math.round(stabilityGainBoost*100)+"%",NamedTextColor.RED))
-                        .append(Component.text("\uD83D\uDC39"))
                         .appendNewline()
                         .build());
             }
@@ -182,13 +148,6 @@ public class Modifier implements Cloneable {
     public Component getDescription() {
         return description;
     }
-    public float getStabilityBaseBoost() {
-        return stabilityBaseBoost;
-    }
-
-    public float getStabilityGainBoost() {
-        return stabilityGainBoost;
-    }
     public List<CurrencyBoost> getCurrencyBoostList() {
         return currencyBoostList;
     }
@@ -223,16 +182,6 @@ public class Modifier implements Cloneable {
 
     public void setDescription(Component description) {
         this.description = description;
-        update();
-    }
-
-    public void setStabilityBaseBoost(float stabilityBaseBoost) {
-        this.stabilityBaseBoost = stabilityBaseBoost;
-        update();
-    }
-
-    public void setStabilityGainBoost(float stabilityGainBoost) {
-        this.stabilityGainBoost = stabilityGainBoost;
         update();
     }
 

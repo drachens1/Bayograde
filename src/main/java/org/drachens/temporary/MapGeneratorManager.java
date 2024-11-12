@@ -208,9 +208,6 @@ public class MapGeneratorManager extends MapGen {
                 addChunk(province.getChunk());
             }
         }
-        for (IdeologyTypes ideologyTypes : votingOption.getIdeologyTypes()){
-            countryDataManager.setUnusedLeaders(ideologyTypes,ideologyTypes.getLeaders());
-        }
         setNeighbours();
         createCountries(countries);
     }

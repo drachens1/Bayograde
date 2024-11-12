@@ -38,13 +38,6 @@ public class CountryDataManager {
                 .build();
 
     }
-    public Team getDefaultTeam() {
-        return defaultTeam;
-    }
-
-    public void setDefaultTeam(Team defaultTeam) {
-        this.defaultTeam = defaultTeam;
-    }
 
     public List<Country> getCountries() {
         return countries;

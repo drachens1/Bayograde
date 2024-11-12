@@ -52,7 +52,6 @@ public class Country implements Cloneable{
     private final HashMap<BuildTypes, List<Building>> buildTypesListHashMap = new HashMap<>();
     private EconomyFactionType economyFactionType;
     private MilitaryFactionType militaryFactionType;
-    private List<Province> cores;
     private List<Province> occupies;
     private List<Province> cities;
     private String name;
@@ -75,14 +74,11 @@ public class Country implements Cloneable{
     private Component description;
     private float maxBuildingSlotBoost = 1f;
     private float capitulationBoostPercentage = 1f;
-    private float stability;
-    private float stabilityBaseBoost = 0f;
-    private float stabilityGainBoost = 0f;
     private final List<Region> region = new ArrayList<>();
     private final List<Modifier> modifiers = new ArrayList<>();
     private final HashMap<CurrencyTypes, Float> economyBoosts = new HashMap<>();
     private Country overlord = null;
-    private List<Country> puppets = new ArrayList<>();
+    private final List<Country> puppets = new ArrayList<>();
     private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
     private float relationsBoost = 0f;
     private float totalProductionBoost = 1f;
@@ -94,7 +90,6 @@ public class Country implements Cloneable{
     private final List<Player> playerInvites = new ArrayList<>();
     private final List<String> factionInvites = new ArrayList<>();
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
-        this.cores = new ArrayList<>();
         this.occupies = new ArrayList<>();
         this.currenciesMap = startingCurrencies;
         this.nameComponent = nameComponent;
@@ -126,8 +121,6 @@ public class Country implements Cloneable{
         modifier.addCountry(this);
         this.maxBuildingSlotBoost+=modifier.getMaxBuildingSlotBoost();
         this.capitulationBoostPercentage+=modifier.getCapitulationBoostPercentage();
-        this.stabilityBaseBoost+=modifier.getStabilityBaseBoost();
-        this.stabilityGainBoost+=modifier.getStabilityGainBoost();
         this.totalProductionBoost+=modifier.getProductionBoost();
         modifier.getCurrencyBoostList().forEach(this::addBoost);
         if (!update) createInfo();
@@ -146,8 +139,6 @@ public class Country implements Cloneable{
         modifier.removeCountry(this);
         this.maxBuildingSlotBoost-=modifier.getMaxBuildingSlotBoost();
         this.capitulationBoostPercentage-=modifier.getCapitulationBoostPercentage();
-        this.stabilityBaseBoost-=modifier.getStabilityBaseBoost();
-        this.stabilityGainBoost-=modifier.getStabilityGainBoost();
         this.totalProductionBoost-=modifier.getProductionBoost();
         modifier.getCurrencyBoostList().forEach(this::removeBoost);
         createInfo();
@@ -155,28 +146,6 @@ public class Country implements Cloneable{
 
     public List<Modifier> getModifiers(){
         return modifiers;
-    }
-
-    public boolean hasModifier(Modifier modifier){
-        return modifiers.contains(modifier);
-    }
-
-    public List<Province> getCores() {
-        return cores;
-    }
-
-    public void setCores(List<Province> cores) {
-        this.cores = cores;
-    }
-
-    public void addCore(Province prov) {
-        cores.add(prov);
-        prov.addCore(this);
-    }
-
-    public void removeCore(Province prov) {
-        cores.remove(prov);
-        prov.removeCore(this);
     }
 
     public void calculateCapitulationPercentage() {
@@ -691,7 +660,7 @@ public class Country implements Cloneable{
         return economyFactionType!=null;
     }
     public boolean isInAllFactions(){
-        return isInAMilitaryFaction()&&isInAnEconomicFaction();
+        return !isInAMilitaryFaction() || !isInAnEconomicFaction();
     }
     public void addBuilding(Building building){
         clientsides.add(building.getItemDisplay());
@@ -788,11 +757,5 @@ public class Country implements Cloneable{
     }
     public boolean hasInvited(Player player){
         return playerInvites.contains(player);
-    }
-    public float getStability(){
-        return stability;
-    }
-    public void nextStabilityIncrement(){
-
     }
 }

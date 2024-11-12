@@ -79,7 +79,7 @@ public class CreateCMD extends Command {
     private boolean notInAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && !country.isInAllFactions();
+            return country != null && country.isInAllFactions();
         }
         return false;
     }

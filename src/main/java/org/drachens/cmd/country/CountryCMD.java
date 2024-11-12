@@ -3,6 +3,7 @@ package org.drachens.cmd.country;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
+import org.drachens.cmd.country.diplomacy.DiplomacyCMD;
 import org.drachens.cmd.country.manage.ManageCMD;
 
 public class CountryCMD extends Command {
@@ -16,6 +17,7 @@ public class CountryCMD extends Command {
         addSubcommand(new AllInformationCMD());
         addSubcommand(new ManageCMD());
         addSubcommand(new AcceptCMD());
+        addSubcommand(new DiplomacyCMD());
 
         var smth = ArgumentType.String("type...")
 
