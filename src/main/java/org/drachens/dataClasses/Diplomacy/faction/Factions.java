@@ -24,13 +24,15 @@ public abstract class Factions {
     private final List<Country> invites;
     private Component nameComponent;
     private final Modifier modifier;
+    private final CountryDataManager countryDataManager;
     public Factions(Country leader, String name, Modifier modifier) {
         this.leader = leader;
         this.name = name;
         this.modifier = modifier;
         this.members = new ArrayList<>();
         this.invites = new ArrayList<>();
-        ContinentalManagers.world(leader.getInstance()).countryDataManager().addFaction(this);
+        countryDataManager = ContinentalManagers.world(leader.getInstance()).countryDataManager();
+        countryDataManager.addFaction(this);
         addCountry(leader);
     }
     public void createDescription(){
@@ -70,6 +72,7 @@ public abstract class Factions {
      public void addCountry(Country country) {
         if (members.contains(country))return;
         members.add(country);
+        if (hasInvited(country))removeInvite(country);
         country.addModifier(modifier);
         createDescription();
         addMember(country);
@@ -89,6 +92,7 @@ public abstract class Factions {
     }
 
     public void rename(String newName) {
+        countryDataManager.renameFaction(name,newName,this);
         name = newName;
     }
     public Component getNameComponent(){
@@ -103,6 +107,7 @@ public abstract class Factions {
     }
     public void invite(Country country){
         invites.add(country);
+        country.inviteToFaction(this);
         EventDispatcher.call(new FactionInviteEvent(country,this));
     }
     public boolean hasInvited(Country country){
@@ -110,6 +115,7 @@ public abstract class Factions {
     }
     public void removeInvite(Country country){
         invites.remove(country);
+        country.removeInviteToFaction(this);
     }
     public void sendMessage(Component message){
         members.forEach(member->member.sendMessage(message));

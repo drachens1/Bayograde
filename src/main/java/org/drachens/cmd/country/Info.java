@@ -1,6 +1,5 @@
 package org.drachens.cmd.country;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
@@ -29,8 +28,5 @@ public class Info extends Command {
                 return;
             p.sendMessage(country.getDescription());
         }, countries);
-    }
-    public boolean requirements(CommandSender sender) {
-        return sender instanceof Player;
     }
 }

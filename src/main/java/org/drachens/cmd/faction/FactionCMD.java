@@ -3,7 +3,7 @@ package org.drachens.cmd.faction;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
-import org.drachens.cmd.faction.manage.*;
+import org.drachens.cmd.faction.manage.ManageCMD;
 
 public class FactionCMD extends Command {
     public FactionCMD() {

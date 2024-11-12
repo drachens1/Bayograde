@@ -91,6 +91,7 @@ public class Country implements Cloneable{
     private final List<Clientside> clientsides = new ArrayList<>();
     private final List<Clientside> allyTroopClientsides = new ArrayList<>();
     private final List<Troop> troops = new ArrayList<>();
+    private final List<Player> playerInvites = new ArrayList<>();
     private final List<String> factionInvites = new ArrayList<>();
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.cores = new ArrayList<>();
@@ -773,13 +774,25 @@ public class Country implements Cloneable{
     public List<String> getInvitedToFactions(){
         return factionInvites;
     }
-    public Player getPlayerLeader(){
-        return playerLeader;
-    }
     public void setPlayerLeader(Player player){
         this.playerLeader = player;
     }
     public boolean isPlayerLeader(Player player){
         return playerLeader==player;
+    }
+    public void invitePlayer(Player player){
+        playerInvites.add(player);
+    }
+    public void removeInvite(Player player){
+        playerInvites.remove(player);
+    }
+    public boolean hasInvited(Player player){
+        return playerInvites.contains(player);
+    }
+    public float getStability(){
+        return stability;
+    }
+    public void nextStabilityIncrement(){
+
     }
 }

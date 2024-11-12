@@ -10,6 +10,7 @@ public class ManageCMD extends Command {
         addSubcommand(new SetLeaderCMD());
         addSubcommand(new KickCMD());
         addSubcommand(new CooperateCMD());
+
         setCondition((sender,s)->isLeaderOfCountry(sender));
     }
     private boolean isLeaderOfCountry(CommandSender sender){

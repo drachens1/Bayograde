@@ -12,6 +12,7 @@ public class ManageCMD extends Command {
         addSubcommand(new KickCMD());
         addSubcommand(new SetLeaderCMD());
         addSubcommand(new DeleteCMD());
+        addSubcommand(new RenameCMD());
     }
     private boolean leaderOfAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {

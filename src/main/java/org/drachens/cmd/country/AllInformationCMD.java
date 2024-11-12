@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
@@ -84,9 +83,5 @@ public class AllInformationCMD extends Command {
                     .append(modifierComps)
                     .build());
         }, countries);
-    }
-
-    public boolean requirements(CommandSender sender) {
-        return sender instanceof Player;
     }
 }

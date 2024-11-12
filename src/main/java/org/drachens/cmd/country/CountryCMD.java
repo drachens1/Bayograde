@@ -12,11 +12,10 @@ public class CountryCMD extends Command {
         addSubcommand(new JoinCMD());
         addSubcommand(new Tp());
         addSubcommand(new Info());
-        addSubcommand(new Members());
         addSubcommand(new Leader());
         addSubcommand(new AllInformationCMD());
-        addSubcommand(new Extra());
         addSubcommand(new ManageCMD());
+        addSubcommand(new AcceptCMD());
 
         var smth = ArgumentType.String("type...")
 

@@ -1,6 +1,8 @@
 package org.drachens.cmd.faction.manage;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -9,14 +11,12 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.KyoriUtil.getPrefixes;
 
-public class InviteCMD extends Command {
-    public InviteCMD() {
-        super("invite");
+public class RenameCMD extends Command {
+    public RenameCMD() {
+        super("rename");
         setCondition((sender,s)->leaderOfAFaction(sender));
-        setDefaultExecutor((sender,context)->sender.sendMessage("Proper usage: /faction invite <country_name> "));
 
         var factionsArg = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
@@ -33,24 +33,36 @@ public class InviteCMD extends Command {
                     }
                 });
 
-        var countryArg = ArgumentType.String("countryName")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
-                        getSuggestionBasedOnInput(suggestion,context.getInput(), 4,getCountryNames(player.getInstance()));
-                    }
-                });
+        var newName = ArgumentType.String("name");
 
-        addSyntax((sender,context)->{},factionsArg);
+        Component factionPrefix = getPrefixes("faction");
+        if (factionPrefix==null)return;
+        Component notLeader = Component.text()
+                .append(factionPrefix)
+                .append(Component.text("You are not leader of this faction", NamedTextColor.RED))
+                .build();
 
-        addSyntax((sender, context) -> {
-            if (!leaderOfAFaction(sender)) return;
+        Component nameTaken = Component.text()
+                .append(factionPrefix)
+                .append(Component.text("That name is taken"))
+                .build();
+
+        addSyntax((sender,context)->{
+            if (!leaderOfAFaction(sender))return;
             CPlayer player = (CPlayer) sender;
-            Country invited = ContinentalManagers.world(player.getInstance()).countryDataManager().getCountryFromName(context.get(countryArg));
-            Factions factions1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (factions1.getLeader()!=player.getCountry())return;
-            factions1.invite(invited);
-
-        }, factionsArg, countryArg);
+            Factions factions = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
+            Country country = player.getCountry();
+            if (!factions.isLeader(country)){
+                player.sendMessage(notLeader);
+                return;
+            }
+            String newNam = context.get(newName);
+            if (ContinentalManagers.world(player.getInstance()).countryDataManager().factionExists(newNam)){
+                player.sendMessage(nameTaken);
+                return;
+            }
+            factions.rename(newNam);
+        },factionsArg,newName);
     }
     private boolean leaderOfAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {

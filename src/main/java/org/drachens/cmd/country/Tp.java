@@ -1,13 +1,13 @@
 package org.drachens.cmd.country;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 
-import static org.drachens.util.CommandsUtil.*;
+import static org.drachens.util.CommandsUtil.getCountryNames;
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class Tp extends Command {
     public Tp() {
@@ -29,9 +29,5 @@ public class Tp extends Command {
                 return;
             p.teleport(country.getCapital().getPos().withY(1));
         }, countries);
-    }
-
-    public boolean requirements(CommandSender sender) {
-        return sender instanceof Player;
     }
 }

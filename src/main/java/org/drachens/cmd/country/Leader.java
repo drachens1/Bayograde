@@ -2,14 +2,14 @@ package org.drachens.cmd.country;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 
-import static org.drachens.util.CommandsUtil.*;
+import static org.drachens.util.CommandsUtil.getCountryNames;
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class Leader extends Command {
     public Leader() {
@@ -35,9 +35,5 @@ public class Leader extends Command {
                     .append(country.getLeader().getDescription())
                     .build());
         }, countries);
-    }
-
-    public boolean requirements(CommandSender sender) {
-        return sender instanceof Player;
     }
 }

@@ -6,7 +6,8 @@ import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
-import static org.drachens.util.CommandsUtil.*;
+import static org.drachens.util.CommandsUtil.getFactionNames;
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class InfoCMD extends Command {
     public InfoCMD() {

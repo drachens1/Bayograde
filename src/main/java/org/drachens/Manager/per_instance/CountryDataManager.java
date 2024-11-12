@@ -7,8 +7,6 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.scoreboard.Team;
 import net.minestom.server.scoreboard.TeamManager;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Countries.IdeologyTypes;
-import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
 import java.util.ArrayList;
@@ -23,11 +21,9 @@ public class CountryDataManager {
     private List<Country> countries;
     private Team defaultTeam;
     private final Instance instance;
-    private Country superPower;
-    private final HashMap<IdeologyTypes,List<Leader>> unusedLeaders = new HashMap<>();
     private final HashMap<String, Factions> factionsHashMap = new HashMap<>();
-    private List<Factions> factions = new ArrayList<>();
-    private List<String> factionNames = new ArrayList<>();
+    private final List<Factions> factions = new ArrayList<>();
+    private final List<String> factionNames = new ArrayList<>();
     public CountryDataManager(Instance instance, List<Country> countries) {
         this.instance = instance;
         this.countries = countries;
@@ -75,25 +71,6 @@ public class CountryDataManager {
         countryHashMap.put(country.getName(), country);
         countryNameList.add(country.getName());
     }
-    public void setSuperPower(Country superPower) {
-        this.superPower = superPower;
-    }
-
-    public Country getSuperPower() {
-        return superPower;
-    }
-    public void setUnusedLeaders(IdeologyTypes ideologyTypes,List<Leader> leaders){
-        this.unusedLeaders.put(ideologyTypes,leaders);
-    }
-    public void addLeader(IdeologyTypes ideologyTypes,Leader leader){
-        this.unusedLeaders.get(ideologyTypes).add(leader);
-    }
-    public void removeLeader(IdeologyTypes ideologyTypes,Leader leader){
-        this.unusedLeaders.get(ideologyTypes).remove(leader);
-    }
-    public List<Leader> getUnusedLeaders(IdeologyTypes ideologyTypes){
-        return unusedLeaders.get(ideologyTypes);
-    }
     public void addFaction(Factions factions){
         this.factions.add(factions);
         this.factionNames.add(factions.getStringName());
@@ -103,6 +80,15 @@ public class CountryDataManager {
         this.factions.remove(factions);
         this.factionNames.remove(factions.getStringName());
         factionsHashMap.remove(factions.getStringName());
+    }
+    public boolean factionExists(String name){
+        return factionNames.contains(name);
+    }
+    public void renameFaction(String old, String newName, Factions faction){
+        factionNames.remove(old);
+        factionNames.add(newName);
+        factionsHashMap.remove(old);
+        factionsHashMap.put(newName,faction);
     }
     public Factions getFaction(String name){
         return factionsHashMap.get(name.toLowerCase());

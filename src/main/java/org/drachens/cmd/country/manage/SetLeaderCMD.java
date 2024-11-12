@@ -4,7 +4,6 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.events.Countries.CountrySetLeaderEvent;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.PlayerUtil.*;
+import static org.drachens.util.PlayerUtil.getOnlinePlayerFromName;
 
 public class SetLeaderCMD extends Command {
 

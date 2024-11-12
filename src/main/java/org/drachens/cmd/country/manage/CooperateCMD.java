@@ -1,4 +1,5 @@
 package org.drachens.cmd.country.manage;
+
 import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
@@ -6,9 +7,6 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.events.Countries.CountryCoopPlayerEvent;
-import org.drachens.events.Countries.CountrySetLeaderEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,9 @@ public class CooperateCMD extends Command {
             if (p==null) return;
             if (p.getCountry()==null || p.getCountry()!=senders.getCountry())return;
             Country country = p.getCountry();
+            if (!country.isPlayerLeader(p))return;
             EventDispatcher.call(new CountryCoopPlayerEvent(country,p));
+            country.invitePlayer(p);
         },players);
     }
 
