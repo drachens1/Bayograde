@@ -8,17 +8,23 @@ import net.minestom.server.item.ItemStack;
 public abstract class HotbarItemButton {
     int modelData;
     ItemStack item;
-    public HotbarItemButton(int modelData, ItemStack item){
+
+    public HotbarItemButton(int modelData, ItemStack item) {
         this.modelData = modelData;
         this.item = item;
     }
-    public ItemStack getItem(){
+
+    public ItemStack getItem() {
         return item;
     }
-    public int getModelData(){
+
+    public int getModelData() {
         return modelData;
     }
+
     public abstract void onUse(PlayerUseItemEvent e);
+
     public abstract void onUse(PlayerUseItemOnBlockEvent e);
+
     public abstract void onUse(PlayerStartDiggingEvent e);
 }

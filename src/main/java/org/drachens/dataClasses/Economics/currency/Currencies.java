@@ -29,20 +29,22 @@ public class Currencies implements Cloneable {
         amount += add;
     }
 
-    public void add(Payment payment){
-        amount+=payment.getAmount();
+    public void add(Payment payment) {
+        amount += payment.getAmount();
     }
 
-    public void minus(Payment payment){
-        amount-=payment.getAmount();
+    public void minus(Payment payment) {
+        amount -= payment.getAmount();
     }
 
     public void minus(float minus) {
         amount -= minus;
     }
-    public void setBoost(float boost){
+
+    public void setBoost(float boost) {
         this.boost = boost;
     }
+
     public Currencies clone() {
         try {
             return (Currencies) super.clone();
@@ -50,7 +52,8 @@ public class Currencies implements Cloneable {
             throw new RuntimeException(e);
         }
     }
-    public void addBoost(float boost){
+
+    public void addBoost(float boost) {
         this.boost += boost;
     }
 }

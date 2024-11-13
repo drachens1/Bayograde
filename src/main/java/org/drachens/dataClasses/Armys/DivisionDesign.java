@@ -14,7 +14,7 @@ public class DivisionDesign {
     private float atk;
     private float def;
     private float speed;
-    private HashMap<CurrencyTypes,Payment> paymentList;
+    private HashMap<CurrencyTypes, Payment> paymentList;
     private String name;
 
     public DivisionDesign(String name, HashMap<Integer, DivisionType> design, DivisionStatsCalculator divisionStatsCalculator, Country country) {
@@ -27,7 +27,8 @@ public class DivisionDesign {
         this.country = country;
         this.name = name;
     }
-    public DivisionDesign(DivisionDesign design){
+
+    public DivisionDesign(DivisionDesign design) {
         this.design = design.design;
         this.atk = design.atk;
         this.def = design.def;
@@ -40,15 +41,19 @@ public class DivisionDesign {
     public HashMap<Integer, DivisionType> getDesign() {
         return design;
     }
+
     public void setDesign(HashMap<Integer, DivisionType> design) {
         this.design = design;
     }
-    public void addDesign(int slot, DivisionType divisionType){
-        this.design.put(slot,divisionType);
+
+    public void addDesign(int slot, DivisionType divisionType) {
+        this.design.put(slot, divisionType);
     }
-    public DivisionType getDivisionType(int slot){
+
+    public DivisionType getDivisionType(int slot) {
         return design.get(slot);
     }
+
     public float getAtk() {
         return atk;
     }
@@ -64,6 +69,7 @@ public class DivisionDesign {
     public void setDef(float def) {
         this.def = def;
     }
+
     public float getSpeed() {
         return speed;
     }
@@ -71,18 +77,20 @@ public class DivisionDesign {
     public void setSpeed(float speed) {
         this.speed = speed;
     }
-    public float getHp(){
+
+    public float getHp() {
         return hp;
     }
-    public void setHp(float hp){
+
+    public void setHp(float hp) {
         this.hp = hp;
     }
 
-    public HashMap<CurrencyTypes,Payment> getCost() {
+    public HashMap<CurrencyTypes, Payment> getCost() {
         return paymentList;
     }
 
-    public void setCost(HashMap<CurrencyTypes,Payment> cost) {
+    public void setCost(HashMap<CurrencyTypes, Payment> cost) {
         this.paymentList = cost;
     }
 
@@ -93,10 +101,12 @@ public class DivisionDesign {
     public void setName(String name) {
         this.name = name;
     }
-    public float calculateTime(){
+
+    public float calculateTime() {
         return design.keySet().size();
     }
-    public Country getCountry(){
+
+    public Country getCountry() {
         return country;
     }
 }

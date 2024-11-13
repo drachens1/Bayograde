@@ -29,23 +29,25 @@ public class TextDisplay extends Clientside {
     private final boolean followPlayer;
     private EntityMetaDataPacket entityMetaDataPacket;
     private EntityTeleportPacket entityTeleportPacket;
-    private TextDisplay(create c){
-        super(c.storeViewers,c.instance,c.pos);
+
+    private TextDisplay(create c) {
+        super(c.storeViewers, c.instance, c.pos);
         this.text = c.text;
         this.lineWidth = c.lineWidth;
         this.backgroundColor = c.backgroundColor;
         this.opacity = c.opacity;
         this.bitmask = c.bitmask;
         this.followPlayer = c.followPlayer;
-        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
         createEntityMetaDataPacket();
     }
-    private void createEntityMetaDataPacket(){
-        HashMap<Integer,Metadata.Entry<?>> map = new HashMap<>();
-        if (followPlayer)map.put(15,Metadata.Byte((byte) 1));
 
-        map.put(8,Metadata.VarInt(-1));
-        map.put(11,Metadata.Vector3(new Pos(0,0,0)));
+    private void createEntityMetaDataPacket() {
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+        if (followPlayer) map.put(15, Metadata.Byte((byte) 1));
+
+        map.put(8, Metadata.VarInt(-1));
+        map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
         map.put(23, Metadata.Chat(this.text));
         map.put(24, Metadata.VarInt(this.lineWidth));
         map.put(25, Metadata.VarInt(this.backgroundColor));
@@ -56,38 +58,40 @@ public class TextDisplay extends Clientside {
                 map);
     }
 
-    public void moveNoRotation(Pos to, int ticks, boolean addition){
+    public void moveNoRotation(Pos to, int ticks, boolean addition) {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
         if (!addition) to = to.add(0.5, 0, 0.5);
 
-        map.put(26,Metadata.Byte((byte) 4));
-        map.put(8,Metadata.VarInt(0));
-        map.put(9,Metadata.VarInt(ticks));//duration in ticks
-        if (addition){
-            map.put(11,Metadata.Vector3(to.asVec()));
-        }else
-            if (to.y()!=0){
-                map.put(11,Metadata.Vector3(to.sub(pos.x(),pos.y(),pos.z())));
-            }else
-                map.put(11,Metadata.Vector3(to.sub(pos.x(),0,pos.z())));
+        map.put(26, Metadata.Byte((byte) 4));
+        map.put(8, Metadata.VarInt(0));
+        map.put(9, Metadata.VarInt(ticks));//duration in ticks
+        if (addition) {
+            map.put(11, Metadata.Vector3(to.asVec()));
+        } else if (to.y() != 0) {
+            map.put(11, Metadata.Vector3(to.sub(pos.x(), pos.y(), pos.z())));
+        } else
+            map.put(11, Metadata.Vector3(to.sub(pos.x(), 0, pos.z())));
 
-        PacketUtils.sendGroupedPacket(VIEWERS,new EntityMetaDataPacket(entityId, map));
+        PacketUtils.sendGroupedPacket(VIEWERS, new EntityMetaDataPacket(entityId, map));
     }
-    public void destroy(Long delay){
+
+    public void destroy(Long delay) {
         MinecraftServer.getSchedulerManager().buildTask(this::dispose).delay(delay, ChronoUnit.MILLIS).schedule();
     }
+
     public void setText(Component text) {
         this.text = text;
-        HashMap<Integer,Metadata.Entry<?>> map = new HashMap<>();
-        map.put(23,Metadata.Chat(text));
-        EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId,map);
-        if (storeViewers)   PacketUtils.sendPacket((Audience) VIEWERS,entityMetaDataPacket1);
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+        map.put(23, Metadata.Chat(text));
+        EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
+        if (storeViewers) PacketUtils.sendPacket((Audience) VIEWERS, entityMetaDataPacket1);
         createEntityMetaDataPacket();
     }
-    public void setPos(Pos pos){
+
+    public void setPos(Pos pos) {
         this.pos = pos;
-        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
-        if (storeViewers) PacketUtils.sendPacket((Audience) VIEWERS,entityTeleportPacket);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
+        if (storeViewers) PacketUtils.sendPacket((Audience) VIEWERS, entityTeleportPacket);
     }
 
     @Override
@@ -96,7 +100,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.addAll(players);
 
-        PacketUtils.sendGroupedPacket(players,new SpawnEntityPacket(
+        PacketUtils.sendGroupedPacket(players, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
@@ -104,9 +108,9 @@ public class TextDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        PacketUtils.sendGroupedPacket(players,entityMetaDataPacket);
+        PacketUtils.sendGroupedPacket(players, entityMetaDataPacket);
 
-        PacketUtils.sendGroupedPacket(players,entityTeleportPacket);
+        PacketUtils.sendGroupedPacket(players, entityTeleportPacket);
     }
 
     @Override
@@ -115,7 +119,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.removeAll(players);
 
-        PacketUtils.sendGroupedPacket(players,new DestroyEntitiesPacket(this.entityId));
+        PacketUtils.sendGroupedPacket(players, new DestroyEntitiesPacket(this.entityId));
     }
 
     @Override
@@ -123,7 +127,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.add(p);
 
-        PacketUtils.sendPacket(p,new SpawnEntityPacket(
+        PacketUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
@@ -131,9 +135,9 @@ public class TextDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        PacketUtils.sendPacket(p,entityMetaDataPacket);
+        PacketUtils.sendPacket(p, entityMetaDataPacket);
 
-        PacketUtils.sendPacket(p,entityTeleportPacket);
+        PacketUtils.sendPacket(p, entityTeleportPacket);
     }
 
     @Override
@@ -141,7 +145,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.remove(p);
 
-        PacketUtils.sendPacket(p,new DestroyEntitiesPacket(this.entityId));
+        PacketUtils.sendPacket(p, new DestroyEntitiesPacket(this.entityId));
     }
 
     public static class create {
@@ -154,41 +158,50 @@ public class TextDisplay extends Clientside {
         public byte bitmask = 1;
         private boolean followPlayer = false;
         private final boolean storeViewers = true;
-        public create(Pos pos, Instance instance, Component text){
+
+        public create(Pos pos, Instance instance, Component text) {
             this.pos = pos;
             this.instance = instance;
             this.text = text;
         }
-        public create(Province province, Component text){
+
+        public create(Province province, Component text) {
             this.pos = province.getPos();
             this.instance = province.getInstance();
             this.text = text;
         }
-        public create setFollowPlayer(boolean active){
+
+        public create setFollowPlayer(boolean active) {
             this.followPlayer = active;
             return this;
         }
-        public create setLineWidth(int lineWidth){
+
+        public create setLineWidth(int lineWidth) {
             this.lineWidth = lineWidth;
             return this;
         }
-        public create setBackgroundColour(int colour){
+
+        public create setBackgroundColour(int colour) {
             this.backgroundColor = colour;
             return this;
         }
-        public create setOpacity(byte b){
+
+        public create setOpacity(byte b) {
             this.opacity = b;
             return this;
         }
-        public create setBitMask(byte b){
+
+        public create setBitMask(byte b) {
             this.bitmask = b;
             return this;
         }
-        public create withOffset(){
-            pos = pos.add(0.5,1.5,0.5);
+
+        public create withOffset() {
+            pos = pos.add(0.5, 1.5, 0.5);
             return this;
         }
-        public TextDisplay build(){
+
+        public TextDisplay build() {
             return new TextDisplay(this);
         }
     }

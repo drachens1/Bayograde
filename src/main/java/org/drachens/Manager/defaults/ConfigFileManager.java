@@ -16,23 +16,23 @@ import static org.drachens.util.Messages.getTime;
 import static org.drachens.util.ServerUtil.start;
 
 public class ConfigFileManager {
-    private  final HashMap<String, ConfigurationNode> playerDataNodes = new HashMap<>(); // UUID as a string for the name
-    private  final HashMap<String, YamlConfigurationLoader> playerDataLoaders = new HashMap<>(); // contains all the players perms as UUID's for the name of the files
-    private  final HashMap<String, File> playerDataFiles = new HashMap<>();
-    private  ConfigurationNode whitelistListNode;
-    private  YamlConfigurationLoader whitelistLoader;    // contains all the whitelisted peoples as UUID's
-    private  ConfigurationNode permissionsNode;
-    private  YamlConfigurationLoader permissionsLoader;  // Has the permission groups that are created
-    private  String logMsg;
-    private  String logCmds;
-    private  File msg;
-    private  File cmd;
-    private  Whitelist whitelist;
+    private final HashMap<String, ConfigurationNode> playerDataNodes = new HashMap<>(); // UUID as a string for the name
+    private final HashMap<String, YamlConfigurationLoader> playerDataLoaders = new HashMap<>(); // contains all the players perms as UUID's for the name of the files
+    private final HashMap<String, File> playerDataFiles = new HashMap<>();
+    private ConfigurationNode whitelistListNode;
+    private YamlConfigurationLoader whitelistLoader;    // contains all the whitelisted peoples as UUID's
+    private ConfigurationNode permissionsNode;
+    private YamlConfigurationLoader permissionsLoader;  // Has the permission groups that are created
+    private String logMsg;
+    private String logCmds;
+    private File msg;
+    private File cmd;
+    private Whitelist whitelist;
     private File serverProperties;
     private ConfigurationNode propertiesConfigurationNode;
     private YamlConfigurationLoader propertiesLoader;
 
-    public  void startup() {
+    public void startup() {
         File playerData = new File("playerData");//Creates the parent directory
         playerData.mkdir();
 
@@ -98,7 +98,7 @@ public class ConfigFileManager {
         start();
     }
 
-    private  void loadWhitelist() {
+    private void loadWhitelist() {
         System.out.println("Whitelist started loading...");
         File whitelistFile = new File("whitelist.yml");
         fileExists(whitelistFile);
@@ -135,7 +135,7 @@ public class ConfigFileManager {
         whitelist = new Whitelist(new ArrayList<>(), false);
     }
 
-    public  ConfigurationNode getPlayersData(UUID player) {//The string should be a UUID
+    public ConfigurationNode getPlayersData(UUID player) {//The string should be a UUID
         String playerName = player.toString() + ".yml";
         if (!playerDataNodes.containsKey(playerName)) {
             return createPlayersData(playerName);
@@ -143,7 +143,7 @@ public class ConfigFileManager {
         return playerDataNodes.get(playerName);
     }
 
-    public  YamlConfigurationLoader getPlayerDataLoader(UUID player) {
+    public YamlConfigurationLoader getPlayerDataLoader(UUID player) {
         String playerName = player.toString() + ".yml";
         if (!playerDataLoaders.containsKey(playerName)) {
             createPlayersData(playerName);
@@ -163,14 +163,14 @@ public class ConfigFileManager {
         playerDataFiles.put(playerData.getName(), playerData);
         try {
             ConfigurationNode c = temp.load();
-            createDefaultsPlayerData(c,temp,playerData.getName(),player);
+            createDefaultsPlayerData(c, temp, playerData.getName(), player);
             return c;
         } catch (ConfigurateException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private  void fileExists(File f) {
+    private void fileExists(File f) {
         if (!f.exists()) {
             try {
                 f.createNewFile();
@@ -181,7 +181,7 @@ public class ConfigFileManager {
         }
     }
 
-    public  void playerSave(UUID player) {
+    public void playerSave(UUID player) {
         String playerName = player.toString();
         if (!playerDataNodes.containsKey(playerName)) {
             return;
@@ -193,15 +193,15 @@ public class ConfigFileManager {
         }
     }
 
-    public  String getLogMsg() {
+    public String getLogMsg() {
         return logMsg;
     }
 
-    public  String getLogCmds() {
+    public String getLogCmds() {
         return logCmds;
     }
 
-    public  void loadPermissions(Player p) {
+    public void loadPermissions(Player p) {
         UUID playerID = p.getUuid();
         ConfigurationNode wanted = getPlayersData(playerID);
         ConfigurationNode permissions = wanted.node("Permissions");
@@ -219,22 +219,22 @@ public class ConfigFileManager {
         }
     }
 
-    public  void shutdown() {
+    public void shutdown() {
         Scanner cmds = new Scanner(logCmds);
         Scanner log = new Scanner(logMsg);
         if (!cmds.hasNextLine()) cmd.delete();
         if (!log.hasNextLine()) msg.delete();
     }
 
-    public  Whitelist getWhitelist() {
+    public Whitelist getWhitelist() {
         return whitelist;
     }
 
-    public  ConfigurationNode getWhitelistListNode() {
+    public ConfigurationNode getWhitelistListNode() {
         return whitelistListNode;
     }
 
-    public  void specificSave(String choice) {
+    public void specificSave(String choice) {
         System.out.println("Specifically saving: " + choice);
         switch (choice) {
             case "whitelist":
@@ -253,65 +253,68 @@ public class ConfigFileManager {
         }
     }
 
-    public  ConfigurationNode getPermissionsFile() {
+    public ConfigurationNode getPermissionsFile() {
         return permissionsNode;
     }
-    public ConfigurationNode getPropertiesConfigurationNode(){
+
+    public ConfigurationNode getPropertiesConfigurationNode() {
         return propertiesConfigurationNode;
     }
 
-    private void createDefaultsServerProperties(ConfigurationNode serverProp){
+    private void createDefaultsServerProperties(ConfigurationNode serverProp) {
         try {
-            if (serverProp.node("server","port").isNull()){
-                serverProp.node("server","port").set(25565);
+            if (serverProp.node("server", "port").isNull()) {
+                serverProp.node("server", "port").set(25565);
             }
-            if (serverProp.node("server","host").isNull()){
-                serverProp.node("server","host").set("localHost");
+            if (serverProp.node("server", "host").isNull()) {
+                serverProp.node("server", "host").set("localHost");
             }
-            if (serverProp.node("velocity","active").isNull()){
-                serverProp.node("velocity","active").set(false);
+            if (serverProp.node("velocity", "active").isNull()) {
+                serverProp.node("velocity", "active").set(false);
             }
-            if (serverProp.node("velocity","secret").isNull()){
-                serverProp.node("velocity","secret").set("null");
+            if (serverProp.node("velocity", "secret").isNull()) {
+                serverProp.node("velocity", "secret").set("null");
             }
         } catch (SerializationException e) {
-            System.err.println("Properties defaults setting error "+e.getMessage());
+            System.err.println("Properties defaults setting error " + e.getMessage());
         }
     }
-    private void createDefaultsWhitelist(ConfigurationNode whitelist){
+
+    private void createDefaultsWhitelist(ConfigurationNode whitelist) {
         try {
-            if (whitelist.node("whitelist","active").isNull()){
-                whitelist.node("whitelist","active").set(false);
+            if (whitelist.node("whitelist", "active").isNull()) {
+                whitelist.node("whitelist", "active").set(false);
             }
-            if (whitelist.node("whitelist","players").isNull()){
-                whitelist.node("whitelist","players").set(new ArrayList<>());
+            if (whitelist.node("whitelist", "players").isNull()) {
+                whitelist.node("whitelist", "players").set(new ArrayList<>());
             }
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
     }
-    private void createDefaultsPlayerData(ConfigurationNode playerData, YamlConfigurationLoader playerDataLoader, String username, String uuid){
+
+    private void createDefaultsPlayerData(ConfigurationNode playerData, YamlConfigurationLoader playerDataLoader, String username, String uuid) {
         try {
             String time = getTime();
-            if (playerData.node("Player_Info","Identifiers","UUID").isNull()){
-                playerData.node("Player_Info","Identifiers","UUID").set(username);
+            if (playerData.node("Player_Info", "Identifiers", "UUID").isNull()) {
+                playerData.node("Player_Info", "Identifiers", "UUID").set(username);
             }
-            if (playerData.node("Player_Info","Identifiers","Username").isNull()){
-                playerData.node("Player_Info","Identifiers","Username").set(uuid);
+            if (playerData.node("Player_Info", "Identifiers", "Username").isNull()) {
+                playerData.node("Player_Info", "Identifiers", "Username").set(uuid);
             }
-            if (playerData.node("Player_Info","Activity","LastOnline").isNull()){
-                playerData.node("Player_Info","Activity","LastOnline").set(time);
+            if (playerData.node("Player_Info", "Activity", "LastOnline").isNull()) {
+                playerData.node("Player_Info", "Activity", "LastOnline").set(time);
             }
-            if (playerData.node("Player_Info","Activity","FirstJoined").isNull()){
-                playerData.node("Player_Info","Activity","FirstJoined").set(time);
+            if (playerData.node("Player_Info", "Activity", "FirstJoined").isNull()) {
+                playerData.node("Player_Info", "Activity", "FirstJoined").set(time);
             }
-            if (playerData.node("Permissions").isNull()){
+            if (playerData.node("Permissions").isNull()) {
                 playerData.node("Permissions").set("");
             }
-            if (playerData.node("Cosmetics").isNull()){
+            if (playerData.node("Cosmetics").isNull()) {
                 playerData.node("Cosmetics").set("");
             }
-            if (playerData.node("Achievements").isNull()){
+            if (playerData.node("Achievements").isNull()) {
                 playerData.node("Achievements").set("");
             }
             playerDataLoader.save(playerData);
@@ -320,9 +323,9 @@ public class ConfigFileManager {
         }
     }
 
-    private void createDefaultsPermissionLoader(ConfigurationNode permissionsNode){
+    private void createDefaultsPermissionLoader(ConfigurationNode permissionsNode) {
         try {
-            if (permissionsNode.node("permissions").isNull()){
+            if (permissionsNode.node("permissions").isNull()) {
                 permissionsNode.node("permissions").set(null);
             }
             permissionsLoader.save(permissionsNode);

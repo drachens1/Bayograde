@@ -16,6 +16,7 @@ public class Util {
     }
 
     public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     public static String randomAlNum(int length) {
         StringBuilder sb = new StringBuilder(length);
 
@@ -50,7 +51,7 @@ public class Util {
         return Component.text(text).color(color.color);
     }
 
-    public static Class<?>[] toTypes(Object ... o) {
+    public static Class<?>[] toTypes(Object... o) {
         Class<?>[] arr = new Class<?>[o.length];
 
         for (int i = 0; i < o.length; i++) {

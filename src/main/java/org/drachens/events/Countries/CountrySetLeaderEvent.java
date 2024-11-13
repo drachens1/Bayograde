@@ -1,19 +1,23 @@
 package org.drachens.events.Countries;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Event;
 
-public record CountrySetLeaderEvent(Country country, Player newLeader) implements Event, CancellableEvent {
+public class CountrySetLeaderEvent extends Event {
+    private final Country country;
+    private final Player newLeader;
 
-    @Override
-    public boolean isCancelled() {
-        return false;
+    public CountrySetLeaderEvent(Country country, Player newLeader) {
+        this.country = country;
+        this.newLeader = newLeader;
     }
 
-    @Override
-    public void setCancelled(boolean b) {
+    public Country getCountry() {
+        return country;
+    }
 
+    public Player getNewLeader() {
+        return newLeader;
     }
 }

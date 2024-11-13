@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Countries;
 
 import it.unimi.dsi.fastutil.Pair;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.interfaces.VotingOption;
 
 import java.util.*;
 
@@ -52,7 +52,7 @@ public class Ideology {
             }
         }
         for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
-            total+=entry.getValue();
+            total += entry.getValue();
         }
     }
 
@@ -118,7 +118,8 @@ public class Ideology {
         currentIdeology = highest.left();
         List<Leader> leaders = new ArrayList<>(currentIdeology.getLeaders());
         if (!leaders.contains(country.getLeader())) {
-            if (country.getLeader()!=null) country.removeModifier(country.getLeader().getIdeologyTypes().getModifier());
+            if (country.getLeader() != null)
+                country.removeModifier(country.getLeader().getIdeologyTypes().getModifier());
             country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
         }
     }

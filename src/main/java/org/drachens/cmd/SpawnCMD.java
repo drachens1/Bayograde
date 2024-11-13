@@ -7,11 +7,11 @@ import net.minestom.server.entity.Player;
 public class SpawnCMD extends Command {
     public SpawnCMD() {
         super("spawn");
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof Player p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof Player p)) {
                 return;
             }
-            p.teleport(new Pos(0,1,0));
+            p.teleport(new Pos(0, 1, 0));
         });
     }
 }

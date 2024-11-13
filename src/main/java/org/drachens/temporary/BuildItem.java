@@ -25,15 +25,16 @@ public class BuildItem extends HotbarItemButton {
         e.getPlayer().sendMessage("hi");
 
     }
+
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         Country country = ((CPlayer) e.getPlayer()).getCountry();
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
-        if (country == null || province==null)return;
-        if (province.getBuilding()!=null){
-            province.getBuilding().upgrade(1,country,e.getPlayer());
-        }else {
-            buildTypes.build(country,province,e.getPlayer());
+        if (country == null || province == null) return;
+        if (province.getBuilding() != null) {
+            province.getBuilding().upgrade(1, country, e.getPlayer());
+        } else {
+            buildTypes.build(country, province, e.getPlayer());
         }
 
     }

@@ -9,6 +9,7 @@ public class CurrencyTypes {
     private final String identifier;
     private final Component name;
     private final Component symbol;
+
     public CurrencyTypes(String identifier, NamedTextColor nameColour, String symbol, NamedTextColor symbolColour) {
         this.name = compBuild(identifier, nameColour);
         this.symbol = compBuild(symbol, symbolColour);
@@ -28,7 +29,8 @@ public class CurrencyTypes {
     public Component getSymbol() {
         return symbol;
     }
-    public String getIdentifier(){
+
+    public String getIdentifier() {
         return identifier;
     }
 }

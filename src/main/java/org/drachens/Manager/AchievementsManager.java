@@ -9,12 +9,13 @@ import net.minestom.server.item.Material;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class AchievementsManager {
-    private  AdvancementTab main;
-    private  AdvancementTab starterAdv;
+    private AdvancementTab main;
+    private AdvancementTab starterAdv;
 
-    public AchievementsManager(){
+    public AchievementsManager() {
         createAdvancements();
     }
+
     public void createAdvancements() {
         AdvancementManager advancementManager = MinecraftServer.getAdvancementManager();
         AdvancementRoot starterAdvRoot = new AdvancementRoot(
@@ -39,12 +40,12 @@ public class AchievementsManager {
         main = MinecraftServer.getAdvancementManager().createTab("main_advancements", mainRoot);
     }
 
-    public  void addPlayerToAdv(Player p) {
+    public void addPlayerToAdv(Player p) {
         main.addViewer(p);
         starterAdv.addViewer(p);
     }
 
-    public  void removePlayerFromAdv(Player p) {
+    public void removePlayerFromAdv(Player p) {
         main.removeViewer(p);
         starterAdv.removeViewer(p);
     }

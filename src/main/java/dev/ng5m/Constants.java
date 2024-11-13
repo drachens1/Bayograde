@@ -11,9 +11,7 @@ public class Constants {
     public enum Colors {
         LIGHT_GRAY(TextColor.color(135, 135, 135)),
         LIME(TextColor.color(0, 255, 0)),
-        RED(TextColor.color(255, 0, 72))
-
-        ;
+        RED(TextColor.color(255, 0, 72));
 
         public final TextColor color;
 

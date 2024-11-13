@@ -22,17 +22,19 @@ public class ProvinceManager {
         return provinceHashMap.get(new Pos(x, y, z));
     }
 
-    public Province getProvince(Point point){
+    public Province getProvince(Point point) {
         return provinceHashMap.get(new Pos(point));
     }
 
     public void registerProvince(Pos pos, Province province) {
         provinceHashMap.put(pos, province);
     }
+
     public Map<Pos, Province> getProvinceHashMap() {
         return provinceHashMap;
     }
-    public void reset(){
+
+    public void reset() {
         provinceHashMap = new HashMap<>();
     }
 }

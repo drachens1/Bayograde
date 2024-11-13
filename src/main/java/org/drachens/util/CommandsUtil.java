@@ -14,7 +14,8 @@ public class CommandsUtil {
     public static List<String> getCountryNames(Instance instance) {
         return getWorldClasses(instance).countryDataManager().getNamesList();
     }
-    public static List<String> getFactionNames(Instance instance){
+
+    public static List<String> getFactionNames(Instance instance) {
         return getWorldClasses(instance).countryDataManager().getFactionNames();
     }
 
@@ -25,11 +26,13 @@ public class CommandsUtil {
         }
         return suggestions;
     }
-    public static String cutInput(String input, int index){
+
+    public static String cutInput(String input, int index) {
         return input.split(" ")[index].trim();
     }
-    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, String input, int index, List<String> list){
-        System.out.println(input+" : "+cutInput(input,index));
+
+    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, String input, int index, List<String> list) {
+        System.out.println(input + " : " + cutInput(input, index));
         input = cutInput(input, index);
         if (input.isEmpty()) return suggestions(list, suggestion);
         String finalInput = input;

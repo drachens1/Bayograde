@@ -1,7 +1,7 @@
 package org.drachens.util;
 
 public class OtherUtil {
-    public static float[] yawToQuat(double yaw){
+    public static float[] yawToQuat(double yaw) {
         float rad = (float) Math.toRadians(yaw);
         float half = rad / 2;
 

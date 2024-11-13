@@ -33,11 +33,12 @@ public class ClientEntsToLoad {
         if (!toLoad.containsKey(instance)) return;
         toLoad.get(instance).remove(clientside);
     }
-    public List<Clientside> getClientSides(Instance instance){
+
+    public List<Clientside> getClientSides(Instance instance) {
         return toLoad.get(instance);
     }
 
-    public void reset(){
+    public void reset() {
         toLoad = new HashMap<>();
     }
 }

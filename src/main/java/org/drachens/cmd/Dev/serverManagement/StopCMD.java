@@ -7,15 +7,16 @@ import static org.drachens.util.ServerUtil.stopSrv;
 
 public class StopCMD extends Command {
     private final String permission = "stop";
+
     public StopCMD() {
         super("stop");
-        setCondition((sender,s)->sender.hasPermission(permission));
-        setDefaultExecutor((sender,context)->{
-            if (sender instanceof ConsoleSender){
+        setCondition((sender, s) -> sender.hasPermission(permission));
+        setDefaultExecutor((sender, context) -> {
+            if (sender instanceof ConsoleSender) {
                 stopSrv();
                 return;
             }
-            if (sender.hasPermission(permission))stopSrv();
+            if (sender.hasPermission(permission)) stopSrv();
         });
     }
 }

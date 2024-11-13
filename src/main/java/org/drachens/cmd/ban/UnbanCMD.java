@@ -26,7 +26,7 @@ public class UnbanCMD extends Command {
                 sender.sendMessage("Player is null");
                 return;
             }
-            p.sendMessage("You have unbanned "+context.get(player));
+            p.sendMessage("You have unbanned " + context.get(player));
             Constants.BAN_MANAGER.removeEntry(u);
         }, player);
     }

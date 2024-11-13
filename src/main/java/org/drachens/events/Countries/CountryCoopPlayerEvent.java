@@ -1,19 +1,23 @@
 package org.drachens.events.Countries;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Event;
 
-public record CountryCoopPlayerEvent(Country inviter, CPlayer p) implements Event, CancellableEvent {
+public class CountryCoopPlayerEvent extends Event {
+    private final Country inviter;
+    private final CPlayer p;
 
-    @Override
-    public boolean isCancelled() {
-        return false;
+    public CountryCoopPlayerEvent(Country inviter, CPlayer p) {
+        this.inviter = inviter;
+        this.p = p;
     }
 
-    @Override
-    public void setCancelled(boolean b) {
+    public CPlayer getPlayer() {
+        return p;
+    }
 
+    public Country getInviter() {
+        return inviter;
     }
 }

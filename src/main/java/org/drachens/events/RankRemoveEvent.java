@@ -2,10 +2,9 @@ package org.drachens.events;
 
 import dev.ng5m.Rank;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
+import org.drachens.interfaces.Event;
 
-public class RankRemoveEvent implements Event, CancellableEvent {
+public class RankRemoveEvent extends Event {
     private final Player player;
     private final Rank rank;
 
@@ -14,21 +13,11 @@ public class RankRemoveEvent implements Event, CancellableEvent {
         this.rank = rank;
     }
 
-    public Rank getRank() {
-        return rank;
-    }
-
     public Player getPlayer() {
         return player;
     }
 
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-
+    public Rank getRank() {
+        return rank;
     }
 }

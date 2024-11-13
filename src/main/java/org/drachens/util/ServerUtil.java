@@ -48,8 +48,7 @@ import org.drachens.cmd.SpawnCMD;
 import org.drachens.cmd.TeleportCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
-import org.drachens.cmd.country.CountryCMD;
-import org.drachens.cmd.faction.FactionCMD;
+import org.drachens.cmd.plan.PlanCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
@@ -68,7 +67,9 @@ import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.interfaces.VotingOption;
+import org.drachens.temporary.country.CountryCMD;
+import org.drachens.temporary.faction.FactionCMD;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.time.temporal.ChronoUnit;
@@ -172,8 +173,8 @@ public class ServerUtil {
 
         });
 
-        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer()).add(e.getRank()));
-        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.getPlayer()).remove(e.getRank()));
+        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.player()).add(e.rank()));
+        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.player()).remove(e.rank()));
 
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             final Player p = e.getPlayer();
@@ -414,6 +415,7 @@ public class ServerUtil {
         commandManager.register(new FactionCMD());
         commandManager.register(new SummonCMD());
         commandManager.register(new ItemDisplayCMD());
+        commandManager.register(new PlanCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

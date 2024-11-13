@@ -16,15 +16,15 @@ public class SummonCMD extends Command {
         var item = ArgumentType.ItemStack("Item");
 
         setCondition(((sender, s) -> sender.hasPermission("summon")));
-        addSyntax((sender,context)->{
+        addSyntax((sender, context) -> {
             if (!(sender instanceof Player p))
                 return;
-            if (!p.hasPermission("summon"))return;
+            if (!p.hasPermission("summon")) return;
             ItemStack itemStack = context.get(item);
             int modelDatas = context.get(modelData);
-            if (itemStack == null)return;
-            ItemDisplay i = new ItemDisplay(itemBuilder(itemStack.material(),modelDatas),p.getPosition(), ItemDisplay.DisplayType.GROUND,p.getInstance(),true);
+            if (itemStack == null) return;
+            ItemDisplay i = new ItemDisplay(itemBuilder(itemStack.material(), modelDatas), p.getPosition(), ItemDisplay.DisplayType.GROUND, p.getInstance(), true);
             i.addViewer(p);
-        },item,modelData);
+        }, item, modelData);
     }
 }

@@ -23,9 +23,9 @@ import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.HotbarInventory;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.dataClasses.NoneCustomisableInventory;
+import org.drachens.interfaces.VotingOption;
 import org.drachens.interfaces.items.HotbarItemButton;
 import org.drachens.temporary.*;
 
@@ -63,7 +63,7 @@ public class Main {
         EventHandlerProviderManager.hook();
         ContinentalManagers.defaultsStorer.currencies.register(production);
         HotbarItemButton[] items = {new BuildItem(), new BuildItem2(), new TroopMover()};
-        ContinentalManagers.inventoryManager.registerInventory("default", new HotbarInventory(items));
+        ContinentalManagers.inventoryManager.registerInventory("default", new NoneCustomisableInventory(items));
 
         setupAll(new ArrayList<>(), scoreboardManager);
     }

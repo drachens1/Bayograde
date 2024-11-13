@@ -14,11 +14,11 @@ import java.util.List;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class EconomyFactionType extends Factions {
-    private final Component name = compBuild("Economy",NamedTextColor.GOLD);
+    private final Component name = compBuild("Economy", NamedTextColor.GOLD);
 
     public EconomyFactionType(Country creator, String name) {
-        super(creator, name,new Modifier.create(compBuild(name, NamedTextColor.GREEN))
-                .setDescription(compBuild("The bonuses from the economic faction",NamedTextColor.GRAY))
+        super(creator, name, new Modifier.create(compBuild(name, NamedTextColor.GREEN))
+                .setDescription(compBuild("The bonuses from the economic faction", NamedTextColor.GRAY))
                 .build());
     }
 
@@ -36,26 +36,28 @@ public class EconomyFactionType extends Factions {
     public void removeMember(Country country) {
         updateFactionModifier();
     }
-    public void updateFactionModifier(){
+
+    public void updateFactionModifier() {
         float totalDistance = 0f;
         int numOfCountries = 0;
         Instance instance = getLeader().getCapital().getInstance();
-        for (Country country : getMembers()){
+        for (Country country : getMembers()) {
             List<Country> countries = new ArrayList<>(getMembers());
             countries.remove(country);
             numOfCountries++;
-            for (Country country1 : countries){
+            for (Country country1 : countries) {
                 totalDistance += (float) Math.abs(country.getCapital().distance(country1.getCapital()));
             }
         }
-        float boost = calculateBoost(totalDistance,numOfCountries,instance);
+        float boost = calculateBoost(totalDistance, numOfCountries, instance);
         getModifier().setProductionBoost(boost);
     }
-    private float calculateBoost(float distance, int numOfCountries, Instance instance){
-        if (numOfCountries==1)return 0f;
-        float boost = distance/numOfCountries;
+
+    private float calculateBoost(float distance, int numOfCountries, Instance instance) {
+        if (numOfCountries == 1) return 0f;
+        float boost = distance / numOfCountries;
         MapGen mapGenerator = ContinentalManagers.world(instance).votingManager().getWinner().getMapGenerator();
-        float mapSize = (mapGenerator.getSizeX() + mapGenerator.getSizeY())/2f;
+        float mapSize = (mapGenerator.getSizeX() + mapGenerator.getSizeY()) / 2f;
         return boost * mapSize;
     }
 }

@@ -1,10 +1,9 @@
 package org.drachens.events;
 
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Event;
 
-public class EndWarEvent implements Event, CancellableEvent {
+public class EndWarEvent extends Event {
     private final Country aggressor;
     private final Country defender;
 
@@ -19,15 +18,5 @@ public class EndWarEvent implements Event, CancellableEvent {
 
     public Country getDefender() {
         return defender;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-
     }
 }

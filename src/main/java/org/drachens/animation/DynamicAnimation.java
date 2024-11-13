@@ -30,10 +30,10 @@ public class DynamicAnimation extends AnimationType {
     private void scheduleNextFrame(ItemDisplay itemDisplay, int current, boolean repeat) {
         long delay = getDelay(current);
 
-        taskHashMap.put(itemDisplay,scheduler.buildTask(() -> {
+        taskHashMap.put(itemDisplay, scheduler.buildTask(() -> {
             itemDisplay.setItem(itemBuilder(item, frames[current][1]));
 
-            int nextFrame = current+1;
+            int nextFrame = current + 1;
             if (nextFrame >= frames.length) {
                 if (repeat) {
                     scheduleNextFrame(itemDisplay, 0, true);
@@ -53,14 +53,15 @@ public class DynamicAnimation extends AnimationType {
         if (task != null) {
             task.cancel();
             taskHashMap.remove(itemDisplay);
-            itemDisplay.setItem(itemBuilder(item,frames[0][1]));
+            itemDisplay.setItem(itemBuilder(item, frames[0][1]));
         }
     }
-    private long getDelay(int current){
-        if (0<=current-1){
-            return frames[current-1][0];
-        }else {
-            return frames[frames.length-1][0];
+
+    private long getDelay(int current) {
+        if (0 <= current - 1) {
+            return frames[current - 1][0];
+        } else {
+            return frames[frames.length - 1][0];
         }
     }
 }

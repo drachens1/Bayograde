@@ -1,30 +1,23 @@
 package org.drachens.events.System;
 
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.instance.Instance;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.interfaces.Event;
+import org.drachens.interfaces.VotingOption;
 
-public class StartGameEvent implements Event, CancellableEvent {
+public class StartGameEvent extends Event {
     private final Instance instance;
     private final VotingOption votingOption;
+
     public StartGameEvent(Instance instance, VotingOption votingOption) {
         this.instance = instance;
         this.votingOption = votingOption;
     }
-    public Instance getInstance(){
+
+    public Instance getInstance() {
         return instance;
     }
-    public VotingOption getVotingOption(){
+
+    public VotingOption getVotingOption() {
         return votingOption;
-    }
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-
     }
 }

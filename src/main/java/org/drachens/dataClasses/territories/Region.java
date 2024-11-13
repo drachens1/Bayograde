@@ -15,11 +15,12 @@ public class Region {
     private final ElectionTypes leadingElectionType;
     private String name;
 
-    public Region(String name,IdeologyTypes leadingIdeology, ElectionTypes leadingElectionType){
+    public Region(String name, IdeologyTypes leadingIdeology, ElectionTypes leadingElectionType) {
         this.leadingIdeology = leadingIdeology;
         this.leadingElectionType = leadingElectionType;
         this.name = name;
     }
+
     public List<Country> getCountries() {
         return countries;
     }
@@ -28,7 +29,7 @@ public class Region {
         this.countries = countries;
     }
 
-    public void addCountry(Country country){
+    public void addCountry(Country country) {
         this.countries.add(country);
     }
 
@@ -40,16 +41,19 @@ public class Region {
         this.provinces = provinces;
     }
 
-    public void addProvince(Province province){
+    public void addProvince(Province province) {
         this.provinces.add(province);
     }
-    public IdeologyTypes getLeadingIdeology(){
+
+    public IdeologyTypes getLeadingIdeology() {
         return leadingIdeology;
     }
-    public ElectionTypes getLeadingElectionType(){
+
+    public ElectionTypes getLeadingElectionType() {
         return leadingElectionType;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 }

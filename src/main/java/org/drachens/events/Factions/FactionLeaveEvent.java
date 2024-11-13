@@ -1,11 +1,10 @@
 package org.drachens.events.Factions;
 
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.interfaces.Event;
 
-public class FactionLeaveEvent implements Event, CancellableEvent {
+public class FactionLeaveEvent extends Event {
     private final Country country;
     private final Factions faction;
 
@@ -20,16 +19,6 @@ public class FactionLeaveEvent implements Event, CancellableEvent {
 
     public Factions getFaction() {
         return faction;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-
     }
 }
 

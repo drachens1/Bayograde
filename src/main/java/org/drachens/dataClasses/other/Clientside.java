@@ -29,8 +29,11 @@ public abstract class Clientside {
         this.pos = pos;
         getWorldClasses(instance).clientEntsToLoad().addClientSide(instance, this);
     }
+
     public abstract void addCountry(Country country);
+
     public abstract void removeCountry(Country country);
+
     public abstract void addViewer(Player p);
 
     public abstract void removeViewer(Player p);

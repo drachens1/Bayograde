@@ -1,11 +1,10 @@
 package org.drachens.events;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.interfaces.Event;
+import org.drachens.interfaces.VotingOption;
 
-public class VoteEvent implements Event, CancellableEvent {
+public class VoteEvent extends Event {
     private final Player p;
     private final VotingOption voted;
 
@@ -14,7 +13,7 @@ public class VoteEvent implements Event, CancellableEvent {
         this.voted = votingOption;
     }
 
-    public Player getPlayer(){
+    public Player getPlayer() {
         return p;
     }
 

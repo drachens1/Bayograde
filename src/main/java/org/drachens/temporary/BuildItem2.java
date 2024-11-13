@@ -10,7 +10,7 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class BuildItem2 extends HotbarItemButton {
     public BuildItem2() {
-        super(10, itemBuilder(Material.CYAN_DYE,11));
+        super(10, itemBuilder(Material.CYAN_DYE, 11));
     }
 
     @Override

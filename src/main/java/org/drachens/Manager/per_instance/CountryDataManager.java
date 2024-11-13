@@ -24,6 +24,7 @@ public class CountryDataManager {
     private final HashMap<String, Factions> factionsHashMap = new HashMap<>();
     private final List<Factions> factions = new ArrayList<>();
     private final List<String> factionNames = new ArrayList<>();
+
     public CountryDataManager(Instance instance, List<Country> countries) {
         this.instance = instance;
         this.countries = countries;
@@ -64,32 +65,39 @@ public class CountryDataManager {
         countryHashMap.put(country.getName(), country);
         countryNameList.add(country.getName());
     }
-    public void addFaction(Factions factions){
+
+    public void addFaction(Factions factions) {
         this.factions.add(factions);
         this.factionNames.add(factions.getStringName());
         factionsHashMap.put(factions.getStringName(), factions);
     }
-    public void removeFaction(Factions factions){
+
+    public void removeFaction(Factions factions) {
         this.factions.remove(factions);
         this.factionNames.remove(factions.getStringName());
         factionsHashMap.remove(factions.getStringName());
     }
-    public boolean factionExists(String name){
+
+    public boolean factionExists(String name) {
         return factionNames.contains(name);
     }
-    public void renameFaction(String old, String newName, Factions faction){
+
+    public void renameFaction(String old, String newName, Factions faction) {
         factionNames.remove(old);
         factionNames.add(newName);
         factionsHashMap.remove(old);
-        factionsHashMap.put(newName,faction);
+        factionsHashMap.put(newName, faction);
     }
-    public Factions getFaction(String name){
+
+    public Factions getFaction(String name) {
         return factionsHashMap.get(name.toLowerCase());
     }
-    public List<String> getFactionNames(){
+
+    public List<String> getFactionNames() {
         return factionNames;
     }
-    public List<Factions> getFactions(){
+
+    public List<Factions> getFactions() {
         return factions;
     }
 }

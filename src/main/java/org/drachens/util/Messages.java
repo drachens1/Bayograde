@@ -38,7 +38,7 @@ public class Messages {
     }
 
     public static void broadcast(Component msg, Instance world) {
-        logMsg("server", msg,null);
+        logMsg("server", msg, null);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
@@ -84,9 +84,10 @@ public class Messages {
             throw new RuntimeException(e);
         }
     }
+
     public static void logMsg(String playerName, Component msg, Instance w) {
         String msgS = PlainTextComponentSerializer.plainText().serialize(msg);
-        System.out.println(playerName+" : "+msgS);
+        System.out.println(playerName + " : " + msgS);
         try {
             FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
             try {

@@ -11,17 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'  # Specify the version of Java you need
-        distribution: 'adopt-openjdk'
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'  # Specify the version of Java you need
+          distribution: 'adopt-openjdk'
 
-    - name: Build and Publish
-      run: ./gradlew publish
-      env:
-        USERNAME: ${{ secrets.GITHUB_ACTOR }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Publish
+        run: ./gradlew publish
+        env:
+          USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}

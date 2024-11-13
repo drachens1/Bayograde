@@ -1,10 +1,9 @@
 package org.drachens.events;
 
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.instance.Instance;
+import org.drachens.interfaces.Event;
 
-public class NewDay implements Event, CancellableEvent {
+public class NewDay extends Event {
     private final int day;
     private final int year;
     private final int month;
@@ -33,15 +32,5 @@ public class NewDay implements Event, CancellableEvent {
 
     public int getMonth() {
         return month;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancel) {
-        this.cancelled = cancel;
     }
 }

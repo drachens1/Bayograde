@@ -13,40 +13,49 @@ public abstract class AnimationType {
     private final SchedulerManager schedulerManager = MinecraftServer.getSchedulerManager();
     private final HashMap<ItemDisplay, Task> taskHashMap = new HashMap<>();
     private final HashMap<ItemDisplay, Runnable> finishHashMap = new HashMap<>();
-    public AnimationType start(ItemDisplay itemDisplay){
+
+    public AnimationType start(ItemDisplay itemDisplay) {
         itemDisplay.setActive(this);
-        return startProper(itemDisplay,false);
+        return startProper(itemDisplay, false);
     }
-    public AnimationType start(ItemDisplay itemDisplay, boolean repeat){
+
+    public AnimationType start(ItemDisplay itemDisplay, boolean repeat) {
         itemDisplay.setActive(this);
-        return startProper(itemDisplay,repeat);
+        return startProper(itemDisplay, repeat);
     }
-    public AnimationType start(ItemDisplay itemDisplay, boolean repeat, long delay){
-        schedulerManager.buildTask(() -> startProper(itemDisplay,repeat)).delay(delay, ChronoUnit.MILLIS).schedule();
+
+    public AnimationType start(ItemDisplay itemDisplay, boolean repeat, long delay) {
+        schedulerManager.buildTask(() -> startProper(itemDisplay, repeat)).delay(delay, ChronoUnit.MILLIS).schedule();
         return null;
     }
+
     protected abstract AnimationType startProper(ItemDisplay itemDisplay, boolean repeat);
-    public void onFinish(ItemDisplay itemDisplay,Runnable runnable){
+
+    public void onFinish(ItemDisplay itemDisplay, Runnable runnable) {
         finishHashMap.put(itemDisplay, runnable);
     }
+
     public abstract void stop(ItemDisplay itemDisplay);
 
-    public void addTask(ItemDisplay itemDisplay, Task task){
-        taskHashMap.put(itemDisplay,task);
+    public void addTask(ItemDisplay itemDisplay, Task task) {
+        taskHashMap.put(itemDisplay, task);
     }
-    public boolean taskMapContains(ItemDisplay itemDisplay){
+
+    public boolean taskMapContains(ItemDisplay itemDisplay) {
         return taskHashMap.containsKey(itemDisplay);
     }
-    public void cancelTask(ItemDisplay itemDisplay){
-        if (taskMapContains(itemDisplay)){
+
+    public void cancelTask(ItemDisplay itemDisplay) {
+        if (taskMapContains(itemDisplay)) {
             taskHashMap.get(itemDisplay).cancel();
             taskHashMap.remove(itemDisplay);
-            if (!finishHashMap.containsKey(itemDisplay))return;
+            if (!finishHashMap.containsKey(itemDisplay)) return;
             finishHashMap.get(itemDisplay).run();
             finishHashMap.remove(itemDisplay);
         }
     }
-    public Scheduler getScheduler(){
+
+    public Scheduler getScheduler() {
         return schedulerManager;
     }
 }

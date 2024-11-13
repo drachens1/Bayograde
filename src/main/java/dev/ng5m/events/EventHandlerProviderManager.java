@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 
 public final class EventHandlerProviderManager {
 
-    public static void registerProvider(Class<? extends EventHandlerProvider> provider, Object ... additionalCtorArgs) {
+    public static void registerProvider(Class<? extends EventHandlerProvider> provider, Object... additionalCtorArgs) {
         if (MinecraftServer.process() == null)
             throw new UnsupportedOperationException("You need to MinecraftServer#init before registering providers");
 
@@ -46,7 +46,7 @@ public final class EventHandlerProviderManager {
     }
 
     @SafeVarargs
-    public static void registerProviders(Class<? extends EventHandlerProvider> ... providers) {
+    public static void registerProviders(Class<? extends EventHandlerProvider>... providers) {
         for (var provider : providers) {
             registerProvider(provider);
         }

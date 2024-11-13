@@ -9,7 +9,7 @@ public class operator extends Command {
     public operator() {
         super("operator", "op");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Usage /op <player>"));
-        setCondition((sender,s)->sender.hasPermission("operator"));
+        setCondition((sender, s) -> sender.hasPermission("operator"));
         var player = ArgumentType.Entity("player");
         addSyntax((sender, context) -> {
             Player p = context.get(player).findFirstPlayer(sender);

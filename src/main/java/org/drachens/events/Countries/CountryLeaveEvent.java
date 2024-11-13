@@ -1,11 +1,10 @@
 package org.drachens.events.Countries;
 
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Event;
 
-public class CountryLeaveEvent implements Event, CancellableEvent {
+public class CountryLeaveEvent extends Event {
     private final Country left;
     private final Player p;
 
@@ -20,15 +19,5 @@ public class CountryLeaveEvent implements Event, CancellableEvent {
 
     public Country getLeft() {
         return left;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-
     }
 }

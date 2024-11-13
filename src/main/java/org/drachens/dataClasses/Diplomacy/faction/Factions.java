@@ -25,6 +25,7 @@ public abstract class Factions {
     private Component nameComponent;
     private final Modifier modifier;
     private final CountryDataManager countryDataManager;
+
     public Factions(Country leader, String name, Modifier modifier) {
         this.leader = leader;
         this.name = name;
@@ -35,16 +36,17 @@ public abstract class Factions {
         countryDataManager.addFaction(this);
         addCountry(leader);
     }
-    public void createDescription(){
+
+    public void createDescription() {
         nameComponent = Component.text()
                 .append(Component.text()
-                        .append(Component.text(name,NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .append(Component.text(name, NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(description)
-                        .clickEvent(ClickEvent.runCommand("/faction info "+name))
+                        .clickEvent(ClickEvent.runCommand("/faction info " + name))
                 )
                 .build();
         List<Component> memberComponents = new ArrayList<>();
-        members.forEach(member->memberComponents.add(member.getNameComponent()));
+        members.forEach(member -> memberComponents.add(member.getNameComponent()));
         description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text(name, NamedTextColor.GOLD))
@@ -69,71 +71,85 @@ public abstract class Factions {
         return members;
     }
 
-     public void addCountry(Country country) {
-        if (members.contains(country))return;
+    public void addCountry(Country country) {
+        if (members.contains(country)) return;
         members.add(country);
-        if (hasInvited(country))removeInvite(country);
+        if (hasInvited(country)) removeInvite(country);
         country.addModifier(modifier);
         createDescription();
         addMember(country);
     }
 
     public void removeCountry(Country country) {
-        if (!members.contains(country))return;
+        if (!members.contains(country)) return;
         members.remove(country);
         country.removeModifier(modifier);
         removeMember(country);
         createDescription();
     }
+
     protected abstract void addMember(Country country);
+
     protected abstract void removeMember(Country country);
-    public String getStringName(){
+
+    public String getStringName() {
         return name;
     }
 
     public void rename(String newName) {
-        countryDataManager.renameFaction(name,newName,this);
+        countryDataManager.renameFaction(name, newName, this);
         name = newName;
     }
-    public Component getNameComponent(){
+
+    public Component getNameComponent() {
         return nameComponent;
     }
 
     public abstract Component getName();
-    public void delete(){
+
+    public void delete() {
         Instance instance = leader.getInstance();
         CountryDataManager countryDataManager = ContinentalManagers.world(instance).countryDataManager();
         countryDataManager.removeFaction(this);
     }
-    public void invite(Country country){
+
+    public void invite(Country country) {
         invites.add(country);
         country.inviteToFaction(this);
-        EventDispatcher.call(new FactionInviteEvent(country,this));
+        EventDispatcher.call(new FactionInviteEvent(country, this));
     }
-    public boolean hasInvited(Country country){
+
+    public boolean hasInvited(Country country) {
         return invites.contains(country);
     }
-    public void removeInvite(Country country){
+
+    public void removeInvite(Country country) {
         invites.remove(country);
         country.removeInviteToFaction(this);
     }
-    public void sendMessage(Component message){
-        members.forEach(member->member.sendMessage(message));
+
+    public void sendMessage(Component message) {
+        members.forEach(member -> member.sendMessage(message));
     }
-    public void sendActionBar(Component message){
-        members.forEach(member->member.sendActionBar(message));
+
+    public void sendActionBar(Component message) {
+        members.forEach(member -> member.sendActionBar(message));
     }
-    public boolean isLeader(Country country){
-        return leader==country;
+
+    public boolean isLeader(Country country) {
+        return leader == country;
     }
-    public void setLeader(Country country){
+
+    public void setLeader(Country country) {
         this.leader = country;
-        EventDispatcher.call(new FactionSetLeaderEvent(this,country));
+        EventDispatcher.call(new FactionSetLeaderEvent(this, country));
     }
-    public Modifier getModifier(){
+
+    public Modifier getModifier() {
         return modifier;
     }
-    public Component getDescription(){
+
+    public Component getDescription() {
         return description;
     }
 }

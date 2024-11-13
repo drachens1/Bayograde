@@ -244,11 +244,13 @@ public class KyoriUtil {
                 .append(Component.text(msg, colour))
                 .build();
     }
+
     public static Component compBuild(String msg, NamedTextColor colour, TextDecoration txtDec) {
         return Component.text()
                 .append(Component.text(msg, colour, txtDec))
                 .build();
     }
+
     public static Component compBuild(String msg, TextColor colour, TextDecoration txtDec) {
         return Component.text()
                 .append(Component.text(msg, colour, txtDec))

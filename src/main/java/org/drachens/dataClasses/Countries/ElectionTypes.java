@@ -8,8 +8,9 @@ import static org.drachens.util.KyoriUtil.compBuild;
 public class ElectionTypes {
     private Component name;
     private String identifier;
-    public ElectionTypes(TextColor colour, String name){
-        this.name = compBuild(name,colour);
+
+    public ElectionTypes(TextColor colour, String name) {
+        this.name = compBuild(name, colour);
         this.identifier = name;
     }
 
@@ -21,7 +22,7 @@ public class ElectionTypes {
         this.name = name;
     }
 
-    public String getIdentifier(){
+    public String getIdentifier() {
         return identifier;
     }
 }

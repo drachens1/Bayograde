@@ -19,29 +19,29 @@ import static org.drachens.util.ServerUtil.getWorldClasses;
 public class CountryHistoryCMD extends Command {
     public CountryHistoryCMD(String permission) {
         super("history");
-        setCondition((sender, permissionName) ->  sender.hasPermission(permission));
+        setCondition((sender, permissionName) -> sender.hasPermission(permission));
         var type = ArgumentType.String("previousColonies | colony | colonialPower | upAndComing");
         type.setSuggestionCallback((sender, context, suggestion) -> {
-            if (!sender.hasPermission(permission))return;
+            if (!sender.hasPermission(permission)) return;
             suggestion.addEntry(new SuggestionEntry("previousColonies"));
             suggestion.addEntry(new SuggestionEntry("colony"));
             suggestion.addEntry(new SuggestionEntry("colonialPower"));
             suggestion.addEntry(new SuggestionEntry("upAndComing"));
         });
-        addSyntax((sender,context)->{
-            if (!(sender instanceof Player p))return;
-            if (!sender.hasPermission(permission))return;
-            List<Component> components  = new ArrayList<>();
+        addSyntax((sender, context) -> {
+            if (!(sender instanceof Player p)) return;
+            if (!sender.hasPermission(permission)) return;
+            List<Component> components = new ArrayList<>();
             CountryEnums.History choice = CountryEnums.History.valueOf(context.get(type));
             components.add(compBuild(context.get(type), NamedTextColor.BLUE));
             components.add(Component.newline());
-            for (Country country : getWorldClasses(p.getInstance()).countryDataManager().getCountries()){
-                if (country.getHistory().equals(choice)){
+            for (Country country : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
+                if (country.getHistory().equals(choice)) {
                     components.add(compBuild(country.getName(), NamedTextColor.GOLD));
                     components.add(compBuild(", ", NamedTextColor.BLUE));
                 }
             }
             p.sendMessage(mergeComp(components));
-        },type);
+        }, type);
     }
 }

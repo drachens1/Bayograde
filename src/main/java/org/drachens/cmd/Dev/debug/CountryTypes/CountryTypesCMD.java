@@ -19,29 +19,29 @@ import static org.drachens.util.ServerUtil.getWorldClasses;
 public class CountryTypesCMD extends Command {
     public CountryTypesCMD(String permission) {
         super("types");
-        setCondition((sender, permissionName) ->  sender.hasPermission(permission));
+        setCondition((sender, permissionName) -> sender.hasPermission(permission));
         var type = ArgumentType.String("superpower | major | minor");
         type.setSuggestionCallback((sender, context, suggestion) -> {
-            if (!sender.hasPermission(permission))return;
+            if (!sender.hasPermission(permission)) return;
             suggestion.addEntry(new SuggestionEntry("superPower"));
             suggestion.addEntry(new SuggestionEntry("major"));
             suggestion.addEntry(new SuggestionEntry("minor"));
         });
 
-        addSyntax((sender,context)->{
-            if (!(sender instanceof Player p))return;
-            if (!sender.hasPermission(permission))return;
-            List<Component> components  = new ArrayList<>();
+        addSyntax((sender, context) -> {
+            if (!(sender instanceof Player p)) return;
+            if (!sender.hasPermission(permission)) return;
+            List<Component> components = new ArrayList<>();
             CountryEnums.Type choice = CountryEnums.Type.valueOf(context.get(type));
             components.add(compBuild(context.get(type), NamedTextColor.BLUE));
             components.add(Component.newline());
-            for (Country country : getWorldClasses(p.getInstance()).countryDataManager().getCountries()){
-                if (country.getType().equals(choice)){
+            for (Country country : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
+                if (country.getType().equals(choice)) {
                     components.add(compBuild(country.getName(), NamedTextColor.GOLD));
                     components.add(compBuild(", ", NamedTextColor.BLUE));
                 }
             }
             p.sendMessage(mergeComp(components));
-        },type);
+        }, type);
     }
 }

@@ -21,7 +21,7 @@ import org.drachens.dataClasses.Provinces.Province;
 import org.drachens.dataClasses.territories.Continent;
 import org.drachens.dataClasses.territories.Region;
 import org.drachens.interfaces.MapGen;
-import org.drachens.interfaces.Voting.VotingOption;
+import org.drachens.interfaces.VotingOption;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -46,22 +46,24 @@ public class MapGeneratorManager extends MapGen {
     private CountryDataManager countryDataManager;
     public List<Continent> continents;
     private Instance instance;
-    private void setupHashmaps(){
+
+    private void setupHashmaps() {
         int goldMax = 3;
         int rgMax2 = 2;
         int yMax2 = 2;
         int lMax2 = 2;
         int grMax2 = 2;
-        for (CountryEnums.Type e : CountryEnums.Type.values()){
+        for (CountryEnums.Type e : CountryEnums.Type.values()) {
             System.out.println(e.name());
-            gMax.put(e,goldMax);
+            gMax.put(e, goldMax);
             goldMax++;
-            rgMax.put(e,rgMax2);
-            yMax.put(e,yMax2);
-            lMax.put(e,lMax2);
-            grMax.put(e,grMax2);
+            rgMax.put(e, rgMax2);
+            yMax.put(e, yMax2);
+            lMax.put(e, lMax2);
+            grMax.put(e, grMax2);
         }
     }
+
     private Ideology defIdeology;
     private Election defElection;
     private int countries;
@@ -69,10 +71,11 @@ public class MapGeneratorManager extends MapGen {
     private List<IdeologyTypes> ideologyTypes;
     private VotingOption votingOption;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
+
     @Override
     public void generate(Instance instance, VotingOption votingOption) {
-        if (isGenerating(instance)){
-            logMsg("server","Tried to generate a new map when a map was generating",instance);
+        if (isGenerating(instance)) {
+            logMsg("server", "Tried to generate a new map when a map was generating", instance);
             return;
         }
 
@@ -82,7 +85,7 @@ public class MapGeneratorManager extends MapGen {
         this.provinceManager = ContinentalManagers.world(instance).provinceManager();
         provinceManager.reset();
         this.countryDataManager = ContinentalManagers.world(instance).countryDataManager();
-        scheduler.buildTask(()->{
+        scheduler.buildTask(() -> {
             removeGenerating(instance);
             countryDataManager.getCountries().forEach(Country::createInfo);
         }).delay(2, ChronoUnit.SECONDS).schedule();
@@ -99,8 +102,9 @@ public class MapGeneratorManager extends MapGen {
         //todo add the rest
         start();
     }
+
     public MapGeneratorManager() {
-        super(111,111);
+        super(111, 111);
         setupHashmaps();
         Material[] block = {
                 //Terracotta's
@@ -173,7 +177,7 @@ public class MapGeneratorManager extends MapGen {
         Collections.addAll(allCountryNames, countryName);
     }
 
-    public void start(){
+    public void start() {
         JNoise baseNoise = JNoise.newBuilder()
                 .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(new Random().nextInt()).build())
                 .build();
@@ -195,7 +199,7 @@ public class MapGeneratorManager extends MapGen {
                 double normalizedValue = (combinedValue + 1) / 2.0;
                 Pos pos = new Pos(x, 0, z);
                 instance.loadChunk(pos);
-                Province province = new Province(pos, instance,new ArrayList<>());
+                Province province = new Province(pos, instance, new ArrayList<>());
                 if (normalizedValue > threshold) {
                     province.setCapturable(false);
                     province.setBlock(Material.BLUE_STAINED_GLASS);
@@ -211,6 +215,7 @@ public class MapGeneratorManager extends MapGen {
         setNeighbours();
         createCountries(countries);
     }
+
     private void createCountries(int num) {
         List<Country> countries = new ArrayList<>();
 
@@ -219,7 +224,7 @@ public class MapGeneratorManager extends MapGen {
             countries.add(newCount);
             countryDataManager.addCountry(newCount);
         }
-        countries.forEach((country)-> country.getIdeology().addIdeology(votingOption.getIdeologyTypes().get(new Random().nextInt(votingOption.getIdeologyTypes().size())),new Random().nextFloat(0,15f)));
+        countries.forEach((country) -> country.getIdeology().addIdeology(votingOption.getIdeologyTypes().get(new Random().nextInt(votingOption.getIdeologyTypes().size())), new Random().nextFloat(0, 15f)));
         floodFill(countries);
     }
 
@@ -244,10 +249,10 @@ public class MapGeneratorManager extends MapGen {
         String countryName = countryNames.get(new Random().nextInt(countryNames.size()));
         countryNames.remove(countryName);
         HashMap<CurrencyTypes, Currencies> newCurrencies = new HashMap<>();
-        for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()){
-            newCurrencies.put(e.getKey(),e.getValue().clone());
+        for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()) {
+            newCurrencies.put(e.getKey(), e.getValue().clone());
         }
-        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE),block, border, defIdeology,defElection,instance);
+        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
     }
 
     public void floodFill(List<Country> countries) {
@@ -294,7 +299,9 @@ public class MapGeneratorManager extends MapGen {
         borderScan();
         generateCities(countries);
     }
+
     int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
+
     private List<Pos> getNeighbors(Pos pos) {
         List<Pos> neighbors = new ArrayList<>();
         for (int[] dir : directions) {
@@ -326,6 +333,7 @@ public class MapGeneratorManager extends MapGen {
             }
         }
     }
+
     Pos[] directions1 = {
             new Pos(-1, 0, 0), // West
             new Pos(1, 0, 0),  // East
@@ -333,6 +341,7 @@ public class MapGeneratorManager extends MapGen {
             new Pos(0, 0, 1),   // South
             new Pos(0, 0, 0) // current
     };
+
     public void updateBorders(Pos loc) {
         for (Pos direction : directions1) {
             Pos newLoc = loc.add(direction);
@@ -364,7 +373,9 @@ public class MapGeneratorManager extends MapGen {
             province.setBlock();
         }
     }
+
     private Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;
+
     private void generateCities(List<Country> countries) {
         for (Country country : countries) {
             cityTypeGen(160, 5, gMax.get(country.getType()), country);
@@ -386,18 +397,19 @@ public class MapGeneratorManager extends MapGen {
             } else {
                 p.setCity(index);
                 country.addCity(p);
-                country.addMajorCity(p,p.getMaterial());
+                country.addMajorCity(p, p.getMaterial());
             }
         }
     }
-    private void storiesGenerate(List<Country> countries){
+
+    private void storiesGenerate(List<Country> countries) {
         List<Integer> size = new ArrayList<>();
-        for (Country country : countries){
+        for (Country country : countries) {
             size.add(country.getOccupies().size());
         }
-        float medianSize = calculateTopPercent(size,0.2f);
-        for (int b = 0; b < size.size(); b++){
-            if (size.get(b)>=medianSize){
+        float medianSize = calculateTopPercent(size, 0.2f);
+        for (int b = 0; b < size.size(); b++) {
+            if (size.get(b) >= medianSize) {
                 countries.get(b).setType(CountryEnums.Type.major);
                 countries.get(b).addModifier(modifiers.getModifier("ww2-major"));
             } else {
@@ -407,7 +419,7 @@ public class MapGeneratorManager extends MapGen {
         }
         assignRegion(countries);
         createWinnersNUpAndComers();
-        createContinent(countries,setSuperPower(countries));
+        createContinent(countries, setSuperPower(countries));
     }
 
     public static Integer calculateTopPercent(List<Integer> numbers, float top) {
@@ -415,34 +427,37 @@ public class MapGeneratorManager extends MapGen {
 
         int count = (int) Math.ceil(numbers.size() * top);
 
-        return numbers.get(count-1);
+        return numbers.get(count - 1);
     }
-    private Country setSuperPower(List<Country> countries){
+
+    private Country setSuperPower(List<Country> countries) {
         Country biggest = countries.getFirst();
-        for (Country country : countries){
-            if (country.getOccupies().size()>biggest.getOccupies().size())biggest=country;
+        for (Country country : countries) {
+            if (country.getOccupies().size() > biggest.getOccupies().size()) biggest = country;
         }
         biggest.setType(CountryEnums.Type.superPower);
         return biggest;
     }
+
     int maxCountries = 10;
     private IdeologyTypes winnerOfThePrevWar;
     private IdeologyTypes upAndComingIdeology;
     private ElectionTypes upAndComingElection;
     private ElectionTypes electionWinnerPrevWar;
 
-    private void createWinnersNUpAndComers(){
+    private void createWinnersNUpAndComers() {
         List<IdeologyTypes> temp = votingOption.getIdeologyTypes();
-        winnerOfThePrevWar = temp.get(new Random().nextInt(0,temp.size()));
+        winnerOfThePrevWar = temp.get(new Random().nextInt(0, temp.size()));
         temp.remove(winnerOfThePrevWar);
-        upAndComingIdeology = temp.get(new Random().nextInt(0,temp.size()));
+        upAndComingIdeology = temp.get(new Random().nextInt(0, temp.size()));
 
         List<ElectionTypes> temp2 = votingOption.getElectionTypes();
-        electionWinnerPrevWar = temp2.get(new Random().nextInt(0,temp2.size()));
+        electionWinnerPrevWar = temp2.get(new Random().nextInt(0, temp2.size()));
         temp2.remove(electionWinnerPrevWar);
-        upAndComingElection = temp2.get(new Random().nextInt(0,temp2.size()));
+        upAndComingElection = temp2.get(new Random().nextInt(0, temp2.size()));
     }
-    private void createContinent(List<Country> countries, Country superPower){
+
+    private void createContinent(List<Country> countries, Country superPower) {
         superPower.removeModifier(modifiers.getModifier("ww2-major"));
         superPower.addModifier(modifiers.getModifier("ww2-superpower"));
         Continent mainContinent = new Continent();
@@ -471,7 +486,7 @@ public class MapGeneratorManager extends MapGen {
                             Province neighborProvince = provinceManager.getProvince(neighbor);
                             if (neighborProvince != null && neighborProvince.getOccupier() != null) {
                                 mainContinent.addProvince(neighborProvince);
-                                if (!mainContinent.getCountries().contains(neighborProvince.getOccupier())){
+                                if (!mainContinent.getCountries().contains(neighborProvince.getOccupier())) {
                                     if (currentInCont >= maxCountries) break;
                                     mainContinent.addCountry(neighborProvince.getOccupier());
                                     currentInCont++;
@@ -487,13 +502,12 @@ public class MapGeneratorManager extends MapGen {
         } while (anyQueueHadExpansion);
 
         Modifier modifier = modifiers.getModifier("ww2-example");
-        if (modifier==null)System.out.println("NULL");
-        for (Country country : countries){
+        if (modifier == null) System.out.println("NULL");
+        for (Country country : countries) {
             country.getIdeology().changeLeadingIdeology();
-            if (country.getType().equals(CountryEnums.Type.major)){
+            if (country.getType().equals(CountryEnums.Type.major)) {
                 historyAssignMajor(country);
-            }
-            else if (country.getType().equals(CountryEnums.Type.minor)) {
+            } else if (country.getType().equals(CountryEnums.Type.minor)) {
                 historyAssignMinors(country);
             }
             ideologyBoost(country);
@@ -502,7 +516,8 @@ public class MapGeneratorManager extends MapGen {
         historyAssignSuperPowers(superPower);
         superPower.getIdeology().changeLeadingIdeology();
     }
-    private void assignRegion(List<Country> countries){
+
+    private void assignRegion(List<Country> countries) {
         List<ElectionTypes> ElectionTypesTemp = new ArrayList<>(electionTypes);
         List<IdeologyTypes> ideologyTypesTemp = new ArrayList<>(ideologyTypes);
 
@@ -515,50 +530,53 @@ public class MapGeneratorManager extends MapGen {
         Region east = new Region("east", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
         ElectionTypesTemp.remove(east.getLeadingElectionType());
         ideologyTypesTemp.remove(east.getLeadingIdeology());
-        if (electionTypes.isEmpty())ElectionTypesTemp = new ArrayList<>(electionTypes);
+        if (electionTypes.isEmpty()) ElectionTypesTemp = new ArrayList<>(electionTypes);
         Region west = new Region("west", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
 
-        Pos spawn = new Pos(0,0,0);
-        for (Country country : countries){
+        Pos spawn = new Pos(0, 0, 0);
+        for (Country country : countries) {
             int x = country.getCapital().getPos().blockX();
             int z = country.getCapital().getPos().blockZ();
             Ideology ideology = country.getIdeology();
             Election election = country.getElections();
-            if (x>0){
-                ideology.addIdeology(north.getLeadingIdeology(),new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn)*2)));
+            if (x > 0) {
+                ideology.addIdeology(north.getLeadingIdeology(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
                 country.addRegion(north);
-            }else {
-                ideology.addIdeology(south.getLeadingIdeology(),new Random().nextFloat(0f,(float) Math.abs(country.getCapital().getPos().distance(spawn)*2)));
+            } else {
+                ideology.addIdeology(south.getLeadingIdeology(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
                 country.addRegion(south);
             }
-            if (z>0){
-                election.addElection(east.getLeadingElectionType(),new Random().nextFloat(0f,(float) Math.abs(country.getCapital().getPos().distance(spawn)*2)));
+            if (z > 0) {
+                election.addElection(east.getLeadingElectionType(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
                 country.addRegion(east);
-            }else {
-                election.addElection(west.getLeadingElectionType(),new Random().nextFloat(0f,(float) Math.abs(country.getCapital().getPos().distance(spawn)*2)));
+            } else {
+                election.addElection(west.getLeadingElectionType(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
                 country.addRegion(west);
             }
         }
     }
-    private IdeologyTypes getRandomIdeology(List<IdeologyTypes> ideologyTypes){
+
+    private IdeologyTypes getRandomIdeology(List<IdeologyTypes> ideologyTypes) {
         return ideologyTypes.get(new Random().nextInt(ideologyTypes.size()));
     }
-    private ElectionTypes getRandomElection(List<ElectionTypes> electionTypes){
+
+    private ElectionTypes getRandomElection(List<ElectionTypes> electionTypes) {
         return electionTypes.get(new Random().nextInt(electionTypes.size()));
     }
-    private void historyAssignMajor(Country country){
-        if (new Random().nextBoolean()){
+
+    private void historyAssignMajor(Country country) {
+        if (new Random().nextBoolean()) {
             country.setHistory(CountryEnums.History.colonialPower);
         } else {
             country.setHistory(CountryEnums.History.upAndComing);
         }
         leadershipStyle(country);
-        int num2 = new Random().nextInt(0,3);
-        switch (num2){
+        int num2 = new Random().nextInt(0, 3);
+        switch (num2) {
             case 0:
                 country.setPreviousWar(CountryEnums.PreviousWar.winner);
-                country.getIdeology().addIdeology(winnerOfThePrevWar,new Random().nextFloat(0,40f));
-                country.getElections().addElection(electionWinnerPrevWar,new Random().nextFloat(0,40f));
+                country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(electionWinnerPrevWar, new Random().nextFloat(0, 40f));
                 break;
             case 1:
                 country.setPreviousWar(CountryEnums.PreviousWar.loser);
@@ -569,73 +587,74 @@ public class MapGeneratorManager extends MapGen {
                 break;
         }
 
-        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)){
-            if (new Random().nextBoolean()){
+        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)) {
+            if (new Random().nextBoolean()) {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
-                country.getIdeology().addIdeology(upAndComingIdeology,new Random().nextFloat(0,40f));
-                country.getElections().addElection(upAndComingElection,new Random().nextFloat(0,40f));
-            }else {
+                country.getIdeology().addIdeology(upAndComingIdeology, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(upAndComingElection, new Random().nextFloat(0, 40f));
+            } else {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
             }
-        }else {
-            if (new Random().nextBoolean()){
+        } else {
+            if (new Random().nextBoolean()) {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.friendly);
-            }else {
+            } else {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
             }
         }
     }
 
     private void historyAssignMinors(Country country) {
-        if (new Random().nextBoolean()){
+        if (new Random().nextBoolean()) {
             country.setHistory(CountryEnums.History.colony);
-        }else {
+        } else {
             country.setHistory(CountryEnums.History.previousColonies);
         }
         leadershipStyle(country);
-        int num2 = new Random().nextInt(0,3);
-        switch (num2){
+        int num2 = new Random().nextInt(0, 3);
+        switch (num2) {
             case 0:
                 country.setPreviousWar(CountryEnums.PreviousWar.winner);
-                country.getIdeology().addIdeology(winnerOfThePrevWar,new Random().nextFloat(0,40f));
-                country.getElections().addElection(electionWinnerPrevWar,new Random().nextFloat(0,40f));
+                country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(electionWinnerPrevWar, new Random().nextFloat(0, 40f));
                 break;
             case 1:
                 country.setPreviousWar(CountryEnums.PreviousWar.loser);
                 country.setFocuses(CountryEnums.Focuses.war);
-                country.getIdeology().addIdeology(winnerOfThePrevWar,new Random().nextFloat(0,40f));
-                country.getElections().addElection(electionWinnerPrevWar,new Random().nextFloat(0,40f));
+                country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(electionWinnerPrevWar, new Random().nextFloat(0, 40f));
                 break;
             case 2:
                 country.setPreviousWar(CountryEnums.PreviousWar.neutral);
                 break;
         }
         //country.setElections(new Random().nextBoolean());
-        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)){
-            if (new Random().nextBoolean()){
+        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)) {
+            if (new Random().nextBoolean()) {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
-            }else {
+            } else {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
             }
-        }else {
-            if (new Random().nextBoolean()){
+        } else {
+            if (new Random().nextBoolean()) {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.friendly);
-            }else {
+            } else {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
             }
         }
     }
 
-    private void historyAssignSuperPowers(Country country){
+    private void historyAssignSuperPowers(Country country) {
         leadershipStyle(country);
         country.setHistory(CountryEnums.History.colonialPower);
         country.setPreviousWar(CountryEnums.PreviousWar.winner);
         //country.setElections(new Random().nextBoolean());
         country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
     }
-    private void leadershipStyle(Country country){
-        int num2 = new  Random().nextInt(0,5);
-        switch (num2){
+
+    private void leadershipStyle(Country country) {
+        int num2 = new Random().nextInt(0, 5);
+        switch (num2) {
             case 0:
                 country.setFocuses(CountryEnums.Focuses.economy);
                 break;
@@ -653,18 +672,21 @@ public class MapGeneratorManager extends MapGen {
                 break;
         }
     }
-    private void ideologyBoost(Country country){
-        country.getIdeology().addIdeology(winnerOfThePrevWar,new Random().nextFloat(0,50f));
+
+    private void ideologyBoost(Country country) {
+        country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 50f));
     }
-    private List<Province> getNeighbours(Province province){
+
+    private List<Province> getNeighbours(Province province) {
         List<Province> neighbour = new ArrayList<>();
-        for (int[] offset : directions2){
-            neighbour.add(provinceManager.getProvince(province.getPos().add(offset[0],0,offset[1])));
+        for (int[] offset : directions2) {
+            neighbour.add(provinceManager.getProvince(province.getPos().add(offset[0], 0, offset[1])));
         }
         return neighbour;
     }
-    private void setNeighbours(){
-        for (Map.Entry<Pos,Province> entry : provinceManager.getProvinceHashMap().entrySet()){
+
+    private void setNeighbours() {
+        for (Map.Entry<Pos, Province> entry : provinceManager.getProvinceHashMap().entrySet()) {
             Province province = entry.getValue();
             province.setNeighbours(getNeighbours(province));
         }

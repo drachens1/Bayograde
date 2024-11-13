@@ -111,7 +111,7 @@ public class Province implements Serializable {
         if (occupier != null) {
             occupier.removeOccupied(this);
             if (isCity())
-                this.occupier.cityCaptured(attacker,this);
+                this.occupier.cityCaptured(attacker, this);
         }
         if (building != null) {
             building.capture(attacker);
@@ -128,11 +128,12 @@ public class Province implements Serializable {
         updateBorders();
     }
 
-    public void initialOccupier(Country occupier){
+    public void initialOccupier(Country occupier) {
         this.occupier = occupier;
         occupier.addOccupied(this);
         updateBorders();
     }
+
     public List<Country> getCore() {
         return core;
     }
@@ -157,14 +158,14 @@ public class Province implements Serializable {
         troops.add(troop);
     }
 
-    public void removeTroop(Troop troop){
+    public void removeTroop(Troop troop) {
         troops.remove(troop);
     }
 
     public void capture(Country attacker) {
         if (!attacker.atWar(occupier))
-            EventDispatcher.call(new StartWarEvent(attacker,occupier));
-        occupier.sendActionBar(compBuild("You have been attacked at "+pos, NamedTextColor.RED));
+            EventDispatcher.call(new StartWarEvent(attacker, occupier));
+        occupier.sendActionBar(compBuild("You have been attacked at " + pos, NamedTextColor.RED));
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
         if (building != null) this.building.capture(attacker);
         setOccupier(attacker);
@@ -218,7 +219,8 @@ public class Province implements Serializable {
     public void setCity(boolean city) {
         this.city = city;
     }
-    public void setCity(Material material){
+
+    public void setCity(Material material) {
         this.setBlock(material);
         Arrays.stream(cities).toList().indexOf(material);
     }
@@ -260,16 +262,20 @@ public class Province implements Serializable {
             province.setBlock();
         }
     }
-    public void setNeighbours(List<Province> provinces){
+
+    public void setNeighbours(List<Province> provinces) {
         this.neighbours = provinces;
     }
-    public List<Province> getNeighbours(){
+
+    public List<Province> getNeighbours() {
         return neighbours;
     }
-    public void addBuilding(Building building){
+
+    public void addBuilding(Building building) {
         this.building = building;
     }
-    public void removeBuilding(){
+
+    public void removeBuilding() {
         building = null;
     }
 }

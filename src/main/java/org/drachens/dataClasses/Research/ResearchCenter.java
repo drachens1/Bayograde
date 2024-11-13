@@ -23,12 +23,14 @@ public class ResearchCenter extends BuildTypes {
             .build();
 
     private final Component maxCapacityReached = Component.text()
-            .append(Component.text("Max capacity has been reached",NamedTextColor.RED))
+            .append(Component.text("Max capacity has been reached", NamedTextColor.RED))
             .build();
+
     public ResearchCenter() {
         super(new int[]{1}, Material.BROWN_DYE, "research_center");
     }
-    private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"),5f));
+
+    private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
 
     @Override
     public void onBuild(Country country, Province province, Player p) {
@@ -38,8 +40,8 @@ public class ResearchCenter extends BuildTypes {
 
     @Override
     public boolean canBuild(Country country, Province province, Player p) {
-        if (province.getOccupier()!=country)return false;
-        if (province.getBuilding()!=null)return false;
+        if (province.getOccupier() != country) return false;
+        if (province.getBuilding() != null) return false;
         if (!country.canMinusCosts(payments)) {
             p.sendMessage(cantAffordMsg);
             return false;

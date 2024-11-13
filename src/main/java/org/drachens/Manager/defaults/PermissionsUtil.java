@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class PermissionsUtil {
     private final List<Permission> operator = new ArrayList<>();
-    private  final HashMap<String, List<Permission>> groups = new HashMap<>();
+    private final HashMap<String, List<Permission>> groups = new HashMap<>();
 
     public PermissionsUtil() {
         operator.add(new Permission("ban"));
@@ -55,7 +55,7 @@ public class PermissionsUtil {
         }
     }
 
-    public  void addPermissionGroup(String name, List<Permission> permss, boolean editFile) {
+    public void addPermissionGroup(String name, List<Permission> permss, boolean editFile) {
         groups.put(name, permss);
         if (!editFile) return;
         ConfigurationNode permNode = ContinentalManagers.configFileManager.getPermissionsFile();
@@ -107,7 +107,7 @@ public class PermissionsUtil {
         }
     }
 
-    public  void playerRemovePerm(String name, Player p) {
+    public void playerRemovePerm(String name, Player p) {
         for (Permission perm : groups.get(name)) {
             p.removePermission(perm);
         }

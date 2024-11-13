@@ -1,11 +1,10 @@
 package org.drachens.events;
 
-import net.minestom.server.event.Event;
-import net.minestom.server.event.trait.CancellableEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.interfaces.Event;
 
-public class CaptureBlockEvent implements Event, CancellableEvent {
+public class CaptureBlockEvent extends Event {
     private final Country aggressor;
     private final Country defender;
     private final Province attacked;
@@ -26,15 +25,5 @@ public class CaptureBlockEvent implements Event, CancellableEvent {
 
     public Province getAttacked() {
         return attacked;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-
     }
 }

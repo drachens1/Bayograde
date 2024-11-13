@@ -6,20 +6,24 @@ public class Payment {
     private final CurrencyTypes currencyType;
     private float amount;
     private Component message;
-    public Payment(Payment payment){
+
+    public Payment(Payment payment) {
         this.amount = payment.getAmount();
         this.currencyType = payment.getCurrencyType();
         this.message = payment.getMessage();
     }
+
     public Payment(CurrencyTypes currencyType, float amount) {
         this.currencyType = currencyType;
         this.amount = amount;
     }
+
     public Payment(CurrencyTypes currencyType, float amount, Component message) {
         this.currencyType = currencyType;
         this.amount = amount;
         this.message = message;
     }
+
     public float getAmount() {
         return amount;
     }
@@ -28,7 +32,7 @@ public class Payment {
         return currencyType;
     }
 
-    public Component getMessage(){
+    public Component getMessage() {
         return message;
     }
 
@@ -47,10 +51,12 @@ public class Payment {
         }
         return false;
     }
-    public void multiply(int multiply){
-        amount*=multiply;
+
+    public void multiply(int multiply) {
+        amount *= multiply;
     }
-    public void multiply(float multiply){
-        amount*=multiply;
+
+    public void multiply(float multiply) {
+        amount *= multiply;
     }
 }

@@ -43,7 +43,7 @@ public class AStarPathfinder {
 
             closedSet.add(currentKey);
 
-            for (Province neighbor : getNeighbors(currentProvince, country,pathfinderVoids)) {
+            for (Province neighbor : getNeighbors(currentProvince, country, pathfinderVoids)) {
                 ProvinceKey neighborKey = new ProvinceKey(neighbor);
                 if (closedSet.contains(neighborKey)) continue;
 

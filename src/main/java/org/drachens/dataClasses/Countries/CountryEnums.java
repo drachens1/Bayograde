@@ -6,13 +6,17 @@ public class CountryEnums {
         major,
         superPower,
 
-    }; //So super power, major or a minor
-    public enum History{
+    }
+
+    ; //So super power, major or a minor
+
+    public enum History {
         previousColonies,
         colony,
         colonialPower,
         upAndComing
     }
+
     public enum Focuses {
         economy,
         military,
@@ -20,11 +24,13 @@ public class CountryEnums {
         stability,
         war
     }
+
     public enum RelationsStyle {
         friendly,
         unfriendly,
         issolationist
     }
+
     public enum PreviousWar {
         loser,
         winner,

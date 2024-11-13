@@ -30,7 +30,7 @@ public class BanCMD extends Command {
                 sender.sendMessage("Player is null");
                 return;
             }
-            send.sendMessage("You have banned "+context.get(player));
+            send.sendMessage("You have banned " + context.get(player));
             Constants.BAN_MANAGER.banPlayer(p, context.get(duration));
         }, player, duration, reason);
     }

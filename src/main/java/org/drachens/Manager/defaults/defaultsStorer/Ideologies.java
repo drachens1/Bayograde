@@ -4,22 +4,22 @@ import org.drachens.dataClasses.Countries.IdeologyTypes;
 
 import java.util.HashMap;
 
-public class Ideologies{
+public class Ideologies {
     HashMap<String, IdeologyTypes> ideologies = new HashMap<>();
 
-    public void register(IdeologyTypes ideologyTypes){
+    public void register(IdeologyTypes ideologyTypes) {
         ideologies.put(ideologyTypes.getIdentifier(), ideologyTypes);
     }
 
-    public void unregister(IdeologyTypes ideologyTypes){
+    public void unregister(IdeologyTypes ideologyTypes) {
         ideologies.remove(ideologyTypes.getIdentifier());
     }
 
-    public IdeologyTypes getIdeologyType(String name){
+    public IdeologyTypes getIdeologyType(String name) {
         return ideologies.get(name);
     }
 
-    public HashMap<String, IdeologyTypes> getIdeologies(){
+    public HashMap<String, IdeologyTypes> getIdeologies() {
         return ideologies;
     }
 }

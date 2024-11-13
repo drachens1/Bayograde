@@ -8,10 +8,10 @@ import org.drachens.events.System.ResetEvent;
 public class ResetCMD extends Command {
     public ResetCMD() {
         super("reset");
-        setCondition((sender,s)->sender.hasPermission("reset"));
-        setDefaultExecutor((sender,context)->{
-            if (!sender.hasPermission("reset"))return;
-            if (!(sender instanceof Player p))return;
+        setCondition((sender, s) -> sender.hasPermission("reset"));
+        setDefaultExecutor((sender, context) -> {
+            if (!sender.hasPermission("reset")) return;
+            if (!(sender instanceof Player p)) return;
             EventDispatcher.call(new ResetEvent(p.getInstance()));
         });
     }

@@ -14,14 +14,15 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 public class test extends InventoryGUI {
     @Override
     protected Inventory createInventory() {
-        return new Inventory(InventoryType.CHEST_6_ROW,"smth");
+        return new Inventory(InventoryType.CHEST_6_ROW, "smth");
     }
 
     @Override
     public void decorate(@NotNull Player player) {
-        this.addButton(0,button(itemBuilder(Material.CYAN_DYE)));
+        this.addButton(0, button(itemBuilder(Material.CYAN_DYE)));
         super.decorate(player);
     }
+
     private InventoryButton button(ItemStack material) {
         return new InventoryButton()
                 .creator(player -> material)

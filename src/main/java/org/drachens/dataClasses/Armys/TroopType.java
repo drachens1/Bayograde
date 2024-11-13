@@ -13,30 +13,37 @@ public class TroopType {
     private final ItemStack ownTroop;
     private final ItemStack allyTroop;
     private final ItemStack enemyTroop;
-    public TroopType(int friendlyModelData, Material friendlyItem, int allyModelData, Material allyItem, int enemyModelData, Material enemyItem, AnimationType moveAnimation, AnimationType shootingAnimation, AnimationType standstillAnimation){
-        ownTroop = itemBuilder(friendlyItem,friendlyModelData);
+
+    public TroopType(int friendlyModelData, Material friendlyItem, int allyModelData, Material allyItem, int enemyModelData, Material enemyItem, AnimationType moveAnimation, AnimationType shootingAnimation, AnimationType standstillAnimation) {
+        ownTroop = itemBuilder(friendlyItem, friendlyModelData);
         allyTroop = itemBuilder(allyItem, allyModelData);
-        enemyTroop = itemBuilder(enemyItem,enemyModelData);
+        enemyTroop = itemBuilder(enemyItem, enemyModelData);
         this.moveAnimation = moveAnimation;
         this.shootingAnimation = shootingAnimation;
         this.standstillAnimation = standstillAnimation;
     }
-    public AnimationType getMoveAnimation(){
+
+    public AnimationType getMoveAnimation() {
         return moveAnimation;
     }
-    public AnimationType getShootingAnimation(){
+
+    public AnimationType getShootingAnimation() {
         return shootingAnimation;
     }
-    public AnimationType getStandstillAnimation(){
+
+    public AnimationType getStandstillAnimation() {
         return standstillAnimation;
     }
-    public ItemStack getOwnTroop(){
+
+    public ItemStack getOwnTroop() {
         return ownTroop;
     }
-    public ItemStack getAllyTroop(){
+
+    public ItemStack getAllyTroop() {
         return allyTroop;
     }
-    public ItemStack getEnemyTroop(){
+
+    public ItemStack getEnemyTroop() {
         return enemyTroop;
     }
 }

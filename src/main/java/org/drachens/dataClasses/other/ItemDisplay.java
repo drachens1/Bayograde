@@ -26,42 +26,48 @@ public class ItemDisplay extends Clientside {
     byte displayType;
     private AnimationType active;
     private EntityTeleportPacket entityTeleportPacket;
+
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
-        super(storeViewers, instance,pos);
+        super(storeViewers, instance, pos);
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
     }
 
     public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers) {
-        super(storeViewers, province.getInstance(),province.getPos());
+        super(storeViewers, province.getInstance(), province.getPos());
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
     }
+
     public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
-        super(storeViewers, instance,pos);
+        super(storeViewers, instance, pos);
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId,pos,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
     }
 
     public void delete() {
         this.dispose();
     }
-    public Pos getPos(){
+
+    public Pos getPos() {
         return pos;
     }
-    public void setActive(AnimationType active){
+
+    public void setActive(AnimationType active) {
         cancelAnimation();
         this.active = active;
     }
-    private void cancelAnimation(){
-        if (active!=null)active.stop(this);
+
+    private void cancelAnimation() {
+        if (active != null) active.stop(this);
     }
+
     public void setItem(ItemStack item) {
         this.item = item;
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
@@ -74,38 +80,40 @@ public class ItemDisplay extends Clientside {
                 map
         );
 
-        PacketUtils.sendGroupedPacket(VIEWERS,entityMetaDataPacket1);
+        PacketUtils.sendGroupedPacket(VIEWERS, entityMetaDataPacket1);
     }
 
-    public void moveSmooth(Province to, int time){
-        moveSmooth(to.getPos(),time);
+    public void moveSmooth(Province to, int time) {
+        moveSmooth(to.getPos(), time);
     }
-    public void moveSmooth(Pos to, int time){
+
+    public void moveSmooth(Pos to, int time) {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
         to = to.add(0.5, 0, 0.5);
         double yaw = Math.atan2(to.x() - pos.x(), to.z() - pos.z()) * (180 / Math.PI);
 
         float[] quart = yawToQuat(yaw);
 
-        map.put(8,Metadata.VarInt(0));
-        map.put(9,Metadata.VarInt(time));//duration in ticks
-        map.put(11,Metadata.Vector3(to.sub(pos.x(),0,pos.z())));
-        map.put(13,Metadata.Quaternion(quart));
-        map.put(14,Metadata.Quaternion(quart));
+        map.put(8, Metadata.VarInt(0));
+        map.put(9, Metadata.VarInt(time));//duration in ticks
+        map.put(11, Metadata.Vector3(to.sub(pos.x(), 0, pos.z())));
+        map.put(13, Metadata.Quaternion(quart));
+        map.put(14, Metadata.Quaternion(quart));
 
-        EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId,map);
-        PacketUtils.sendGroupedPacket(VIEWERS,entityMetaDataPacket1);
+        EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
+        PacketUtils.sendGroupedPacket(VIEWERS, entityMetaDataPacket1);
     }
 
-    public void setPosWithOffset(Province province){
+    public void setPosWithOffset(Province province) {
         Pos pos = province.getPos();
         pos = pos.add(0.5, 1.5, 0.5);
         setPos(pos);
     }
-    public void setPos(Pos pos){
+
+    public void setPos(Pos pos) {
         this.pos = pos;
-        entityTeleportPacket =new EntityTeleportPacket(this.entityId, this.pos, false);
-        PacketUtils.sendGroupedPacket(VIEWERS,entityTeleportPacket);
+        entityTeleportPacket = new EntityTeleportPacket(this.entityId, this.pos, false);
+        PacketUtils.sendGroupedPacket(VIEWERS, entityTeleportPacket);
 
     }
 
@@ -115,7 +123,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.addAll(players);
 
-        PacketUtils.sendGroupedPacket(players,new SpawnEntityPacket(
+        PacketUtils.sendGroupedPacket(players, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -125,17 +133,17 @@ public class ItemDisplay extends Clientside {
 
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
 
-        map.put(8,Metadata.VarInt(-1));
-        map.put(11,Metadata.Vector3(new Pos(0,0,0)));
+        map.put(8, Metadata.VarInt(-1));
+        map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
 
-        PacketUtils.sendGroupedPacket(players,new EntityMetaDataPacket(
+        PacketUtils.sendGroupedPacket(players, new EntityMetaDataPacket(
                 this.entityId,
                 map
         ));
 
-        PacketUtils.sendGroupedPacket(players,entityTeleportPacket);
+        PacketUtils.sendGroupedPacket(players, entityTeleportPacket);
     }
 
     @Override
@@ -144,7 +152,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.removeAll(players);
 
-        PacketUtils.sendGroupedPacket(players,new DestroyEntitiesPacket(
+        PacketUtils.sendGroupedPacket(players, new DestroyEntitiesPacket(
                 this.entityId
         ));
     }
@@ -154,7 +162,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.add(p);
 
-        PacketUtils.sendPacket(p,new SpawnEntityPacket(
+        PacketUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -164,17 +172,17 @@ public class ItemDisplay extends Clientside {
 
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
 
-        map.put(8,Metadata.VarInt(-1));
-        map.put(11,Metadata.Vector3(new Pos(0,0,0)));
+        map.put(8, Metadata.VarInt(-1));
+        map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
 
-        PacketUtils.sendPacket(p,new EntityMetaDataPacket(
+        PacketUtils.sendPacket(p, new EntityMetaDataPacket(
                 this.entityId,
                 map
         ));
 
-        PacketUtils.sendPacket(p,entityTeleportPacket);
+        PacketUtils.sendPacket(p, entityTeleportPacket);
     }
 
     @Override
@@ -182,7 +190,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             VIEWERS.remove(p);
 
-        PacketUtils.sendPacket(p,new DestroyEntitiesPacket(
+        PacketUtils.sendPacket(p, new DestroyEntitiesPacket(
                 this.entityId
         ));
     }

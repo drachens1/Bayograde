@@ -8,9 +8,9 @@ import org.drachens.cmd.Dev.debug.countryDebug.CountryDebugCMD;
 public class allCMD extends Command {
     public allCMD(String permission) {
         super("all");
-        setCondition((sender,s)->sender.hasPermission(permission));
-        setDefaultExecutor((sender,context)->{
-            if (sender.hasPermission(permission))sender.sendMessage("Proper usage /debug <option>");
+        setCondition((sender, s) -> sender.hasPermission(permission));
+        setDefaultExecutor((sender, context) -> {
+            if (sender.hasPermission(permission)) sender.sendMessage("Proper usage /debug <option>");
         });
         addSubcommand(new CountryHistoryCMD(permission));
         addSubcommand(new CountryTypesCMD(permission));

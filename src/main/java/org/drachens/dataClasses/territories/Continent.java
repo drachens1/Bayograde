@@ -5,6 +5,7 @@ import org.drachens.dataClasses.Provinces.Province;
 
 import java.util.ArrayList;
 import java.util.List;
+
 // Continent dataclass is only used during map generation
 public class Continent {
     private List<Country> countries = new ArrayList<>();
@@ -18,7 +19,7 @@ public class Continent {
         this.countries = countries;
     }
 
-    public void addCountry(Country country){
+    public void addCountry(Country country) {
         this.countries.add(country);
     }
 
@@ -30,7 +31,7 @@ public class Continent {
         this.provinces = provinces;
     }
 
-    public void addProvince(Province province){
+    public void addProvince(Province province) {
         this.provinces.add(province);
     }
 }

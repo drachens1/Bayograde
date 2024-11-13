@@ -64,13 +64,13 @@ public class Rank {
         for (var viewer : Util.getAllOnlinePlayers()) {
             sendPackets(player.getUsername(), viewer);
         }
-        EventDispatcher.call(new RankAddEvent(player,this));
+        EventDispatcher.call(new RankAddEvent(player, this));
     }
 
     public void removePlayer(Player player) {
         Util.getAllOnlinePlayers().forEach(this::sendRemovePackets);
 
         this.players.remove(player.getUuid());
-        EventDispatcher.call(new RankRemoveEvent(player,this));
+        EventDispatcher.call(new RankRemoveEvent(player, this));
     }
 }

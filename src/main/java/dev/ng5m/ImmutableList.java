@@ -6,7 +6,7 @@ public final class ImmutableList<T> {
     private final T[] elements;
 
     @SafeVarargs
-    public ImmutableList(T ... elements) {
+    public ImmutableList(T... elements) {
         this.elements = elements;
     }
 

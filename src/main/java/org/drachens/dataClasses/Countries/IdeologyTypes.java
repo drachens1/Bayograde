@@ -14,9 +14,10 @@ public class IdeologyTypes {
     private Component prefix;
     private final List<Leader> leaders;
     private Modifier modifier;
-    public IdeologyTypes(TextColor colour, String prefix, String name, List<Leader> leaders, Modifier modifier){
-        this.name = compBuild(name,colour);
-        this.prefix = compBuild(prefix,colour);
+
+    public IdeologyTypes(TextColor colour, String prefix, String name, List<Leader> leaders, Modifier modifier) {
+        this.name = compBuild(name, colour);
+        this.prefix = compBuild(prefix, colour);
         this.identifier = name;
         this.leaders = leaders;
         this.leaders.forEach((leader -> leader.setIdeologyTypes(this)));
@@ -38,13 +39,16 @@ public class IdeologyTypes {
     public void setPrefix(Component prefix) {
         this.prefix = prefix;
     }
-    public List<Leader> getLeaders(){
+
+    public List<Leader> getLeaders() {
         return leaders;
     }
-    public String getIdentifier(){
+
+    public String getIdentifier() {
         return identifier;
     }
-    public Modifier getModifier(){
+
+    public Modifier getModifier() {
         return modifier;
     }
 }

@@ -17,8 +17,9 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class TroopMover extends HotbarItemButton {
     private HashMap<Player, Troop> nextProv = new HashMap<>();
+
     public TroopMover() {
-        super(0, itemBuilder(Material.CYAN_DYE,"Hi", NamedTextColor.GOLD));
+        super(0, itemBuilder(Material.CYAN_DYE, "Hi", NamedTextColor.GOLD));
     }
 
     @Override
@@ -30,16 +31,16 @@ public class TroopMover extends HotbarItemButton {
     public void onUse(PlayerUseItemOnBlockEvent e) {
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
         Player p = e.getPlayer();
-        if (province==null)return;
-        if (nextProv.containsKey(p)){
+        if (province == null) return;
+        if (nextProv.containsKey(p)) {
             Troop troop = nextProv.get(p);
             troop.move(province);
             p.sendMessage("Moving");
             return;
         }
-        if (province.getTroops().isEmpty())return;
+        if (province.getTroops().isEmpty()) return;
         Troop troop = province.getTroops().getFirst();
-        nextProv.put(p,troop);
+        nextProv.put(p, troop);
     }
 
     @Override
