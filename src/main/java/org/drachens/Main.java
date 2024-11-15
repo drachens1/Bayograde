@@ -28,6 +28,7 @@ import org.drachens.dataClasses.NoneCustomisableInventory;
 import org.drachens.interfaces.VotingOption;
 import org.drachens.interfaces.items.HotbarItemButton;
 import org.drachens.temporary.*;
+import org.drachens.temporary.demand.DemandInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -233,6 +234,8 @@ public class Main {
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
                 .build(), "ww2_troops");
+
+        ContinentalManagers.inventoryManager.registerInventory("demand",new DemandInventory());
     }
 
     private static List<Leader> getLeaders(Modifier modifier) {

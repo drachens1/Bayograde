@@ -125,12 +125,12 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionJoinEvent.class, e -> {
-            Country creator = e.country();
+            Country creator = e.getCountry();
             broadcast(Component.text()
                             .append(factionPref)
                             .append(creator.getNameComponent())
                             .append(Component.text(" has joined ", NamedTextColor.GREEN))
-                            .append(e.faction().getNameComponent())
+                            .append(e.getCountry().getNameComponent())
                             .build(),
                     creator.getCapital().getInstance());
         });
@@ -171,8 +171,8 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionSetLeaderEvent.class, e -> {
-            Factions factions = e.faction();
-            Country country = e.country();
+            Factions factions = e.getFactions();
+            Country country = e.getCountry();
             factions.sendMessage(Component.text()
                     .append(factionPref)
                     .append(country.getNameComponent())
@@ -185,15 +185,15 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(CountrySetLeaderEvent.class, e -> e.country().sendMessage(Component.text()
+        globEHandler.addListener(CountrySetLeaderEvent.class, e -> e.getCountry().sendMessage(Component.text()
                 .append(country)
                 .append(Component.text("The leader is now ", NamedTextColor.GREEN))
-                .append(Component.text(e.newLeader().getUsername()))
+                .append(Component.text(e.getNewLeader().getUsername()))
                 .build()));
 
         globEHandler.addListener(CountryCoopPlayerEvent.class, e -> {
-            CPlayer cPlayer = e.p();
-            Country country = e.inviter();
+            CPlayer cPlayer = e.getPlayer();
+            Country country = e.getInviter();
             cPlayer.sendMessage(Component.text()
                     .append(this.country)
                     .append(Component.text("You have been invited to join ", NamedTextColor.GREEN))

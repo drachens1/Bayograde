@@ -8,13 +8,11 @@ public class NewDay extends Event {
     private final int year;
     private final int month;
     private final Instance world;
-    private boolean cancelled;
 
     public NewDay(int day, int month, int year, Instance world) {
         this.day = day;
         this.year = year;
         this.month = month;
-        this.cancelled = false;
         this.world = world;
     }
 

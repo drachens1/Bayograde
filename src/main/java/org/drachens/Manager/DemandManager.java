@@ -20,4 +20,7 @@ public class DemandManager {
     public void removeActive(Player player) {
         active.remove(player.getUuid());
     }
+    public Demand getDemand(Player player){
+        return active.get(player.getUuid());
+    }
 }

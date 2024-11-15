@@ -15,6 +15,6 @@ public class DemandInventory extends HotbarInventory {
 
     @Override
     protected void addPlayer(Player player) {
-        demandManager.addActive(player);
+
     }
 }

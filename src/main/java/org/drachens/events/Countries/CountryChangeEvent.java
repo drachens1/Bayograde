@@ -23,7 +23,7 @@ public class CountryChangeEvent extends Event {
         return left;
     }
 
-    public CPlayer getP() {
+    public CPlayer getPlayer() {
         return p;
     }
 }

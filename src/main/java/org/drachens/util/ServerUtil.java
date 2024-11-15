@@ -173,8 +173,8 @@ public class ServerUtil {
 
         });
 
-        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.player()).add(e.rank()));
-        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.player()).remove(e.rank()));
+        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer()).add(e.getRank()));
+        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.getPlayer()).remove(e.getRank()));
 
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             final Player p = e.getPlayer();
@@ -278,8 +278,7 @@ public class ServerUtil {
 
 
         globEHandler.addListener(CountryJoinEvent.class, e -> e.getP().setCountry(e.getJoined()));
-//        globEHandler.addListener(CountryLeaveEvent.class, e -> addPlayerToCountryMap(e.getP(), null)); unnecessary
-        globEHandler.addListener(CountryChangeEvent.class, e -> e.p().setCountry(e.joined()));
+        globEHandler.addListener(CountryChangeEvent.class, e -> e.getPlayer().setCountry(e.getJoined()));
 
         BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
         globEHandler.addListener(NewDay.class, e -> {
