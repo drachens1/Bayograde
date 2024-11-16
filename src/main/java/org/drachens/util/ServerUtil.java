@@ -45,6 +45,7 @@ import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.SpawnCMD;
+import org.drachens.cmd.StoreCMD;
 import org.drachens.cmd.TeleportCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
@@ -390,6 +391,7 @@ public class ServerUtil {
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
 
+
         //Register cmds
         commandManager.register(new HelpCMD());
         commandManager.register(new operator());
@@ -415,6 +417,7 @@ public class ServerUtil {
         commandManager.register(new SummonCMD());
         commandManager.register(new ItemDisplayCMD());
         commandManager.register(new PlanCMD());
+        commandManager.register(new StoreCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

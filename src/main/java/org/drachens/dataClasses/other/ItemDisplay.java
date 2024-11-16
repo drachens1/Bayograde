@@ -13,7 +13,7 @@ import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import net.minestom.server.utils.PacketUtils;
 import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 
 import java.util.HashMap;
 import java.util.List;

@@ -2,7 +2,7 @@ package org.drachens.Manager.per_instance;
 
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package org.drachens.InventorySystem;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class GUIManager {
     private final Map<Inventory, InventoryHandler> activeInventories = new HashMap<>();
 
-    public void openGUI(InventoryGUI gui, Player player) {
+    public void openGUI(InventoryGUI gui, CPlayer player) {
         this.registerHandledInventory(gui.getInventory(), gui);
         player.openInventory(gui.getInventory());
     }

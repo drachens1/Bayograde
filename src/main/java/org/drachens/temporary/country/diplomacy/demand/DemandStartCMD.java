@@ -1,0 +1,73 @@
+package org.drachens.temporary.country.diplomacy.demand;
+
+import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentType;
+import org.drachens.Manager.DemandManager;
+import org.drachens.Manager.InventoryManager;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Diplomacy.demand.Demand;
+import org.drachens.temporary.demand.WW2Demands;
+
+import static org.drachens.util.CommandsUtil.getCountryNames;
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.KyoriUtil.getPrefixes;
+
+public class DemandStartCMD extends Command {
+    private final DemandManager demandManager = ContinentalManagers.demandManager;
+    public DemandStartCMD() {
+        super("start");
+        setCondition((sender, s) -> valid(sender));
+
+        DemandManager demandManager = ContinentalManagers.demandManager;
+
+        var countries = ArgumentType.String("Countries");
+
+        countries.setSuggestionCallback((sender, context, suggestion) -> {
+            if (!isLeaderOfCountry(sender)) return;
+            CPlayer p = (CPlayer) sender ;
+            if (demandManager.isPlayerActive(p)){
+                p.refreshCommands();
+                return;
+            }
+            getSuggestionBasedOnInput(suggestion, context.getInput(), 4, getCountryNames(p.getInstance()));
+        });
+
+        Component countryPrefix = getPrefixes("country");
+        if (countryPrefix == null) return;
+        Component doesntExist = Component.text()
+                .append(countryPrefix)
+                .append(Component.text("This country does not exist", NamedTextColor.RED))
+                .build();
+        InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
+
+        addSyntax((sender, context) -> {
+            if (!valid(sender)) return;
+            CPlayer p = (CPlayer) sender;
+            Country from = p.getCountry();
+            Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
+            if (to == null) {
+                p.sendMessage(doesntExist);
+            }
+            Demand demand = new WW2Demands(from, to,p);
+            demandManager.addActive(p, demand);
+            inventoryManager.assignInventory(p,"demand");
+        }, countries);
+    }
+
+    private boolean isLeaderOfCountry(CommandSender sender) {
+        if (sender instanceof CPlayer p) {
+            Country country = p.getCountry();
+            if (country == null) return false;
+            return country.isPlayerLeader(p);
+        }
+        return false;
+    }
+    private boolean valid(CommandSender sender){
+        return isLeaderOfCountry(sender) && !demandManager.isPlayerActive((CPlayer)sender);
+    }
+}

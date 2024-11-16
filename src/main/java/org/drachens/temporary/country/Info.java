@@ -11,7 +11,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class Info extends Command {
     public Info() {
-        super("members");
+        super("info");
         var countries = ArgumentType.String("Countries");
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {

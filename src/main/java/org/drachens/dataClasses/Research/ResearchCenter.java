@@ -9,7 +9,7 @@ import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
 

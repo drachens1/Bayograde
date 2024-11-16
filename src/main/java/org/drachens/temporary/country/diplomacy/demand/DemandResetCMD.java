@@ -4,6 +4,7 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -14,12 +15,26 @@ public class DemandResetCMD extends Command {
     public DemandResetCMD() {
         super("reset");
         setCondition((sender,s)->hasDemand(sender));
-        var types = ArgumentType.String("types")
+        var types1 = ArgumentType.String("types1")
                 .setSuggestionCallback((sender,context,suggestion)->{
                     if (!hasDemand(sender))return;
+                    suggestion.addEntry(new SuggestionEntry("demanded"));
+                    suggestion.addEntry(new SuggestionEntry("offer"));
                 });
 
-        addSyntax((sender,context)->{},types);
+        var types2 = ArgumentType.String("types2")
+                .setSuggestionCallback((sender,context,suggestion)->{
+                    if (!hasDemand(sender))return;
+                    String start = context.get(types1);
+                    if (start.equalsIgnoreCase("demanded"))
+                    suggestion.addEntry(new SuggestionEntry("annexation"));
+                    suggestion.addEntry(new SuggestionEntry("provinces"));
+                    suggestion.addEntry(new SuggestionEntry("puppets"));
+                    suggestion.addEntry(new SuggestionEntry("payments"));
+                });
+
+        addSyntax((sender,context)->{},types1);
+        addSyntax((sender,context)->{},types1,types2);
     }
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {

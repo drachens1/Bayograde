@@ -14,7 +14,7 @@ import org.drachens.dataClasses.Armys.TrainedTroop;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Armys.TroopType;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.War;
 
 import java.util.HashMap;

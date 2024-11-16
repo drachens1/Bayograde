@@ -6,7 +6,7 @@ import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 
 import java.time.temporal.ChronoUnit;

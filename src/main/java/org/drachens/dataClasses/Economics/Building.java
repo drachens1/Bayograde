@@ -2,7 +2,7 @@ package org.drachens.dataClasses.Economics;
 
 import net.minestom.server.entity.Player;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;

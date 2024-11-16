@@ -2,7 +2,7 @@ package org.drachens.temporary;
 
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 
 public class TroopPathing implements AStarPathfinderVoids {
     @Override

@@ -1,6 +1,6 @@
 package org.drachens.InventorySystem;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -29,7 +29,7 @@ public abstract class InventoryGUI implements InventoryHandler {
         this.buttonMap.put(slot, button);
     }
 
-    public void decorate(@NotNull Player player) {
+    public void decorate(@NotNull CPlayer player) {
         this.buttonMap.forEach((slot, button) -> {
             ItemStack icon = button.getIconCreator().apply(player);
             this.inventory.setItemStack(slot, icon);
@@ -49,7 +49,7 @@ public abstract class InventoryGUI implements InventoryHandler {
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        this.decorate(event.getPlayer());
+        this.decorate((CPlayer) event.getPlayer());
     }
 
     @Override

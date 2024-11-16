@@ -22,6 +22,13 @@ public class ItemStackUtil {
                 .build();
     }
 
+    public static ItemStack itemBuilder(Material material, Component name, Component... description) {
+        return ItemStack.of(material).builder()
+                .customName(name)
+                .lore(description)
+                .build();
+    }
+
     public static ItemStack itemBuilder(Material material, Component name, int modelData) {
         return ItemStack.builder(material)
                 .customModelData(modelData)

@@ -43,10 +43,6 @@ public class Util {
         return sb.toString();
     }
 
-    public static void broadcast(Component message) {
-        MinecraftServer.getInstanceManager().getInstances().forEach(instance -> instance.sendMessage(message));
-    }
-
     public static Component colored(String text, Constants.Colors color) {
         return Component.text(text).color(color.color);
     }

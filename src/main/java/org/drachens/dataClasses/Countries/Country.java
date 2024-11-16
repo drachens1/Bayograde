@@ -13,8 +13,10 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
+import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
+import org.drachens.dataClasses.Diplomacy.demand.Demand;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
@@ -22,7 +24,7 @@ import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.*;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.dataClasses.territories.Region;
@@ -90,6 +92,8 @@ public class Country implements Cloneable {
     private final List<Troop> troops = new ArrayList<>();
     private final List<Player> playerInvites = new ArrayList<>();
     private final List<String> factionInvites = new ArrayList<>();
+    private final HashMap<Country, Demand> demandHashMap = new HashMap<>();
+    private final List<String> demandCountryNames = new ArrayList<>();
 
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.occupies = new ArrayList<>();
@@ -263,6 +267,7 @@ public class Country implements Cloneable {
             setPlayerLeader(p);
     }
 
+    private final DemandManager demandManager = ContinentalManagers.demandManager;
     public void removePlayer(Player p, boolean left) {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
         this.players.remove(p);
@@ -274,6 +279,7 @@ public class Country implements Cloneable {
             } else
                 setPlayerLeader(players.getFirst());
         }
+        demandManager.removeActive(p);
     }
 
     public void changeCountry(CPlayer p) {
@@ -588,7 +594,7 @@ public class Country implements Cloneable {
                 .build();
 
         this.nameComponent = Component.text()
-                .append(Component.text(name, nameComponent.color()))
+                .append(Component.text(name, NamedTextColor.GOLD, TextDecoration.BOLD))
                 .clickEvent(ClickEvent.runCommand("/country info " + getName()))
                 .hoverEvent(description)
                 .build();
@@ -720,6 +726,14 @@ public class Country implements Cloneable {
         return militaryFactionType != null && militaryFactionType.getMembers().contains(country);
     }
 
+    public boolean isEconomicAlly(Country country) {
+        return economyFactionType != null && economyFactionType.getMembers().contains(country);
+    }
+
+    public boolean isAlly(Country country){
+        return isMilitaryAlly(country)||isEconomicAlly(country);
+    }
+
     public boolean isInAFaction() {
         return isInAMilitaryFaction() || isInAnEconomicFaction();
     }
@@ -848,5 +862,22 @@ public class Country implements Cloneable {
 
     public boolean hasInvited(Player player) {
         return playerInvites.contains(player);
+    }
+
+    public void sendDemand(Demand demand){
+        demandHashMap.put(demand.getFromCountry(),demand);
+        demandCountryNames.add(demand.getFromCountry().name);
+    }
+
+    public boolean hasAnyDemands(){
+        return !demandHashMap.isEmpty();
+    }
+
+    public boolean hasDemand(Country country){
+        return demandHashMap.containsKey(country);
+    }
+
+    public List<String> getDemandCountryNames(){
+        return demandCountryNames;
     }
 }

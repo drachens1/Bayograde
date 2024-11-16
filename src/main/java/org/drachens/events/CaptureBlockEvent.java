@@ -1,7 +1,7 @@
 package org.drachens.events;
 
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.Event;
 
 public class CaptureBlockEvent extends Event {

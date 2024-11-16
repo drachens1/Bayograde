@@ -4,7 +4,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 
 public abstract class BuildTypes {
     private final int[] lvlsModelData;

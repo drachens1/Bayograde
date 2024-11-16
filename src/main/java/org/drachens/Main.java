@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
@@ -27,6 +28,8 @@ import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.NoneCustomisableInventory;
 import org.drachens.interfaces.VotingOption;
 import org.drachens.interfaces.items.HotbarItemButton;
+import org.drachens.store.StoreCategory;
+import org.drachens.store.hat.CoolHat;
 import org.drachens.temporary.*;
 import org.drachens.temporary.demand.DemandInventory;
 
@@ -35,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;
@@ -65,6 +69,12 @@ public class Main {
         ContinentalManagers.defaultsStorer.currencies.register(production);
         HotbarItemButton[] items = {new BuildItem(), new BuildItem2(), new TroopMover()};
         ContinentalManagers.inventoryManager.registerInventory("default", new NoneCustomisableInventory(items));
+
+        ContinentalManagers.defaultsStorer.storeCategories.register(new StoreCategory("Something",
+                compBuild("example",NamedTextColor.AQUA),
+                itemBuilder(Material.LAPIS_BLOCK,compBuild("sm",NamedTextColor.AQUA)),
+                new CoolHat("1",1,Material.IRON_SWORD,compBuild("item",NamedTextColor.AQUA))
+                ));
 
         setupAll(new ArrayList<>(), scoreboardManager);
     }

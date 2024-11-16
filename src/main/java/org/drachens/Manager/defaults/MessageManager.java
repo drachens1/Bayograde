@@ -12,7 +12,7 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.events.Countries.CountryCoopPlayerEvent;
 import org.drachens.events.Countries.CountrySetLeaderEvent;
 import org.drachens.events.Factions.*;
@@ -20,13 +20,8 @@ import org.drachens.events.StartWarEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
 
-import java.util.Objects;
-
 import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.broadcast;
-import static org.drachens.util.Messages.globalBroadcast;
-import static org.drachens.util.ServerUtil.cooldown;
-import static org.drachens.util.ServerUtil.playerHasCooldown;
 
 public class MessageManager {
     private final Component system = getPrefixes("system");
@@ -72,16 +67,8 @@ public class MessageManager {
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
-            if (p == null) globalBroadcast("NULLl");
-            if (!e.getPlayer().isSneaking() || playerHasCooldown(e.getPlayer()) || !Objects.requireNonNull(p).isCapturable())
-                return;
-            cooldown(e.getPlayer());
-            if (p.getOccupier() == null) {
-                e.getPlayer().sendMessage(neutralComponent);
-                return;
-            }
-            Country c = p.getOccupier();
-            e.getPlayer().sendMessage(c.getDescription());
+            if (p == null) return;
+            e.getPlayer().sendMessage(p.getDescription((CPlayer) e.getPlayer()));
         });
 
         globEHandler.addListener(ResetEvent.class, e -> broadcast(gameOver, e.getInstance()));

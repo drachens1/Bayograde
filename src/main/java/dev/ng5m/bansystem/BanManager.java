@@ -70,12 +70,6 @@ public class BanManager {
         write(root);
     }
 
-    public void banPlayer(UUID player, long duration, Component broadcast) {
-        banPlayer(player, duration);
-
-        Util.broadcast(broadcast);
-    }
-
     public JsonObject removeEntry(UUID uuid) {
         var root = getRoot();
 

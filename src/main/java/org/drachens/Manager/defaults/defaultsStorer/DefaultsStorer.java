@@ -8,5 +8,7 @@ public class DefaultsStorer {
 
     public final Voting voting = new Voting();
     public final Modifiers modifier = new Modifiers();
+
+    public final StoreCategories storeCategories = new StoreCategories();
 }
 

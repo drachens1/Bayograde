@@ -13,7 +13,7 @@ import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 
 import java.util.HashMap;

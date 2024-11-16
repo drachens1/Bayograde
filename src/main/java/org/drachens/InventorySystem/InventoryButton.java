@@ -1,6 +1,6 @@
 package org.drachens.InventorySystem;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.item.ItemStack;
 
@@ -8,10 +8,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class InventoryButton {
-    private Function<Player, ItemStack> iconCreator;
+    private Function<CPlayer, ItemStack> iconCreator;
     private Consumer<InventoryPreClickEvent> eventConsumer;
 
-    public InventoryButton creator(Function<Player, ItemStack> iconCreator) {
+    public InventoryButton creator(Function<CPlayer, ItemStack> iconCreator) {
         this.iconCreator = iconCreator;
         return this;
     }
@@ -25,7 +25,7 @@ public class InventoryButton {
         return this.eventConsumer;
     }
 
-    public Function<Player, ItemStack> getIconCreator() {
+    public Function<CPlayer, ItemStack> getIconCreator() {
         return this.iconCreator;
     }
 }

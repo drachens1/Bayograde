@@ -1,7 +1,5 @@
 package dev.ng5m.greet;
 
-import dev.ng5m.Util;
-import dev.ng5m.cosmetic.gui.PerPlayerCosmeticsGUI;
 import dev.ng5m.events.EventHandler;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.events.EventHandlerProviderManager;
@@ -11,9 +9,10 @@ import dev.ng5m.util.Settings;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
-import org.drachens.Manager.defaults.ContinentalManagers;
 
 import java.util.function.Function;
+
+import static org.drachens.util.Messages.broadcast;
 
 public class GreetEvents extends Configurable<GreetEvents.GreetSettings> implements EventHandlerProvider,
         Hookable<GreetEvents, GreetEvents.GreetSettings> {
@@ -32,17 +31,13 @@ public class GreetEvents extends Configurable<GreetEvents.GreetSettings> impleme
     public void onPlayerJoin(PlayerSpawnEvent event) {
         if (!event.isFirstSpawn()) return;
 
-        Util.broadcast(settings.joinMessage.apply(event));
-
-        var a = new PerPlayerCosmeticsGUI();
-        a.decorate(event.getPlayer());
-        ContinentalManagers.guiManager.openGUI(a, event.getPlayer());
+        broadcast(settings.joinMessage.apply(event),event.getPlayer().getInstance());
 
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent event) {
-        Util.broadcast(settings.leaveMessage.apply(event));
+        broadcast(settings.leaveMessage.apply(event),event.getInstance());
     }
 
     @Override

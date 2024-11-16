@@ -17,7 +17,7 @@ import org.drachens.dataClasses.Countries.*;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.dataClasses.Provinces.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.territories.Continent;
 import org.drachens.dataClasses.territories.Region;
 import org.drachens.interfaces.MapGen;
@@ -146,13 +146,13 @@ public class MapGeneratorManager extends MapGen {
         String[] countryName = {
                 "Afghanistan", "Akrotiri", "Albania", "Algeria", "AmericanSamoa", "Andorra", "Angola", "Anguilla", "Antarctica",
                 "Antiguaand_Barbuda", "Argentina", "Armenia", "Aruba", "Ashmoreand_Cartier_Islands", "Australia", "Austria", "Azerbaijan",
-                "Bahamas,The", "Bahrain", "Bangladesh", "Barbados", "Bassasda_India", "Belarus", "Belgium", "Belize", "Benin", "Bermuda",
+                "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Bassasda_India", "Belarus", "Belgium", "Belize", "Benin", "Bermuda",
                 "Bhutan", "Bolivia", "Bosniaand_Herzegovina", "Botswana", "BouvetIsland", "Brazil", "BritishIndian_Ocean_Territory",
                 "BritishVirgin_Islands", "Brunei", "Bulgaria", "BurkinaFaso", "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "CapeVerde",
                 "CaymanIslands", "CentralAfrican_Republic", "Chad", "Chile", "China", "ChristmasIsland", "ClippertonIsland", "Cocos(Keeling)_Islands",
                 "Colombia", "Comoros", "Democratic_Republic_of_the_Congo", "Republic_of_the_Congo", "CookIslands", "CoralSea_Islands", "CostaRica",
                 "CotedIvoire", "Croatia", "Cuba", "Cyprus", "CzechRepublic", "Denmark", "Dhekelia", "Djibouti", "Dominica", "DominicanRepublic", "Ecuador",
-                "Egypt", "ElSalvador", "EquatorialGuinea", "Eritrea", "Estonia", "Ethiopia", "EuropaIsland", "FalklandIslands_(Islas_Malvinas)", "FaroeIslands",
+                "Egypt", "ElSalvador", "EquatorialGuinea", "Eritrea", "Estonia", "Ethiopia", "EuropaIsland", "FalklandIslands", "FaroeIslands",
                 "Fiji", "Finland", "France", "FrenchGuiana", "FrenchPolynesia", "FrenchSouthern_and_Antarctic_Lands", "Gabon", "Gambia,The", "GazaStrip",
                 "Georgia", "Germany", "Ghana", "Gibraltar", "GloriosoIslands", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey",
                 "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "HeardIsland_and_McDonald_Islands", "HolySee_(Vatican_City)", "Honduras", "HongKong", "Hungary",
@@ -170,7 +170,7 @@ public class MapGeneratorManager extends MapGen {
                 "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidadand_Tobago", "TromelinIsland", "Tunisia", "Turkey", "Turkmenistan",
                 "Turksand_Caicos_Islands", "Tuvalu", "Uganda", "Ukraine", "UnitedArab_Emirates", "UnitedKingdom", "UnitedStates", "Uruguay", "Uzbekistan", "Vanuatu",
                 "Venezuela", "Vietnam", "VirginIslands", "WakeIsland", "Wallisand_Futuna", "WestBank", "WesternSahara", "Yemen", "Zambia", "Zimbabwe",
-                "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire", "republic_of_the_belgorod_people",
+                "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire", "Republic_of_the_belgorod_people",
                 "USSR", "Elementia"
         };
         Collections.addAll(BLOCKS, block);

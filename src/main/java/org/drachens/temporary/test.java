@@ -1,5 +1,6 @@
 package org.drachens.temporary;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
@@ -18,7 +19,7 @@ public class test extends InventoryGUI {
     }
 
     @Override
-    public void decorate(@NotNull Player player) {
+    public void decorate(@NotNull CPlayer player) {
         this.addButton(0, button(itemBuilder(Material.CYAN_DYE)));
         super.decorate(player);
     }
