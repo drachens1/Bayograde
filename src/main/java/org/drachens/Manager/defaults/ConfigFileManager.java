@@ -2,6 +2,7 @@ package org.drachens.Manager.defaults;
 
 import net.minestom.server.entity.Player;
 import org.drachens.cmd.Dev.whitelist.Whitelist;
+import org.drachens.fileManagement.PlayerDataFile;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -12,13 +13,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.drachens.util.Messages.getTime;
 import static org.drachens.util.ServerUtil.start;
 
 public class ConfigFileManager {
-    private final HashMap<String, ConfigurationNode> playerDataNodes = new HashMap<>(); // UUID as a string for the name
-    private final HashMap<String, YamlConfigurationLoader> playerDataLoaders = new HashMap<>(); // contains all the players perms as UUID's for the name of the files
-    private final HashMap<String, File> playerDataFiles = new HashMap<>();
     private ConfigurationNode whitelistListNode;
     private YamlConfigurationLoader whitelistLoader;    // contains all the whitelisted peoples as UUID's
     private ConfigurationNode permissionsNode;
@@ -28,32 +25,15 @@ public class ConfigFileManager {
     private File msg;
     private File cmd;
     private Whitelist whitelist;
-    private File serverProperties;
     private ConfigurationNode propertiesConfigurationNode;
-    private YamlConfigurationLoader propertiesLoader;
 
     public void startup() {
         File playerData = new File("playerData");//Creates the parent directory
         playerData.mkdir();
 
-        for (File f : Objects.requireNonNull(playerData.listFiles())) {
-            playerDataFiles.put(f.getName(), f);
-            playerDataLoaders.put(f.getName(), YamlConfigurationLoader.builder()
-                    .file(f)
-                    .build());
-        }
-
-        for (Map.Entry<String, YamlConfigurationLoader> e : playerDataLoaders.entrySet()) {
-            try {
-                playerDataNodes.put(playerDataFiles.get(e.getKey()).getName(), e.getValue().load());
-            } catch (IOException err) {
-                System.err.println("Unable to load operator loader " + err.getMessage());
-            }
-        }
-
-        serverProperties = new File("serverProperties.yml");
+        File serverProperties = new File("serverProperties.yml");
         fileExists(serverProperties);
-        propertiesLoader = YamlConfigurationLoader.builder().file(serverProperties).build();
+        YamlConfigurationLoader propertiesLoader = YamlConfigurationLoader.builder().file(serverProperties).build();
         try {
             propertiesConfigurationNode = propertiesLoader.load();
         } catch (ConfigurateException e) {
@@ -135,39 +115,8 @@ public class ConfigFileManager {
         whitelist = new Whitelist(new ArrayList<>(), false);
     }
 
-    public ConfigurationNode getPlayersData(UUID player) {//The string should be a UUID
-        String playerName = player.toString() + ".yml";
-        if (!playerDataNodes.containsKey(playerName)) {
-            return createPlayersData(playerName);
-        }
-        return playerDataNodes.get(playerName);
-    }
-
-    public YamlConfigurationLoader getPlayerDataLoader(UUID player) {
-        String playerName = player.toString() + ".yml";
-        if (!playerDataLoaders.containsKey(playerName)) {
-            createPlayersData(playerName);
-            return playerDataLoaders.get(playerName);
-        }
-        return playerDataLoaders.get(playerName);
-    }
-
-    public ConfigurationNode createPlayersData(String player) {
-        File playerData = new File("playerData/" + player);
-        fileExists(playerData);
-        System.out.println("creating player data file! " + player + " Name: " + playerData.getName());
-        YamlConfigurationLoader temp = YamlConfigurationLoader.builder()
-                .file(playerData)
-                .build();
-        playerDataLoaders.put(playerData.getName(), temp);
-        playerDataFiles.put(playerData.getName(), playerData);
-        try {
-            ConfigurationNode c = temp.load();
-            createDefaultsPlayerData(c, temp, playerData.getName(), player);
-            return c;
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
+    public void createPlayersData(Player player) {
+        new PlayerDataFile(player);
     }
 
     private void fileExists(File f) {
@@ -181,49 +130,12 @@ public class ConfigFileManager {
         }
     }
 
-    public void playerSave(UUID player) {
-        String playerName = player.toString();
-        if (!playerDataNodes.containsKey(playerName)) {
-            return;
-        }
-        try {
-            playerDataLoaders.get(playerName).save(playerDataNodes.get(playerName));
-        } catch (ConfigurateException e) {
-            System.err.println("Unable to save player data of player " + player + " error msg : " + e.getMessage());
-        }
-    }
-
     public String getLogMsg() {
         return logMsg;
     }
 
     public String getLogCmds() {
         return logCmds;
-    }
-
-    public void loadPermissions(Player p) {
-        UUID playerID = p.getUuid();
-        ConfigurationNode wanted = getPlayersData(playerID);
-        ConfigurationNode permissions = wanted.node("Permissions");
-        try {
-            List<String> perms = permissions.getList(String.class);
-            if (perms == null) {
-                perms = new ArrayList<>();
-            }
-
-            if (perms.contains("operator")) {
-                ContinentalManagers.permissions.playerOp(p);
-            }
-        } catch (SerializationException e) {
-            System.out.println("Player operator failed " + p.getUsername() + " " + e.getMessage());
-        }
-    }
-
-    public void shutdown() {
-        Scanner cmds = new Scanner(logCmds);
-        Scanner log = new Scanner(logMsg);
-        if (!cmds.hasNextLine()) cmd.delete();
-        if (!log.hasNextLine()) msg.delete();
     }
 
     public Whitelist getWhitelist() {
@@ -293,33 +205,9 @@ public class ConfigFileManager {
         }
     }
 
-    private void createDefaultsPlayerData(ConfigurationNode playerData, YamlConfigurationLoader playerDataLoader, String username, String uuid) {
-        try {
-            String time = getTime();
-            if (playerData.node("Player_Info", "Identifiers", "UUID").isNull()) {
-                playerData.node("Player_Info", "Identifiers", "UUID").set(username);
-            }
-            if (playerData.node("Player_Info", "Identifiers", "Username").isNull()) {
-                playerData.node("Player_Info", "Identifiers", "Username").set(uuid);
-            }
-            if (playerData.node("Player_Info", "Activity", "LastOnline").isNull()) {
-                playerData.node("Player_Info", "Activity", "LastOnline").set(time);
-            }
-            if (playerData.node("Player_Info", "Activity", "FirstJoined").isNull()) {
-                playerData.node("Player_Info", "Activity", "FirstJoined").set(time);
-            }
-            if (playerData.node("Permissions").isNull()) {
-                playerData.node("Permissions").set("");
-            }
-            if (playerData.node("Cosmetics").isNull()) {
-                playerData.node("Cosmetics").set("");
-            }
-            if (playerData.node("Achievements").isNull()) {
-                playerData.node("Achievements").set("");
-            }
-            playerDataLoader.save(playerData);
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
+    private void addDefault(ConfigurationNode c, Object data, Object... path) throws SerializationException {
+        if (c.node(path).isNull()){
+            c.node(path).set(data);
         }
     }
 

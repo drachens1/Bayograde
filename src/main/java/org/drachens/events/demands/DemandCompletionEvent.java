@@ -1,7 +1,7 @@
 package org.drachens.events.demands;
 
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.demand.Demand;
+import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.interfaces.Event;
 
 public class DemandCompletionEvent extends Event {

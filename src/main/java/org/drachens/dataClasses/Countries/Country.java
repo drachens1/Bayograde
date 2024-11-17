@@ -16,7 +16,7 @@ import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Diplomacy.demand.Demand;
+import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
@@ -111,7 +111,7 @@ public class Country implements Cloneable {
                 Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
         city.addAll(Arrays.stream(tempCities).toList());
         this.instance = instance;
-        aStarPathfinder = new AStarPathfinder(this, ContinentalManagers.world(instance).provinceManager());
+        aStarPathfinder = new AStarPathfinder(ContinentalManagers.world(instance).provinceManager());
         this.mapGen = ContinentalManagers.world(instance).votingManager().getWinner().getMapGenerator();
     }
 
@@ -879,5 +879,8 @@ public class Country implements Cloneable {
 
     public List<String> getDemandCountryNames(){
         return demandCountryNames;
+    }
+    public Player getPlayerLeader(){
+        return playerLeader;
     }
 }

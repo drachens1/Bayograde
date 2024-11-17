@@ -145,7 +145,7 @@ public class KyoriUtil {
             case "coop" -> coopPrefix;
             case "research" -> researchPrefix;
             case "agenda" -> nationalAgendasPrefix;
-            default -> null;
+            default -> Component.text().append(Component.text("not found")).build();
         };
     }
 

@@ -27,6 +27,7 @@ public class DemandCompleteCMD extends Command {
             if (!hasDemand(sender))return;
             CPlayer p = (CPlayer) sender;
             demandManager.getDemand(p).complete();
+            demandManager.removeActive(p);
             p.sendMessage(exited);
         });
     }

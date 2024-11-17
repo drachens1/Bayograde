@@ -1,7 +1,7 @@
 package org.drachens.Manager;
 
 import net.minestom.server.entity.Player;
-import org.drachens.dataClasses.Diplomacy.demand.Demand;
+import org.drachens.dataClasses.Diplomacy.Demand;
 
 import java.util.HashMap;
 import java.util.UUID;

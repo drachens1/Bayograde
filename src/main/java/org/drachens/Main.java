@@ -29,7 +29,7 @@ import org.drachens.dataClasses.NoneCustomisableInventory;
 import org.drachens.interfaces.VotingOption;
 import org.drachens.interfaces.items.HotbarItemButton;
 import org.drachens.store.StoreCategory;
-import org.drachens.store.hat.CoolHat;
+import org.drachens.store.items.Hat;
 import org.drachens.temporary.*;
 import org.drachens.temporary.demand.DemandInventory;
 
@@ -40,6 +40,7 @@ import java.util.Random;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
+import static org.drachens.util.KyoriUtil.setupPrefixes;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;
 
@@ -49,6 +50,7 @@ public class Main {
     }
 
     public static void completeStartup() {
+        setupPrefixes();
         initSrv();
 
         CurrencyTypes production = new CurrencyTypes(compBuild("production", TextColor.color(255, 165, 0)), compBuild("\uD83D\uDC35", TextColor.color(255, 165, 0)), "production");
@@ -70,10 +72,10 @@ public class Main {
         HotbarItemButton[] items = {new BuildItem(), new BuildItem2(), new TroopMover()};
         ContinentalManagers.inventoryManager.registerInventory("default", new NoneCustomisableInventory(items));
 
-        ContinentalManagers.defaultsStorer.storeCategories.register(new StoreCategory("Something",
+        ContinentalManagers.cosmeticsManager.register(new StoreCategory("Something",
                 compBuild("example",NamedTextColor.AQUA),
                 itemBuilder(Material.LAPIS_BLOCK,compBuild("sm",NamedTextColor.AQUA)),
-                new CoolHat("1",1,Material.IRON_SWORD,compBuild("item",NamedTextColor.AQUA))
+                new Hat("1",1,Material.PURPLE_DYE,compBuild("item",NamedTextColor.AQUA),1)
                 ));
 
         setupAll(new ArrayList<>(), scoreboardManager);
@@ -335,7 +337,7 @@ public class Main {
             "Cohen", "McDaniel", "Moran", "Parks", "Steele", "Vaughn", "Becker", "Holt", "DeLeon", "Barker",
             "Terry", "Hale", "Leon", "Hail", "Baldwin", "Jordan", "Cameron", "Bishop", "Summers", "Phelps",
             "McCarthy", "Salinas", "Ramsey", "Gentry", "Paul", "Parsons", "Ferrell", "Hodge", "Pace", "Sheppard",
-            "Cherry", "Hayden", "Shaffer", "Mann", "Riddle", "Alexander", "Buck", "Clemons", "Blackwell", "McNeill",
+            "Cherry", "Hayden", "Shaffer", "Mann", "Riddle", "Aletander", "Buck", "Clemons", "Blackwell", "McNeill",
     };
 
     public static void initHooks() {
@@ -352,7 +354,7 @@ public class Main {
                         event ->
                                 Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
                                         Util.colored("-", Constants.Colors.RED).append(
-                                                Util.colored("]", Constants.Colors.LIGHT_GRAY)
+                                                Util.colored("]"+ event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
                                         )
                                 ))
         );

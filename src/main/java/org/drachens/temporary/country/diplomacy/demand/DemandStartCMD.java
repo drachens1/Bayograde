@@ -10,8 +10,10 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.demand.Demand;
+import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.temporary.demand.WW2Demands;
+
+import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
@@ -34,7 +36,9 @@ public class DemandStartCMD extends Command {
                 p.refreshCommands();
                 return;
             }
-            getSuggestionBasedOnInput(suggestion, context.getInput(), 4, getCountryNames(p.getInstance()));
+            List<String> country = getCountryNames(p.getInstance());
+            country.remove(p.getCountry().getName());
+            getSuggestionBasedOnInput(suggestion, context.getInput(), 4, country);
         });
 
         Component countryPrefix = getPrefixes("country");
@@ -52,8 +56,14 @@ public class DemandStartCMD extends Command {
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (to == null) {
                 p.sendMessage(doesntExist);
+                return;
             }
             Demand demand = new WW2Demands(from, to,p);
+            p.sendMessage(Component.text()
+                            .append(countryPrefix)
+                            .append(Component.text("You have started creating a demand against "))
+                            .append(to.getNameComponent())
+                    .build());
             demandManager.addActive(p, demand);
             inventoryManager.assignInventory(p,"demand");
         }, countries);

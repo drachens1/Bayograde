@@ -32,6 +32,7 @@ import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
+import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.*;
 import org.drachens.cmd.Dev.Kill.killCMD;
 import org.drachens.cmd.Dev.Permissions.PermissionsCMD;
@@ -44,9 +45,6 @@ import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
-import org.drachens.cmd.SpawnCMD;
-import org.drachens.cmd.StoreCMD;
-import org.drachens.cmd.TeleportCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.plan.PlanCMD;
@@ -73,6 +71,7 @@ import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.faction.FactionCMD;
 import org.spongepowered.configurate.ConfigurationNode;
 
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
@@ -116,7 +115,6 @@ public class ServerUtil {
     }
 
     public static GlobalEventHandler getEventHandler() {
-        System.out.println("Getting event handler");
         return globalEventHandler;
     }
 
@@ -129,7 +127,6 @@ public class ServerUtil {
 
     public static void setupAll(List<Command> cmd, ScoreboardManager scoreboardManager) {
         setup();
-        setupPrefixes();
 
         //Create the instance(world)
         InstanceManager instMan = MinecraftServer.getInstanceManager();
@@ -147,6 +144,7 @@ public class ServerUtil {
             instance.createInitializeWorldBorderPacket();
             instance.setWeather(Weather.CLEAR);
             instance.setTime(0);
+            instance.setTimeRate(0);
             worldClassesHashMap.put(instance, new WorldClasses(
                             new CountryDataManager(instance, new ArrayList<>()),
                             new ClientEntsToLoad(),
@@ -170,8 +168,6 @@ public class ServerUtil {
             final Player p = e.getPlayer();
             e.setSpawningInstance(instCon);
             p.setRespawnPoint(new Pos(0, 1, 0));
-            ContinentalManagers.configFileManager.loadPermissions(p);
-
         });
 
         globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer()).add(e.getRank()));
@@ -186,7 +182,6 @@ public class ServerUtil {
                 return;
             }
             playerRanks.put(p, new ArrayList<>());
-            ContinentalManagers.configFileManager.getPlayersData(p.getUuid());
         });
 
         Function<Player, Component> displayNameSupplier = Player::getName;
@@ -204,15 +199,15 @@ public class ServerUtil {
             if (ContinentalManagers.yearManager.getYearBar(p.getInstance()) != null) {
                 ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
             } else {
-                System.out.println("year bar was null");
                 ContinentalManagers.yearManager.addBar(p.getInstance());
                 ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
             }
-
+            ContinentalManagers.configFileManager.createPlayersData(p);
             worldClassesHashMap.get(p.getInstance()).clientEntsToLoad().loadPlayer(p);
 
             p.getInstance().enableAutoChunkLoad(false);
             r.addPlayer(p);
+            p.refreshCommands();
         });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
@@ -220,7 +215,8 @@ public class ServerUtil {
             Country country = p.getCountry();
             if (country != null) country.removePlayer(p, true);
             globalBroadcast(p.getUsername() + " has left the game");
-            ContinentalManagers.configFileManager.playerSave(p.getUuid());
+            p.getPlayerDataFile().save();
+            p.addPlayTime(LocalTime.now());
         });
 
         Function<PlayerChatEvent, Component> chatEvent = e -> {
@@ -415,19 +411,15 @@ public class ServerUtil {
         commandManager.register(new debugCMD());
         commandManager.register(new FactionCMD());
         commandManager.register(new SummonCMD());
-        commandManager.register(new ItemDisplayCMD());
         commandManager.register(new PlanCMD());
         commandManager.register(new StoreCMD());
+        commandManager.register(new CosmeticsCMD());
+        commandManager.register(new GoldCMD());
+        commandManager.register(new PlaytimeCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
         }
-
-        var schedular = MinecraftServer.getSchedulerManager();
-        schedular.buildShutdownTask(() -> {
-            System.out.println("Server shutting down");
-            ContinentalManagers.configFileManager.shutdown();
-        });
 
         ContinentalManagers.configFileManager.startup();
         new PermissionsManager();
@@ -463,7 +455,6 @@ public class ServerUtil {
     }
 
     public static void start() {
-        System.out.println("Server starting...");
         startSrv();
     }
 

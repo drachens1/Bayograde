@@ -9,6 +9,7 @@ import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
 import org.drachens.dataClasses.WorldClasses;
+import org.drachens.store.CosmeticsManager;
 
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
@@ -21,6 +22,7 @@ public class ContinentalManagers {
     public static final InventoryManager inventoryManager = new InventoryManager();
     public static final GUIManager guiManager = new GUIManager();
     public static final DemandManager demandManager = new DemandManager();
+    public static final CosmeticsManager cosmeticsManager = new CosmeticsManager();
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

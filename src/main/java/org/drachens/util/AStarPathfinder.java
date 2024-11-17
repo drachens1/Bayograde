@@ -8,11 +8,9 @@ import org.drachens.dataClasses.Province;
 import java.util.*;
 
 public class AStarPathfinder {
-    private final Country country;
     private final ProvinceManager provinceManager;
 
-    public AStarPathfinder(Country country, ProvinceManager provinceManager) {
-        this.country = country;
+    public AStarPathfinder(ProvinceManager provinceManager) {
         this.provinceManager = provinceManager;
     }
 

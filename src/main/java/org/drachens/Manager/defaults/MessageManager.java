@@ -19,6 +19,10 @@ import org.drachens.events.Factions.*;
 import org.drachens.events.StartWarEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
+import org.drachens.events.demands.DemandAcceptedEvent;
+import org.drachens.events.demands.DemandCompletionEvent;
+import org.drachens.events.demands.DemandCounterOfferEvent;
+import org.drachens.events.demands.DemandDeniedEvent;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.broadcast;
@@ -29,25 +33,6 @@ public class MessageManager {
     private final Component factionPref = getPrefixes("faction");
 
     public MessageManager() {
-        if (system == null) {
-            System.err.println("system null!");
-            return;
-        }
-        if (country == null) {
-            System.err.println("Country null");
-            return;
-        }
-        if (factionPref == null) {
-            System.err.println("Faction null");
-            return;
-        }
-
-        Component neutralComponent = Component.text()
-                .append(Component.text("_________/", NamedTextColor.BLUE))
-                .append(Component.text("Neutral", NamedTextColor.GOLD))
-                .append(Component.text("\\_________\n", NamedTextColor.BLUE))
-                .append(Component.text("Leader: \n"))
-                .build();
 
         Component gameOver = Component.text()
                 .append(system)
@@ -190,6 +175,71 @@ public class MessageManager {
                     .append(this.country)
                     .append(Component.text(cPlayer.getUsername()))
                     .append(Component.text(" has been invited to join the faction", NamedTextColor.GREEN))
+                    .build());
+        });
+
+        globEHandler.addListener(DemandCounterOfferEvent.class, e->{
+            Country from = e.getFrom();
+            Country to = e.getTo();
+            to.sendMessage(Component.text()
+                            .append(country)
+                            .append(from.getNameComponent())
+                            .append(Component.text(" has started creating a counter offer",NamedTextColor.GREEN))
+                    .build());
+        });
+
+        globEHandler.addListener(DemandAcceptedEvent.class, e->{
+            Country from = e.getFrom();
+            Country to = e.getTo();
+            Component description = e.getDemand().description();
+            from.sendMessage(Component.text()
+                            .append(country)
+                            .append(to.getNameComponent())
+                            .append(Component.text(" has accepted the demand\n"))
+                            .append(description)
+                    .build());
+            to.sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("Your country has accepted the demand\n"))
+                    .append(description)
+                    .build());
+        });
+
+        globEHandler.addListener(DemandDeniedEvent.class, e->{
+            Country from = e.getFrom();
+            Country to = e.getTo();
+            Component description = e.getDemand().description();
+            from.sendMessage(Component.text()
+                    .append(country)
+                    .append(to.getNameComponent())
+                    .append(Component.text(" has denied the demand\n"))
+                    .append(description)
+                    .build());
+            to.sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("Your country has denied the demand\n"))
+                    .append(description)
+                    .build());
+        });
+
+        globEHandler.addListener(DemandCompletionEvent.class, e->{
+            Country from = e.getFrom();
+            Country to = e.getTo();
+            to.sendMessage(Component.text()
+                            .append(country)
+                            .append(from.getNameComponent())
+                            .append(Component.text(" has sent you a demand\n"))
+                            .append(e.getDemand().description())
+                    .append(Component.text()
+                            .append(Component.text("[Accept]",NamedTextColor.GREEN, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to accept the demands",NamedTextColor.GREEN))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand accept"))
+                            .build())
+                    .append(Component.text()
+                            .append(Component.text(" [Refuse]",NamedTextColor.RED, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.RED))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand refuse"))
+                            .build())
                     .build());
         });
     }

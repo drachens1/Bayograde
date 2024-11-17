@@ -2,14 +2,13 @@ package org.drachens.Manager.defaults;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.permission.Permission;
-import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+
+import static org.drachens.util.YamlUtil.addToList;
 
 public class PermissionsUtil {
     private final List<Permission> operator = new ArrayList<>();
@@ -28,31 +27,13 @@ public class PermissionsUtil {
         operator.add(new Permission("stop"));
         operator.add(new Permission("restart"));
         operator.add(new Permission("summon"));
+        operator.add(new Permission("cheat"));//For gold permission
     }
 
     public void playerOp(Player p) {
-        UUID playerID = p.getUuid();
         System.out.println(p.getUsername() + " was opped");
         operator.forEach(p::addPermission);
-        ConfigurationNode playerData = ContinentalManagers.configFileManager.getPlayersData(playerID);
-        ConfigurationNode permissions = playerData.node("Permissions");
-        try {
-            List<String> perms = permissions.getList(String.class);
-            if (perms == null) {
-                perms = new ArrayList<>();
-            }
-
-            if (!perms.contains("operator")) {
-                perms.add("operator");
-            }
-
-            permissions.setList(String.class, perms);
-            ContinentalManagers.configFileManager.getPlayerDataLoader(playerID).save(playerData);
-        } catch (SerializationException e) {
-            System.out.println("Player operator failed " + p.getUsername() + " " + e.getMessage());
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
+        p.addPermission(new Permission("operator"));
     }
 
     public void addPermissionGroup(String name, List<Permission> permss, boolean editFile) {
@@ -60,76 +41,7 @@ public class PermissionsUtil {
         if (!editFile) return;
         ConfigurationNode permNode = ContinentalManagers.configFileManager.getPermissionsFile();
         ConfigurationNode p = permNode.node("permissions").node(name);
-        for (Permission perm : permss) {
-            try {
-                List<String> perms = p.getList(String.class);
-                if (perms == null) {
-                    perms = new ArrayList<>();
-                }
-
-                if (!perms.contains(perm.getPermissionName())) {
-                    perms.add(perm.getPermissionName());
-                }
-
-                p.setList(String.class, perms);
-            } catch (SerializationException e) {
-                System.err.println("Error adding permission group " + e.getMessage());
-            }
-        }
+        permss.forEach(perm-> addToList(p,perm.getPermissionName()));
         ContinentalManagers.configFileManager.specificSave("permissions");
-    }
-
-    public void playerAddPerm(String name, Player p) {
-        for (Permission perm : groups.get(name)) {
-            p.addPermission(perm);
-        }
-        UUID playerID = p.getUuid();
-        System.out.println(p.getUsername() + " was added to group " + name);
-
-        ConfigurationNode playerData = ContinentalManagers.configFileManager.getPlayersData(playerID);
-        ConfigurationNode permissions = playerData.node("Permissions");
-        try {
-            List<String> perms = permissions.getList(String.class);
-            if (perms == null) {
-                perms = new ArrayList<>();
-            }
-
-            if (!perms.contains(name)) {
-                perms.add(name);
-            }
-
-            permissions.setList(String.class, perms);
-            ContinentalManagers.configFileManager.getPlayerDataLoader(playerID).save(playerData);
-        } catch (SerializationException e) {
-            System.out.println("Player add " + name + " failed " + p.getUsername() + " " + e.getMessage());
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void playerRemovePerm(String name, Player p) {
-        for (Permission perm : groups.get(name)) {
-            p.removePermission(perm);
-        }
-        UUID playerID = p.getUuid();
-        System.out.println(p.getUsername() + " was added to group " + name);
-
-        ConfigurationNode playerData = ContinentalManagers.configFileManager.getPlayersData(playerID);
-        ConfigurationNode permissions = playerData.node("Permissions");
-        try {
-            List<String> perms = permissions.getList(String.class);
-            if (perms == null) {
-                perms = new ArrayList<>();
-            }
-
-            perms.remove(name);
-
-            permissions.setList(String.class, perms);
-            ContinentalManagers.configFileManager.getPlayerDataLoader(playerID).save(playerData);
-        } catch (SerializationException e) {
-            System.out.println("Player removal " + name + " failed " + p.getUsername() + " " + e.getMessage());
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
