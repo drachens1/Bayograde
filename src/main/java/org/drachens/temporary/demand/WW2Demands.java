@@ -1,11 +1,15 @@
 package org.drachens.temporary.demand;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
-import org.drachens.Manager.DemandManager;
+import net.minestom.server.instance.block.Block;
+import net.minestom.server.network.packet.server.play.BlockChangePacket;
+import net.minestom.server.utils.PacketUtils;
+import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
@@ -13,6 +17,7 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Province;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class WW2Demands extends Demand {
@@ -25,6 +30,10 @@ public class WW2Demands extends Demand {
     private List<Country> offeredPuppets = new ArrayList<>();
     private List<Province> offeredProvinces = new ArrayList<>();
     private List<Country> offeredAnnexation = new ArrayList<>();
+
+    private final HashMap<Province, Block> shownBlocks = new HashMap<>();
+
+    private final List<Player> activePlayers = new ArrayList<>();
 
     public List<Country> getDemandedAnnexation() {
         return new ArrayList<>(demandedAnnexation);
@@ -58,13 +67,11 @@ public class WW2Demands extends Demand {
         return new ArrayList<>(offeredAnnexation);
     }
 
-    private final DemandManager demandManager = ContinentalManagers.demandManager;
-    private final Player p;
-
     private boolean peace = false;
-    public WW2Demands(Country from, Country to, Player p) {
+    public WW2Demands(Country from, Country to) {
         super(from, to);
-        this.p = p;
+        CPlayer p = (CPlayer) from.getPlayerLeader();
+        showPlayer(p);
     }
 
     @Override
@@ -73,7 +80,7 @@ public class WW2Demands extends Demand {
         if (!(offeredPuppets.isEmpty() && offeredPayments.isEmpty() && offeredProvinces.isEmpty() && offeredAnnexation.isEmpty())){
             comps.add(Component.text()
                             .appendNewline()
-                            .append(Component.text("Demanded: ",NamedTextColor.RED,TextDecoration.BOLD,TextDecoration.UNDERLINED))
+                            .append(Component.text("Offered: ",NamedTextColor.GREEN,TextDecoration.BOLD,TextDecoration.UNDERLINED))
                     .build());
 
             if (!offeredPuppets.isEmpty()){
@@ -139,7 +146,7 @@ public class WW2Demands extends Demand {
         if (!(demandedPuppets.isEmpty() && demandedPayments.isEmpty() && demandedProvinces.isEmpty() && demandedAnnexation.isEmpty())){
             comps.add(Component.text()
                             .appendNewline()
-                            .append(Component.text("Offered: ",NamedTextColor.GREEN,TextDecoration.BOLD,TextDecoration.UNDERLINED))
+                            .append(Component.text("Demanded: ",NamedTextColor.RED,TextDecoration.BOLD,TextDecoration.UNDERLINED))
                     .build());
 
             if (!demandedPuppets.isEmpty()){
@@ -212,7 +219,18 @@ public class WW2Demands extends Demand {
 
     @Override
     public void ifAccepted() {
+        Country to = getToCountry();
+        Country from = getFromCountry();
 
+        demandedAnnexation.forEach(country-> country.getOccupies().forEach(province -> province.setOccupier(from)));
+        demandedPuppets.forEach(country -> {
+            country.setOverlord(to);
+            from.addPuppet(country);
+        });
+        demandedProvinces.forEach(province -> province.setOccupier(from));
+        demandedPayments.forEach(payment -> {
+
+        });
     }
 
     @Override
@@ -239,15 +257,144 @@ public class WW2Demands extends Demand {
         this.demandedPuppets=demand.getOfferPuppets();
     }
 
-    public void addProvinceDemand(Province province){
+    public void showPlayer(CPlayer p){
+        activePlayers.add(p);
+        Country to = getToCountry();
+        Country from = getFromCountry();
+        List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
+        countries.remove(to);
+        countries.removeAll(to.getPuppets());
+        countries.remove(from);
+        countries.removeAll(from.getPuppets());
+        countries.forEach(country -> country.getOccupies().forEach(province -> PacketUtils.sendPacket(p,new BlockChangePacket(province.getPos(),Block.GRAY_CONCRETE))));
+
+        shownBlocks.forEach((province,block)-> PacketUtils.sendPacket(p,new BlockChangePacket(province.getPos(),block)));
+    }
+
+    InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
+
+    public void hidePlayer(CPlayer p){
+        activePlayers.remove(p);
+        ContinentalManagers.world(p.getInstance()).countryDataManager().getCountries().forEach(country -> country.reloadBlocksForPlayer(p));
+        inventoryManager.assignInventory(p,"default");
+    }
+
+    public void showPlayerView(CPlayer p){
+        Country to = getToCountry();
+        Country from = getFromCountry();
+        List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
+        countries.remove(to);
+        countries.removeAll(to.getPuppets());
+        countries.remove(from);
+        countries.removeAll(from.getPuppets());
+        countries.forEach(country -> country.getOccupies().forEach(province -> PacketUtils.sendPacket(p,new BlockChangePacket(province.getPos(),Block.GRAY_CONCRETE))));
+
+        shownBlocks.forEach((province,block)-> PacketUtils.sendPacket(p,new BlockChangePacket(province.getPos(),block)));
+    }
+
+    private void updateProvinceBlock(Province province, Block block) {
+        shownBlocks.put(province, block);
+        PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), block));
+    }
+
+    private void processCountryDemand(Country country, Block block, boolean addDemand) {
+        country.getOccupies().forEach(province -> {
+            if (demandedProvinces.contains(province)) return;
+            if (addDemand) {
+                updateProvinceBlock(province, block);
+            } else {
+                Block newBlock = country.getBlockForProvince(province);
+                if (demandedProvinces.contains(province)) {
+                    newBlock = Block.RED_CONCRETE;
+                }
+                shownBlocks.put(province, newBlock);
+                PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), newBlock));
+            }
+        });
+    }
+
+    public void addProvinceDemand(Province province) {
+        if (demandedProvinces.contains(province)) return;
         demandedProvinces.add(province);
+        updateProvinceBlock(province, Block.RED_CONCRETE);
     }
-    public void addPuppetDemand(Country country){
+
+    public void addPuppetDemand(Country country) {
+        if (demandedPuppets.contains(country)) return;
         demandedPuppets.add(country);
+        processCountryDemand(country, Block.ORANGE_CONCRETE, true);
     }
-    public void addPaymentDemand(Payment payment){
+
+    public void addPaymentDemand(Payment payment) {
         demandedPayments.add(payment);
     }
+
+    public void addAnnexationDemand(Country country) {
+        if (demandedAnnexation.contains(country)) return;
+        demandedAnnexation.add(country);
+        processCountryDemand(country, Block.RED_CONCRETE, true);
+    }
+
+    public void removeAnnexationDemand(Country country) {
+        if (!demandedAnnexation.contains(country)) return;
+        demandedAnnexation.remove(country);
+        processCountryDemand(country, Block.RED_CONCRETE, false);
+    }
+
+    public void removeProvinceDemand(Province province) {
+        if (!demandedProvinces.contains(province)) return;
+        demandedProvinces.remove(province);
+        shownBlocks.remove(province);
+        PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), province.getMaterial().block()));
+    }
+
+    public void removePuppetsDemand(Country country) {
+        if (!demandedPuppets.contains(country)) return;
+        demandedPuppets.remove(country);
+        processCountryDemand(country, Block.ORANGE_CONCRETE, false);
+    }
+
+    public void addProvinceOffer(Province province) {
+        if (offeredProvinces.contains(province)) return;
+        offeredProvinces.add(province);
+        updateProvinceBlock(province, Block.GREEN_CONCRETE);
+    }
+
+    public void addPuppetOffer(Country country) {
+        if (offeredPuppets.contains(country)) return;
+        offeredPuppets.add(country);
+        processCountryDemand(country, Block.LIME_CONCRETE, true);
+    }
+
+    public void addPaymentOffer(Payment payment) {
+        offeredPayments.add(payment);
+    }
+
+    public void addAnnexationOffer(Country country) {
+        if (offeredAnnexation.contains(country)) return;
+        offeredAnnexation.add(country);
+        processCountryDemand(country, Block.GREEN_CONCRETE, true);
+    }
+
+    public void removeAnnexationOffer(Country country) {
+        if (!offeredAnnexation.contains(country)) return;
+        offeredAnnexation.remove(country);
+        processCountryDemand(country, Block.GREEN_CONCRETE, false);
+    }
+
+    public void removeProvinceOffer(Province province) {
+        if (!offeredProvinces.contains(province)) return;
+        offeredProvinces.remove(province);
+        shownBlocks.remove(province);
+        PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), province.getMaterial().block()));
+    }
+
+    public void removePuppetsOffer(Country country) {
+        if (!offeredPuppets.contains(country)) return;
+        offeredPuppets.remove(country);
+        processCountryDemand(country, Block.ORANGE_CONCRETE, false);
+    }
+
     public void resetDemandedProvinces(){
         demandedProvinces.clear();
     }
@@ -259,15 +406,6 @@ public class WW2Demands extends Demand {
     }
     public void resetDemandedAnnexation(){
         demandedAnnexation.clear();
-    }
-    public void addProvinceOffer(Province province){
-        offeredProvinces.add(province);
-    }
-    public void addPuppetOffer(Country country){
-        offeredPuppets.add(country);
-    }
-    public void addPaymentOffer(Payment payment){
-        offeredPayments.add(payment);
     }
     public void resetOfferProvinces(){
         offeredProvinces.clear();

@@ -45,18 +45,18 @@ public class Modifier implements Cloneable {
     public void createDescription() {
         List<Component> boostComp = new ArrayList<>();
         for (CurrencyBoost currencyBoost : currencyBoostList) {
-            if (currencyBoost.boost() > 0) {
+            if (currencyBoost.getBoost() > 0) {
                 boostComp.add(Component.text()
-                        .append(Component.text("+" + Math.round(currencyBoost.boost() * 100), NamedTextColor.GREEN))
+                        .append(Component.text("+" + Math.round(currencyBoost.getBoost() * 100), NamedTextColor.GREEN))
                         .append(Component.text("%", NamedTextColor.GREEN))
-                        .append(currencyBoost.currencyTypes().getSymbol())
+                        .append(currencyBoost.getCurrencyTypes().getSymbol())
                         .appendNewline()
                         .build());
             } else {
                 boostComp.add(Component.text()
-                        .append(Component.text(Math.round(currencyBoost.boost() * 100), NamedTextColor.RED))
+                        .append(Component.text(Math.round(currencyBoost.getBoost() * 100), NamedTextColor.RED))
                         .append(Component.text("%", NamedTextColor.RED))
-                        .append(currencyBoost.currencyTypes().getSymbol())
+                        .append(currencyBoost.getCurrencyTypes().getSymbol())
                         .appendNewline()
                         .build());
             }

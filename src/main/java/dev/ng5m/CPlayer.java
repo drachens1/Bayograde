@@ -9,7 +9,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.fileManagement.PlayerDataFile;
+import org.drachens.fileManagement.customTypes.PlayerDataFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;

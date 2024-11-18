@@ -21,7 +21,7 @@ public class AcceptCMD extends Command {
         var factionNames = ArgumentType.String("faction_name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasInvites(sender) && sender instanceof CPlayer player) {
-                        getSuggestionBasedOnInput(suggestion, context.getInput(), 3, player.getCountry().getInvitedToFactions());
+                        getSuggestionBasedOnInput(suggestion, player.getCountry().getInvitedToFactions());
                     }
                 });
         addSyntax((sender, context) -> {

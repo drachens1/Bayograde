@@ -26,7 +26,7 @@ public class AllInformationCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(p.getInstance()));
+            getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
         });
 
         addSyntax((sender, context) -> {

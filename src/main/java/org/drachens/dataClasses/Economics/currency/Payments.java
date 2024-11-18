@@ -3,8 +3,8 @@ package org.drachens.dataClasses.Economics.currency;
 import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Payments {
     private final List<Payment> payments;
@@ -14,6 +14,14 @@ public class Payments {
         List<Payment> newPayments = new ArrayList<>();
         payments1.forEach(payment -> newPayments.add(new Payment(payment)));
         this.payments = newPayments;
+    }
+
+    public void addPayment(Payment payment){
+        payments.add(payment);
+    }
+
+    public void addPayments(Payments payments){
+        this.payments.addAll(payments.getPayments());
     }
 
     public Payments(List<Payment> payments) {
@@ -28,30 +36,14 @@ public class Payments {
         return payments;
     }
 
-    public HashMap<CurrencyTypes, Currencies> addPayments(HashMap<CurrencyTypes, Currencies> toAdd) {
-        for (Payment payment : payments) {
-            if (toAdd.containsKey(payment.getCurrencyType())) {
-                toAdd.get(payment.getCurrencyType()).add(payment);
-            }
-        }
-        return toAdd;
-    }
-
-    public HashMap<CurrencyTypes, Currencies> minusPayments(HashMap<CurrencyTypes, Currencies> toAdd) {
-        for (Payment payment : payments) {
-            if (toAdd.containsKey(payment.getCurrencyType())) {
-                toAdd.get(payment.getCurrencyType()).minus(payment);
-            }
-        }
-        return toAdd;
-    }
-
-    public void multiply(int multiply) {
-        payments.forEach((payment -> payment.multiply(multiply)));
-    }
-
     public void multiply(float multiply) {
         payments.forEach((payment -> payment.multiply(multiply)));
+    }
+
+    public void multiply(CurrencyTypes currencyType ,CurrencyBoost currencyBoost) {
+        payments.forEach((payment ->{
+            if (payment.getCurrencyType()==currencyType)payment.multiply(currencyBoost.getBoost());
+        }));
     }
 
     public Component getMessages() {
@@ -64,5 +56,11 @@ public class Payments {
         return Component.text()
                 .append(comps)
                 .build();
+    }
+
+    public void foreach(Consumer< ? super Payment> action){
+        for (Payment payment : payments){
+            action.accept(payment);
+        }
     }
 }

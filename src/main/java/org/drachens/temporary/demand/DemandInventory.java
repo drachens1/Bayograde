@@ -10,7 +10,7 @@ public class DemandInventory extends HotbarInventory {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
 
     public DemandInventory() {
-        super(new HotbarItemButton[]{new DemandCurrency(), new DemandProvince(), new DemandPuppet()});
+        super(new HotbarItemButton[]{new DemandProvince(), new DemandPuppet(), new DemandAnnexation(), new OfferProvince(), new OfferPuppet(), new OfferAnnexation()});
     }
 
     @Override

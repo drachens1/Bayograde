@@ -9,6 +9,7 @@ import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
 import org.drachens.dataClasses.WorldClasses;
+import org.drachens.fileManagement.ConfigFileManager;
 import org.drachens.store.CosmeticsManager;
 
 import static org.drachens.util.ServerUtil.getWorldClasses;

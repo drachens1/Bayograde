@@ -18,7 +18,7 @@ public class InfoCMD extends Command {
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     Player p = (Player) sender;
-                    getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getFactionNames(p.getInstance()));
+                    getSuggestionBasedOnInput(suggestion, getFactionNames(p.getInstance()));
                 });
 
         addSyntax((sender, s) -> {

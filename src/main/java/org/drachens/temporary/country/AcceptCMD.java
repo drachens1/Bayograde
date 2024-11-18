@@ -24,7 +24,7 @@ public class AcceptCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(p.getInstance()));
+            getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
         });
 
         Component countryComp = getPrefixes("country");

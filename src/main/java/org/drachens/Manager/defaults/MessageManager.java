@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
@@ -51,9 +52,10 @@ public class MessageManager {
         });
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
+            Player player = e.getPlayer();
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
             if (p == null) return;
-            e.getPlayer().sendMessage(p.getDescription((CPlayer) e.getPlayer()));
+            player.sendMessage(p.getDescription((CPlayer)player));
         });
 
         globEHandler.addListener(ResetEvent.class, e -> broadcast(gameOver, e.getInstance()));
@@ -233,12 +235,23 @@ public class MessageManager {
                     .append(Component.text()
                             .append(Component.text("[Accept]",NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to accept the demands",NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand accept"))
-                            .build())
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand accept")))
                     .append(Component.text()
                             .append(Component.text(" [Refuse]",NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand refuse"))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand refuse")))
+                    .appendNewline()
+                    .append(Component.text("View: ",NamedTextColor.GREEN,TextDecoration.UNDERLINED,TextDecoration.BOLD))
+                    .appendNewline()
+                    .append(Component.text()
+                            .append(Component.text(" [On]",NamedTextColor.GREEN, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.GREEN))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
+                            .build())
+                    .append(Component.text()
+                            .append(Component.text(" [Off]",NamedTextColor.RED, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.RED))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
                             .build())
                     .build());
         });

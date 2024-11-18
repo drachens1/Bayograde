@@ -11,8 +11,11 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
+import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.timer.Scheduler;
+import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
@@ -22,6 +25,7 @@ import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.*;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Province;
@@ -34,7 +38,6 @@ import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.EndWarEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
 import org.drachens.interfaces.MapGen;
-import org.drachens.temporary.Factory;
 import org.drachens.util.AStarPathfinder;
 
 import java.time.temporal.ChronoUnit;
@@ -42,7 +45,6 @@ import java.util.*;
 
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
-import static org.drachens.util.Messages.globalBroadcast;
 
 public class Country implements Cloneable {
     private Player playerLeader;
@@ -50,7 +52,7 @@ public class Country implements Cloneable {
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private Leader leader;
     private final List<Player> players;
-    private HashMap<CurrencyTypes, Currencies> currenciesMap;
+    private Vault vault;
     private final List<Material> city = new ArrayList<>();
     private final HashMap<BuildTypes, List<Building>> buildTypesListHashMap = new HashMap<>();
     private EconomyFactionType economyFactionType;
@@ -79,7 +81,6 @@ public class Country implements Cloneable {
     private float capitulationBoostPercentage = 1f;
     private final List<Region> region = new ArrayList<>();
     private final List<Modifier> modifiers = new ArrayList<>();
-    private final HashMap<CurrencyTypes, Float> economyBoosts = new HashMap<>();
     private Country overlord = null;
     private final List<Country> puppets = new ArrayList<>();
     private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
@@ -95,9 +96,11 @@ public class Country implements Cloneable {
     private final HashMap<Country, Demand> demandHashMap = new HashMap<>();
     private final List<String> demandCountryNames = new ArrayList<>();
 
+    private final HashMap<CurrencyTypes, CurrencyBoost> economyBoosts = new HashMap<>();
+
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.occupies = new ArrayList<>();
-        this.currenciesMap = startingCurrencies;
+        this.vault = new Vault(this,startingCurrencies);
         this.nameComponent = nameComponent;
         this.name = name;
         this.setPrefix(compBuild(name, NamedTextColor.BLUE));
@@ -148,7 +151,7 @@ public class Country implements Cloneable {
         this.maxBuildingSlotBoost -= modifier.getMaxBuildingSlotBoost();
         this.capitulationBoostPercentage -= modifier.getCapitulationBoostPercentage();
         this.totalProductionBoost -= modifier.getProductionBoost();
-        modifier.getCurrencyBoostList().forEach(this::removeBoost);
+        modifier.getCurrencyBoostList().forEach(this::minusBoost);
         createInfo();
     }
 
@@ -206,14 +209,6 @@ public class Country implements Cloneable {
 
     public void removeOccupied(Province province) {
         occupies.remove(province);
-    }
-
-    public void add(CurrencyTypes currencyTypes, float amount) {
-        currenciesMap.get(currencyTypes).add(amount);
-    }
-
-    public HashMap<CurrencyTypes, Currencies> getCurrenciesMap() {
-        return currenciesMap;
     }
 
     public String getName() {
@@ -315,57 +310,11 @@ public class Country implements Cloneable {
     }
 
     public void calculateIncrease() {
-        HashMap<CurrencyTypes, Float> additionAmount = new HashMap<>();
-        List<Building> buildings = buildTypesListHashMap.get(ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory"));
-        if (buildings != null)
-            buildings.forEach((building -> {
-                if (building.getBuildTypes() instanceof Factory factory) {
-                    Payments payments1 = factory.generate(building);
-                    List<Component> comps = new ArrayList<>();
-                    payments1.getPayments().forEach((payment -> {
-                        float addition = payment.getAmount();
-                        if (economyBoosts.get(payment.getCurrencyType()) != null) {
-                            addition = addition * totalProductionBoost;
-                            addition = addition * economyBoosts.get(payment.getCurrencyType());
-                        }
-                        if (additionAmount.containsKey(payment.getCurrencyType())) {
-                            additionAmount.put(payment.getCurrencyType(), additionAmount.get(payment.getCurrencyType()) + addition);
-                        } else {
-                            additionAmount.put(payment.getCurrencyType(), addition);
-                        }
-                        comps.add(Component.text(addition));
-                        comps.add(payment.getCurrencyType().getSymbol());
-                        comps.add(Component.newline());
-                    }));
-                    createFloatingText(building, Component.text().append(comps).build());
-                }
-            }));
-        boolean isPuppet = overlord != null;
-        if (isPuppet) {
-            for (Map.Entry<CurrencyTypes, Float> addition : additionAmount.entrySet()) {
-                float add = addition.getValue() * 0.8f;
-                float overlordPayment = addition.getValue() * 0.2f;
-                if (currenciesMap.containsKey(addition.getKey())) {
-                    currenciesMap.get(addition.getKey()).add(add);
-                } else {
-                    currenciesMap.put(addition.getKey(), new Currencies(addition.getKey(), add));
-                }
-                overlord.addPayment(new Payment(addition.getKey(), overlordPayment, Component.text()
-                        .append(Component.text("Your puppet: ", NamedTextColor.BLUE))
-                        .append(nameComponent)
-                        .append(Component.text("Has transferred you ", NamedTextColor.BLUE))
-                        .append(Component.text(overlordPayment, NamedTextColor.GOLD, TextDecoration.BOLD))
-                        .build()));
-            }
-        } else {
-            for (Map.Entry<CurrencyTypes, Float> addition : additionAmount.entrySet()) {
-                if (currenciesMap.containsKey(addition.getKey())) {
-                    currenciesMap.get(addition.getKey()).add(addition.getValue());
-                } else {
-                    currenciesMap.put(addition.getKey(), new Currencies(addition.getKey(), addition.getValue()));
-                }
-            }
-        }
+        vault.calculateIncrease();
+    }
+
+    public float getTotalProductionBoost(){
+        return totalProductionBoost;
     }
 
     public void capitulate(Country attacker) {
@@ -377,41 +326,35 @@ public class Country implements Cloneable {
     }
 
     public void addPayment(Payment payment) {
-        currenciesMap.get(payment.getCurrencyType()).add(payment.getAmount());
-        if (payment.getMessage() != null) {
-            sendActionBar(payment.getMessage());
-        }
+        vault.addPayment(payment);
     }
 
     public void addPayments(Payments payments) {
-        currenciesMap = payments.addPayments(currenciesMap);
+        vault.addPayments(payments);
+    }
+    public void addPayments(Payments payments, Component component) {
+        sendMessage(component);
+        vault.addPayments(payments);
     }
 
     public void removePayments(Payments payments) {
-        currenciesMap = payments.minusPayments(currenciesMap);
+        vault.minusPayments(payments);
     }
 
     public void removePayment(Payment payment) {
-        currenciesMap.get(payment.getCurrencyType()).minus(payment.getAmount());
+        vault.minusPayment(payment);
     }
 
     public float subtractMaximumAmountPossible(Payment payment) {
-        float currentBalance = currenciesMap.get(payment.getCurrencyType()).getAmount();
-        float withRemoved = currentBalance - payment.getAmount();
-        if (withRemoved < 0) return Math.abs(withRemoved);
-        return 0f;
+        return vault.subtractMaxAmountPossible(payment);
     }
 
     public boolean canMinusCost(Payment cost) {
-        return currenciesMap.containsKey(cost.getCurrencyType()) && currenciesMap.get(cost.getCurrencyType()).getAmount() >= cost.getAmount();
+        return vault.canMinus(cost);
     }
 
     public boolean canMinusCosts(Payments cost) {
-        for (Payment payment : cost.getPayments())
-            if (currenciesMap.containsKey(payment.getCurrencyType()) && currenciesMap.get(payment.getCurrencyType()).getAmount() < payment.getAmount())
-                return false;
-
-        return true;
+        return vault.canMinus(cost);
     }
 
     public void addTextDisplay(TextDisplay textDisplay) {
@@ -525,22 +468,26 @@ public class Country implements Cloneable {
     }
 
     public void addBoost(CurrencyBoost currencyBoost) {
-        if (economyBoosts.containsKey(currencyBoost.currencyTypes())) {
-            economyBoosts.put(currencyBoost.currencyTypes(), economyBoosts.get(currencyBoost.currencyTypes()) + currencyBoost.boost());
+        if (economyBoosts.containsKey(currencyBoost.getCurrencyTypes())) {
+            economyBoosts.get(currencyBoost.getCurrencyTypes()).addBoost(currencyBoost.getBoost());
         } else {
-            this.economyBoosts.put(currencyBoost.currencyTypes(), currencyBoost.boost() + 1f);
+            economyBoosts.put(currencyBoost.getCurrencyTypes(),currencyBoost);
         }
     }
 
-    public void removeBoost(CurrencyBoost currencyBoost) {
-        if (economyBoosts.containsKey(currencyBoost.currencyTypes())) {
-            economyBoosts.put(currencyBoost.currencyTypes(), economyBoosts.get(currencyBoost.currencyTypes()) - currencyBoost.boost());
+    public void minusBoost(CurrencyBoost currencyBoost) {
+        CurrencyTypes c = currencyBoost.getCurrencyTypes();
+        if (economyBoosts.containsKey(c)) {
+            economyBoosts.get(c).addBoost(currencyBoost.getBoost());
+        } else {
+            CurrencyBoost cb = new CurrencyBoost(c,0f);
+            economyBoosts.put(c,cb);
+            economyBoosts.get(c).addBoost(currencyBoost.getBoost());
         }
     }
 
     public void createInfo() {
         if (mapGen.isGenerating(instance)) return;
-        globalBroadcast("updated info");
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : modifiers) {
             modifierComps.add(modifier.getName());
@@ -636,7 +583,7 @@ public class Country implements Cloneable {
         return overlord;
     }
 
-    public HashMap<CurrencyTypes, Float> getEconomyBoosts() {
+    public HashMap<CurrencyTypes, CurrencyBoost> getEconomyBoosts() {
         return economyBoosts;
     }
 
@@ -791,7 +738,7 @@ public class Country implements Cloneable {
         clientsides.remove(troop.getTroop());
     }
 
-    private void createFloatingText(Building building, Component text) {
+    public void createFloatingText(Building building, Component text) {
         Province province = building.getProvince();
         long initialDelay = new Random().nextLong(0, 200);
         scheduler.buildTask(() -> {
@@ -882,5 +829,13 @@ public class Country implements Cloneable {
     }
     public Player getPlayerLeader(){
         return playerLeader;
+    }
+
+    public void reloadBlocksForPlayer(Player p){
+        occupies.forEach(province -> PacketUtils.sendPacket(p,new BlockChangePacket(province.getPos() ,province.getMaterial().block())));
+    }
+
+    public Block getBlockForProvince(Province province){
+        return province.getMaterial().block();
     }
 }

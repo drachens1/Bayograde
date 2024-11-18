@@ -27,17 +27,16 @@ public class CommandsUtil {
         return suggestions;
     }
 
-    public static String cutInput(String input, int index) {
-        return input.split(" ")[index].trim();
+    public static String cutInput(String input) {
+        String[] inp = input.split(" ");
+        return inp[inp.length-1];
     }
 
-    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, String input, int index, List<String> list) {
-        System.out.println(input + " : " + cutInput(input, index));
-        input = cutInput(input, index);
+    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, List<String> list) {
+        String input = cutInput(suggestion.getInput());
         if (input.isEmpty()) return suggestions(list, suggestion);
-        String finalInput = input;
         return suggestions(list.stream()
-                .filter(suggestions -> suggestions.toLowerCase().startsWith(finalInput))
+                .filter(suggestions -> suggestions.toLowerCase().startsWith(input))
                 .collect(Collectors.toList()), suggestion);
     }
 }

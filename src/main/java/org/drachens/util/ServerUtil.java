@@ -21,7 +21,6 @@ import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
 import org.drachens.Manager.PermissionsManager;
@@ -51,11 +50,7 @@ import org.drachens.cmd.plan.PlanCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.BuildTypes;
-import org.drachens.dataClasses.Economics.Building;
-import org.drachens.dataClasses.Economics.currency.Currencies;
-import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -68,6 +63,7 @@ import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
 import org.drachens.interfaces.VotingOption;
 import org.drachens.temporary.country.CountryCMD;
+import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -281,7 +277,7 @@ public class ServerUtil {
         globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
             for (Country country : countryDataManager.getCountries()) country.calculateIncrease();
-            for (Country country : countryDataManager.getCountries()) {
+            /*for (Country country : countryDataManager.getCountries()) {
                 Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
                 int i = 0;
                 int num = 0;
@@ -364,7 +360,7 @@ public class ServerUtil {
                         compBuild("Boosts: ", NamedTextColor.BLUE),
                         i
                 ));
-            }
+            }*/
         });
 
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
@@ -416,6 +412,7 @@ public class ServerUtil {
         commandManager.register(new CosmeticsCMD());
         commandManager.register(new GoldCMD());
         commandManager.register(new PlaytimeCMD());
+        commandManager.register(new DemandCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

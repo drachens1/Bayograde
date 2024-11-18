@@ -38,7 +38,7 @@ public class DemandStartCMD extends Command {
             }
             List<String> country = getCountryNames(p.getInstance());
             country.remove(p.getCountry().getName());
-            getSuggestionBasedOnInput(suggestion, context.getInput(), 4, country);
+            getSuggestionBasedOnInput(suggestion, country);
         });
 
         Component countryPrefix = getPrefixes("country");
@@ -58,7 +58,7 @@ public class DemandStartCMD extends Command {
                 p.sendMessage(doesntExist);
                 return;
             }
-            Demand demand = new WW2Demands(from, to,p);
+            Demand demand = new WW2Demands(from, to);
             p.sendMessage(Component.text()
                             .append(countryPrefix)
                             .append(Component.text("You have started creating a demand against "))

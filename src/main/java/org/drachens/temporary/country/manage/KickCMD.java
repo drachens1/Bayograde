@@ -24,7 +24,7 @@ public class KickCMD extends Command {
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
                     player.getCountry().getPlayer().forEach(p -> playerNames.add(p.getUsername()));
-                    getSuggestionBasedOnInput(suggestion, context.getInput(), 3, playerNames);
+                    getSuggestionBasedOnInput(suggestion, playerNames);
                 });
 
         addSyntax((sender, context) -> {

@@ -23,7 +23,7 @@ public class JoinCMD extends Command {
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (notInAFaction(sender) && sender instanceof Player player) {
-                        getSuggestionBasedOnInput(suggestion, context.getInput(), 2, getCountryNames(player.getInstance()));
+                        getSuggestionBasedOnInput(suggestion, getCountryNames(player.getInstance()));
                     }
                 });
 

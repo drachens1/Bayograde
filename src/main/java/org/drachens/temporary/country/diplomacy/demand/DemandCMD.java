@@ -3,6 +3,7 @@ package org.drachens.temporary.country.diplomacy.demand;
 import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.Country;
 
 public class DemandCMD extends Command {
@@ -17,6 +18,14 @@ public class DemandCMD extends Command {
         addSubcommand(new DemandResetCMD());
         addSubcommand(new DemandStartCMD());
         addSubcommand(new DemandIncomingCMD());
+        addSubcommand(new DemandViewCMD());
+
+        var reloader = ArgumentType.String("Type to Reload")
+                .setSuggestionCallback((sender,context,suggestion)->{
+                    CPlayer p = (CPlayer) sender;
+                    p.refreshCommands();
+                });
+        addSyntax((sender,context)->{},reloader);
     }
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {

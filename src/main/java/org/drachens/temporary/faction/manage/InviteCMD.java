@@ -36,7 +36,7 @@ public class InviteCMD extends Command {
         var countryArg = ArgumentType.String("countryName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
-                        getSuggestionBasedOnInput(suggestion, context.getInput(), 4, getCountryNames(player.getInstance()));
+                        getSuggestionBasedOnInput(suggestion, getCountryNames(player.getInstance()));
                     }
                 });
 

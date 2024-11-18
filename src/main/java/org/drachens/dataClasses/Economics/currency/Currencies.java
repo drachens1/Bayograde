@@ -3,12 +3,10 @@ package org.drachens.dataClasses.Economics.currency;
 import net.kyori.adventure.text.Component;
 
 public class Currencies implements Cloneable {
-    private float boost;
     private final CurrencyTypes currencyType;
     private float amount;
 
     public Currencies(CurrencyTypes currencyType, float amount) {
-        boost = 0f;
         this.currencyType = currencyType;
         this.amount = amount;
     }
@@ -41,9 +39,6 @@ public class Currencies implements Cloneable {
         amount -= minus;
     }
 
-    public void setBoost(float boost) {
-        this.boost = boost;
-    }
 
     public Currencies clone() {
         try {
@@ -51,9 +46,5 @@ public class Currencies implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void addBoost(float boost) {
-        this.boost += boost;
     }
 }

@@ -1,4 +1,22 @@
 package org.drachens.dataClasses.Economics.currency;
 
-public record CurrencyBoost(CurrencyTypes currencyTypes, Float boost) {
+public class CurrencyBoost {
+    private final CurrencyTypes currencyTypes;
+    private float boost;
+    public CurrencyBoost(CurrencyTypes currencyTypes, float boost){
+        this.currencyTypes = currencyTypes;
+        this.boost = boost;
+    }
+    public void addBoost(float boost){
+        this.boost+=boost;
+    }
+    public void minusBoost(float boost){
+        this.boost-=boost;
+    }
+    public CurrencyTypes getCurrencyTypes(){
+        return currencyTypes;
+    }
+    public float getBoost(){
+        return boost;
+    }
 }
