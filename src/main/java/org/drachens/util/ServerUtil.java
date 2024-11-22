@@ -21,12 +21,16 @@ import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
 import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
+import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.defaults.MessageManager;
+import org.drachens.Manager.defaults.scheduler.SchedulerRunnable;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
@@ -51,6 +55,7 @@ import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
+import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -61,15 +66,19 @@ import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
+import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.interfaces.Event;
 import org.drachens.interfaces.VotingOption;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
-import org.spongepowered.configurate.ConfigurationNode;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static org.drachens.util.KyoriUtil.*;
@@ -100,14 +109,12 @@ public class ServerUtil {
         if (srv == null || MinecraftServer.isStarted()) {
             return;
         }
-        ConfigurationNode serverProperties = ContinentalManagers.configFileManager.getPropertiesConfigurationNode();
-        ConfigurationNode velocity = serverProperties.node("velocity");
-        if (velocity.node("active").getBoolean()) {
-            VelocityProxy.enable(Objects.requireNonNull(velocity.node("secret").getString()));
+        ServerPropertiesFile serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
+        if (serverPropertiesFile.isVelocity()) {
+            VelocityProxy.enable(serverPropertiesFile.getSecret());
         } else
             MojangAuth.init();
-        ConfigurationNode server = serverProperties.node("server");
-        srv.start(Objects.requireNonNull(server.node("host").getString()), server.node("port").getInt());
+        srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
     }
 
     public static GlobalEventHandler getEventHandler() {
@@ -123,6 +130,7 @@ public class ServerUtil {
 
     public static void setupAll(List<Command> cmd, ScoreboardManager scoreboardManager) {
         setup();
+        ContinentalManagers.configFileManager.startup();
 
         //Create the instance(world)
         InstanceManager instMan = MinecraftServer.getInstanceManager();
@@ -274,10 +282,18 @@ public class ServerUtil {
         globEHandler.addListener(CountryChangeEvent.class, e -> e.getPlayer().setCountry(e.getJoined()));
 
         BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
-        globEHandler.addListener(NewDay.class, e -> {
+
+        ContinentalSchedulerManager schedulerManager = ContinentalManagers.schedulerManager;
+        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class,e -> {
+            if (!(e instanceof NewDay newDay))return;
+            ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.getVault().calculateIncrease());
+
+        }).setDelay(7).repeat().schedule());
+
+        /*globEHandler.addListener(NewDay.class, e -> {
             CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
             for (Country country : countryDataManager.getCountries()) country.calculateIncrease();
-            /*for (Country country : countryDataManager.getCountries()) {
+            for (Country country : countryDataManager.getCountries()) {
                 Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
                 int i = 0;
                 int num = 0;
@@ -303,20 +319,6 @@ public class ServerUtil {
                 for (Player p : country.getPlayer()) {
                     sb.addViewer(p);
                 }
-                for (Map.Entry<IdeologyTypes, Float> entry : country.getIdeology().getIdeologies().entrySet()) {
-                    if (entry.getValue() > 1) {
-                        ArrayList<Component> components = new ArrayList<>();
-                        components.add(entry.getKey().getName());
-                        components.add(compBuild(" : ", NamedTextColor.BLUE));
-                        components.add(compBuild(Math.round(entry.getValue()) + "%", NamedTextColor.BLUE));
-                        sb.createLine(new Sidebar.ScoreboardLine(
-                                i + "",
-                                mergeComp(components),
-                                i
-                        ));
-                        i++;
-                    }
-                }
                 sb.createLine(new Sidebar.ScoreboardLine("total", compBuild("total" + country.getIdeology().total, NamedTextColor.GOLD), i));
                 i++;
                 sb.createLine(new Sidebar.ScoreboardLine(
@@ -325,17 +327,8 @@ public class ServerUtil {
                         i
                 ));
                 i++;
-                for (Map.Entry<CurrencyTypes, Currencies> entry : country.getCurrenciesMap().entrySet()) {
-                    ArrayList<Component> components = new ArrayList<>();
-                    components.add(compBuild(entry.getValue().getAmount() + "", NamedTextColor.BLUE));
-                    components.add(entry.getKey().getSymbol());
-                    sb.createLine(new Sidebar.ScoreboardLine(
-                            i + "",
-                            mergeComp(components),
-                            i
-                    ));
-                    i++;
-                }
+                i= country.getVault().createScoreboard(i,sb);
+
 
                 sb.createLine(new Sidebar.ScoreboardLine(
                         "title",
@@ -343,25 +336,8 @@ public class ServerUtil {
                         i
                 ));
                 i++;
-                for (Map.Entry<CurrencyTypes, Float> entry : country.getEconomyBoosts().entrySet()) {
-                    ArrayList<Component> components = new ArrayList<>();
-                    components.add(compBuild(entry.getValue() + "", NamedTextColor.BLUE));
-                    components.add(entry.getKey().getSymbol());
-                    sb.createLine(new Sidebar.ScoreboardLine(
-                            i + "",
-                            mergeComp(components),
-                            i
-                    ));
-                    i++;
-                }
-
-                sb.createLine(new Sidebar.ScoreboardLine(
-                        "tewjwr",
-                        compBuild("Boosts: ", NamedTextColor.BLUE),
-                        i
-                ));
-            }*/
-        });
+            }
+        });*/
 
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
         for (VotingOption votingOption : votingOptions)
@@ -418,7 +394,6 @@ public class ServerUtil {
             MinecraftServer.getCommandManager().register(command);
         }
 
-        ContinentalManagers.configFileManager.startup();
         new PermissionsManager();
 
         globEHandler.addListener(ResetEvent.class, e -> {
@@ -436,11 +411,7 @@ public class ServerUtil {
                     worldClassesHashMap.get(instance).provinceManager()
             ));
         });
-
-        globEHandler.addListener(StartGameEvent.class, e -> {
-
-        });
-
+        start();
     }
 
     public static void addChunk(Chunk chunk) {

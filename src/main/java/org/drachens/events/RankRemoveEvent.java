@@ -9,6 +9,7 @@ public class RankRemoveEvent extends Event {
     private final Rank rank;
 
     public RankRemoveEvent(Player player, Rank rank) {
+        super(player.getInstance());
         this.player = player;
         this.rank = rank;
     }

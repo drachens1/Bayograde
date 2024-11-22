@@ -7,6 +7,7 @@ public class ResetEvent extends Event {
     private final Instance instance;
 
     public ResetEvent(Instance instance) {
+        super(instance);
         this.instance = instance;
     }
 

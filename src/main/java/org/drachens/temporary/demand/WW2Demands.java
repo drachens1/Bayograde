@@ -240,7 +240,7 @@ public class WW2Demands extends Demand {
 
     @Override
     protected void onCompleted() {
-
+        activePlayers.forEach(player -> hidePlayer((CPlayer) player));
     }
 
     @Override

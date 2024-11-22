@@ -8,6 +8,7 @@ public class StartWarEvent extends Event {
     private final Country defender;
 
     public StartWarEvent(Country aggressor, Country occupier) {
+        super(aggressor.getInstance());
         this.aggressor = aggressor;
         this.defender = occupier;
     }

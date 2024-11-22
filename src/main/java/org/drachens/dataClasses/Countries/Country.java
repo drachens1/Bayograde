@@ -7,7 +7,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
@@ -40,8 +39,10 @@ import org.drachens.events.Factions.FactionJoinEvent;
 import org.drachens.interfaces.MapGen;
 import org.drachens.util.AStarPathfinder;
 
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
@@ -49,10 +50,9 @@ import static org.drachens.util.Messages.broadcast;
 public class Country implements Cloneable {
     private Player playerLeader;
     private final MapGen mapGen;
-    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private Leader leader;
     private final List<Player> players;
-    private Vault vault;
+    private final Vault vault;
     private final List<Material> city = new ArrayList<>();
     private final HashMap<BuildTypes, List<Building>> buildTypesListHashMap = new HashMap<>();
     private EconomyFactionType economyFactionType;
@@ -332,10 +332,6 @@ public class Country implements Cloneable {
     public void addPayments(Payments payments) {
         vault.addPayments(payments);
     }
-    public void addPayments(Payments payments, Component component) {
-        sendMessage(component);
-        vault.addPayments(payments);
-    }
 
     public void removePayments(Payments payments) {
         vault.minusPayments(payments);
@@ -471,7 +467,8 @@ public class Country implements Cloneable {
         if (economyBoosts.containsKey(currencyBoost.getCurrencyTypes())) {
             economyBoosts.get(currencyBoost.getCurrencyTypes()).addBoost(currencyBoost.getBoost());
         } else {
-            economyBoosts.put(currencyBoost.getCurrencyTypes(),currencyBoost);
+            CurrencyBoost currencyBoost1 = new CurrencyBoost(currencyBoost);
+            economyBoosts.put(currencyBoost1.getCurrencyTypes(),currencyBoost1);
         }
     }
 
@@ -482,7 +479,7 @@ public class Country implements Cloneable {
         } else {
             CurrencyBoost cb = new CurrencyBoost(c,0f);
             economyBoosts.put(c,cb);
-            economyBoosts.get(c).addBoost(currencyBoost.getBoost());
+            economyBoosts.get(c).minusBoost(currencyBoost.getBoost());
         }
     }
 
@@ -738,22 +735,7 @@ public class Country implements Cloneable {
         clientsides.remove(troop.getTroop());
     }
 
-    public void createFloatingText(Building building, Component text) {
-        Province province = building.getProvince();
-        long initialDelay = new Random().nextLong(0, 200);
-        scheduler.buildTask(() -> {
-            TextDisplay textDisplay = new TextDisplay.create(province, text)
-                    .setFollowPlayer(true)
-                    .setLineWidth(40)
-                    .withOffset()
-                    .build();
-            addTextDisplay(textDisplay);
-            scheduler.buildTask(() -> {
-                textDisplay.moveNoRotation(new Pos(0, 4, 0), 40, true);
-                textDisplay.destroy(3995L);
-            }).delay(initialDelay + new Random().nextLong(0, 200), ChronoUnit.MILLIS).schedule();
-        }).delay(initialDelay, ChronoUnit.MILLIS).schedule();
-    }
+
 
     public void loadClientsides(List<Clientside> clientsides) {
         clientsides.forEach(clientside -> players.forEach(clientside::addViewer));
@@ -838,4 +820,11 @@ public class Country implements Cloneable {
     public Block getBlockForProvince(Province province){
         return province.getMaterial().block();
     }
+    public Vault getVault(){
+        return vault;
+    }
+    public float getEconomyBoost(CurrencyTypes currencyTypes){
+        return economyBoosts.getOrDefault(currencyTypes,new CurrencyBoost(currencyTypes,0)).getBoost()+totalProductionBoost;
+    }
+
 }

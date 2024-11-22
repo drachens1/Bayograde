@@ -10,6 +10,7 @@ public class CaptureBlockEvent extends Event {
     private final Province attacked;
 
     public CaptureBlockEvent(Country aggressor, Country occupier, Province attacked) {
+        super(aggressor.getInstance());
         this.aggressor = aggressor;
         this.defender = occupier;
         this.attacked = attacked;

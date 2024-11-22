@@ -9,6 +9,7 @@ public class CountryLeaveEvent extends Event {
     private final Player p;
 
     public CountryLeaveEvent(Country left, Player p) {
+        super(p.getInstance());
         this.left = left;
         this.p = p;
     }

@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.Economics;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
@@ -12,6 +14,10 @@ import org.drachens.temporary.Factory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.drachens.util.KyoriUtil.compBuild;
+import static org.drachens.util.KyoriUtil.mergeComp;
 
 public class Vault {
     private final Country country;
@@ -44,11 +50,11 @@ public class Vault {
     }
 
     public void addPayments(Payments payments){
-        payments.foreach(this::addPayment);
+        payments.getPayments().forEach(this::addPayment);
     }
 
     public void minusPayments(Payments payments){
-        payments.foreach(this::minusPayment);
+        payments.getPayments().forEach(this::minusPayment);
     }
 
     public void addLoan(Loan loan){
@@ -64,23 +70,17 @@ public class Vault {
         boolean overlord = country.getOverlord()!=null;
         buildings.forEach(building -> {
             Payments payments = factory.generate(building);
-            payments.multiply(country.getTotalProductionBoost());
-            country.getEconomyBoosts().forEach(payments::multiply);
-            country.createFloatingText(building, Component.text()
-                    .append(payments.getMessages())
-                    .build());
             if (overlord){
                 Payments toCountry2 = new Payments(payments);
                 toCountry2.multiply(0.8f);
-                Payments toOverlord2 = new Payments(payments);
-                toOverlord2.multiply(0.2f);
-                toOverlord.addPayments(toOverlord2);
+                payments.multiply(0.2f);
+                toOverlord.addPayments(payments);
                 toCountry.addPayments(toCountry2);
             }else {
                 toCountry.addPayments(payments);
             }
         });
-        country.addPayments(toCountry);
+        addPayments(toCountry);
         if (overlord){
             country.getOverlord().addPayments(toOverlord);
         }
@@ -106,4 +106,20 @@ public class Vault {
         }
         return amount.containsKey(payment.getCurrencyType()) ? payment.getAmount()-amount.get(payment.getCurrencyType()).getAmount() : payment.getAmount();
     }
+
+    public int createScoreboard(int start, Sidebar scoreBoard) {
+        for (Map.Entry<CurrencyTypes, Currencies> entry : amount.entrySet()) {
+            ArrayList<Component> components = new ArrayList<>();
+            components.add(compBuild(entry.getValue().getAmount() + "", NamedTextColor.BLUE));
+            components.add(entry.getKey().getSymbol());
+            scoreBoard.createLine(new Sidebar.ScoreboardLine(
+                    start + "",
+                    mergeComp(components),
+                    start
+            ));
+            start++;
+        }
+        return start;
+    }
+
 }

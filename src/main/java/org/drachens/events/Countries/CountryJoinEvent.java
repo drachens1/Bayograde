@@ -9,6 +9,7 @@ public class CountryJoinEvent extends Event {
     private final CPlayer p;
 
     public CountryJoinEvent(Country joined, CPlayer p) {
+        super(p.getInstance());
         this.joined = joined;
         this.p = p;
     }

@@ -9,6 +9,7 @@ public class StartGameEvent extends Event {
     private final VotingOption votingOption;
 
     public StartGameEvent(Instance instance, VotingOption votingOption) {
+        super(instance);
         this.instance = instance;
         this.votingOption = votingOption;
     }

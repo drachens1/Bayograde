@@ -10,6 +10,7 @@ public class DemandCompletionEvent extends Event {
     private final Country to;
 
     public DemandCompletionEvent(Demand demand, Country from, Country to) {
+        super(from.getInstance());
         this.demand = demand;
         this.from = from;
         this.to = to;

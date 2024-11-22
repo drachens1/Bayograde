@@ -10,6 +10,7 @@ public class NewDay extends Event {
     private final Instance world;
 
     public NewDay(int day, int month, int year, Instance world) {
+        super(world);
         this.day = day;
         this.year = year;
         this.month = month;

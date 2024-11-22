@@ -86,14 +86,14 @@ public class Main {
 
         Modifier exampleModifier = new Modifier.create(compBuild("Example", NamedTextColor.GOLD))
                 .setDescription(compBuild("description", NamedTextColor.BLUE))
-                .addCurrencyBoost(new CurrencyBoost(production, 10f))
+                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
                 .addMaxBoost(1f)
                 .addCapitulationBoostPercentage(2f)
                 .addStabilityBaseBoost(3f)
                 .addStabilityGainBoost(4f)
                 .setRelationsBoost(5f)
                 .setBaseRelationsBoost(6f)
-                .setProductionBoost(7f)
+                .setProductionBoost(0.1f)
                 .setMaxBuildingSlotBoost(2f)
                 .build();
 
@@ -236,7 +236,7 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(), "ww2_clicks");
+                .build(), "normal_clicks");
 
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
@@ -245,7 +245,7 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(), "ww2_troops");
+                .build(), "normal_troops");
 
         ContinentalManagers.inventoryManager.registerInventory("demand",new DemandInventory());
     }

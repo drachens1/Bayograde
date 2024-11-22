@@ -9,6 +9,7 @@ public class FactionCreateEvent extends Event {
     private final Factions newFaction;
 
     public FactionCreateEvent(Country creator, Factions newFaction) {
+        super(creator.getInstance());
         this.creator = creator;
         this.newFaction = newFaction;
     }

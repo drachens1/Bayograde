@@ -2,21 +2,28 @@ package org.drachens.temporary;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
+import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
 import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
+import org.drachens.dataClasses.other.TextDisplay;
 
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.Random;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
@@ -41,11 +48,11 @@ public class Factory extends BuildTypes {
             .build();
 
     private final HashMap<Material, Integer> materialLvls = new HashMap<>();
+    private final CurrencyTypes production = defaultsStorer.currencies.getCurrencyType("production");
 
     public Factory() {
         super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, "factory");
         DefaultsStorer defaultsStorer = ContinentalManagers.defaultsStorer;
-        CurrencyTypes production = defaultsStorer.currencies.getCurrencyType("production");
         produces = new Payments(new Payment(production, 2f));
         System.out.println(produces.getPayments().getFirst().getAmount() + " Factory");
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
@@ -131,9 +138,29 @@ public class Factory extends BuildTypes {
     }
 
     public Payments generate(Building building) {
+        Country country = building.getCountry();
         Payments payments1 = new Payments(produces);
-        payments1.multiply(building.getCurrentLvl());
+        payments1.multiply(country.getEconomyBoost(production)+building.getCurrentLvl());
+        createFloatingText(building,payments1.getMessages());
         return payments1;
     }
-    //Make a cool text display going up when it generates
+
+    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
+
+    public void createFloatingText(Building building, Component text) {
+        Province province = building.getProvince();
+        long initialDelay = new Random().nextLong(0, 200);
+        scheduler.buildTask(() -> {
+            TextDisplay textDisplay = new TextDisplay.create(province, text)
+                    .setFollowPlayer(true)
+                    .setLineWidth(40)
+                    .withOffset()
+                    .build();
+            building.getCountry().addTextDisplay(textDisplay);
+            scheduler.buildTask(() -> {
+                textDisplay.moveNoRotation(new Pos(0, 4, 0), 40, true);
+                textDisplay.destroy(3995L);
+            }).delay(initialDelay + new Random().nextLong(0, 200), ChronoUnit.MILLIS).schedule();
+        }).delay(initialDelay, ChronoUnit.MILLIS).schedule();
+    }
 }

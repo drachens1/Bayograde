@@ -9,6 +9,7 @@ public class FactionLeaveEvent extends Event {
     private final Factions faction;
 
     public FactionLeaveEvent(Factions faction, Country country) {
+        super(country.getInstance());
         this.faction = faction;
         this.country = country;
     }

@@ -205,7 +205,6 @@ public class MapGeneratorManager extends MapGen {
                     province.setBlock(Material.BLUE_STAINED_GLASS);
                     provinceManager.registerProvince(pos, province);
                 } else {
-                    province.setBlock(Material.WHITE_TERRACOTTA);
                     provinceManager.registerProvince(pos, province);
                     landHashmap.put(pos, province);
                 }
@@ -268,6 +267,7 @@ public class MapGeneratorManager extends MapGen {
                 seedProvince.initialOccupier(countries.get(i));
                 seedProvince.setCity(6);
                 visited.add(seedPos);
+                landHashmap.remove(seedPos);
                 countries.get(i).setCapital(seedProvince);
             }
         }
@@ -286,6 +286,7 @@ public class MapGeneratorManager extends MapGen {
                             Province neighborProvince = provinceManager.getProvince(neighbor);
                             if (neighborProvince != null && neighborProvince.getOccupier() == null) {
                                 neighborProvince.initialOccupier(countries.get(i));
+                                landHashmap.remove(neighbor);
                                 visited.add(neighbor);
                                 countryQueues[i].add(neighbor);
                                 anyQueueHadExpansion = true;
@@ -295,6 +296,8 @@ public class MapGeneratorManager extends MapGen {
                 }
             }
         } while (anyQueueHadExpansion);
+        landHashmap.forEach((pos,province)->province.setBlock(Material.WHITE_TERRACOTTA));
+
         storiesGenerate(countries);
         borderScan();
         generateCities(countries);

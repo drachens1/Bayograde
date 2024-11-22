@@ -9,6 +9,7 @@ public class FactionSetLeaderEvent extends Event {
     private final Country country;
 
     public FactionSetLeaderEvent(Factions faction, Country country) {
+        super(country.getInstance());
         this.factions = faction;
         this.country = country;
     }

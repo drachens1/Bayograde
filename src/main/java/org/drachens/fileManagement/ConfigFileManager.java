@@ -3,6 +3,7 @@ package org.drachens.fileManagement;
 import net.minestom.server.entity.Player;
 import org.drachens.cmd.Dev.whitelist.Whitelist;
 import org.drachens.fileManagement.customTypes.PlayerDataFile;
+import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -13,8 +14,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.drachens.util.ServerUtil.start;
-
 public class ConfigFileManager {
     private ConfigurationNode whitelistListNode;
     private YamlConfigurationLoader whitelistLoader;    // contains all the whitelisted peoples as UUID's
@@ -23,27 +22,13 @@ public class ConfigFileManager {
     private String logMsg;
     private String logCmds;
     private Whitelist whitelist;
-    private ConfigurationNode propertiesConfigurationNode;
+    private ServerPropertiesFile serverPropertiesFile;
 
     public void startup() {
         File playerData = new File("playerData");//Creates the parent directory
         playerData.mkdir();
 
-        File serverProperties = new File("serverProperties.yml");
-        fileExists(serverProperties);
-        YamlConfigurationLoader propertiesLoader = YamlConfigurationLoader.builder().file(serverProperties).build();
-        try {
-            propertiesConfigurationNode = propertiesLoader.load();
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
-
-        createDefaultsServerProperties(propertiesConfigurationNode);
-        try {
-            propertiesLoader.save(propertiesConfigurationNode);
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
+        serverPropertiesFile = new ServerPropertiesFile();
 
         //To setup all the log stuff
         System.out.println("Creating logs");
@@ -73,7 +58,6 @@ public class ConfigFileManager {
         }
         createDefaultsPermissionLoader(permissionsNode);
         loadWhitelist();
-        start();
     }
 
     private void loadWhitelist() {
@@ -167,8 +151,8 @@ public class ConfigFileManager {
         return permissionsNode;
     }
 
-    public ConfigurationNode getPropertiesConfigurationNode() {
-        return propertiesConfigurationNode;
+    public ServerPropertiesFile getServerPropertiesFile() {
+        return serverPropertiesFile;
     }
 
     private void createDefaultsServerProperties(ConfigurationNode serverProp) {

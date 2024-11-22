@@ -10,6 +10,7 @@ public class DemandDeniedEvent extends Event {
     private final Country to;
 
     public DemandDeniedEvent(Demand demand, Country from, Country to) {
+        super(to.getInstance());
         this.demand = demand;
         this.from = from;
         this.to = to;

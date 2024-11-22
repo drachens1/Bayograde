@@ -9,6 +9,7 @@ public class FactionJoinEvent extends Event {
     private final Country country;
 
     public FactionJoinEvent(Factions factions, Country country) {
+        super(country.getInstance());
         this.factions = factions;
         this.country = country;
     }

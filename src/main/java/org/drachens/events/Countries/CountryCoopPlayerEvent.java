@@ -9,6 +9,7 @@ public class CountryCoopPlayerEvent extends Event {
     private final CPlayer p;
 
     public CountryCoopPlayerEvent(Country inviter, CPlayer p) {
+        super(p.getInstance());
         this.inviter = inviter;
         this.p = p;
     }

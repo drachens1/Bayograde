@@ -9,6 +9,7 @@ public class VoteEvent extends Event {
     private final VotingOption voted;
 
     public VoteEvent(Player p, VotingOption votingOption) {
+        super(p.getInstance());
         this.p = p;
         this.voted = votingOption;
     }

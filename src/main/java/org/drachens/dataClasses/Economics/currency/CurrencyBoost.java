@@ -7,6 +7,10 @@ public class CurrencyBoost {
         this.currencyTypes = currencyTypes;
         this.boost = boost;
     }
+    public CurrencyBoost(CurrencyBoost currencyBoost){
+        this.currencyTypes=currencyBoost.currencyTypes;
+        this.boost=currencyBoost.boost;
+    }
     public void addBoost(float boost){
         this.boost+=boost;
     }

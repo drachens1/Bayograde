@@ -9,6 +9,7 @@ public class FactionDeleteEvent extends Event {
     private final Factions deletedFaction;
 
     public FactionDeleteEvent(Country deleter, Factions deletedFaction) {
+        super(deleter.getInstance());
         this.deleter = deleter;
         this.deletedFaction = deletedFaction;
     }

@@ -9,6 +9,7 @@ public class FactionKickEvent extends Event {
     private final Factions faction;
 
     public FactionKickEvent(Factions faction, Country country) {
+        super(country.getInstance());
         this.faction = faction;
         this.country = country;
     }

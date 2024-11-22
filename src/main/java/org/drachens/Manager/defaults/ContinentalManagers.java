@@ -8,6 +8,7 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
+import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.fileManagement.ConfigFileManager;
 import org.drachens.store.CosmeticsManager;
@@ -24,6 +25,7 @@ public class ContinentalManagers {
     public static final GUIManager guiManager = new GUIManager();
     public static final DemandManager demandManager = new DemandManager();
     public static final CosmeticsManager cosmeticsManager = new CosmeticsManager();
+    public static final ContinentalSchedulerManager schedulerManager = new ContinentalSchedulerManager();
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

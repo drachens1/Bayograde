@@ -4,36 +4,30 @@ import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class Payments {
     private final List<Payment> payments;
 
     public Payments(Payments payments) {
-        List<Payment> payments1 = payments.getPayments();
-        List<Payment> newPayments = new ArrayList<>();
-        payments1.forEach(payment -> newPayments.add(new Payment(payment)));
-        this.payments = newPayments;
-    }
-
-    public void addPayment(Payment payment){
-        payments.add(payment);
-    }
-
-    public void addPayments(Payments payments){
-        this.payments.addAll(payments.getPayments());
-    }
-
-    public Payments(List<Payment> payments) {
-        this.payments = payments;
+        this.payments = payments.getPayments();
     }
 
     public Payments(Payment... payments) {
-        this.payments = List.of(payments);
+        this.payments = new ArrayList<>(List.of(payments));
+    }
+
+    public void addPayment(Payment payment){
+        payments.add(payment.clone());
+    }
+
+    public void addPayments(Payments payments){
+        payments.getPayments().forEach(this::addPayment);
     }
 
     public List<Payment> getPayments() {
-        return payments;
+        List<Payment> newList = new ArrayList<>();
+        payments.forEach(payment -> newList.add(payment.clone()));
+        return newList;
     }
 
     public void multiply(float multiply) {
@@ -56,11 +50,5 @@ public class Payments {
         return Component.text()
                 .append(comps)
                 .build();
-    }
-
-    public void foreach(Consumer< ? super Payment> action){
-        for (Payment payment : payments){
-            action.accept(payment);
-        }
     }
 }

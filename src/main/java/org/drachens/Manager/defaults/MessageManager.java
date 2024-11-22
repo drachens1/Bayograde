@@ -12,6 +12,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Delay;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Province;
 import org.drachens.events.Countries.CountryCoopPlayerEvent;
@@ -34,7 +35,6 @@ public class MessageManager {
     private final Component factionPref = getPrefixes("faction");
 
     public MessageManager() {
-
         Component gameOver = Component.text()
                 .append(system)
                 .append(Component.text("Game Over", NamedTextColor.GREEN))
@@ -51,11 +51,14 @@ public class MessageManager {
                     .build(), e.getInstance());
         });
 
+        Delay provinceDelay = new Delay(100L);
+
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Player player = e.getPlayer();
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
-            if (p == null) return;
+            if (p == null || provinceDelay.hasCooldown(player)) return;
             player.sendMessage(p.getDescription((CPlayer)player));
+            provinceDelay.startCooldown(player);
         });
 
         globEHandler.addListener(ResetEvent.class, e -> broadcast(gameOver, e.getInstance()));

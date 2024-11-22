@@ -2,16 +2,10 @@ package org.drachens.dataClasses.Economics.currency;
 
 import net.kyori.adventure.text.Component;
 
-public class Payment {
+public class Payment implements Cloneable {
     private final CurrencyTypes currencyType;
     private float amount;
     private Component message;
-
-    public Payment(Payment payment) {
-        this.amount = payment.getAmount();
-        this.currencyType = payment.getCurrencyType();
-        this.message = payment.getMessage();
-    }
 
     public Payment(CurrencyTypes currencyType, float amount) {
         this.currencyType = currencyType;
@@ -52,11 +46,17 @@ public class Payment {
         return false;
     }
 
-    public void multiply(int multiply) {
+    public void multiply(float multiply) {
         amount *= multiply;
     }
 
-    public void multiply(float multiply) {
-        amount *= multiply;
+    @Override
+    public Payment clone() {
+        try {
+            Payment clone = (Payment) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

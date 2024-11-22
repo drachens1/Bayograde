@@ -10,6 +10,7 @@ public class FactionInviteEvent extends Event {
     private final Factions faction;
 
     public FactionInviteEvent(Country invited, Factions faction) {
+        super(invited.getInstance());
         this.invited = invited;
         this.faction = faction;
     }

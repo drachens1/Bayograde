@@ -11,6 +11,7 @@ public class DemandAcceptedEvent extends Event {
     private final Country to;
 
     public DemandAcceptedEvent(Demand demand, Country from, Country to) {
+        super(from.getInstance());
         this.demand = demand;
         this.from = from;
         this.to = to;

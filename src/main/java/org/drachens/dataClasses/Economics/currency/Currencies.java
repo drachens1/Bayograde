@@ -39,7 +39,6 @@ public class Currencies implements Cloneable {
         amount -= minus;
     }
 
-
     public Currencies clone() {
         try {
             return (Currencies) super.clone();

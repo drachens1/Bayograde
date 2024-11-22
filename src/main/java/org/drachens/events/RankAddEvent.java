@@ -9,6 +9,7 @@ public class RankAddEvent extends Event {
     private final Rank rank;
 
     public RankAddEvent(Player player, Rank rank) {
+        super(player.getInstance());
         this.player = player;
         this.rank = rank;
     }

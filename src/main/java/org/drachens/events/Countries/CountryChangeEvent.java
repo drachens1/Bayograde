@@ -10,6 +10,7 @@ public class CountryChangeEvent extends Event {
     private final CPlayer p;
 
     public CountryChangeEvent(Country joined, Country left, CPlayer p) {
+        super(p.getInstance());
         this.joined = joined;
         this.left = left;
         this.p = p;
