@@ -39,8 +39,8 @@ public class PlayerDataFile extends YamlFileType {
         cPlayer.setPlayTime(getPlaytime());
 
         getCosmetics().forEach(cPlayer::addCosmetic);
-        System.out.println(getCosmetics()+" Cosmetics");
-        System.out.println(cPlayer.getOwnedCosmetics() +" owned cosmetics");
+        System.out.println(getCosmetics() + " Cosmetics");
+        System.out.println(cPlayer.getOwnedCosmetics() + " owned cosmetics");
     }
 
     @Override
@@ -49,57 +49,57 @@ public class PlayerDataFile extends YamlFileType {
             String time = getTime();
             String date = new SimpleDateFormat("dd/MM/yy").format(new Date());
 
-            addDefault(p.getUuid().toString(),"Player_Info", "Identifiers", "UUID");
-            addDefault(p.getUsername(),"Player_Info","Identifiers","Username");
-            set(time,"Player_Info", "Activity", "LastOnline");
-            addDefault(time,"Player_Info","Activity","FirstJoined");
-            addDefault(date,"Player_Info", "Activity", "DailyPlaytime");
-            addDefault(0L,"Player_Info", "Activity", "TotalPlayTime");
-            addDefault(0,"Currencies","Gold");
-            addDefault("","Permissions");
-            addDefault("","Cosmetics");
-            addDefault("","Achievements");
+            addDefault(p.getUuid().toString(), "Player_Info", "Identifiers", "UUID");
+            addDefault(p.getUsername(), "Player_Info", "Identifiers", "Username");
+            set(time, "Player_Info", "Activity", "LastOnline");
+            addDefault(time, "Player_Info", "Activity", "FirstJoined");
+            addDefault(date, "Player_Info", "Activity", "DailyPlaytime");
+            addDefault(0L, "Player_Info", "Activity", "TotalPlayTime");
+            addDefault(0, "Currencies", "Gold");
+            addDefault("", "Permissions");
+            addDefault("", "Cosmetics");
+            addDefault("", "Achievements");
             save();
         } catch (SerializationException e) {
-            System.err.println("Error setting defaults "+e.getMessage());
+            System.err.println("Error setting defaults " + e.getMessage());
         }
     }
 
-    public long getPlaytime(){
+    public long getPlaytime() {
         return getConfigurationNode().node("Player_Info", "Activity", "TotalPlayTime").getLong();
     }
 
-    public void setPlaytime(Long playtime){
-        set(playtime,"Player_Info", "Activity", "TotalPlayTime");
+    public void setPlaytime(Long playtime) {
+        set(playtime, "Player_Info", "Activity", "TotalPlayTime");
         save();
     }
 
-    public int getGold(){
-        return getConfigurationNode().node("Currencies","Gold").getInt();
+    public int getGold() {
+        return getConfigurationNode().node("Currencies", "Gold").getInt();
     }
 
-    public void setGold(int gold){
-        set(gold,"Currencies","Gold");
+    public void setGold(int gold) {
+        set(gold, "Currencies", "Gold");
         save();
     }
 
-    public List<String> getPermissions(){
-        return stripEmpty(getFromList(String.class,"Permissions"));
+    public List<String> getPermissions() {
+        return stripEmpty(getFromList(String.class, "Permissions"));
     }
 
-    public void addPermission(String permission){
-        addToList(permission, String.class,"Permissions");
+    public void addPermission(String permission) {
+        addToList(permission, String.class, "Permissions");
     }
 
-    public List<String> getCosmetics(){
+    public List<String> getCosmetics() {
         return stripEmpty(getFromList(String.class, "Cosmetics"));
     }
 
-    public void addCosmetic(String cosmetic){
-        addToList(cosmetic, String.class,"Cosmetics");
+    public void addCosmetic(String cosmetic) {
+        addToList(cosmetic, String.class, "Cosmetics");
     }
 
-    public void removeCosmetic(String cosmetic){
-        addToList(cosmetic, String.class,"Cosmetics");
+    public void removeCosmetic(String cosmetic) {
+        addToList(cosmetic, String.class, "Cosmetics");
     }
 }

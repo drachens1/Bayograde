@@ -14,13 +14,13 @@ import java.util.List;
 
 public class Troop {
     private final ItemDisplay troop;
-    private ItemDisplay ally;
-    private ItemDisplay enemy;
-    private Province province;
     private final TroopType troopType;
     private final Country country;
     private final AStarPathfinderVoids troopPathing;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
+    private ItemDisplay ally;
+    private ItemDisplay enemy;
+    private Province province;
     private Task task;
     private Battle battle;
     private float strength;
@@ -131,12 +131,12 @@ public class Troop {
         setBattle(battle);
     }
 
-    public void setBattle(Battle battle) {
-        this.battle = battle;
-    }
-
     public Battle getBattle() {
         return battle;
+    }
+
+    public void setBattle(Battle battle) {
+        this.battle = battle;
     }
 
     public float getHealth() {

@@ -11,19 +11,19 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class InventoryUtil {
+    public static final int[] noneEdge = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43};
     private static final InventoryButton exit = new InventoryButton()
-            .creator(player -> itemBuilder(Material.BARRIER,compBuild("Exit", NamedTextColor.RED, TextDecoration.BOLD)))
+            .creator(player -> itemBuilder(Material.BARRIER, compBuild("Exit", NamedTextColor.RED, TextDecoration.BOLD)))
             .consumer(e -> e.getPlayer().closeInventory());
     private static final InventoryButton head = new InventoryButton()
             .creator(CPlayer::getPlayerHead)
             .consumer(e -> e.setCancelled(true));
 
-    public static final int[] noneEdge = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43};
-
-    public static void addExitButton(InventoryGUI inventoryGUI){
-        inventoryGUI.addButton(inventoryGUI.getInventory().getSize()-1,exit);
+    public static void addExitButton(InventoryGUI inventoryGUI) {
+        inventoryGUI.addButton(inventoryGUI.getInventory().getSize() - 1, exit);
     }
-    public static void outlineInventory(InventoryGUI inventory, InventoryButton inventoryButton){
+
+    public static void outlineInventory(InventoryGUI inventory, InventoryButton inventoryButton) {
         int rows = 6;
         int columns = 9;
         for (int i = 0; i < rows * columns; i++) {
@@ -35,7 +35,8 @@ public class InventoryUtil {
             }
         }
     }
-    public static void addPlayerHeadAtSlot(InventoryGUI inventory, int slot){
-        inventory.addButton(slot,head);
+
+    public static void addPlayerHeadAtSlot(InventoryGUI inventory, int slot) {
+        inventory.addButton(slot, head);
     }
 }

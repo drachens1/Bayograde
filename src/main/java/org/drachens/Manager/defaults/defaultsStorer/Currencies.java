@@ -12,7 +12,7 @@ public class Currencies {
 
     public void register(CurrencyTypes currencyTypes) {
         currencies.put(currencyTypes.getIdentifier(), currencyTypes);
-        if (names.contains(currencyTypes.getIdentifier()))return;
+        if (names.contains(currencyTypes.getIdentifier())) return;
         names.add(currencyTypes.getIdentifier());
     }
 
@@ -24,7 +24,8 @@ public class Currencies {
     public CurrencyTypes getCurrencyType(String name) {
         return currencies.get(name);
     }
-    public List<String> getCurrencyNames(){
+
+    public List<String> getCurrencyNames() {
         return names;
     }
 }

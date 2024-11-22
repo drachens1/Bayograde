@@ -5,8 +5,8 @@ import net.minestom.server.entity.Player;
 import java.util.HashMap;
 
 public class ScoreboardManager {
-    private HashMap<String, ContinentalScoreboards> scoreboards = new HashMap<>();
     private final HashMap<Player, ContinentalScoreboards> activeScoreboards = new HashMap<>();
+    private HashMap<String, ContinentalScoreboards> scoreboards = new HashMap<>();
 
     public void update(Player p) {
         activeScoreboards.get(p).update(p);
@@ -20,12 +20,12 @@ public class ScoreboardManager {
         scoreboards.put(name, continentalScoreboards);
     }
 
-    public void setScoreboards(HashMap<String, ContinentalScoreboards> scoreboards) {
-        this.scoreboards = scoreboards;
-    }
-
     public HashMap<String, ContinentalScoreboards> getScoreboards() {
         return scoreboards;
+    }
+
+    public void setScoreboards(HashMap<String, ContinentalScoreboards> scoreboards) {
+        this.scoreboards = scoreboards;
     }
 
     public ContinentalScoreboards getScoreboard(String name) {

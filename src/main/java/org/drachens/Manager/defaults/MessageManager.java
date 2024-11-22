@@ -57,7 +57,7 @@ public class MessageManager {
             Player player = e.getPlayer();
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
             if (p == null || provinceDelay.hasCooldown(player)) return;
-            player.sendMessage(p.getDescription((CPlayer)player));
+            player.sendMessage(p.getDescription((CPlayer) player));
             provinceDelay.startCooldown(player);
         });
 
@@ -183,25 +183,25 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(DemandCounterOfferEvent.class, e->{
+        globEHandler.addListener(DemandCounterOfferEvent.class, e -> {
             Country from = e.getFrom();
             Country to = e.getTo();
             to.sendMessage(Component.text()
-                            .append(country)
-                            .append(from.getNameComponent())
-                            .append(Component.text(" has started creating a counter offer",NamedTextColor.GREEN))
+                    .append(country)
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has started creating a counter offer", NamedTextColor.GREEN))
                     .build());
         });
 
-        globEHandler.addListener(DemandAcceptedEvent.class, e->{
+        globEHandler.addListener(DemandAcceptedEvent.class, e -> {
             Country from = e.getFrom();
             Country to = e.getTo();
             Component description = e.getDemand().description();
             from.sendMessage(Component.text()
-                            .append(country)
-                            .append(to.getNameComponent())
-                            .append(Component.text(" has accepted the demand\n"))
-                            .append(description)
+                    .append(country)
+                    .append(to.getNameComponent())
+                    .append(Component.text(" has accepted the demand\n"))
+                    .append(description)
                     .build());
             to.sendMessage(Component.text()
                     .append(country)
@@ -210,7 +210,7 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(DemandDeniedEvent.class, e->{
+        globEHandler.addListener(DemandDeniedEvent.class, e -> {
             Country from = e.getFrom();
             Country to = e.getTo();
             Component description = e.getDemand().description();
@@ -227,33 +227,33 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(DemandCompletionEvent.class, e->{
+        globEHandler.addListener(DemandCompletionEvent.class, e -> {
             Country from = e.getFrom();
             Country to = e.getTo();
             to.sendMessage(Component.text()
-                            .append(country)
-                            .append(from.getNameComponent())
-                            .append(Component.text(" has sent you a demand\n"))
-                            .append(e.getDemand().description())
+                    .append(country)
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has sent you a demand\n"))
+                    .append(e.getDemand().description())
                     .append(Component.text()
-                            .append(Component.text("[Accept]",NamedTextColor.GREEN, TextDecoration.BOLD))
-                            .hoverEvent(Component.text("Click to accept the demands",NamedTextColor.GREEN))
+                            .append(Component.text("[Accept]", NamedTextColor.GREEN, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to accept the demands", NamedTextColor.GREEN))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy demand accept")))
                     .append(Component.text()
-                            .append(Component.text(" [Refuse]",NamedTextColor.RED, TextDecoration.BOLD))
-                            .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.RED))
+                            .append(Component.text(" [Refuse]", NamedTextColor.RED, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy demand refuse")))
                     .appendNewline()
-                    .append(Component.text("View: ",NamedTextColor.GREEN,TextDecoration.UNDERLINED,TextDecoration.BOLD))
+                    .append(Component.text("View: ", NamedTextColor.GREEN, TextDecoration.UNDERLINED, TextDecoration.BOLD))
                     .appendNewline()
                     .append(Component.text()
-                            .append(Component.text(" [On]",NamedTextColor.GREEN, TextDecoration.BOLD))
-                            .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.GREEN))
+                            .append(Component.text(" [On]", NamedTextColor.GREEN, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.GREEN))
                             .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
                             .build())
                     .append(Component.text()
-                            .append(Component.text(" [Off]",NamedTextColor.RED, TextDecoration.BOLD))
-                            .hoverEvent(Component.text("Click to refuse the demands",NamedTextColor.RED))
+                            .append(Component.text(" [Off]", NamedTextColor.RED, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
                             .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
                             .build())
                     .build());

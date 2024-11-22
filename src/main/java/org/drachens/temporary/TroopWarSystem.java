@@ -22,10 +22,10 @@ import java.util.HashMap;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 
 public class TroopWarSystem implements War {
-    int[][] attack = {{3000, 1}, {200, 2}, {300, 3}};
-    int[] moving = {5, 4, 6, 4};
     private final TroopType troopType;
     private final TroopPathing troopPathing = new TroopPathing();
+    int[][] attack = {{3000, 1}, {200, 2}, {300, 3}};
+    int[] moving = {5, 4, 6, 4};
 
     public TroopWarSystem() {
         troopType = new TroopType(

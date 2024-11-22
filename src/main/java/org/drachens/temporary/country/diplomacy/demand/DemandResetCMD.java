@@ -12,30 +12,34 @@ import org.drachens.dataClasses.Countries.Country;
 
 public class DemandResetCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
+
     public DemandResetCMD() {
         super("reset");
-        setCondition((sender,s)->hasDemand(sender));
+        setCondition((sender, s) -> hasDemand(sender));
         var types1 = ArgumentType.String("types1")
-                .setSuggestionCallback((sender,context,suggestion)->{
-                    if (!hasDemand(sender))return;
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!hasDemand(sender)) return;
                     suggestion.addEntry(new SuggestionEntry("demanded"));
                     suggestion.addEntry(new SuggestionEntry("offer"));
                 });
 
         var types2 = ArgumentType.String("types2")
-                .setSuggestionCallback((sender,context,suggestion)->{
-                    if (!hasDemand(sender))return;
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!hasDemand(sender)) return;
                     String start = context.get(types1);
                     if (start.equalsIgnoreCase("demanded"))
-                    suggestion.addEntry(new SuggestionEntry("annexation"));
+                        suggestion.addEntry(new SuggestionEntry("annexation"));
                     suggestion.addEntry(new SuggestionEntry("provinces"));
                     suggestion.addEntry(new SuggestionEntry("puppets"));
                     suggestion.addEntry(new SuggestionEntry("payments"));
                 });
 
-        addSyntax((sender,context)->{},types1);
-        addSyntax((sender,context)->{},types1,types2);
+        addSyntax((sender, context) -> {
+        }, types1);
+        addSyntax((sender, context) -> {
+        }, types1, types2);
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
@@ -44,7 +48,8 @@ public class DemandResetCMD extends Command {
         }
         return false;
     }
-    private boolean hasDemand(CommandSender sender){
+
+    private boolean hasDemand(CommandSender sender) {
         return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
     }
 }

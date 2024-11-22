@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class TrainedTroop {
     private final Country country;
-    private float strength = 100f;
     private final TroopType troopType;
+    private float strength = 100f;
     private DivisionDesign design;
     private float time;
 

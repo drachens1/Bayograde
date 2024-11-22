@@ -29,82 +29,82 @@ public class Vault {
         this.amount.putAll(startingCurrencies);
     }
 
-    public void setCurrency(Currencies currency){
-        amount.put(currency.getCurrencyType(),currency);
+    public void setCurrency(Currencies currency) {
+        amount.put(currency.getCurrencyType(), currency);
     }
 
-    public void addPayment(Payment payment){
+    public void addPayment(Payment payment) {
         if (!amount.containsKey(payment.getCurrencyType())) {
-            amount.put(payment.getCurrencyType(),new Currencies(payment.getCurrencyType(),payment.getAmount()));
-        }else {
+            amount.put(payment.getCurrencyType(), new Currencies(payment.getCurrencyType(), payment.getAmount()));
+        } else {
             amount.get(payment.getCurrencyType()).add(payment);
         }
     }
 
-    public void minusPayment(Payment payment){
+    public void minusPayment(Payment payment) {
         if (!amount.containsKey(payment.getCurrencyType())) {
-            amount.put(payment.getCurrencyType(),new Currencies(payment.getCurrencyType(),-payment.getAmount()));
-        }else {
+            amount.put(payment.getCurrencyType(), new Currencies(payment.getCurrencyType(), -payment.getAmount()));
+        } else {
             amount.get(payment.getCurrencyType()).minus(payment);
         }
     }
 
-    public void addPayments(Payments payments){
+    public void addPayments(Payments payments) {
         payments.getPayments().forEach(this::addPayment);
     }
 
-    public void minusPayments(Payments payments){
+    public void minusPayments(Payments payments) {
         payments.getPayments().forEach(this::minusPayment);
     }
 
-    public void addLoan(Loan loan){
+    public void addLoan(Loan loan) {
         loans.add(loan);
     }
 
-    public void calculateIncrease(){
+    public void calculateIncrease() {
         Factory factory = (Factory) ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
-        List<Building> buildings =  country.getBuildings(factory);
-        if (buildings==null)return;
+        List<Building> buildings = country.getBuildings(factory);
+        if (buildings == null) return;
         Payments toCountry = new Payments();
         Payments toOverlord = new Payments();
-        boolean overlord = country.getOverlord()!=null;
+        boolean overlord = country.getOverlord() != null;
         buildings.forEach(building -> {
             Payments payments = factory.generate(building);
-            if (overlord){
+            if (overlord) {
                 Payments toCountry2 = new Payments(payments);
                 toCountry2.multiply(0.8f);
                 payments.multiply(0.2f);
                 toOverlord.addPayments(payments);
                 toCountry.addPayments(toCountry2);
-            }else {
+            } else {
                 toCountry.addPayments(payments);
             }
         });
         addPayments(toCountry);
-        if (overlord){
+        if (overlord) {
             country.getOverlord().addPayments(toOverlord);
         }
     }
 
-    public boolean canMinus(Payment payment){
-        if (!amount.containsKey(payment.getCurrencyType()))return false;
-        return amount.get(payment.getCurrencyType()).getAmount()>payment.getAmount();
+    public boolean canMinus(Payment payment) {
+        if (!amount.containsKey(payment.getCurrencyType())) return false;
+        return amount.get(payment.getCurrencyType()).getAmount() > payment.getAmount();
     }
 
-    public boolean canMinus(Payments payments){
-        for (Payment payment : payments.getPayments()){
-            if (!amount.containsKey(payment.getCurrencyType()))return false;
-            if (!(amount.get(payment.getCurrencyType()).getAmount()>payment.getAmount()))return false;
+    public boolean canMinus(Payments payments) {
+        for (Payment payment : payments.getPayments()) {
+            if (!amount.containsKey(payment.getCurrencyType())) return false;
+            if (!(amount.get(payment.getCurrencyType()).getAmount() > payment.getAmount())) return false;
         }
         return true;
     }
 
-    public float subtractMaxAmountPossible(Payment payment){
-        if (canMinus(payment)){
+    public float subtractMaxAmountPossible(Payment payment) {
+        if (canMinus(payment)) {
             minusPayment(payment);
             return 0f;
         }
-        return amount.containsKey(payment.getCurrencyType()) ? payment.getAmount()-amount.get(payment.getCurrencyType()).getAmount() : payment.getAmount();
+        return amount.containsKey(payment.getCurrencyType()) ? payment.getAmount() - amount.get(payment.getCurrencyType()).getAmount() : payment.getAmount();
     }
 
     public int createScoreboard(int start, Sidebar scoreBoard) {

@@ -21,16 +21,14 @@ import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
 import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.MessageManager;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
-import org.drachens.Manager.defaults.MessageManager;
-import org.drachens.Manager.defaults.scheduler.SchedulerRunnable;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
@@ -55,7 +53,6 @@ import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
-import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -65,9 +62,7 @@ import org.drachens.events.NewDay;
 import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
-import org.drachens.events.System.StartGameEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
-import org.drachens.interfaces.Event;
 import org.drachens.interfaces.VotingOption;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
@@ -89,6 +84,7 @@ public class ServerUtil {
     private static final List<Chunk> allowedChunks = new ArrayList<>();
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
     private static final List<Player> cooldown = new ArrayList<>();
+    private static final HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
     private static GlobalEventHandler globalEventHandler;
 
@@ -125,8 +121,6 @@ public class ServerUtil {
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) p.kick("Server closed");
         MinecraftServer.stopCleanly();
     }
-
-    private static final HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
 
     public static void setupAll(List<Command> cmd, ScoreboardManager scoreboardManager) {
         setup();
@@ -284,8 +278,8 @@ public class ServerUtil {
         BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
 
         ContinentalSchedulerManager schedulerManager = ContinentalManagers.schedulerManager;
-        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class,e -> {
-            if (!(e instanceof NewDay newDay))return;
+        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
+            if (!(e instanceof NewDay newDay)) return;
             ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.getVault().calculateIncrease());
 
         }).setDelay(7).repeat().schedule());

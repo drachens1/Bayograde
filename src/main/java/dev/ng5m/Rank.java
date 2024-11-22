@@ -14,11 +14,11 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public class Rank {
-    private final List<UUID> players = new ArrayList<>();
     public final Function<Player, Component> displayNameSupplier;
     public final Component prefix;
     public final Component suffix;
     public final NamedTextColor color;
+    private final List<UUID> players = new ArrayList<>();
     private final String team;
 
     public Rank(Function<Player, Component> displayNameSupplier, Component prefix, Component suffix, NamedTextColor color, String name) {

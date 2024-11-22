@@ -4,14 +4,16 @@ import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 
 public class Loan {
-    private float balanceToPayOff;
     private final CurrencyTypes currencyTypes;
-    public Loan(float toPay, CurrencyTypes currencyTypes){
-        this.balanceToPayOff=toPay;
-        this.currencyTypes=currencyTypes;
+    private float balanceToPayOff;
+
+    public Loan(float toPay, CurrencyTypes currencyTypes) {
+        this.balanceToPayOff = toPay;
+        this.currencyTypes = currencyTypes;
     }
-    public void payOff(Payment payment){
-        if (payment.getCurrencyType()!=currencyTypes)return;
-        balanceToPayOff+=payment.getAmount();
+
+    public void payOff(Payment payment) {
+        if (payment.getCurrencyType() != currencyTypes) return;
+        balanceToPayOff += payment.getAmount();
     }
 }

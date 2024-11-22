@@ -188,7 +188,7 @@ public class ConfigFileManager {
     }
 
     private void addDefault(ConfigurationNode c, Object data, Object... path) throws SerializationException {
-        if (c.node(path).isNull()){
+        if (c.node(path).isNull()) {
             c.node(path).set(data);
         }
     }

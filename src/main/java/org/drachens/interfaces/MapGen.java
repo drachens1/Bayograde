@@ -6,9 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MapGen {
+    private final List<Instance> generating = new ArrayList<>();
     private int sizeX;
     private int sizeY;
-    private final List<Instance> generating = new ArrayList<>();
+
+    public MapGen(int sizeX, int sizeY) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+    }
 
     public abstract void generate(Instance instance, VotingOption votingOption);
 
@@ -18,11 +23,6 @@ public abstract class MapGen {
 
     public int getSizeY() {
         return sizeY;
-    }
-
-    public MapGen(int sizeX, int sizeY) {
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
     }
 
     public void addGenerating(Instance instance) {

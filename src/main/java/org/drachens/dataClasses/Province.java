@@ -33,7 +33,6 @@ public class Province implements Serializable {
     private final ProvinceManager provinceManager;
     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
             Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
-    private Building building;
     private final Pos[] directions = {
             new Pos(-1, 0, 0), // West
             new Pos(1, 0, 0),  // East
@@ -44,6 +43,7 @@ public class Province implements Serializable {
     private final int[][] directions2 = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},
     };
+    private Building building;
     private Country occupier;
     private boolean capturable = true;
     private Material material;
@@ -92,33 +92,37 @@ public class Province implements Serializable {
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
     }
-    public Component getDescription(CPlayer p){
+
+    public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
-        if (outdatedDescriptions){
+        if (outdatedDescriptions) {
             description = createPublicDescription();
             secretDescription = createSecretDescription();
         }
-        if (country != null && (country==occupier||country.isAlly(occupier))){
+        if (country != null && (country == occupier || country.isAlly(occupier))) {
             return secretDescription;
         }
 
         return description;
     }
-    private Component createPublicDescription(){
+
+    private Component createPublicDescription() {
         return createProvinceDescription();
     }
-    private Component createSecretDescription(){
-        if (isCity()){
-            if (occupier.getCapital()==this)
+
+    private Component createSecretDescription() {
+        if (isCity()) {
+            if (occupier.getCapital() == this)
                 return createSecretCapitalDescription();
             return createSecretCityDescription();
         }
         return createSecretProvinceDescription();
     }
-    private Component createProvinceDescription(){
+
+    private Component createProvinceDescription() {
         return Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
-                .append(Component.text("Province", TextColor.color(51,129,255)))
+                .append(Component.text("Province", TextColor.color(51, 129, 255)))
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
@@ -127,16 +131,17 @@ public class Province implements Serializable {
                 .appendNewline()
                 .build();
     }
-    private Component createSecretCapitalDescription(){
+
+    private Component createSecretCapitalDescription() {
         List<Component> comps = new ArrayList<>();
-        if (building!=null){
+        if (building != null) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text(building.getBuildTypes().getIdentifier()))
                     .append(Component.text(" lvl: "))
                     .append(Component.text(building.getCurrentLvl()))
                     .build());
-        }else {
+        } else {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text("empty"))
@@ -145,7 +150,7 @@ public class Province implements Serializable {
 
         return Component.text()
                 .append(Component.text("________/", NamedTextColor.BLUE))
-                .append(Component.text("Capital",TextColor.color(51,129,255)))
+                .append(Component.text("Capital", TextColor.color(51, 129, 255)))
                 .append(Component.text("\\________", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
@@ -155,16 +160,17 @@ public class Province implements Serializable {
                 .appendNewline()
                 .build();
     }
-    private Component createSecretCityDescription(){
+
+    private Component createSecretCityDescription() {
         List<Component> comps = new ArrayList<>();
-        if (building!=null){
+        if (building != null) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text(building.getBuildTypes().getIdentifier()))
                     .append(Component.text(" lvl: "))
                     .append(Component.text(building.getCurrentLvl()))
                     .build());
-        }else {
+        } else {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text("empty"))
@@ -172,7 +178,7 @@ public class Province implements Serializable {
         }
         return Component.text()
                 .append(Component.text("__________/", NamedTextColor.BLUE))
-                .append(Component.text("City",TextColor.color(51,129,255)))
+                .append(Component.text("City", TextColor.color(51, 129, 255)))
                 .append(Component.text("\\_________", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
@@ -182,16 +188,17 @@ public class Province implements Serializable {
                 .appendNewline()
                 .build();
     }
-    private Component createSecretProvinceDescription(){
+
+    private Component createSecretProvinceDescription() {
         List<Component> comps = new ArrayList<>();
-        if (building!=null){
+        if (building != null) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text(building.getBuildTypes().getIdentifier()))
                     .append(Component.text(" lvl: "))
                     .append(Component.text(building.getCurrentLvl()))
                     .build());
-        }else {
+        } else {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text("empty"))
@@ -199,7 +206,7 @@ public class Province implements Serializable {
         }
         return Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
-                .append(Component.text("Province",TextColor.color(51,129,255)))
+                .append(Component.text("Province", TextColor.color(51, 129, 255)))
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
@@ -387,12 +394,12 @@ public class Province implements Serializable {
         }
     }
 
-    public void setNeighbours(List<Province> provinces) {
-        this.neighbours = provinces;
-    }
-
     public List<Province> getNeighbours() {
         return neighbours;
+    }
+
+    public void setNeighbours(List<Province> provinces) {
+        this.neighbours = provinces;
     }
 
     public void addBuilding(Building building) {

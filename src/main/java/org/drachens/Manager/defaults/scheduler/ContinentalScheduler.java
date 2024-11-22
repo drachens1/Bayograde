@@ -9,12 +9,12 @@ import java.util.HashMap;
 public class ContinentalScheduler {
     private final Class<? extends Event> event;
     private final SchedulerRunnable runnable;
-    private boolean global;
     private final Instance instance;
     private final HashMap<Instance, Integer> globalDelay = new HashMap<>();
     private final int intermission;
     private final boolean repeat;
     private final ContinentalSchedulerManager schedulerManager = ContinentalManagers.schedulerManager;
+    private boolean global;
     private int count = 0;
 
     private ContinentalScheduler(Create create) {
@@ -80,12 +80,6 @@ public class ContinentalScheduler {
             this.runnable = runnable;
         }
 
-        // Set the instance
-        public Create setInstance(Instance instance) {
-            this.instance = instance;
-            return this;
-        }
-
         // Set delay (intermission)
         public Create setDelay(int intermission) {
             this.intermission = intermission;
@@ -112,6 +106,12 @@ public class ContinentalScheduler {
 
         public Instance getInstance() {
             return instance;
+        }
+
+        // Set the instance
+        public Create setInstance(Instance instance) {
+            this.instance = instance;
+            return this;
         }
 
         public int getIntermission() {

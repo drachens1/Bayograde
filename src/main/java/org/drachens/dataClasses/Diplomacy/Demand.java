@@ -47,5 +47,6 @@ public abstract class Demand {
     }
 
     protected abstract void onCompleted();
+
     public abstract void copyButOpposite(Demand demand);
 }

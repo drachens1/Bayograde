@@ -23,10 +23,11 @@ public abstract class StoreItem {
     private final Component name;
     private final Component description;
     private final int modelData;
-    private final Component canAfford = compBuild("Can afford",NamedTextColor.GREEN, TextDecoration.BOLD);
-    private final Component cantAfford = compBuild("Cant afford",NamedTextColor.RED, TextDecoration.BOLD);
-    private final Component purchased = compBuild("purchased",NamedTextColor.GREEN, TextDecoration.BOLD);
-    public StoreItem(String identifier ,int cost, Material material, Component name, int modelData){
+    private final Component canAfford = compBuild("Can afford", NamedTextColor.GREEN, TextDecoration.BOLD);
+    private final Component cantAfford = compBuild("Cant afford", NamedTextColor.RED, TextDecoration.BOLD);
+    private final Component purchased = compBuild("purchased", NamedTextColor.GREEN, TextDecoration.BOLD);
+
+    public StoreItem(String identifier, int cost, Material material, Component name, int modelData) {
         this.cost = cost;
         this.material = material;
         this.name = name;
@@ -41,7 +42,8 @@ public abstract class StoreItem {
                 .append(Component.text(cost))
                 .build();
     }
-    public StoreItem(String identifier ,int cost, Material material, Component name, Component description, int modelData){
+
+    public StoreItem(String identifier, int cost, Material material, Component name, Component description, int modelData) {
         this.cost = cost;
         this.material = material;
         this.name = name;
@@ -56,58 +58,67 @@ public abstract class StoreItem {
                 .append(Component.text(cost))
                 .build();
     }
-    public ItemStack getItem(CPlayer p){
-        if (description!=null){
-            return itemBuilder(material,name,modelData,getDescription(p));
+
+    public ItemStack getItem(CPlayer p) {
+        if (description != null) {
+            return itemBuilder(material, name, modelData, getDescription(p));
         }
-        return itemBuilder(material,name,modelData,getDescription(p));
+        return itemBuilder(material, name, modelData, getDescription(p));
     }
-    public ItemStack getBoughtItem(CPlayer p){
-        return itemBuilder(material,name,modelData,getBoughtDescription(p));
+
+    public ItemStack getBoughtItem(CPlayer p) {
+        return itemBuilder(material, name, modelData, getBoughtDescription(p));
     }
-    public List<Component> getBoughtDescription(CPlayer p){
+
+    public List<Component> getBoughtDescription(CPlayer p) {
         List<Component> comps = new ArrayList<>();
-        if (description!=null)
+        if (description != null)
             comps.add(description);
         return comps;
     }
-    public List<Component> getDescription(CPlayer p){
+
+    public List<Component> getDescription(CPlayer p) {
         List<Component> comps = new ArrayList<>();
         comps.add(Component.text().append(Component.text("Costs: ")).append(Component.text(cost)).appendNewline().build());
-        if (description!=null)
+        if (description != null)
             comps.add(description);
-        if (p.hasCosmetic(identifier)){
+        if (p.hasCosmetic(identifier)) {
             comps.add(purchased);
-        }else {
-            if (p.getGold()>=cost){
+        } else {
+            if (p.getGold() >= cost) {
                 comps.add(canAfford);
-            }else {
+            } else {
                 comps.add(cantAfford);
             }
         }
         return comps;
     }
-    public boolean canBuy(CPlayer p){
-        return p.getGold()>=cost;
+
+    public boolean canBuy(CPlayer p) {
+        return p.getGold() >= cost;
     }
-    public void purchase(CPlayer p){
+
+    public void purchase(CPlayer p) {
         p.sendMessage(boughtMessage);
         p.minusGold(cost);
-        ContinentalManagers.cosmeticsManager.addCosmetic(p,identifier);
+        ContinentalManagers.cosmeticsManager.addCosmetic(p, identifier);
         onPurchase(p);
     }
+
     protected abstract void onPurchase(CPlayer p);
 
-    public void clickAfterBought(CPlayer p){
+    public void clickAfterBought(CPlayer p) {
         p.sendMessage(Component.text()
-                        .append(getPrefixes("system"))
-                        .append(Component.text("Equipped ",NamedTextColor.GREEN))
-                        .append(name)
+                .append(getPrefixes("system"))
+                .append(Component.text("Equipped ", NamedTextColor.GREEN))
+                .append(name)
                 .build());
         onClickAfterBought(p);
     }
+
     protected abstract void onClickAfterBought(CPlayer p);
-    public String getIdentifier(){
+
+    public String getIdentifier() {
         return identifier;
     }
 }

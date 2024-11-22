@@ -8,9 +8,9 @@ import java.time.temporal.ChronoUnit;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Animation extends AnimationType {
-    private long delayBetween;
     private final int[] frames;
     private final Material item;
+    private long delayBetween;
 
     public Animation(long delayBetween, Material item, int[] frames) {
         this.delayBetween = delayBetween;

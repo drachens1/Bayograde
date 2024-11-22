@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Region {
-    private List<Country> countries = new ArrayList<>();
-    private List<Province> provinces = new ArrayList<>();
     private final IdeologyTypes leadingIdeology;
     private final ElectionTypes leadingElectionType;
+    private List<Country> countries = new ArrayList<>();
+    private List<Province> provinces = new ArrayList<>();
     private String name;
 
     public Region(String name, IdeologyTypes leadingIdeology, ElectionTypes leadingElectionType) {

@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TextDisplay extends Clientside {
+    private final boolean followPlayer;
     public Component text;
     public int lineWidth;
     public int backgroundColor;
     public byte opacity;
     public byte bitmask;
-    private final boolean followPlayer;
     private EntityMetaDataPacket entityMetaDataPacket;
     private EntityTeleportPacket entityTeleportPacket;
 
@@ -150,14 +150,14 @@ public class TextDisplay extends Clientside {
 
     public static class create {
         private final Instance instance;
-        private Pos pos;
         private final Component text;
+        private final boolean storeViewers = true;
         public int lineWidth = 200;
         public int backgroundColor = 1;
         public byte opacity = 1;
         public byte bitmask = 1;
+        private Pos pos;
         private boolean followPlayer = false;
-        private final boolean storeViewers = true;
 
         public create(Pos pos, Instance instance, Component text) {
             this.pos = pos;

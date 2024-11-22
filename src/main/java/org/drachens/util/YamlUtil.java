@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class YamlUtil {
-    public static void addToList(ConfigurationNode configurationNode, String s){
+    public static void addToList(ConfigurationNode configurationNode, String s) {
         try {
             List<String> list = configurationNode.getList(String.class);
             if (list == null) {
@@ -20,10 +20,11 @@ public class YamlUtil {
 
             configurationNode.setList(String.class, list);
         } catch (SerializationException e) {
-            System.err.println("Error adding "+ s + " " + e.getMessage());
+            System.err.println("Error adding " + s + " " + e.getMessage());
         }
     }
-    public static void removeFromList(ConfigurationNode configurationNode, String s){
+
+    public static void removeFromList(ConfigurationNode configurationNode, String s) {
         try {
             List<String> list = configurationNode.getList(String.class);
             if (list == null) {
@@ -34,10 +35,11 @@ public class YamlUtil {
 
             configurationNode.setList(String.class, list);
         } catch (SerializationException e) {
-            System.err.println("Error adding "+ s + " " + e.getMessage());
+            System.err.println("Error adding " + s + " " + e.getMessage());
         }
     }
-    public static List<String> loadFromList(ConfigurationNode configurationNode){
+
+    public static List<String> loadFromList(ConfigurationNode configurationNode) {
         try {
             return configurationNode.getList(String.class);
         } catch (SerializationException e) {

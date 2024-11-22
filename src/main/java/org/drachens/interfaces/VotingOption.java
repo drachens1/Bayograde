@@ -54,12 +54,12 @@ public class VotingOption {
         return war;
     }
 
-    public void setMapGenerator(MapGen mapGenerator) {
-        this.mapGenerator = mapGenerator;
-    }
-
     public MapGen getMapGenerator() {
         return mapGenerator;
+    }
+
+    public void setMapGenerator(MapGen mapGenerator) {
+        this.mapGenerator = mapGenerator;
     }
 
     public int getCountries() {

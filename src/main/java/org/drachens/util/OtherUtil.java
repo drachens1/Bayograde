@@ -10,6 +10,7 @@ public class OtherUtil {
                 0f, (float) Math.cos(half)
         };
     }
+
     public static String formatPlaytime(long seconds) {
         long months = seconds / (30L * 24 * 60 * 60);
         seconds %= (30L * 24 * 60 * 60);
@@ -38,7 +39,7 @@ public class OtherUtil {
             formattedTime.append(minutes).append(" Minute").append(minutes > 1 ? "s" : "").append(" ");
         }
 
-        if (seconds>0){
+        if (seconds > 0) {
             formattedTime.append(seconds).append(" Second").append(seconds != 1 ? "s" : "");
         }
 

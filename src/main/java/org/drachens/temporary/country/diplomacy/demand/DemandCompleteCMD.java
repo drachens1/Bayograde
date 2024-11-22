@@ -14,23 +14,25 @@ import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class DemandCompleteCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
+
     public DemandCompleteCMD() {
         super("complete");
         Component prefix = getPrefixes("country");
-        if (prefix==null)return;
+        if (prefix == null) return;
         Component exited = Component.text()
                 .append(prefix)
                 .append(Component.text("Completed the demand", NamedTextColor.GREEN))
                 .build();
-        setCondition((sender,s)->hasDemand(sender));
-        addSyntax((sender,context)->{
-            if (!hasDemand(sender))return;
+        setCondition((sender, s) -> hasDemand(sender));
+        addSyntax((sender, context) -> {
+            if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             demandManager.getDemand(p).complete();
             demandManager.removeActive(p);
             p.sendMessage(exited);
         });
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
@@ -39,7 +41,8 @@ public class DemandCompleteCMD extends Command {
         }
         return false;
     }
-    private boolean hasDemand(CommandSender sender){
+
+    private boolean hasDemand(CommandSender sender) {
         return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
     }
 }

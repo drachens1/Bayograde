@@ -59,6 +59,13 @@ public class ItemDisplay extends Clientside {
         return pos;
     }
 
+    public void setPos(Pos pos) {
+        this.pos = pos;
+        entityTeleportPacket = new EntityTeleportPacket(this.entityId, this.pos, false);
+        PacketUtils.sendGroupedPacket(VIEWERS, entityTeleportPacket);
+
+    }
+
     public void setActive(AnimationType active) {
         cancelAnimation();
         this.active = active;
@@ -108,13 +115,6 @@ public class ItemDisplay extends Clientside {
         Pos pos = province.getPos();
         pos = pos.add(0.5, 1.5, 0.5);
         setPos(pos);
-    }
-
-    public void setPos(Pos pos) {
-        this.pos = pos;
-        entityTeleportPacket = new EntityTeleportPacket(this.entityId, this.pos, false);
-        PacketUtils.sendGroupedPacket(VIEWERS, entityTeleportPacket);
-
     }
 
     @Override

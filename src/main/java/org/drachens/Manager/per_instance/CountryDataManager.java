@@ -18,12 +18,12 @@ import static org.drachens.util.KyoriUtil.compBuild;
 public class CountryDataManager {
     private final List<String> countryNameList = new ArrayList<>();
     private final HashMap<String, Country> countryHashMap = new HashMap<>();
-    private List<Country> countries;
-    private Team defaultTeam;
     private final Instance instance;
     private final HashMap<String, Factions> factionsHashMap = new HashMap<>();
     private final List<Factions> factions = new ArrayList<>();
     private final List<String> factionNames = new ArrayList<>();
+    private List<Country> countries;
+    private Team defaultTeam;
 
     public CountryDataManager(Instance instance, List<Country> countries) {
         this.instance = instance;

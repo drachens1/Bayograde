@@ -12,9 +12,10 @@ import java.util.List;
 
 public abstract class YamlFileType {
     private final String identifier;
-    private ConfigurationNode c;
     private final YamlConfigurationLoader configurationLoader;
-    public YamlFileType(String name, String path){
+    private ConfigurationNode c;
+
+    public YamlFileType(String name, String path) {
         this.identifier = name;
         File file = new File(path);
         fileExists(file);
@@ -24,7 +25,7 @@ public abstract class YamlFileType {
         try {
             c = configurationLoader.load();
         } catch (ConfigurateException e) {
-            System.err.println("Unable to load file "+ name + e.getMessage());
+            System.err.println("Unable to load file " + name + e.getMessage());
         }
         System.out.println(path);
     }
@@ -39,28 +40,29 @@ public abstract class YamlFileType {
         }
     }
 
-    public void save(){
+    public void save() {
         try {
             configurationLoader.save(c);
         } catch (ConfigurateException e) {
-            System.err.println("Error saving "+identifier+" "+e.getMessage());
+            System.err.println("Error saving " + identifier + " " + e.getMessage());
         }
     }
 
-    public ConfigurationNode getConfigurationNode(){
+    public ConfigurationNode getConfigurationNode() {
         return c;
     }
 
     protected void addDefault(Object data, Object... path) throws SerializationException {
-        if (c.node(path).isNull()){
+        if (c.node(path).isNull()) {
             c.node(path).set(data);
         }
     }
+
     protected void set(Object data, Object... path) {
         try {
             c.node(path).set(data);
         } catch (SerializationException e) {
-            System.err.println("Error setting data "+e.getMessage());
+            System.err.println("Error setting data " + e.getMessage());
         }
 
     }
@@ -83,7 +85,7 @@ public abstract class YamlFileType {
         }
     }
 
-    protected <T> void removeFromList(T data, Class<T> clazz, Object... path){
+    protected <T> void removeFromList(T data, Class<T> clazz, Object... path) {
         ConfigurationNode newNode = c.node(path);
         try {
             List<T> list = newNode.getList(clazz);
@@ -95,21 +97,25 @@ public abstract class YamlFileType {
             newNode.setList(clazz, list);
             save();
         } catch (SerializationException e) {
-            System.err.println("Error adding "+ data + " " + e.getMessage());
+            System.err.println("Error adding " + data + " " + e.getMessage());
         }
     }
+
     protected <T> List<T> getFromList(Class<T> clazz, Object... path) {
         try {
             return c.node(path).getList(clazz);
         } catch (SerializationException e) {
-            System.err.println("Error getting from list "+e.getMessage());
+            System.err.println("Error getting from list " + e.getMessage());
             return new ArrayList<>();
         }
     }
-    protected List<String> stripEmpty(List<String> list){
+
+    protected List<String> stripEmpty(List<String> list) {
         list.removeIf(String::isEmpty);
         return list;
     }
+
     protected abstract void initialLoad();
+
     protected abstract void setDefaults();
 }

@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Factions {
+    private final List<Country> members;
+    private final List<Country> invites;
+    private final Modifier modifier;
+    private final CountryDataManager countryDataManager;
     private Country leader;
     private String name;
     private Component description;
-    private final List<Country> members;
-    private final List<Country> invites;
     private Component nameComponent;
-    private final Modifier modifier;
-    private final CountryDataManager countryDataManager;
 
     public Factions(Country leader, String name, Modifier modifier) {
         this.leader = leader;
@@ -65,6 +65,11 @@ public abstract class Factions {
 
     public Country getLeader() {
         return leader;
+    }
+
+    public void setLeader(Country country) {
+        this.leader = country;
+        EventDispatcher.call(new FactionSetLeaderEvent(this, country));
     }
 
     public List<Country> getMembers() {
@@ -138,11 +143,6 @@ public abstract class Factions {
 
     public boolean isLeader(Country country) {
         return leader == country;
-    }
-
-    public void setLeader(Country country) {
-        this.leader = country;
-        EventDispatcher.call(new FactionSetLeaderEvent(this, country));
     }
 
     public Modifier getModifier() {

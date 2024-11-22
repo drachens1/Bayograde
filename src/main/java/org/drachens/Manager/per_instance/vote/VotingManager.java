@@ -25,9 +25,9 @@ import static org.drachens.util.Messages.broadcast;
 
 public class VotingManager {
     private final HashMap<VotingOption, List<Player>> votes = new HashMap<>();
-    private boolean voted = false;
     private final VoteBar voteBar;
     private final Instance instance;
+    private boolean voted = false;
     private Task task;
     private VotingOption winner;
 

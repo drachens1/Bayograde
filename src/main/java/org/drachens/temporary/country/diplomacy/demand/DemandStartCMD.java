@@ -21,6 +21,7 @@ import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class DemandStartCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
+
     public DemandStartCMD() {
         super("start");
         setCondition((sender, s) -> valid(sender));
@@ -31,8 +32,8 @@ public class DemandStartCMD extends Command {
 
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!isLeaderOfCountry(sender)) return;
-            CPlayer p = (CPlayer) sender ;
-            if (demandManager.isPlayerActive(p)){
+            CPlayer p = (CPlayer) sender;
+            if (demandManager.isPlayerActive(p)) {
                 p.refreshCommands();
                 return;
             }
@@ -60,12 +61,12 @@ public class DemandStartCMD extends Command {
             }
             Demand demand = new WW2Demands(from, to);
             p.sendMessage(Component.text()
-                            .append(countryPrefix)
-                            .append(Component.text("You have started creating a demand against "))
-                            .append(to.getNameComponent())
+                    .append(countryPrefix)
+                    .append(Component.text("You have started creating a demand against "))
+                    .append(to.getNameComponent())
                     .build());
             demandManager.addActive(p, demand);
-            inventoryManager.assignInventory(p,"demand");
+            inventoryManager.assignInventory(p, "demand");
         }, countries);
     }
 
@@ -77,7 +78,8 @@ public class DemandStartCMD extends Command {
         }
         return false;
     }
-    private boolean valid(CommandSender sender){
-        return isLeaderOfCountry(sender) && !demandManager.isPlayerActive((CPlayer)sender);
+
+    private boolean valid(CommandSender sender) {
+        return isLeaderOfCountry(sender) && !demandManager.isPlayerActive((CPlayer) sender);
     }
 }

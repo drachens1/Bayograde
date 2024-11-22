@@ -32,12 +32,12 @@ public class Election {
         this.currentElectionType = currentElectionType;
     }
 
-    public void setElections(HashMap<ElectionTypes, Float> electionTypes) {
-        this.electionTypesHashMap = electionTypes;
-    }
-
     public HashMap<ElectionTypes, Float> getElections() {
         return electionTypesHashMap;
+    }
+
+    public void setElections(HashMap<ElectionTypes, Float> electionTypes) {
+        this.electionTypesHashMap = electionTypes;
     }
 
     public void addElection(ElectionTypes electionTypes, float percentage) {

@@ -9,10 +9,10 @@ import java.util.List;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class IdeologyTypes {
+    private final List<Leader> leaders;
     private String identifier;
     private Component name;
     private Component prefix;
-    private final List<Leader> leaders;
     private Modifier modifier;
 
     public IdeologyTypes(TextColor colour, String prefix, String name, List<Leader> leaders, Modifier modifier) {
@@ -28,12 +28,12 @@ public class IdeologyTypes {
         return name;
     }
 
-    public Component getPrefix() {
-        return prefix;
-    }
-
     public void setName(Component name) {
         this.name = name;
+    }
+
+    public Component getPrefix() {
+        return prefix;
     }
 
     public void setPrefix(Component prefix) {

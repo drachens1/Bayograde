@@ -6,8 +6,8 @@ import org.drachens.interfaces.VotingOption;
 import java.util.*;
 
 public class Ideology {
-    public float total = 0f;
     private final Country country;
+    public float total = 0f;
     private IdeologyTypes currentIdeology;
     private HashMap<IdeologyTypes, Float> ideologies;
 
@@ -64,13 +64,13 @@ public class Ideology {
         this.currentIdeology = currentIdeology;
     }
 
+    public HashMap<IdeologyTypes, Float> getIdeologies() {
+        return ideologies;
+    }
+
     public void setIdeologies(HashMap<IdeologyTypes, Float> ideologies) {
         this.ideologies = ideologies;
         normalizeIdeologies();
-    }
-
-    public HashMap<IdeologyTypes, Float> getIdeologies() {
-        return ideologies;
     }
 
     public void addIdeology(IdeologyTypes ideology, float percentage) {

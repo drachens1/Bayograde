@@ -25,12 +25,11 @@ public class ResearchCenter extends BuildTypes {
     private final Component maxCapacityReached = Component.text()
             .append(Component.text("Max capacity has been reached", NamedTextColor.RED))
             .build();
+    private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
 
     public ResearchCenter() {
         super(new int[]{1}, Material.BROWN_DYE, "research_center");
     }
-
-    private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
 
     @Override
     public void onBuild(Country country, Province province, Player p) {

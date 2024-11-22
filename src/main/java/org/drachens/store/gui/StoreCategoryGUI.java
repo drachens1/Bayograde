@@ -20,33 +20,34 @@ import static org.drachens.util.KyoriUtil.compBuild;
 public class StoreCategoryGUI extends InventoryGUI {
     private final StoreCategory storeCategory;
 
-    public StoreCategoryGUI(StoreCategory storeCategory){
+    public StoreCategoryGUI(StoreCategory storeCategory) {
         this.storeCategory = storeCategory;
         this.getInventory().setTitle(storeCategory.getName());
     }
 
     @Override
     protected Inventory createInventory() {
-        return new Inventory(InventoryType.CHEST_6_ROW,"");
+        return new Inventory(InventoryType.CHEST_6_ROW, "");
     }
 
     @Override
     public void decorate(@NotNull CPlayer p) {
         int i = 0;
-        for (StoreItem storeItem : storeCategory.getStoreItems()){
-            addButton(noneEdge[i],storeItemButton(storeItem,p));
+        for (StoreItem storeItem : storeCategory.getStoreItems()) {
+            addButton(noneEdge[i], storeItemButton(storeItem, p));
             i++;
         }
-        outlineInventory(this,outline(itemBuilder(Material.BLUE_STAINED_GLASS_PANE,compBuild("", NamedTextColor.AQUA))));
+        outlineInventory(this, outline(itemBuilder(Material.BLUE_STAINED_GLASS_PANE, compBuild("", NamedTextColor.AQUA))));
         addExitButton(this);
-        addPlayerHeadAtSlot(this,4);
-        this.addButton(3,addGoldView());
+        addPlayerHeadAtSlot(this, 4);
+        this.addButton(3, addGoldView());
         super.decorate(p);
     }
-    private InventoryButton addGoldView(){
+
+    private InventoryButton addGoldView() {
         return new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GOLD_INGOT)
-                        .customName(compBuild(player.getGold()+"",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .customName(compBuild(player.getGold() + "", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .build())
                 .consumer(e -> {
 
@@ -57,14 +58,16 @@ public class StoreCategoryGUI extends InventoryGUI {
         return new InventoryButton()
                 .creator(player -> storeItem.getItem(p))
                 .consumer(e -> {
-                    if (!storeItem.canBuy(p))return;
+                    if (!storeItem.canBuy(p)) return;
                     storeItem.purchase(p);
                 });
     }
+
     private InventoryButton outline(ItemStack item) {
         return new InventoryButton()
                 .creator(player -> item)
-                .consumer(e -> {});
+                .consumer(e -> {
+                });
     }
 
 }

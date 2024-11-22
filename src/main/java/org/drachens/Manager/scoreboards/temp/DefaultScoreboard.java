@@ -13,6 +13,12 @@ public class DefaultScoreboard implements ContinentalScoreboards {
     private final Sidebar sb;
     private final ScoreboardManager scoreboardManager;
 
+    public DefaultScoreboard(ScoreboardManager scoreboardManager) {
+        this.scoreboardManager = scoreboardManager;
+        sb = new Sidebar(compBuild("Spectator", NamedTextColor.GRAY, TextDecoration.BOLD));
+        sb.createLine(new Sidebar.ScoreboardLine("top", compBuild("Shift click a country to join one", NamedTextColor.GRAY), 0));
+    }
+
     @Override
     public void update(Player p) {
 
@@ -22,11 +28,5 @@ public class DefaultScoreboard implements ContinentalScoreboards {
     public void add(Player p) {
         scoreboardManager.setActiveScoreboard(p, this);
         sb.addViewer(p);
-    }
-
-    public DefaultScoreboard(ScoreboardManager scoreboardManager) {
-        this.scoreboardManager = scoreboardManager;
-        sb = new Sidebar(compBuild("Spectator", NamedTextColor.GRAY, TextDecoration.BOLD));
-        sb.createLine(new Sidebar.ScoreboardLine("top", compBuild("Shift click a country to join one", NamedTextColor.GRAY), 0));
     }
 }

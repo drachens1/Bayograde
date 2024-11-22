@@ -14,22 +14,24 @@ import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class DemandExitCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
+
     public DemandExitCMD() {
         super("cancel");
         Component prefix = getPrefixes("country");
-        if (prefix==null)return;
+        if (prefix == null) return;
         Component exited = Component.text()
                 .append(prefix)
                 .append(Component.text("Exited demand mode", NamedTextColor.RED))
-                        .build();
-        setCondition((sender,s)->hasDemand(sender));
-        addSyntax((sender,context)->{
-            if (!hasDemand(sender))return;
+                .build();
+        setCondition((sender, s) -> hasDemand(sender));
+        addSyntax((sender, context) -> {
+            if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             demandManager.removeActive(p);
             p.sendMessage(exited);
         });
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
@@ -38,7 +40,8 @@ public class DemandExitCMD extends Command {
         }
         return false;
     }
-    private boolean hasDemand(CommandSender sender){
+
+    private boolean hasDemand(CommandSender sender) {
         return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
     }
 }

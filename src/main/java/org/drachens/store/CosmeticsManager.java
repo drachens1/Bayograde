@@ -13,7 +13,7 @@ public class CosmeticsManager {
 
     public void register(StoreCategory storeCategory) {
         storeCategoryHashMap.put(storeCategory.getIdentifier(), storeCategory);
-        storeCategory.getStoreItems().forEach(storeItem -> storeItemHashMap.put(storeItem.getIdentifier(),storeItem));
+        storeCategory.getStoreItems().forEach(storeItem -> storeItemHashMap.put(storeItem.getIdentifier(), storeItem));
     }
 
     public StoreCategory getStoreCategory(String name) {
@@ -23,15 +23,18 @@ public class CosmeticsManager {
     public HashMap<String, StoreCategory> getStoreCategories() {
         return storeCategoryHashMap;
     }
-    public void addCosmetic(CPlayer p, String identifier){
-       p.getPlayerDataFile().addCosmetic(identifier);
-       p.addCosmetic(identifier);
+
+    public void addCosmetic(CPlayer p, String identifier) {
+        p.getPlayerDataFile().addCosmetic(identifier);
+        p.addCosmetic(identifier);
     }
-    public void removeCosmetic(CPlayer p, String identifier){
+
+    public void removeCosmetic(CPlayer p, String identifier) {
         p.getPlayerDataFile().removeCosmetic(identifier);
         p.removeCosmetic(identifier);
     }
-    public StoreItem getStoreItem(String identifier){
+
+    public StoreItem getStoreItem(String identifier) {
         return storeItemHashMap.get(identifier);
     }
 }

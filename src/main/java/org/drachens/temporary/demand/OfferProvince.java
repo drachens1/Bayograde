@@ -20,7 +20,7 @@ public class OfferProvince extends HotbarItemButton {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
 
     public OfferProvince() {
-        super(1, itemBuilder(Material.IRON_SWORD,compBuild("Offer province", NamedTextColor.AQUA)));
+        super(1, itemBuilder(Material.IRON_SWORD, compBuild("Offer province", NamedTextColor.AQUA)));
     }
 
     @Override
@@ -32,11 +32,11 @@ public class OfferProvince extends HotbarItemButton {
     public void onUse(PlayerUseItemOnBlockEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getPosition());
-        if (province==null)return;
+        if (province == null) return;
         Demand demand = demandManager.getDemand(p);
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
-        if (!(from==provinceCountry||from.getPuppets().contains(provinceCountry))){
+        if (!(from == provinceCountry || from.getPuppets().contains(provinceCountry))) {
             p.sendMessage("They are not a puppet or the actual country");
             return;
         }
@@ -49,11 +49,11 @@ public class OfferProvince extends HotbarItemButton {
         CPlayer p = (CPlayer) e.getPlayer();
         p.sendMessage("2");
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getBlockPosition());
-        if (province==null)return;
+        if (province == null) return;
         Demand demand = demandManager.getDemand(p);
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
-        if (!(from==provinceCountry||from.getPuppets().contains(provinceCountry))){
+        if (!(from == provinceCountry || from.getPuppets().contains(provinceCountry))) {
             p.sendMessage("They are not a puppet or the actual country");
             return;
         }

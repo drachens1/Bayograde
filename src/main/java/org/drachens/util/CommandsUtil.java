@@ -29,7 +29,7 @@ public class CommandsUtil {
 
     public static String cutInput(String input) {
         String[] inp = input.split(" ");
-        return inp[inp.length-1];
+        return inp[inp.length - 1];
     }
 
     public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, List<String> list) {

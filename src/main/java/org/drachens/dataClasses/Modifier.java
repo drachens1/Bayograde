@@ -11,18 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Modifier implements Cloneable {
+    private final Component justCompName;
+    private final List<Country> appliedCountries = new ArrayList<>();
     private float productionBoost;
     private float capitulationBoostPercentage;
     private float maxBuildingSlotBoost;
     private List<CurrencyBoost> currencyBoostList;
     private Component name;
-    private final Component justCompName;
     private Component description;
     private Component startDescription;
     private TextColor textColor;
     private float relationsBoost;
     private float baseRelationsBoost;
-    private final List<Country> appliedCountries = new ArrayList<>();
     private Modifier oldModifier;
 
     private Modifier(create c) {
@@ -139,41 +139,13 @@ public class Modifier implements Cloneable {
         return maxBuildingSlotBoost;
     }
 
-    public float getCapitulationBoostPercentage() {
-        return capitulationBoostPercentage;
-    }
-
-    public TextColor getTextColor() {
-        return textColor;
-    }
-
-    public Component getName() {
-        return name;
-    }
-
-    public Component getDescription() {
-        return description;
-    }
-
-    public List<CurrencyBoost> getCurrencyBoostList() {
-        return currencyBoostList;
-    }
-
-    public float getProductionBoost() {
-        return productionBoost;
-    }
-
-    public float getRelationsBoost() {
-        return relationsBoost;
-    }
-
-    public float getBaseRelationsBoost() {
-        return baseRelationsBoost;
-    }
-
     public void setMaxBuildingSlotBoost(float maxBoost) {
         this.maxBuildingSlotBoost = maxBoost;
         update();
+    }
+
+    public float getCapitulationBoostPercentage() {
+        return capitulationBoostPercentage;
     }
 
     public void setCapitulationBoostPercentage(float capitulationBoostPercentage) {
@@ -181,9 +153,17 @@ public class Modifier implements Cloneable {
         update();
     }
 
+    public TextColor getTextColor() {
+        return textColor;
+    }
+
     public void setTextColor(TextColor textColor) {
         this.textColor = textColor;
         update();
+    }
+
+    public Component getName() {
+        return name;
     }
 
     public void setName(Component name) {
@@ -191,9 +171,17 @@ public class Modifier implements Cloneable {
         update();
     }
 
+    public Component getDescription() {
+        return description;
+    }
+
     public void setDescription(Component description) {
         this.description = description;
         update();
+    }
+
+    public List<CurrencyBoost> getCurrencyBoostList() {
+        return currencyBoostList;
     }
 
     public void setCurrencyBoostList(List<CurrencyBoost> currencyBoostList) {
@@ -201,18 +189,30 @@ public class Modifier implements Cloneable {
         update();
     }
 
+    public float getProductionBoost() {
+        return productionBoost;
+    }
+
+    public void setProductionBoost(float productionBoost) {
+        this.productionBoost = productionBoost;
+        update();
+    }
+
+    public float getRelationsBoost() {
+        return relationsBoost;
+    }
+
     public void setRelationsBoost(float relationsBoost) {
         this.relationsBoost = relationsBoost;
         update();
     }
 
-    public void setBaseRelationsBoost(float baseRelationsBoost) {
-        this.baseRelationsBoost = baseRelationsBoost;
-        update();
+    public float getBaseRelationsBoost() {
+        return baseRelationsBoost;
     }
 
-    public void setProductionBoost(float productionBoost) {
-        this.productionBoost = productionBoost;
+    public void setBaseRelationsBoost(float baseRelationsBoost) {
+        this.baseRelationsBoost = baseRelationsBoost;
         update();
     }
 
@@ -242,8 +242,9 @@ public class Modifier implements Cloneable {
     }
 
     public static class create {
-        private float maxBuildingSlotBoost = 0f;
         private final Component name;
+        private final List<CurrencyBoost> currencyBoostList = new ArrayList<>();
+        private float maxBuildingSlotBoost = 0f;
         private Component description;
         private float maxBoost = 0f;
         private float capitulationBoostPercentage = 0f;
@@ -251,7 +252,6 @@ public class Modifier implements Cloneable {
         private float stabilityGainBoost = 0f;
         private float relationsBoost = 0f;
         private float baseRelationsBoost = 0f;
-        private final List<CurrencyBoost> currencyBoostList = new ArrayList<>();
         private float productionBoost = 0f;
         private TextColor textColor;
 

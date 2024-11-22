@@ -11,22 +11,27 @@ public class StoreCategory {
     private final String identifier;
     private final Component name;
     private final ItemStack item;
-    public StoreCategory(String identifier, Component name, ItemStack item, StoreItem... storeItems){
+
+    public StoreCategory(String identifier, Component name, ItemStack item, StoreItem... storeItems) {
         this.identifier = identifier;
         this.name = name;
         this.item = item;
         this.storeItems = Arrays.stream(storeItems).toList();
     }
-    public String getIdentifier(){
+
+    public String getIdentifier() {
         return identifier;
     }
-    public Component getName(){
+
+    public Component getName() {
         return name;
     }
-    public ItemStack getItem(){
+
+    public ItemStack getItem() {
         return item;
     }
-    public List<StoreItem> getStoreItems(){
+
+    public List<StoreItem> getStoreItems() {
         return storeItems;
     }
 }

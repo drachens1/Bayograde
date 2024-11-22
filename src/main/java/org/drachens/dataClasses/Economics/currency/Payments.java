@@ -16,11 +16,11 @@ public class Payments {
         this.payments = new ArrayList<>(List.of(payments));
     }
 
-    public void addPayment(Payment payment){
+    public void addPayment(Payment payment) {
         payments.add(payment.clone());
     }
 
-    public void addPayments(Payments payments){
+    public void addPayments(Payments payments) {
         payments.getPayments().forEach(this::addPayment);
     }
 
@@ -34,9 +34,9 @@ public class Payments {
         payments.forEach((payment -> payment.multiply(multiply)));
     }
 
-    public void multiply(CurrencyTypes currencyType ,CurrencyBoost currencyBoost) {
-        payments.forEach((payment ->{
-            if (payment.getCurrencyType()==currencyType)payment.multiply(currencyBoost.getBoost());
+    public void multiply(CurrencyTypes currencyType, CurrencyBoost currencyBoost) {
+        payments.forEach((payment -> {
+            if (payment.getCurrencyType() == currencyType) payment.multiply(currencyBoost.getBoost());
         }));
     }
 

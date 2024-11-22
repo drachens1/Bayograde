@@ -15,16 +15,8 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public class BanManager {
-    private Function<Player, Component> banMessage = p -> Component.text("You have been banned from the server.");
     private final File file;
-
-    public void setBanMessage(Function<Player, Component> banMessage) {
-        this.banMessage = banMessage;
-    }
-
-    public Function<Player, Component> getBanMessage() {
-        return banMessage;
-    }
+    private Function<Player, Component> banMessage = p -> Component.text("You have been banned from the server.");
 
     public BanManager(File file) {
         this.file = file;
@@ -37,6 +29,14 @@ public class BanManager {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Function<Player, Component> getBanMessage() {
+        return banMessage;
+    }
+
+    public void setBanMessage(Function<Player, Component> banMessage) {
+        this.banMessage = banMessage;
     }
 
     private JsonObject getRoot() {

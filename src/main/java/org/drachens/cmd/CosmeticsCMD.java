@@ -8,13 +8,14 @@ import org.drachens.store.gui.CosmeticInventory;
 
 public class CosmeticsCMD extends Command {
     private final GUIManager guiManager = ContinentalManagers.guiManager;
+
     public CosmeticsCMD() {
         super("cosmetics");
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
-            guiManager.openGUI(new CosmeticInventory(),p);
+            guiManager.openGUI(new CosmeticInventory(), p);
         });
     }
 }

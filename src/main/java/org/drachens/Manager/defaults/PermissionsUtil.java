@@ -41,7 +41,7 @@ public class PermissionsUtil {
         if (!editFile) return;
         ConfigurationNode permNode = ContinentalManagers.configFileManager.getPermissionsFile();
         ConfigurationNode p = permNode.node("permissions").node(name);
-        permss.forEach(perm-> addToList(p,perm.getPermissionName()));
+        permss.forEach(perm -> addToList(p, perm.getPermissionName()));
         ContinentalManagers.configFileManager.specificSave("permissions");
     }
 }

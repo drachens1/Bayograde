@@ -10,8 +10,8 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 public class Building {
     private final BuildTypes buildTypes;
     private final Province province;
-    private Country country;
     private final ItemDisplay itemDisplay;
+    private Country country;
     private int current = 1;
 
     public Building(BuildTypes buildTypes, Province province) {
@@ -26,6 +26,10 @@ public class Building {
 
     public Country getCountry() {
         return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public void capture(Country capturer) {
@@ -64,9 +68,5 @@ public class Building {
         this.itemDisplay.delete();
         this.country.removeBuilding(this);
         this.province.removeBuilding();
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
     }
 }

@@ -22,70 +22,64 @@ import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.OtherUtil.formatPlaytime;
 
 public class CPlayer extends Player {
-    public CPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
-        super(uuid, username, playerConnection);
-    }
-
+    private final List<String> ownedCosmetics = new ArrayList<>();
     private Country country;
 
     private UUID lastMessenger;
 
     private int gold = 0;
-
-    private final List<String> ownedCosmetics = new ArrayList<>();
-
     private ItemStack headItem;
-
     private LocalTime joinTime;
-
     private Long playTime;
-
     private LocalTime lastCheck;
-
     private PlayerDataFile playerDataFile;
 
-    public void setPlayerDataFile(PlayerDataFile playerDataFile){
-        this.playerDataFile = playerDataFile;
+    public CPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
+        super(uuid, username, playerConnection);
     }
 
-    public PlayerDataFile getPlayerDataFile(){
+    public PlayerDataFile getPlayerDataFile() {
         return playerDataFile;
     }
 
-    public void setPlayTime(Long pt){
+    public void setPlayerDataFile(PlayerDataFile playerDataFile) {
+        this.playerDataFile = playerDataFile;
+    }
+
+    public void setPlayTime(Long pt) {
         this.playTime = pt;
         playerDataFile.setPlaytime(playTime);
     }
 
-    public void addPlayTime(LocalTime localTime){
-        if (lastCheck==null)
-            lastCheck=joinTime;
+    public void addPlayTime(LocalTime localTime) {
+        if (lastCheck == null)
+            lastCheck = joinTime;
 
         if (playTime == null) {
             playTime = 0L;
-            lastCheck=localTime;
+            lastCheck = localTime;
         } else {
-            playTime += Duration.between(lastCheck,localTime).toSeconds();
-            lastCheck=localTime;
+            playTime += Duration.between(lastCheck, localTime).toSeconds();
+            lastCheck = localTime;
         }
         playerDataFile.setPlaytime(playTime);
     }
 
-    public void setJoinTime(LocalTime instant){
+    public void setJoinTime(LocalTime instant) {
         this.joinTime = instant;
     }
 
-    public String getPlayTimeString(){
+    public String getPlayTimeString() {
         return formatPlaytime(playTime);
     }
 
-    public void setHead(){
+    public void setHead() {
         PlayerSkin playerSkin = getSkin();
-        if (playerSkin==null){
+        if (playerSkin == null) {
             System.err.println("Players skin was null!");
             return;
         }
-        headItem = ItemStack.builder(Material.PLAYER_HEAD).set(ItemComponent.PROFILE,new HeadProfile(playerSkin))
+        headItem = ItemStack.builder(Material.PLAYER_HEAD).set(ItemComponent.PROFILE, new HeadProfile(playerSkin))
                 .customName(compBuild(getUsername(), NamedTextColor.GOLD))
                 .build();
     }
@@ -106,42 +100,42 @@ public class CPlayer extends Player {
         this.lastMessenger = player.getUuid();
     }
 
-    public void setGold(int gold){
+    public int getGold() {
+        return gold;
+    }
+
+    public void setGold(int gold) {
         this.gold = gold;
         playerDataFile.setGold(gold);
     }
 
-    public int getGold(){
-        return gold;
-    }
-
-    public void minusGold(int amount){
-        gold-=amount;
+    public void minusGold(int amount) {
+        gold -= amount;
         playerDataFile.setGold(gold);
     }
 
-    public void addGold(int amount){
-        gold+=amount;
+    public void addGold(int amount) {
+        gold += amount;
         playerDataFile.setGold(gold);
     }
 
-    public void addCosmetic(String identifier){
+    public void addCosmetic(String identifier) {
         ownedCosmetics.add(identifier);
     }
 
-    public void removeCosmetic(String identifier){
+    public void removeCosmetic(String identifier) {
         ownedCosmetics.remove(identifier);
     }
 
-    public boolean hasCosmetic(String identifier){
+    public boolean hasCosmetic(String identifier) {
         return ownedCosmetics.contains(identifier);
     }
 
-    public List<String> getOwnedCosmetics(){
+    public List<String> getOwnedCosmetics() {
         return ownedCosmetics;
     }
 
-    public ItemStack getPlayerHead(){
+    public ItemStack getPlayerHead() {
         return headItem;
     }
 }

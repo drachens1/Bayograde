@@ -21,12 +21,14 @@ public class DemandCMD extends Command {
         addSubcommand(new DemandViewCMD());
 
         var reloader = ArgumentType.String("Type to Reload")
-                .setSuggestionCallback((sender,context,suggestion)->{
+                .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     p.refreshCommands();
                 });
-        addSyntax((sender,context)->{},reloader);
+        addSyntax((sender, context) -> {
+        }, reloader);
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();

@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Leader {
+    private final List<Modifier> modifiers;
     private Component name;
     private Component description;
-    private final List<Modifier> modifiers;
     private IdeologyTypes ideologyTypes;
 
     private Leader(create leaderBuilder) {
@@ -50,13 +50,13 @@ public class Leader {
         }
     }
 
+    public IdeologyTypes getIdeologyTypes() {
+        return ideologyTypes;
+    }
+
     public void setIdeologyTypes(IdeologyTypes ideologyTypes) {
         this.ideologyTypes = ideologyTypes;
         createDescription();
-    }
-
-    public IdeologyTypes getIdeologyTypes() {
-        return ideologyTypes;
     }
 
     public static class create {

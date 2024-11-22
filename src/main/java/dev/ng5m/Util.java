@@ -11,11 +11,11 @@ import java.util.Random;
 
 public class Util {
 
+    public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     public static List<Player> getAllOnlinePlayers() {
         return MinecraftServer.getConnectionManager().getOnlinePlayers().stream().toList();
     }
-
-    public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static String randomAlNum(int length) {
         StringBuilder sb = new StringBuilder(length);

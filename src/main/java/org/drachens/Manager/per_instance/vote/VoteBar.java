@@ -14,8 +14,8 @@ import static org.drachens.util.KyoriUtil.compBuild;
 
 public class VoteBar extends HideableBossBar {
     private final BossBar voteBar;
-    private Task task;
     private final Instance instance;
+    private Task task;
 
     public VoteBar(Instance instance) {
         super(BossBar.bossBar(compBuild("Vote session", NamedTextColor.WHITE), 0, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_12));

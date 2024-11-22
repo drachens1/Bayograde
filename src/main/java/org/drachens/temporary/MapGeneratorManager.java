@@ -31,77 +31,45 @@ import static org.drachens.util.Messages.logMsg;
 import static org.drachens.util.ServerUtil.addChunk;
 
 public class MapGeneratorManager extends MapGen {
+    private final List<Material> BLOCKS = new ArrayList<>();
+    private final List<String> allCountryNames = new ArrayList<>();
+    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
+    public List<Continent> continents;
     HashMap<CountryEnums.Type, Integer> gMax = new HashMap<>(); //og = 4
     HashMap<CountryEnums.Type, Integer> rgMax = new HashMap<>(); //og = 2
     HashMap<CountryEnums.Type, Integer> yMax = new HashMap<>(); //og = 2
     HashMap<CountryEnums.Type, Integer> lMax = new HashMap<>(); //og = 2
     HashMap<CountryEnums.Type, Integer> grMax = new HashMap<>(); //og = 2
+    int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
+    Pos[] directions1 = {
+            new Pos(-1, 0, 0), // West
+            new Pos(1, 0, 0),  // East
+            new Pos(0, 0, -1), // North
+            new Pos(0, 0, 1),   // South
+            new Pos(0, 0, 0) // current
+    };
+    int[][] directions2 = {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
+    };
+    int maxCountries = 10;
     private Map<Pos, Province> landHashmap;
     private ProvinceManager provinceManager;
-    private final List<Material> BLOCKS = new ArrayList<>();
-    private final List<String> allCountryNames = new ArrayList<>();
     private List<String> countryNames;
     private List<Pair<Material, Material>> borderPlusBlock;
     private HashMap<CurrencyTypes, Currencies> currenciesHashMap;
     private CountryDataManager countryDataManager;
-    public List<Continent> continents;
     private Instance instance;
-
-    private void setupHashmaps() {
-        int goldMax = 3;
-        int rgMax2 = 2;
-        int yMax2 = 2;
-        int lMax2 = 2;
-        int grMax2 = 2;
-        for (CountryEnums.Type e : CountryEnums.Type.values()) {
-            System.out.println(e.name());
-            gMax.put(e, goldMax);
-            goldMax++;
-            rgMax.put(e, rgMax2);
-            yMax.put(e, yMax2);
-            lMax.put(e, lMax2);
-            grMax.put(e, grMax2);
-        }
-    }
-
     private Ideology defIdeology;
     private Election defElection;
     private int countries;
     private List<ElectionTypes> electionTypes;
     private List<IdeologyTypes> ideologyTypes;
     private VotingOption votingOption;
-    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
-
-    @Override
-    public void generate(Instance instance, VotingOption votingOption) {
-        if (isGenerating(instance)) {
-            logMsg("server", "Tried to generate a new map when a map was generating", instance);
-            return;
-        }
-
-        addGenerating(instance);
-        this.votingOption = votingOption;
-        this.instance = instance;
-        this.provinceManager = ContinentalManagers.world(instance).provinceManager();
-        provinceManager.reset();
-        this.countryDataManager = ContinentalManagers.world(instance).countryDataManager();
-        scheduler.buildTask(() -> {
-            removeGenerating(instance);
-            countryDataManager.getCountries().forEach(Country::createInfo);
-        }).delay(2, ChronoUnit.SECONDS).schedule();
-        this.countries = votingOption.getCountries();
-        this.currenciesHashMap = new HashMap<>(votingOption.getDefaultCurrencies());
-        continents = new ArrayList<>();
-        landHashmap = new HashMap<>();
-        borderPlusBlock = new ArrayList<>();
-        countryNames = new ArrayList<>(allCountryNames);
-        this.defIdeology = new Ideology(votingOption);
-        this.defElection = new Election(votingOption);
-        this.electionTypes = new ArrayList<>(votingOption.getElectionTypes());
-        this.ideologyTypes = new ArrayList<>(votingOption.getIdeologyTypes());
-        //todo add the rest
-        start();
-    }
+    private final Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;
+    private IdeologyTypes winnerOfThePrevWar;
+    private IdeologyTypes upAndComingIdeology;
+    private ElectionTypes upAndComingElection;
+    private ElectionTypes electionWinnerPrevWar;
 
     public MapGeneratorManager() {
         super(111, 111);
@@ -175,6 +143,61 @@ public class MapGeneratorManager extends MapGen {
         };
         Collections.addAll(BLOCKS, block);
         Collections.addAll(allCountryNames, countryName);
+    }
+
+    public static Integer calculateTopPercent(List<Integer> numbers, float top) {
+        numbers.sort(Collections.reverseOrder());
+
+        int count = (int) Math.ceil(numbers.size() * top);
+
+        return numbers.get(count - 1);
+    }
+
+    private void setupHashmaps() {
+        int goldMax = 3;
+        int rgMax2 = 2;
+        int yMax2 = 2;
+        int lMax2 = 2;
+        int grMax2 = 2;
+        for (CountryEnums.Type e : CountryEnums.Type.values()) {
+            System.out.println(e.name());
+            gMax.put(e, goldMax);
+            goldMax++;
+            rgMax.put(e, rgMax2);
+            yMax.put(e, yMax2);
+            lMax.put(e, lMax2);
+            grMax.put(e, grMax2);
+        }
+    }
+
+    @Override
+    public void generate(Instance instance, VotingOption votingOption) {
+        if (isGenerating(instance)) {
+            logMsg("server", "Tried to generate a new map when a map was generating", instance);
+            return;
+        }
+
+        addGenerating(instance);
+        this.votingOption = votingOption;
+        this.instance = instance;
+        this.provinceManager = ContinentalManagers.world(instance).provinceManager();
+        provinceManager.reset();
+        this.countryDataManager = ContinentalManagers.world(instance).countryDataManager();
+        scheduler.buildTask(() -> {
+            removeGenerating(instance);
+            countryDataManager.getCountries().forEach(Country::createInfo);
+        }).delay(2, ChronoUnit.SECONDS).schedule();
+        this.countries = votingOption.getCountries();
+        this.currenciesHashMap = new HashMap<>(votingOption.getDefaultCurrencies());
+        continents = new ArrayList<>();
+        landHashmap = new HashMap<>();
+        borderPlusBlock = new ArrayList<>();
+        countryNames = new ArrayList<>(allCountryNames);
+        this.defIdeology = new Ideology(votingOption);
+        this.defElection = new Election(votingOption);
+        this.electionTypes = new ArrayList<>(votingOption.getElectionTypes());
+        this.ideologyTypes = new ArrayList<>(votingOption.getIdeologyTypes());
+        start();
     }
 
     public void start() {
@@ -296,14 +319,12 @@ public class MapGeneratorManager extends MapGen {
                 }
             }
         } while (anyQueueHadExpansion);
-        landHashmap.forEach((pos,province)->province.setBlock(Material.WHITE_TERRACOTTA));
+        landHashmap.forEach((pos, province) -> province.setBlock(Material.WHITE_TERRACOTTA));
 
         storiesGenerate(countries);
         borderScan();
         generateCities(countries);
     }
-
-    int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
 
     private List<Pos> getNeighbors(Pos pos) {
         List<Pos> neighbors = new ArrayList<>();
@@ -337,24 +358,12 @@ public class MapGeneratorManager extends MapGen {
         }
     }
 
-    Pos[] directions1 = {
-            new Pos(-1, 0, 0), // West
-            new Pos(1, 0, 0),  // East
-            new Pos(0, 0, -1), // North
-            new Pos(0, 0, 1),   // South
-            new Pos(0, 0, 0) // current
-    };
-
     public void updateBorders(Pos loc) {
         for (Pos direction : directions1) {
             Pos newLoc = loc.add(direction);
             change(newLoc);
         }
     }
-
-    int[][] directions2 = {
-            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
-    };
 
     void change(Pos loc) {
         Province province = provinceManager.getProvince(loc);
@@ -376,8 +385,6 @@ public class MapGeneratorManager extends MapGen {
             province.setBlock();
         }
     }
-
-    private Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;
 
     private void generateCities(List<Country> countries) {
         for (Country country : countries) {
@@ -425,14 +432,6 @@ public class MapGeneratorManager extends MapGen {
         createContinent(countries, setSuperPower(countries));
     }
 
-    public static Integer calculateTopPercent(List<Integer> numbers, float top) {
-        numbers.sort(Collections.reverseOrder());
-
-        int count = (int) Math.ceil(numbers.size() * top);
-
-        return numbers.get(count - 1);
-    }
-
     private Country setSuperPower(List<Country> countries) {
         Country biggest = countries.getFirst();
         for (Country country : countries) {
@@ -441,12 +440,6 @@ public class MapGeneratorManager extends MapGen {
         biggest.setType(CountryEnums.Type.superPower);
         return biggest;
     }
-
-    int maxCountries = 10;
-    private IdeologyTypes winnerOfThePrevWar;
-    private IdeologyTypes upAndComingIdeology;
-    private ElectionTypes upAndComingElection;
-    private ElectionTypes electionWinnerPrevWar;
 
     private void createWinnersNUpAndComers() {
         List<IdeologyTypes> temp = votingOption.getIdeologyTypes();

@@ -8,14 +8,15 @@ import org.drachens.store.gui.Store;
 
 public class StoreCMD extends Command {
     private final GUIManager guiManager = ContinentalManagers.guiManager;
+
     public StoreCMD() {
         super("store");
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
-            guiManager.openGUI(new Store(),p);
+            guiManager.openGUI(new Store(), p);
         });
     }
 }

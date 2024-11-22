@@ -11,16 +11,18 @@ import org.drachens.temporary.demand.WW2Demands;
 
 public class DemandInfoCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
+
     public DemandInfoCMD() {
         super("info");
-        setCondition((sender,s)->hasDemand(sender));
-        setDefaultExecutor((sender,context)->{
-            if (!hasDemand(sender))return;
+        setCondition((sender, s) -> hasDemand(sender));
+        setDefaultExecutor((sender, context) -> {
+            if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             WW2Demands demand = (WW2Demands) demandManager.getDemand(p);
             p.sendMessage(demand.description());
         });
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
@@ -29,7 +31,8 @@ public class DemandInfoCMD extends Command {
         }
         return false;
     }
-    private boolean hasDemand(CommandSender sender){
+
+    private boolean hasDemand(CommandSender sender) {
         return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
     }
 }

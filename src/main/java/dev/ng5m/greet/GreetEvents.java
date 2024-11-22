@@ -31,13 +31,13 @@ public class GreetEvents extends Configurable<GreetEvents.GreetSettings> impleme
     public void onPlayerJoin(PlayerSpawnEvent event) {
         if (!event.isFirstSpawn()) return;
 
-        broadcast(settings.joinMessage.apply(event),event.getPlayer().getInstance());
+        broadcast(settings.joinMessage.apply(event), event.getPlayer().getInstance());
 
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent event) {
-        broadcast(settings.leaveMessage.apply(event),event.getInstance());
+        broadcast(settings.leaveMessage.apply(event), event.getInstance());
     }
 
     @Override

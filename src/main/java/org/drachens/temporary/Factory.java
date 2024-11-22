@@ -13,7 +13,6 @@ import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
-import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
@@ -30,25 +29,23 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Factory extends BuildTypes {
     private final Payments produces;
-    int[] constructionFrames = {2, 3, 4, 5};
-    int[] smokeFrames = {6, 7, 8};
-    private final Animation constructionAnimation = new Animation(1000, Material.CYAN_DYE, constructionFrames);
-    private final Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, smokeFrames);
     private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the factory : 5 Production", NamedTextColor.RED))
             .build();
-
     private final Component cantAffordToUpgrade = Component.text()
             .append(Component.text("You cannot afford to upgrade this factory : 5 Production", NamedTextColor.RED))
             .build();
-
     private final Component maxCapacityReached = Component.text()
             .append(Component.text("Max capacity has been reached", NamedTextColor.RED))
             .build();
-
     private final HashMap<Material, Integer> materialLvls = new HashMap<>();
     private final CurrencyTypes production = defaultsStorer.currencies.getCurrencyType("production");
+    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
+    int[] constructionFrames = {2, 3, 4, 5};
+    private final Animation constructionAnimation = new Animation(1000, Material.CYAN_DYE, constructionFrames);
+    int[] smokeFrames = {6, 7, 8};
+    private final Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, smokeFrames);
 
     public Factory() {
         super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, "factory");
@@ -140,12 +137,10 @@ public class Factory extends BuildTypes {
     public Payments generate(Building building) {
         Country country = building.getCountry();
         Payments payments1 = new Payments(produces);
-        payments1.multiply(country.getEconomyBoost(production)+building.getCurrentLvl());
-        createFloatingText(building,payments1.getMessages());
+        payments1.multiply(country.getEconomyBoost(production) + building.getCurrentLvl());
+        createFloatingText(building, payments1.getMessages());
         return payments1;
     }
-
-    private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
 
     public void createFloatingText(Building building, Component text) {
         Province province = building.getProvince();
