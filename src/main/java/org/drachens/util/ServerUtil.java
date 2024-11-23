@@ -333,6 +333,8 @@ public class ServerUtil {
             }
         });*/
 
+
+
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
         for (VotingOption votingOption : votingOptions)
             votingOptionsCMD.add(new VotingOptionCMD(votingOption));

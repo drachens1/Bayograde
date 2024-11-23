@@ -826,4 +826,7 @@ public class Country implements Cloneable {
         return economyBoosts.getOrDefault(currencyTypes, new CurrencyBoost(currencyTypes, 0)).getBoost() + totalProductionBoost;
     }
 
+    public boolean isAtWar(Country country){
+        return wars.contains(country);
+    }
 }

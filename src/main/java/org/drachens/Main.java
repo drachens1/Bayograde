@@ -17,7 +17,6 @@ import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
-import org.drachens.Manager.scoreboards.temp.DefaultScoreboard;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
@@ -32,6 +31,7 @@ import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
 import org.drachens.temporary.*;
 import org.drachens.temporary.demand.DemandInventory;
+import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,7 +140,7 @@ public class Main {
 
         HashMap<String, ContinentalScoreboards> continentalScoreboards = new HashMap<>();
         ScoreboardManager scoreboardManager = new ScoreboardManager();
-        continentalScoreboards.put("default", new DefaultScoreboard(scoreboardManager));
+        continentalScoreboards.put("default", new DefaultScoreboard());
         scoreboardManager.setScoreboards(continentalScoreboards);
 
         new Factory();

@@ -32,7 +32,7 @@ public class WW2Demands extends Demand {
     private List<Country> offeredPuppets = new ArrayList<>();
     private List<Province> offeredProvinces = new ArrayList<>();
     private List<Country> offeredAnnexation = new ArrayList<>();
-    private boolean peace = false;
+    private boolean peace;
 
     public WW2Demands(Country from, Country to) {
         super(from, to);
@@ -206,6 +206,18 @@ public class WW2Demands extends Demand {
                 }
             }
         }
+
+        if (getFromCountry().isAtWar(getToCountry())){
+            comps.add(Component.text()
+                            .appendNewline()
+                            .append(Component.text("Peace: ",NamedTextColor.GREEN,TextDecoration.BOLD))
+                    .build());
+            if (peace){
+                comps.add(Component.text(String.valueOf(true),NamedTextColor.GREEN));
+            }else
+                comps.add(Component.text(String.valueOf(false),NamedTextColor.RED));
+        }
+
         return Component.text()
                 .append(Component.text("_________/", NamedTextColor.BLUE))
                 .append(Component.text("Demand", NamedTextColor.RED, TextDecoration.BOLD))
@@ -421,10 +433,6 @@ public class WW2Demands extends Demand {
 
     public void resetOfferAnnexation() {
         offeredAnnexation.clear();
-    }
-
-    public boolean getPeace() {
-        return peace;
     }
 
     public void setPeace(boolean p) {

@@ -1,9 +1,18 @@
 package org.drachens.Manager.scoreboards;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
+import net.minestom.server.scoreboard.Sidebar;
 
-public interface ContinentalScoreboards {
-    void update(Player p);
+import java.util.List;
 
-    void add(Player p);
+public abstract class ContinentalScoreboards {
+    private final Sidebar sidebar;
+    public ContinentalScoreboards(Sidebar sidebar){
+        this.sidebar = sidebar;
+    }
+    public Sidebar getSidebar(){
+        return sidebar;
+    }
+    public abstract void add(Player p);
 }
