@@ -67,6 +67,7 @@ import org.drachens.interfaces.VotingOption;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
+import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -188,7 +189,7 @@ public class ServerUtil {
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             Player p = e.getPlayer();
             p.setAllowFlying(true);
-            scoreboardManager.getScoreboard("default").add(p);
+            scoreboardManager.openScoreboard(new DefaultScoreboard(),p);
             tabCreation(p);
             ContinentalManagers.achievementsManager.addPlayerToAdv(p);
             ContinentalManagers.permissions.playerOp(p);
@@ -275,13 +276,13 @@ public class ServerUtil {
         globEHandler.addListener(CountryJoinEvent.class, e -> e.getP().setCountry(e.getJoined()));
         globEHandler.addListener(CountryChangeEvent.class, e -> e.getPlayer().setCountry(e.getJoined()));
 
-        BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
-
         ContinentalSchedulerManager schedulerManager = ContinentalManagers.schedulerManager;
         schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
             if (!(e instanceof NewDay newDay)) return;
-            ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.getVault().calculateIncrease());
-
+            ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> {
+                country.getVault().calculateIncrease();
+                country.getStability().newWeek();
+            });
         }).setDelay(7).repeat().schedule());
 
         /*globEHandler.addListener(NewDay.class, e -> {

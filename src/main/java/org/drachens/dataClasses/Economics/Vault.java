@@ -1,8 +1,5 @@
 package org.drachens.dataClasses.Economics;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
@@ -16,17 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.KyoriUtil.mergeComp;
-
 public class Vault {
     private final Country country;
-    private final HashMap<CurrencyTypes, Currencies> amount = new HashMap<>();
-    private final List<Loan> loans = new ArrayList<>();
+    private final Map<CurrencyTypes, Currencies> amount;
+    private final List<Loan> loans;
 
-    public Vault(Country country, HashMap<CurrencyTypes, Currencies> startingCurrencies) {
+    public Vault(Country country, Map<CurrencyTypes, Currencies> startingCurrencies) {
         this.country = country;
-        this.amount.putAll(startingCurrencies);
+        this.amount = new HashMap<>(startingCurrencies);
+        this.loans = new ArrayList<>();
     }
 
     public void setCurrency(Currencies currency) {
@@ -34,19 +29,23 @@ public class Vault {
     }
 
     public void addPayment(Payment payment) {
-        if (!amount.containsKey(payment.getCurrencyType())) {
-            amount.put(payment.getCurrencyType(), new Currencies(payment.getCurrencyType(), payment.getAmount()));
-        } else {
-            amount.get(payment.getCurrencyType()).add(payment);
-        }
+        amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
+            if (existingCurrency == null) {
+                return new Currencies(key, payment.getAmount());
+            }
+            existingCurrency.add(payment);
+            return existingCurrency;
+        });
     }
 
     public void minusPayment(Payment payment) {
-        if (!amount.containsKey(payment.getCurrencyType())) {
-            amount.put(payment.getCurrencyType(), new Currencies(payment.getCurrencyType(), -payment.getAmount()));
-        } else {
-            amount.get(payment.getCurrencyType()).minus(payment);
-        }
+        amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
+            if (existingCurrency == null) {
+                return new Currencies(key, -payment.getAmount());
+            }
+            existingCurrency.minus(payment);
+            return existingCurrency;
+        });
     }
 
     public void addPayments(Payments payments) {
@@ -65,9 +64,11 @@ public class Vault {
         Factory factory = (Factory) ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
         List<Building> buildings = country.getBuildings(factory);
         if (buildings == null) return;
+
         Payments toCountry = new Payments();
         Payments toOverlord = new Payments();
         boolean overlord = country.getOverlord() != null;
+
         buildings.forEach(building -> {
             Payments payments = factory.generate(building);
             if (overlord) {
@@ -81,20 +82,23 @@ public class Vault {
             }
         });
         addPayments(toCountry);
+
         if (overlord) {
             country.getOverlord().addPayments(toOverlord);
         }
     }
 
     public boolean canMinus(Payment payment) {
-        if (!amount.containsKey(payment.getCurrencyType())) return false;
-        return amount.get(payment.getCurrencyType()).getAmount() > payment.getAmount();
+        Currencies currency = amount.get(payment.getCurrencyType());
+        return currency != null && currency.getAmount() > payment.getAmount();
     }
 
     public boolean canMinus(Payments payments) {
         for (Payment payment : payments.getPayments()) {
-            if (!amount.containsKey(payment.getCurrencyType())) return false;
-            if (!(amount.get(payment.getCurrencyType()).getAmount() > payment.getAmount())) return false;
+            Currencies currency = amount.get(payment.getCurrencyType());
+            if (currency == null || currency.getAmount() <= payment.getAmount()) {
+                return false;
+            }
         }
         return true;
     }
@@ -104,22 +108,14 @@ public class Vault {
             minusPayment(payment);
             return 0f;
         }
-        return amount.containsKey(payment.getCurrencyType()) ? payment.getAmount() - amount.get(payment.getCurrencyType()).getAmount() : payment.getAmount();
-    }
-
-    public int createScoreboard(int start, Sidebar scoreBoard) {
-        for (Map.Entry<CurrencyTypes, Currencies> entry : amount.entrySet()) {
-            ArrayList<Component> components = new ArrayList<>();
-            components.add(compBuild(entry.getValue().getAmount() + "", NamedTextColor.BLUE));
-            components.add(entry.getKey().getSymbol());
-            scoreBoard.createLine(new Sidebar.ScoreboardLine(
-                    start + "",
-                    mergeComp(components),
-                    start
-            ));
-            start++;
+        Currencies currency = amount.get(payment.getCurrencyType());
+        if (currency != null) {
+            return payment.getAmount() - currency.getAmount();
         }
-        return start;
+        return payment.getAmount();
     }
 
+    public List<Currencies> getCurrencies() {
+        return new ArrayList<>(amount.values());
+    }
 }

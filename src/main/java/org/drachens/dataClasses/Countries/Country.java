@@ -15,13 +15,16 @@ import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Diplomacy.Demand;
+import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.*;
 import org.drachens.dataClasses.Modifier;
@@ -35,6 +38,7 @@ import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.EndWarEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
 import org.drachens.interfaces.MapGen;
+import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.util.AStarPathfinder;
 
 import java.util.ArrayList;
@@ -46,6 +50,7 @@ import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
 
 public class Country implements Cloneable {
+    private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     private final MapGen mapGen;
     private final List<Player> players;
     private final Vault vault;
@@ -95,6 +100,10 @@ public class Country implements Cloneable {
     private Country overlord = null;
     private float relationsBoost = 0f;
     private float totalProductionBoost = 1f;
+    private float stabilityGainBoost = 1f;
+    private float weeklyStabilityGain = 0f;
+    private final Stability stability = new Stability(50f,this);
+    private final Relations relations = new Relations(this);
 
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.occupies = new ArrayList<>();
@@ -249,12 +258,14 @@ public class Country implements Cloneable {
         this.capital = capital;
     }
 
+
     public void addPlayer(CPlayer p) {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         this.players.add(p);
         p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryJoin"), "%country%", this.name)));
         broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryMessages("broadcastedCountryJoin"), "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
+        scoreboardManager.openScoreboard(new DefaultCountryScoreboard(),p);
         clientsides.forEach(clientside -> clientside.addViewer(p));
         if (playerLeader == null)
             setPlayerLeader(p);
@@ -828,5 +839,23 @@ public class Country implements Cloneable {
 
     public boolean isAtWar(Country country){
         return wars.contains(country);
+    }
+
+    public float getStabilityGainBoost(){
+        return stabilityGainBoost;
+    }
+
+    public float getWeeklyStabilityGain(){
+        return weeklyStabilityGain;
+    }
+
+    public Stability getStability(){
+        return stability;
+    }
+    public Relations getRelations(){
+        return relations;
+    }
+    public float getRelationsBoost(){
+        return relationsBoost;
     }
 }

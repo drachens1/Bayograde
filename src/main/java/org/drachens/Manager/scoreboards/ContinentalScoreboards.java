@@ -1,18 +1,21 @@
 package org.drachens.Manager.scoreboards;
 
-import net.kyori.adventure.text.Component;
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.scoreboard.Sidebar;
 
-import java.util.List;
-
 public abstract class ContinentalScoreboards {
-    private final Sidebar sidebar;
-    public ContinentalScoreboards(Sidebar sidebar){
-        this.sidebar = sidebar;
+    private Sidebar sidebar;
+    private CPlayer p;
+    public void setup(CPlayer p){
+        sidebar = createSidebar(p);
+        sidebar.addViewer(p);
+        this.p = p;
     }
+    protected abstract Sidebar createSidebar(CPlayer p);
     public Sidebar getSidebar(){
         return sidebar;
     }
-    public abstract void add(Player p);
+    public CPlayer getPlayer(){
+        return p;
+    }
 }

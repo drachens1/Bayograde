@@ -15,8 +15,6 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
-import org.drachens.Manager.scoreboards.ContinentalScoreboards;
-import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
@@ -31,7 +29,6 @@ import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
 import org.drachens.temporary.*;
 import org.drachens.temporary.demand.DemandInventory;
-import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,12 +134,6 @@ public class Main {
 
         createWW2VotingOption();
 
-
-        HashMap<String, ContinentalScoreboards> continentalScoreboards = new HashMap<>();
-        ScoreboardManager scoreboardManager = new ScoreboardManager();
-        continentalScoreboards.put("default", new DefaultScoreboard());
-        scoreboardManager.setScoreboards(continentalScoreboards);
-
         new Factory();
 
         EventHandlerProviderManager.hook();
@@ -156,7 +147,7 @@ public class Main {
                 new Hat("1", 1, Material.PURPLE_DYE, compBuild("item", NamedTextColor.AQUA), 1)
         ));
 
-        setupAll(new ArrayList<>(), scoreboardManager);
+        setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
     }
 
     private static void createWW2VotingOption() {

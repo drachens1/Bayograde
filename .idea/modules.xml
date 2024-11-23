@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ContinentalMC.defaultSystemMine.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ContinentalMC.defaultSystemMine.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ContinentalMC.defaultSystemMine.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ContinentalMC.defaultSystemMine.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.ContinentalMC.defaultSystemMine.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.ContinentalMC.defaultSystemMine.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.ContinentalMC.defaultSystemMine.test.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.ContinentalMC.defaultSystemMine.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/defaultSystemMine.main.iml" filepath="$PROJECT_DIR$/.idea/modules/defaultSystemMine.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/defaultSystemMine.test.iml" filepath="$PROJECT_DIR$/.idea/modules/defaultSystemMine.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.drachens.defaultSystemMine.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.drachens.defaultSystemMine.main.iml" />
