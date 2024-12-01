@@ -28,7 +28,6 @@ public class Province implements Serializable {
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
-    private final List<Country> core;
     private final Chunk chunk;
     private final ProvinceManager provinceManager;
     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
@@ -53,21 +52,19 @@ public class Province implements Serializable {
     private Component secretDescription; //Higher lvls can see this like allys and the ppl in the occupiers country
     private boolean outdatedDescriptions = true;
 
-    public Province(Pos pos, Instance instance, List<Country> cores, Country occupier, List<Province> neighbours) {
+    public Province(Pos pos, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = pos;
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
-        this.core = cores;
         this.occupier = occupier;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
     }
 
-    public Province(int x, int y, int z, Instance instance, List<Country> cores, Country occupier, List<Province> neighbours) {
+    public Province(int x, int y, int z, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
-        this.core = cores;
         this.occupier = occupier;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -77,7 +74,6 @@ public class Province implements Serializable {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
-        this.core = new ArrayList<>();
         this.occupier = null;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -87,7 +83,6 @@ public class Province implements Serializable {
         this.pos = pos;
         this.instance = instance;
         this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
-        this.core = new ArrayList<>();
         this.occupier = null;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -95,6 +90,13 @@ public class Province implements Serializable {
 
     public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
+        List<Component> comps = new ArrayList<>();
+        neighbours.forEach(neighbour->{
+            comps.add( compBuild(neighbour.getPos().x()+", "+neighbour.getPos().y()+", "+neighbour.getPos().z()+" || ",NamedTextColor.BLUE));
+        });
+        p.sendMessage(Component.text()
+                        .append(comps)
+                .build());
         if (outdatedDescriptions) {
             description = createPublicDescription();
             secretDescription = createSecretDescription();
@@ -119,7 +121,13 @@ public class Province implements Serializable {
         return createSecretProvinceDescription();
     }
 
+    private final Component unoccupied = Component.text()
+            .append(Component.text("_______/", NamedTextColor.BLUE))
+            .append(Component.text("Unoccupied", TextColor.color(51, 129, 255)))
+            .append(Component.text("\\_______", NamedTextColor.BLUE))
+            .build();
     private Component createProvinceDescription() {
+        if (occupier==null)return unoccupied;
         return Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text("Province", TextColor.color(51, 129, 255)))
@@ -137,7 +145,7 @@ public class Province implements Serializable {
         if (building != null) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
-                    .append(Component.text(building.getBuildTypes().getIdentifier()))
+                    .append(Component.text(building.getBuildTypes().name()))
                     .append(Component.text(" lvl: "))
                     .append(Component.text(building.getCurrentLvl()))
                     .build());
@@ -166,7 +174,7 @@ public class Province implements Serializable {
         if (building != null) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
-                    .append(Component.text(building.getBuildTypes().getIdentifier()))
+                    .append(Component.text(building.getBuildTypes().name()))
                     .append(Component.text(" lvl: "))
                     .append(Component.text(building.getCurrentLvl()))
                     .build());
@@ -194,7 +202,7 @@ public class Province implements Serializable {
         if (building != null) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
-                    .append(Component.text(building.getBuildTypes().getIdentifier()))
+                    .append(Component.text(building.getBuildTypes().name()))
                     .append(Component.text(" lvl: "))
                     .append(Component.text(building.getCurrentLvl()))
                     .build());
@@ -265,18 +273,6 @@ public class Province implements Serializable {
         updateBorders();
     }
 
-    public List<Country> getCore() {
-        return core;
-    }
-
-    public void addCore(Country country) {
-        core.add(country);
-    }
-
-    public void removeCore(Country country) {
-        core.remove(country);
-    }
-
     public void setCapturable(Boolean choice) {
         capturable = choice;
     }
@@ -307,10 +303,6 @@ public class Province implements Serializable {
         return building;
     }
 
-    public void setBuildType(Building building) {
-        this.building = building;
-    }
-
     public double distance(Province province) {
         return getPos().distance(province.getPos());
     }
@@ -318,11 +310,6 @@ public class Province implements Serializable {
     public void setBlock(Material block) {
         material = block;
         instance.setBlock(pos, block.block());
-    }
-
-    public void setBorder(Material border) {
-        material = border;
-        instance.setBlock(pos, border.block());
     }
 
     public void setBlock() {
@@ -345,10 +332,6 @@ public class Province implements Serializable {
 
     public boolean isCity() {
         return city;
-    }
-
-    public void setCity(boolean city) {
-        this.city = city;
     }
 
     public void setCity(Material material) {

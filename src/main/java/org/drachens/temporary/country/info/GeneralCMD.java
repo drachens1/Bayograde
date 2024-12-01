@@ -1,4 +1,4 @@
-package org.drachens.temporary.country;
+package org.drachens.temporary.country.info;
 
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -9,9 +9,10 @@ import org.drachens.dataClasses.Countries.Country;
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
-public class Info extends Command {
-    public Info() {
-        super("info");
+public class GeneralCMD extends Command {
+    public GeneralCMD() {
+        super("general");
+
         var countries = ArgumentType.String("Countries");
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {

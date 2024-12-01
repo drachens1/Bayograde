@@ -9,6 +9,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.other.Clientside;
 import org.drachens.fileManagement.customTypes.PlayerDataFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +34,7 @@ public class CPlayer extends Player {
     private Long playTime;
     private LocalTime lastCheck;
     private PlayerDataFile playerDataFile;
+    private final List<Clientside> clientsides = new ArrayList<>();
 
     public CPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
         super(uuid, username, playerConnection);
@@ -137,5 +139,15 @@ public class CPlayer extends Player {
 
     public ItemStack getPlayerHead() {
         return headItem;
+    }
+
+    public List<Clientside> getClientsides(){
+        return clientsides;
+    }
+    public void addClientside(Clientside clientside){
+        clientsides.add(clientside);
+    }
+    public void removeClientside(Clientside clientside){
+        clientsides.remove(clientside);
     }
 }

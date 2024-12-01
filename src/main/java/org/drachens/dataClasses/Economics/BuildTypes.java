@@ -3,15 +3,16 @@ package org.drachens.dataClasses.Economics;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 
 public abstract class BuildTypes {
     private final int[] lvlsModelData;
     private final Material material;
-    private final String identifier;
+    private final BuildingEnum identifier;
 
-    public BuildTypes(int[] lvls, Material material, String identifier) {
+    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
@@ -64,7 +65,7 @@ public abstract class BuildTypes {
         return material;
     }
 
-    public String getIdentifier() {
+    public BuildingEnum getIdentifier() {
         return identifier;
     }
 }

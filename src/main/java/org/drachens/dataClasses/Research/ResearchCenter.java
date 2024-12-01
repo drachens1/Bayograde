@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
@@ -11,24 +13,22 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
 
 public class ResearchCenter extends BuildTypes {
+    private final ResearchCenter researchBuilding = (ResearchCenter) defaultsStorer.buildingTypes.getBuildType(BuildingEnum.researchCenter);
+    private final List<ResearchBuilding> buildingList = new ArrayList<>();
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the research center : 5 Production", NamedTextColor.RED))
             .build();
 
-    private final Component cantAffordToUpgrade = Component.text()
-            .append(Component.text("You cannot afford to upgrade this research center : 5 Production", NamedTextColor.RED))
-            .build();
-
-    private final Component maxCapacityReached = Component.text()
-            .append(Component.text("Max capacity has been reached", NamedTextColor.RED))
-            .build();
     private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
 
     public ResearchCenter() {
-        super(new int[]{1}, Material.BROWN_DYE, "research_center");
+        super(new int[]{3}, Material.BROWN_DYE, BuildingEnum.researchCenter);
     }
 
     @Override
@@ -76,5 +76,23 @@ public class ResearchCenter extends BuildTypes {
     @Override
     protected void onUpgrade(int amount, Building building) {
 
+    }
+
+    public void addResearchBuilding(ResearchBuilding researchBuilding){
+        buildingList.add(researchBuilding);
+    }
+
+    public void removeResearchBuilding(ResearchBuilding researchBuilding){
+        buildingList.remove(researchBuilding);
+    }
+
+    public Payment generate(Building building){
+        Payment central = new Payment(CurrencyEnum.research,0f);
+        building.getProvince().getNeighbours().forEach(province -> {
+            if (province.getBuilding().getBuildTypes().equals(researchBuilding)){
+                central.add(researchBuilding.generate(province.getBuilding()));
+            }
+        });
+        return null;
     }
 }

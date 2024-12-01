@@ -27,11 +27,14 @@ import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.MessageManager;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
+import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
+import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.*;
@@ -52,7 +55,7 @@ import org.drachens.cmd.plan.PlanCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Economics.BuildTypes;
+import org.drachens.dataClasses.DataStorer;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -68,9 +71,9 @@ import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
 import org.drachens.temporary.scoreboards.DefaultScoreboard;
+import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +87,6 @@ import static org.drachens.util.Messages.logCmd;
 public class ServerUtil {
     private static final List<Chunk> allowedChunks = new ArrayList<>();
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
-    private static final List<Player> cooldown = new ArrayList<>();
     private static final HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
     private static GlobalEventHandler globalEventHandler;
@@ -135,7 +137,7 @@ public class ServerUtil {
         instCon.setGenerator(unit -> unit.modifier().fillHeight(-1, 0, Block.LAPIS_BLOCK));
 
         List<VotingOption> votingOptions = new ArrayList<>();
-        for (Map.Entry<String, VotingOption> entry : ContinentalManagers.defaultsStorer.voting.getVotingOptionHashMap().entrySet()) {
+        for (Map.Entry<VotingWinner, VotingOption> entry : ContinentalManagers.defaultsStorer.voting.getVotingOptionHashMap().entrySet()) {
             votingOptions.add(entry.getValue());
         }
 
@@ -148,7 +150,8 @@ public class ServerUtil {
                             new CountryDataManager(instance, new ArrayList<>()),
                             new ClientEntsToLoad(),
                             new VotingManager(votingOptions, instance),
-                            new ProvinceManager()
+                            new ProvinceManager(),
+                            new DataStorer()
                     )
             );
         }
@@ -194,7 +197,7 @@ public class ServerUtil {
             ContinentalManagers.achievementsManager.addPlayerToAdv(p);
             ContinentalManagers.permissions.playerOp(p);
             ContinentalManagers.world(p.getInstance()).votingManager().getVoteBar().addPlayer(p);
-            ContinentalManagers.inventoryManager.assignInventory(p, "default");
+            ContinentalManagers.inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
             if (ContinentalManagers.yearManager.getYearBar(p.getInstance()) != null) {
                 ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
             } else {
@@ -202,7 +205,7 @@ public class ServerUtil {
                 ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
             }
             ContinentalManagers.configFileManager.createPlayersData(p);
-            worldClassesHashMap.get(p.getInstance()).clientEntsToLoad().loadPlayer(p);
+            worldClassesHashMap.get(p.getInstance()).clientEntsToLoad().loadPlayer((CPlayer) p);
 
             p.getInstance().enableAutoChunkLoad(false);
             r.addPlayer(p);
@@ -266,7 +269,7 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(e.getInstance()).votingManager().getVoteBar().isShown()) {
+            if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(p.getInstance()).votingManager().getVoteBar().isShown() && !ContinentalManagers.world(p.getInstance()).votingManager().getWinner().getMapGenerator().isGenerating(p.getInstance())) {
                 p.sendMessage(mergeComp(getPrefixes("system"), getCountryMessages("outOfBounds")));
                 e.setCancelled(true);
             }
@@ -283,58 +286,17 @@ public class ServerUtil {
                 country.getVault().calculateIncrease();
                 country.getStability().newWeek();
             });
-        }).setDelay(7).repeat().schedule());
+        }).setDelay(2).repeat().schedule());
 
-        /*globEHandler.addListener(NewDay.class, e -> {
-            CountryDataManager countryDataManager = getWorldClasses(e.getWorld()).countryDataManager();
-            for (Country country : countryDataManager.getCountries()) country.calculateIncrease();
-            for (Country country : countryDataManager.getCountries()) {
-                Sidebar sb = new Sidebar(compBuild(country.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
-                int i = 0;
-                int num = 0;
-                List<Building> buildings = country.getBuildings(buildTypes);
-                if (buildings != null) {
-                    for (Building building : buildings)
-                        num += building.getCurrentLvl();
+        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e->{
+            if (!(e instanceof NewDay newDay)) return;
+            newDay.getInstance().getPlayers().forEach(player -> {
+                ContinentalScoreboards continentalScoreboards = scoreboardManager.getScoreboard(player);
+                if (continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard){
+                    defaultCountryScoreboard.updateAll();
                 }
-
-                if (num >= 0) {
-                    ArrayList<Component> components = new ArrayList<>();
-                    components.add(compBuild("Factory", NamedTextColor.BLUE));
-                    components.add(compBuild(" : ", NamedTextColor.BLUE));
-                    components.add(compBuild(num + "", NamedTextColor.BLUE));
-                    sb.createLine(new Sidebar.ScoreboardLine(
-                            i + "",
-                            mergeComp(components),
-                            i
-                    ));
-                }
-
-                i++;
-                for (Player p : country.getPlayer()) {
-                    sb.addViewer(p);
-                }
-                sb.createLine(new Sidebar.ScoreboardLine("total", compBuild("total" + country.getIdeology().total, NamedTextColor.GOLD), i));
-                i++;
-                sb.createLine(new Sidebar.ScoreboardLine(
-                        "ideologies",
-                        compBuild("Ideologies: ", NamedTextColor.BLUE),
-                        i
-                ));
-                i++;
-                i= country.getVault().createScoreboard(i,sb);
-
-
-                sb.createLine(new Sidebar.ScoreboardLine(
-                        "title",
-                        compBuild("Currencies: ", NamedTextColor.BLUE),
-                        i
-                ));
-                i++;
-            }
-        });*/
-
-
+            });
+        }).setDelay(1).repeat().schedule());
 
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
         for (VotingOption votingOption : votingOptions)
@@ -405,7 +367,8 @@ public class ServerUtil {
                     c,
                     clientEntsToLoad,
                     worldClassesHashMap.get(instance).votingManager(),
-                    worldClassesHashMap.get(instance).provinceManager()
+                    worldClassesHashMap.get(instance).provinceManager(),
+                    new DataStorer()
             ));
         });
         start();
@@ -427,16 +390,6 @@ public class ServerUtil {
         final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
         final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
-    }
-
-    public static void cooldown(Player p) {
-        if (cooldown.contains(p)) return;
-        cooldown.add(p);
-        MinecraftServer.getSchedulerManager().buildTask(() -> cooldown.remove(p)).delay(100, ChronoUnit.MILLIS).schedule();
-    }
-
-    public static boolean playerHasCooldown(Player p) {
-        return cooldown.contains(p);
     }
 
     public static WorldClasses getWorldClasses(Instance instance) {

@@ -5,9 +5,9 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.AStarPathfinderVoids;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
+import org.drachens.temporary.troops.TroopCountry;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class Troop {
     private final ItemDisplay troop;
     private final TroopType troopType;
-    private final Country country;
+    private final TroopCountry country;
     private final AStarPathfinderVoids troopPathing;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private ItemDisplay ally;
@@ -47,7 +47,7 @@ public class Troop {
         this.speed = design.getSpeed();
         this.country.addTroop(this);
         province.addTroop(this);
-        MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
+        //MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
     }
 
     public Province getProvince() {

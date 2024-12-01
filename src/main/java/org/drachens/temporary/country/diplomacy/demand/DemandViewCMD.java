@@ -9,6 +9,7 @@ import net.minestom.server.entity.Player;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.temporary.demand.WW2Demands;
 
@@ -36,11 +37,11 @@ public class DemandViewCMD extends Command {
             switch (context.get(on)) {
                 case "on":
                     demand.showPlayer(p);
-                    inventoryManager.assignInventory(p, "demand");
+                    inventoryManager.assignInventory(p, InventoryEnum.demand);
                     break;
                 case "off":
                     demand.hidePlayer(p);
-                    inventoryManager.assignInventory(p, "default");
+                    inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
                     break;
             }
         }, on);

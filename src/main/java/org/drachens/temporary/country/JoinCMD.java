@@ -14,8 +14,8 @@ public class JoinCMD extends Command {
     public JoinCMD() {
         super("join");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Default usage: /country join <country>"));
-        var countries = ArgumentType.String("Countries");
-        countries.setSuggestionCallback((sender, context, suggestion) -> {
+        var countries = ArgumentType.String("Countries")
+                .setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {
                 return;
             }

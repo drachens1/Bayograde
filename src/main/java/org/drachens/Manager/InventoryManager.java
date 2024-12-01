@@ -6,6 +6,7 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.interfaces.items.HotbarInventory;
 
 import java.time.temporal.ChronoUnit;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InventoryManager {
-    private final HashMap<String, HotbarInventory> inventoryHashMap = new HashMap<>();
+    private final HashMap<InventoryEnum, HotbarInventory> inventoryHashMap = new HashMap<>();
     private final HashMap<Player, HotbarInventory> activeHotBar = new HashMap<>();
     private final List<Player> playersCooldown = new ArrayList<>();
 
@@ -45,18 +46,13 @@ public class InventoryManager {
         });
     }
 
-    public void registerInventory(String name, HotbarInventory inventory) {
+    public void registerInventory(InventoryEnum name, HotbarInventory inventory) {
         inventoryHashMap.put(name, inventory);
     }
 
-    public void unregisterInventory(String name) {
-        inventoryHashMap.remove(name);
-    }
-
-    public void assignInventory(Player p, String inventory) {
+    public void assignInventory(Player p, InventoryEnum inventory) {
         changeInventory(p, inventoryHashMap.get(inventory));
     }
-
     private void changeInventory(Player p, HotbarInventory inventory) {
         p.getInventory().clear();
         inventory.getItems().forEach((itemStack -> p.getInventory().addItemStack(itemStack.getItem())));
@@ -66,8 +62,6 @@ public class InventoryManager {
     private void cooldown(Player p) {
         if (playersCooldown.contains(p)) return;
         playersCooldown.add(p);
-        MinecraftServer.getSchedulerManager().buildTask(() -> {
-            playersCooldown.remove(p);
-        }).delay(300, ChronoUnit.MILLIS).schedule();
+        MinecraftServer.getSchedulerManager().buildTask(() -> playersCooldown.remove(p)).delay(300, ChronoUnit.MILLIS).schedule();
     }
 }

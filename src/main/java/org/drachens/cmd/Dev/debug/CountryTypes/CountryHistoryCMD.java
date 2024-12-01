@@ -6,8 +6,12 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.CountryEnums;
+import org.drachens.temporary.clicks.ClicksCountry;
+import org.drachens.temporary.troops.TroopCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +39,30 @@ public class CountryHistoryCMD extends Command {
             CountryEnums.History choice = CountryEnums.History.valueOf(context.get(type));
             components.add(compBuild(context.get(type), NamedTextColor.BLUE));
             components.add(Component.newline());
-            for (Country country : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
-                if (country.getHistory().equals(choice)) {
-                    components.add(compBuild(country.getName(), NamedTextColor.GOLD));
-                    components.add(compBuild(", ", NamedTextColor.BLUE));
+            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
+                case VotingWinner.none -> {
+                    return;
+                }
+                case VotingWinner.ww2_clicks -> {
+                    for (Country c : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
+                        ClicksCountry country = (ClicksCountry) c;
+                        if (country.getHistory().equals(choice)) {
+                            components.add(compBuild(country.getName(), NamedTextColor.GOLD));
+                            components.add(compBuild(", ", NamedTextColor.BLUE));
+                        }
+                    }
+                }
+                case VotingWinner.ww2_troops -> {
+                    for (Country c : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
+                        TroopCountry country = (TroopCountry) c;
+                        if (country.getHistory().equals(choice)) {
+                            components.add(compBuild(country.getName(), NamedTextColor.GOLD));
+                            components.add(compBuild(", ", NamedTextColor.BLUE));
+                        }
+                    }
                 }
             }
+
             p.sendMessage(mergeComp(components));
         }, type);
     }

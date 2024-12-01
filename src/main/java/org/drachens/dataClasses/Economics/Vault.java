@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.Economics;
 
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
@@ -48,6 +49,17 @@ public class Vault {
         });
     }
 
+    public void minusPayment(Payment payment, Country beneficiary) {
+        beneficiary.getVault().addPayment(payment);
+        amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
+            if (existingCurrency == null) {
+                return new Currencies(key, -payment.getAmount());
+            }
+            existingCurrency.minus(payment);
+            return existingCurrency;
+        });
+    }
+
     public void addPayments(Payments payments) {
         payments.getPayments().forEach(this::addPayment);
     }
@@ -56,13 +68,51 @@ public class Vault {
         payments.getPayments().forEach(this::minusPayment);
     }
 
+    public Payment minusMaximumPossible(Payment payment, Country beneficiary){
+        if (canMinus(payment)){
+            minusPayment(payment,beneficiary);
+            return new Payment(payment.getCurrencyType(),0);
+        }
+        CurrencyTypes currencyTypes = payment.getCurrencyType();
+        Currencies currencies = amount.get(currencyTypes);
+        Payment copy = payment.clone();
+        Payment minus = new Payment(currencyTypes,currencies.getAmount());
+        copy.remove(minus);
+        currencies.minus(minus);
+        return copy;
+    }
+
+    public Payment minusMaximumPossible(Payment payment){
+        if (canMinus(payment)){
+            minusPayment(payment);
+            return new Payment(payment.getCurrencyType(),0);
+        }
+        CurrencyTypes currencyTypes = payment.getCurrencyType();
+        Currencies currencies = amount.get(currencyTypes);
+        Payment copy = payment.clone();
+        Payment minus = new Payment(currencyTypes,currencies.getAmount());
+        copy.remove(minus);
+        currencies.minus(minus);
+        return copy;
+    }
+
     public void addLoan(Loan loan) {
         loans.add(loan);
     }
 
+    public void removeLoan(Loan loan){
+        loans.remove(loan);
+    }
+
+    public void minusThenLoan(Payment payment, Country from){
+        if (canMinus(payment))return;
+        Payment returned = minusMaximumPossible(payment,from);
+        addLoan(new Loan(returned,10,from,country));
+    }
+
     public void calculateIncrease() {
-        Factory factory = (Factory) ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
-        List<Building> buildings = country.getBuildings(factory);
+        Factory factory = (Factory) ContinentalManagers.defaultsStorer.buildingTypes.getBuildType(BuildingEnum.factory);
+        List<Building> buildings = country.getBuildings(BuildingEnum.factory);
         if (buildings == null) return;
 
         Payments toCountry = new Payments();
@@ -86,6 +136,7 @@ public class Vault {
         if (overlord) {
             country.getOverlord().addPayments(toOverlord);
         }
+        loans.forEach(Loan::payThisWeek);
     }
 
     public boolean canMinus(Payment payment) {
@@ -117,5 +168,8 @@ public class Vault {
 
     public List<Currencies> getCurrencies() {
         return new ArrayList<>(amount.values());
+    }
+    public List<Loan> getLoans(){
+        return loans;
     }
 }

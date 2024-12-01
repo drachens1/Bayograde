@@ -1,28 +1,28 @@
-package org.drachens.temporary;
+package org.drachens.interfaces.inventories;
 
 import dev.ng5m.CPlayer;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
-import net.minestom.server.item.Material;
+import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.items.HotbarItemButton;
 
-import static org.drachens.util.ItemStackUtil.itemBuilder;
-
 public class BuildItem extends HotbarItemButton {
-    private final BuildTypes buildTypes = ContinentalManagers.defaultsStorer.buildingTypes.getBuildType("factory");
+    private final BuildTypes buildTypes;
 
-    public BuildItem() {
-        super(10, itemBuilder(Material.CYAN_DYE, 10));
+    public BuildItem(int modelData, ItemStack item, BuildingEnum buildingEnum) {
+        super(modelData, item);
+        buildTypes= ContinentalManagers.defaultsStorer.buildingTypes.getBuildType(buildingEnum);
     }
 
     @Override
     public void onUse(PlayerUseItemEvent e) {
-        e.getPlayer().sendMessage("hi");
+
 
     }
 
@@ -31,7 +31,7 @@ public class BuildItem extends HotbarItemButton {
         Country country = ((CPlayer) e.getPlayer()).getCountry();
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
         if (country == null || province == null) return;
-        if (province.getBuilding() != null) {
+        if (province.getBuilding() != null && province.getBuilding().getBuildTypes()==buildTypes.getIdentifier()) {
             province.getBuilding().upgrade(1, country, e.getPlayer());
         } else {
             buildTypes.build(country, province, e.getPlayer());

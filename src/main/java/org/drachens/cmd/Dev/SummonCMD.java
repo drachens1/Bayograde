@@ -1,5 +1,6 @@
 package org.drachens.cmd.Dev;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
@@ -24,7 +25,7 @@ public class SummonCMD extends Command {
             int modelDatas = context.get(modelData);
             if (itemStack == null) return;
             ItemDisplay i = new ItemDisplay(itemBuilder(itemStack.material(), modelDatas), p.getPosition(), ItemDisplay.DisplayType.GROUND, p.getInstance(), true);
-            i.addViewer(p);
+            i.addViewer((CPlayer) p);
         }, item, modelData);
     }
 }

@@ -40,16 +40,6 @@ public class KyoriUtil {
         );
     }
 
-    public static Component replaceValueInClickEvent(Component component, String from, String to) {
-        List<Component> updatedChildren = component.children().stream()
-                .map(child -> updateClickEvent(child, from, to))
-                .collect(Collectors.toList());
-
-        return Component.text()
-                .append(updatedChildren)
-                .build();
-    }
-
     private static Component updateClickEvent(Component component, String from, String to) {
         ClickEvent clickEvent = component.clickEvent();
         if (clickEvent != null) {
@@ -58,21 +48,6 @@ public class KyoriUtil {
             component = component.clickEvent(newClickEvent);
         }
         return component;
-    }
-
-    public static Component removeComponentContainingString(Component component, String from) {
-        List<Component> updatedChildren = component.children().stream()
-                .map(child -> removeComp((TextComponent) child, from))
-                .filter(child -> child != null && !child.equals(Component.empty()))
-                .collect(Collectors.toList());
-
-        if (updatedChildren.size() == component.children().size()) {
-            return component;
-        }
-
-        return Component.text()
-                .append(updatedChildren)
-                .build();
     }
 
     private static TextComponent removeComp(TextComponent component, String from) {
@@ -98,19 +73,6 @@ public class KyoriUtil {
         return Component.text()
                 .append(updatedChildren)
                 .build();
-    }
-
-    public static Component getComponent(String wanted) {
-        return switch (wanted) {
-            case "wargoal":
-                yield wargoal;
-            case "countrymembers":
-                yield countryMembers;
-            case "countrywars":
-                yield countryWars;
-            default:
-                yield null;
-        };
     }
 
     public static void sendTitle(final @NonNull Audience target, String maintitle, String subtitles) {

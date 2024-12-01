@@ -55,6 +55,7 @@ public class MessageManager {
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Player player = e.getPlayer();
+            if (!player.isSneaking())return;
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
             if (p == null || provinceDelay.hasCooldown(player)) return;
             player.sendMessage(p.getDescription((CPlayer) player));

@@ -12,9 +12,13 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.BuildingTypes;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
+import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
@@ -23,12 +27,23 @@ import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.NoneCustomisableInventory;
+import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.interfaces.VotingOption;
+import org.drachens.interfaces.inventories.BuildItem;
+import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.items.HotbarItemButton;
 import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
 import org.drachens.temporary.*;
 import org.drachens.temporary.demand.DemandInventory;
+import org.drachens.temporary.inventories.ExitItem;
+import org.drachens.temporary.research.ResearchLab;
+import org.drachens.temporary.research.ResearchLibrary;
+import org.drachens.temporary.research.ResearchUniversity;
+import org.drachens.temporary.scoreboards.items.ShowDiplomacy;
+import org.drachens.temporary.scoreboards.items.ShowEconomy;
+import org.drachens.temporary.scoreboards.items.ShowGeneralInfo;
+import org.drachens.temporary.scoreboards.items.ShowIdeology;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,7 +145,9 @@ public class Main {
 
         CurrencyTypes production = new CurrencyTypes(compBuild("production", TextColor.color(255, 165, 0)), compBuild("\uD83D\uDC35", TextColor.color(255, 165, 0)), "production");
 
+        CurrencyTypes research = new CurrencyTypes(compBuild("Research",NamedTextColor.BLUE),compBuild("\uD83D\uDC41",NamedTextColor.WHITE),"research");
         ContinentalManagers.defaultsStorer.currencies.register(production);
+        ContinentalManagers.defaultsStorer.currencies.register(research);
 
         createWW2VotingOption();
 
@@ -138,8 +155,11 @@ public class Main {
 
         EventHandlerProviderManager.hook();
         ContinentalManagers.defaultsStorer.currencies.register(production);
-        HotbarItemButton[] items = {new BuildItem(), new BuildItem2(), new TroopMover()};
-        ContinentalManagers.inventoryManager.registerInventory("default", new NoneCustomisableInventory(items));
+        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.defaultInv, new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10),BuildingEnum.factory), new TroopMover(),new ChangeInventoryButton(0,itemBuilder(Material.BOOK),InventoryEnum.scoreboardInv),new ChangeInventoryButton(1,itemBuilder(Material.BROWN_DYE),InventoryEnum.research)}));
+
+        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.scoreboardInv, new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(),new ShowEconomy(),new ShowIdeology(),new ShowGeneralInfo(),new ExitItem()}));
+
+        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.research,new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1,itemBuilder(Material.BROWN_DYE,1), BuildingEnum.library),new BuildItem(2,itemBuilder(Material.BROWN_DYE,2),BuildingEnum.university),new BuildItem(3,itemBuilder(Material.BROWN_DYE,3),BuildingEnum.researchCenter),new BuildItem(4,itemBuilder(Material.BROWN_DYE,4),BuildingEnum.researchLab),new ExitItem()}));
 
         ContinentalManagers.cosmeticsManager.register(new StoreCategory("Something",
                 compBuild("example", NamedTextColor.AQUA),
@@ -152,6 +172,12 @@ public class Main {
 
     private static void createWW2VotingOption() {
         CurrencyTypes production = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
+
+        BuildingTypes buildingTypes = ContinentalManagers.defaultsStorer.buildingTypes;
+        buildingTypes.register(new ResearchUniversity());
+        buildingTypes.register(new ResearchLibrary());
+        buildingTypes.register(new ResearchLab());
+        buildingTypes.register(new ResearchCenter());
 
         Modifier exampleModifier = new Modifier.create(compBuild("Example", NamedTextColor.GOLD))
                 .setDescription(compBuild("description", NamedTextColor.BLUE))
@@ -297,7 +323,6 @@ public class Main {
         modifiers.register(major, votingName + "major");
         modifiers.register(minor, votingName + "minor");
 
-        System.out.println("voting");
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
@@ -305,7 +330,7 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(), "normal_clicks");
+                .build(), VotingWinner.ww2_clicks);
 
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
@@ -314,9 +339,9 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                .build(), "normal_troops");
+                .build(), VotingWinner.ww2_troops);
 
-        ContinentalManagers.inventoryManager.registerInventory("demand", new DemandInventory());
+        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.demand, new DemandInventory());
     }
 
     private static List<Leader> getLeaders(Modifier modifier) {

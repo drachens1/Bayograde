@@ -9,6 +9,7 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
 import org.drachens.events.VoteEvent;
@@ -92,6 +93,7 @@ public class VotingManager {
                 reset();
             } else {
                 setWinner();
+                ContinentalManagers.world(instance).dataStorer().votingWinner= VotingWinner.valueOf(winner.getName());
                 EventDispatcher.call(new StartGameEvent(instance, winner));
                 task.cancel();
             }

@@ -1,6 +1,9 @@
 package org.drachens.dataClasses.Economics;
 
 import net.minestom.server.entity.Player;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.BuildingTypes;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -8,14 +11,15 @@ import org.drachens.dataClasses.other.ItemDisplay;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Building {
-    private final BuildTypes buildTypes;
+    private final BuildingTypes buildingTypes = ContinentalManagers.defaultsStorer.buildingTypes;
+    private final BuildingEnum buildType;
     private final Province province;
     private final ItemDisplay itemDisplay;
     private Country country;
     private int current = 1;
 
     public Building(BuildTypes buildTypes, Province province) {
-        this.buildTypes = buildTypes;
+        this.buildType = buildTypes.getIdentifier();
         this.province = province;
         this.country = province.getOccupier();
         this.itemDisplay = new ItemDisplay(itemBuilder(buildTypes.getMaterial(), buildTypes.getLvl(0)), province, ItemDisplay.DisplayType.GROUND, true);
@@ -33,15 +37,15 @@ public class Building {
     }
 
     public void capture(Country capturer) {
-        buildTypes.capture(capturer, this);
+        buildingTypes.getBuildType(buildType).capture(capturer, this);
     }
 
     public void upgrade(int amount, Country country, Player p) {
-        buildTypes.upgrade(amount, this, country, p);
+        buildingTypes.getBuildType(buildType).upgrade(amount, this, country, p);
     }
 
     public void bomb(float bomb) {
-        buildTypes.bomb(bomb);
+        buildingTypes.getBuildType(buildType).bomb(bomb);
     }
 
     public ItemDisplay getItemDisplay() {
@@ -52,8 +56,8 @@ public class Building {
         return current;
     }
 
-    public BuildTypes getBuildTypes() {
-        return buildTypes;
+    public BuildingEnum getBuildTypes() {
+        return buildType;
     }
 
     public Province getProvince() {

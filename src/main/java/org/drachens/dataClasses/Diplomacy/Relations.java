@@ -1,11 +1,8 @@
 package org.drachens.dataClasses.Diplomacy;
 
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Relations {

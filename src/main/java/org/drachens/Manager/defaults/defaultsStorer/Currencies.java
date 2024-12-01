@@ -1,5 +1,6 @@
 package org.drachens.Manager.defaults.defaultsStorer;
 
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 
 import java.util.ArrayList;
@@ -23,6 +24,10 @@ public class Currencies {
 
     public CurrencyTypes getCurrencyType(String name) {
         return currencies.get(name);
+    }
+
+    public CurrencyTypes getCurrencyType(CurrencyEnum currencyEnum){
+        return currencies.get(currencyEnum.name());
     }
 
     public List<String> getCurrencyNames() {

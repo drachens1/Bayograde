@@ -11,6 +11,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Countries.*;
@@ -22,6 +23,8 @@ import org.drachens.dataClasses.territories.Continent;
 import org.drachens.dataClasses.territories.Region;
 import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.VotingOption;
+import org.drachens.temporary.clicks.ClicksCountry;
+import org.drachens.temporary.troops.TroopCountry;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -234,8 +237,11 @@ public class MapGeneratorManager extends MapGen {
                 addChunk(province.getChunk());
             }
         }
-        setNeighbours();
-        createCountries(countries);
+        scheduler.buildTask(()->{
+            setNeighbours();
+            createCountries(countries);
+        }).delay(10,ChronoUnit.MILLIS).schedule();
+
     }
 
     private void createCountries(int num) {
@@ -274,7 +280,15 @@ public class MapGeneratorManager extends MapGen {
         for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()) {
             newCurrencies.put(e.getKey(), e.getValue().clone());
         }
-        return new Country(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+        switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+            case VotingWinner.ww2_clicks -> {
+                return new ClicksCountry(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+            }
+            case VotingWinner.ww2_troops -> {
+                return new TroopCountry(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+            }
+        }
+        return null;
     }
 
     public void floodFill(List<Country> countries) {
@@ -387,14 +401,31 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void generateCities(List<Country> countries) {
-        for (Country country : countries) {
-            cityTypeGen(160, 5, gMax.get(country.getType()), country);
-            cityTypeGen(180, 4, rgMax.get(country.getType()), country);
-            cityTypeGen(200, 3, yMax.get(country.getType()), country);
-            cityTypeGen(220, 2, lMax.get(country.getType()), country);
-            cityTypeGen(240, 1, grMax.get(country.getType()), country);
-            country.calculateCapitulationPercentage();
+        switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+            case VotingWinner.ww2_clicks -> {
+                for (Country c : countries) {
+                    ClicksCountry country = (ClicksCountry) c;
+                    cityTypeGen(160, 5, gMax.get(country.getType()), country);
+                    cityTypeGen(180, 4, rgMax.get(country.getType()), country);
+                    cityTypeGen(200, 3, yMax.get(country.getType()), country);
+                    cityTypeGen(220, 2, lMax.get(country.getType()), country);
+                    cityTypeGen(240, 1, grMax.get(country.getType()), country);
+                    country.calculateCapitulationPercentage();
+                }
+            }
+            case VotingWinner.ww2_troops -> {
+                for (Country c : countries) {
+                    TroopCountry country = (TroopCountry) c;
+                    cityTypeGen(160, 5, gMax.get(country.getType()), country);
+                    cityTypeGen(180, 4, rgMax.get(country.getType()), country);
+                    cityTypeGen(200, 3, yMax.get(country.getType()), country);
+                    cityTypeGen(220, 2, lMax.get(country.getType()), country);
+                    cityTypeGen(240, 1, grMax.get(country.getType()), country);
+                    country.calculateCapitulationPercentage();
+                }
+            }
         }
+
     }
 
     private void cityTypeGen(int amount, int index, int max, Country country) {
@@ -419,13 +450,29 @@ public class MapGeneratorManager extends MapGen {
         }
         float medianSize = calculateTopPercent(size, 0.2f);
         for (int b = 0; b < size.size(); b++) {
-            if (size.get(b) >= medianSize) {
-                countries.get(b).setType(CountryEnums.Type.major);
-                countries.get(b).addModifier(modifiers.getModifier("ww2-major"));
-            } else {
-                countries.get(b).setType(CountryEnums.Type.minor);
-                countries.get(b).addModifier(modifiers.getModifier("ww2-minor"));
+            switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+                case VotingWinner.ww2_clicks -> {
+                    ClicksCountry country = (ClicksCountry) countries.get(b);
+                    if (size.get(b) >= medianSize) {
+                        country.setType(CountryEnums.Type.major);
+                        country.addModifier(modifiers.getModifier("ww2-major"));
+                    } else {
+                        country.setType(CountryEnums.Type.minor);
+                        country.addModifier(modifiers.getModifier("ww2-minor"));
+                    }
+                }
+                case VotingWinner.ww2_troops -> {
+                    TroopCountry country = (TroopCountry) countries.get(b);
+                    if (size.get(b) >= medianSize) {
+                        country.setType(CountryEnums.Type.major);
+                        country.addModifier(modifiers.getModifier("ww2-major"));
+                    } else {
+                        country.setType(CountryEnums.Type.minor);
+                        country.addModifier(modifiers.getModifier("ww2-minor"));
+                    }
+                }
             }
+
         }
         assignRegion(countries);
         createWinnersNUpAndComers();
@@ -437,7 +484,17 @@ public class MapGeneratorManager extends MapGen {
         for (Country country : countries) {
             if (country.getOccupies().size() > biggest.getOccupies().size()) biggest = country;
         }
-        biggest.setType(CountryEnums.Type.superPower);
+        switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
+            case VotingWinner.ww2_clicks -> {
+                ClicksCountry country = (ClicksCountry) biggest;
+                country.setType(CountryEnums.Type.superPower);
+            }
+            case VotingWinner.ww2_troops -> {
+                TroopCountry country = (TroopCountry) biggest;
+                country.setType(CountryEnums.Type.superPower);
+            }
+        }
+
         return biggest;
     }
 
@@ -498,18 +555,35 @@ public class MapGeneratorManager extends MapGen {
         } while (anyQueueHadExpansion);
 
         Modifier modifier = modifiers.getModifier("ww2-example");
-        if (modifier == null) System.out.println("NULL");
-        for (Country country : countries) {
-            country.getIdeology().changeLeadingIdeology();
-            if (country.getType().equals(CountryEnums.Type.major)) {
-                historyAssignMajor(country);
-            } else if (country.getType().equals(CountryEnums.Type.minor)) {
-                historyAssignMinors(country);
+        for (Country c : countries) {
+            switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+                case VotingWinner.ww2_clicks -> {
+                    ClicksCountry country = (ClicksCountry) c;
+                    country.getIdeology().changeLeadingIdeology();
+                    if (country.getType().equals(CountryEnums.Type.major)) {
+                        historyAssignMajor(country);
+                    } else if (country.getType().equals(CountryEnums.Type.minor)) {
+                        historyAssignMinors(country);
+                    }
+                    ideologyBoost(country);
+                    country.addModifier(modifier);
+                    historyAssignSuperPowers(country);
+                }
+                case VotingWinner.ww2_troops -> {
+                    TroopCountry country = (TroopCountry) c;
+                    country.getIdeology().changeLeadingIdeology();
+                    if (country.getType().equals(CountryEnums.Type.major)) {
+                        historyAssignMajor(country);
+                    } else if (country.getType().equals(CountryEnums.Type.minor)) {
+                        historyAssignMinors(country);
+                    }
+                    ideologyBoost(country);
+                    country.addModifier(modifier);
+                    historyAssignSuperPowers(country);
+                }
             }
-            ideologyBoost(country);
-            country.addModifier(modifier);
+
         }
-        historyAssignSuperPowers(superPower);
         superPower.getIdeology().changeLeadingIdeology();
     }
 
@@ -560,7 +634,7 @@ public class MapGeneratorManager extends MapGen {
         return electionTypes.get(new Random().nextInt(electionTypes.size()));
     }
 
-    private void historyAssignMajor(Country country) {
+    private void historyAssignMajor(TroopCountry country) {
         if (new Random().nextBoolean()) {
             country.setHistory(CountryEnums.History.colonialPower);
         } else {
@@ -582,7 +656,44 @@ public class MapGeneratorManager extends MapGen {
                 country.setPreviousWar(CountryEnums.PreviousWar.neutral);
                 break;
         }
-
+        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)) {
+            if (new Random().nextBoolean()) {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
+                country.getIdeology().addIdeology(upAndComingIdeology, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(upAndComingElection, new Random().nextFloat(0, 40f));
+            } else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        } else {
+            if (new Random().nextBoolean()) {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.friendly);
+            } else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        }
+    }
+    private void historyAssignMajor(ClicksCountry country) {
+        if (new Random().nextBoolean()) {
+            country.setHistory(CountryEnums.History.colonialPower);
+        } else {
+            country.setHistory(CountryEnums.History.upAndComing);
+        }
+        leadershipStyle(country);
+        int num2 = new Random().nextInt(0, 3);
+        switch (num2) {
+            case 0:
+                country.setPreviousWar(CountryEnums.PreviousWar.winner);
+                country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(electionWinnerPrevWar, new Random().nextFloat(0, 40f));
+                break;
+            case 1:
+                country.setPreviousWar(CountryEnums.PreviousWar.loser);
+                country.setFocuses(CountryEnums.Focuses.war);
+                break;
+            case 2:
+                country.setPreviousWar(CountryEnums.PreviousWar.neutral);
+                break;
+        }
         if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)) {
             if (new Random().nextBoolean()) {
                 country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
@@ -600,7 +711,7 @@ public class MapGeneratorManager extends MapGen {
         }
     }
 
-    private void historyAssignMinors(Country country) {
+    private void historyAssignMinors(TroopCountry country) {
         if (new Random().nextBoolean()) {
             country.setHistory(CountryEnums.History.colony);
         } else {
@@ -640,7 +751,47 @@ public class MapGeneratorManager extends MapGen {
         }
     }
 
-    private void historyAssignSuperPowers(Country country) {
+    private void historyAssignMinors(ClicksCountry country) {
+        if (new Random().nextBoolean()) {
+            country.setHistory(CountryEnums.History.colony);
+        } else {
+            country.setHistory(CountryEnums.History.previousColonies);
+        }
+        leadershipStyle(country);
+        int num2 = new Random().nextInt(0, 3);
+        switch (num2) {
+            case 0:
+                country.setPreviousWar(CountryEnums.PreviousWar.winner);
+                country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(electionWinnerPrevWar, new Random().nextFloat(0, 40f));
+                break;
+            case 1:
+                country.setPreviousWar(CountryEnums.PreviousWar.loser);
+                country.setFocuses(CountryEnums.Focuses.war);
+                country.getIdeology().addIdeology(winnerOfThePrevWar, new Random().nextFloat(0, 40f));
+                country.getElections().addElection(electionWinnerPrevWar, new Random().nextFloat(0, 40f));
+                break;
+            case 2:
+                country.setPreviousWar(CountryEnums.PreviousWar.neutral);
+                break;
+        }
+        //country.setElections(new Random().nextBoolean());
+        if (country.getPreviousWar().equals(CountryEnums.PreviousWar.loser)) {
+            if (new Random().nextBoolean()) {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.unfriendly);
+            } else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        } else {
+            if (new Random().nextBoolean()) {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.friendly);
+            } else {
+                country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+            }
+        }
+    }
+
+    private void historyAssignSuperPowers(ClicksCountry country) {
         leadershipStyle(country);
         country.setHistory(CountryEnums.History.colonialPower);
         country.setPreviousWar(CountryEnums.PreviousWar.winner);
@@ -648,7 +799,35 @@ public class MapGeneratorManager extends MapGen {
         country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
     }
 
-    private void leadershipStyle(Country country) {
+    private void historyAssignSuperPowers(TroopCountry country) {
+        leadershipStyle(country);
+        country.setHistory(CountryEnums.History.colonialPower);
+        country.setPreviousWar(CountryEnums.PreviousWar.winner);
+        //country.setElections(new Random().nextBoolean());
+        country.setRelationsStyle(CountryEnums.RelationsStyle.issolationist);
+    }
+
+    private void leadershipStyle(TroopCountry country) {
+        int num2 = new Random().nextInt(0, 5);
+        switch (num2) {
+            case 0:
+                country.setFocuses(CountryEnums.Focuses.economy);
+                break;
+            case 1:
+                country.setFocuses(CountryEnums.Focuses.diverse);
+                break;
+            case 2:
+                country.setFocuses(CountryEnums.Focuses.military);
+                break;
+            case 3:
+                country.setFocuses(CountryEnums.Focuses.stability);
+                break;
+            case 4:
+                country.setFocuses(CountryEnums.Focuses.war);
+                break;
+        }
+    }
+    private void leadershipStyle(ClicksCountry country) {
         int num2 = new Random().nextInt(0, 5);
         switch (num2) {
             case 0:

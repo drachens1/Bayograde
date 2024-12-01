@@ -13,9 +13,9 @@ import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.TrainedTroop;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Armys.TroopType;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.War;
+import org.drachens.temporary.troops.TroopCountry;
 
 import java.util.HashMap;
 
@@ -50,7 +50,7 @@ public class TroopWarSystem implements War {
     @Override
     public void onClick(PlayerStartDiggingEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        Country country = p.getCountry();
+        TroopCountry country = (TroopCountry) p.getCountry();
         if (country == null) return;
         Instance instance = e.getInstance();
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));

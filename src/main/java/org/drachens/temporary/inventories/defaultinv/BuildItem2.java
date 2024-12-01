@@ -1,4 +1,4 @@
-package org.drachens.temporary;
+package org.drachens.temporary.inventories.defaultinv;
 
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;

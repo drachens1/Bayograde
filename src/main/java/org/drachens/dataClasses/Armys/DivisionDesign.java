@@ -1,14 +1,14 @@
 package org.drachens.dataClasses.Armys;
 
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.interfaces.DivisionStatsCalculator;
+import org.drachens.temporary.troops.TroopCountry;
 
 import java.util.HashMap;
 
 public class DivisionDesign {
-    private final Country country;
+    private final TroopCountry country;
     private HashMap<Integer, DivisionType> design;
     private float hp;
     private float atk;
@@ -17,7 +17,7 @@ public class DivisionDesign {
     private HashMap<CurrencyTypes, Payment> paymentList;
     private String name;
 
-    public DivisionDesign(String name, HashMap<Integer, DivisionType> design, DivisionStatsCalculator divisionStatsCalculator, Country country) {
+    public DivisionDesign(String name, HashMap<Integer, DivisionType> design, DivisionStatsCalculator divisionStatsCalculator, TroopCountry country) {
         this.design = design;
         this.paymentList = new HashMap<>();
         this.hp = 1f;
@@ -106,7 +106,7 @@ public class DivisionDesign {
         return design.keySet().size();
     }
 
-    public Country getCountry() {
+    public TroopCountry getCountry() {
         return country;
     }
 }

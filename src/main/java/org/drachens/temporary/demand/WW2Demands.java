@@ -11,6 +11,7 @@ import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -234,13 +235,18 @@ public class WW2Demands extends Demand {
 
         demandedAnnexation.forEach(country -> country.getOccupies().forEach(province -> province.setOccupier(from)));
         demandedPuppets.forEach(country -> {
-            country.setOverlord(to);
+            country.setOverlord(from);
             from.addPuppet(country);
         });
         demandedProvinces.forEach(province -> province.setOccupier(from));
-        demandedPayments.forEach(payment -> {
-
+        demandedPayments.forEach(payment -> to.minusThenLoan(payment,from));
+        offeredAnnexation.forEach(country -> country.getOccupies().forEach(province -> province.setOccupier(to)));
+        offeredPuppets.forEach(country -> {
+            country.setOverlord(to);
+            to.addPuppet(country);
         });
+        offeredProvinces.forEach(province -> province.setOccupier(to));
+        offeredPayments.forEach(payment -> from.minusThenLoan(payment,to));
     }
 
     @Override
@@ -284,7 +290,7 @@ public class WW2Demands extends Demand {
     public void hidePlayer(CPlayer p) {
         activePlayers.remove(p);
         ContinentalManagers.world(p.getInstance()).countryDataManager().getCountries().forEach(country -> country.reloadBlocksForPlayer(p));
-        inventoryManager.assignInventory(p, "default");
+        inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
     }
 
     public void showPlayerView(CPlayer p) {

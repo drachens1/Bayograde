@@ -9,6 +9,8 @@ import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
@@ -29,7 +31,7 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Factory extends BuildTypes {
     private final Payments produces;
-    private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
+    private final Payments payments = new Payments(new Payment(CurrencyEnum.production, 5f));
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the factory : 5 Production", NamedTextColor.RED))
             .build();
@@ -48,9 +50,9 @@ public class Factory extends BuildTypes {
     private final Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, smokeFrames);
 
     public Factory() {
-        super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, "factory");
+        super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory);
         DefaultsStorer defaultsStorer = ContinentalManagers.defaultsStorer;
-        produces = new Payments(new Payment(production, 2f));
+        produces = new Payments(new Payment(CurrencyEnum.production, 2f));
         System.out.println(produces.getPayments().getFirst().getAmount() + " Factory");
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);

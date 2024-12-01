@@ -1,8 +1,8 @@
 package org.drachens.dataClasses.Armys;
 
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.temporary.troops.TroopCountry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TrainedTroop {
-    private final Country country;
+    private final TroopCountry country;
     private final TroopType troopType;
     private float strength = 100f;
     private DivisionDesign design;
@@ -73,7 +73,7 @@ public class TrainedTroop {
         return strength;
     }
 
-    public Country getCountry() {
+    public TroopCountry getCountry() {
         return country;
     }
 

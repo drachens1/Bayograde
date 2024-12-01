@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.other;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
@@ -15,6 +16,7 @@ import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class ItemDisplay extends Clientside {
     public void setPos(Pos pos) {
         this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(this.entityId, this.pos, false);
-        PacketUtils.sendGroupedPacket(VIEWERS, entityTeleportPacket);
+        PacketUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
 
     }
 
@@ -87,7 +89,7 @@ public class ItemDisplay extends Clientside {
                 map
         );
 
-        PacketUtils.sendGroupedPacket(VIEWERS, entityMetaDataPacket1);
+        PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
     }
 
     public void moveSmooth(Province to, int time) {
@@ -108,7 +110,7 @@ public class ItemDisplay extends Clientside {
         map.put(14, Metadata.Quaternion(quart));
 
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
-        PacketUtils.sendGroupedPacket(VIEWERS, entityMetaDataPacket1);
+        PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
     }
 
     public void setPosWithOffset(Province province) {
@@ -119,11 +121,12 @@ public class ItemDisplay extends Clientside {
 
     @Override
     public void addCountry(Country country) {
-        List<Player> players = country.getPlayer();
+        List<CPlayer> players = country.getPlayer();
         if (storeViewers)
-            VIEWERS.addAll(players);
+            addPlayers(players);
 
-        PacketUtils.sendGroupedPacket(players, new SpawnEntityPacket(
+        List<Player> players1 = new ArrayList<>(players);
+        PacketUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -138,29 +141,30 @@ public class ItemDisplay extends Clientside {
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
 
-        PacketUtils.sendGroupedPacket(players, new EntityMetaDataPacket(
+        PacketUtils.sendGroupedPacket(players1, new EntityMetaDataPacket(
                 this.entityId,
                 map
         ));
 
-        PacketUtils.sendGroupedPacket(players, entityTeleportPacket);
+        PacketUtils.sendGroupedPacket(players1, entityTeleportPacket);
     }
 
     @Override
     public void removeCountry(Country country) {
-        List<Player> players = country.getPlayer();
+        List<CPlayer> players = country.getPlayer();
+        List<Player> players1 = new ArrayList<>(players);
         if (storeViewers)
-            VIEWERS.removeAll(players);
+            removePlayers(players);
 
-        PacketUtils.sendGroupedPacket(players, new DestroyEntitiesPacket(
+        PacketUtils.sendGroupedPacket(players1, new DestroyEntitiesPacket(
                 this.entityId
         ));
     }
 
     @Override
-    public void addViewer(Player p) {
+    public void addViewer(CPlayer p) {
         if (storeViewers)
-            VIEWERS.add(p);
+            addPlayer(p);
 
         PacketUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
@@ -183,16 +187,35 @@ public class ItemDisplay extends Clientside {
         ));
 
         PacketUtils.sendPacket(p, entityTeleportPacket);
+
     }
 
     @Override
-    public void removeViewer(Player p) {
+    public void removeViewer(CPlayer p) {
         if (storeViewers)
-            VIEWERS.remove(p);
+            removePlayer(p);
 
         PacketUtils.sendPacket(p, new DestroyEntitiesPacket(
                 this.entityId
         ));
+    }
+
+    @Override
+    public SpawnEntityPacket getSpawnPacket() {
+        return new SpawnEntityPacket(
+                entityId,
+                uuid,
+                EntityType.ITEM_DISPLAY.id(),
+                pos,
+                0f, 0, (short) 0, (short) 0, (short) 0
+        );
+    }
+
+    @Override
+    public DestroyEntitiesPacket getDestroyPacket() {
+        return new DestroyEntitiesPacket(
+                this.entityId
+        );
     }
 
     public enum DisplayType {

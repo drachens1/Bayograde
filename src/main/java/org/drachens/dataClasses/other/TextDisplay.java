@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.other;
 
-import net.kyori.adventure.audience.Audience;
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -17,6 +17,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class TextDisplay extends Clientside {
         } else
             map.put(11, Metadata.Vector3(to.sub(pos.x(), 0, pos.z())));
 
-        PacketUtils.sendGroupedPacket(VIEWERS, new EntityMetaDataPacket(entityId, map));
+        PacketUtils.sendGroupedPacket(getAsPlayers(), new EntityMetaDataPacket(entityId, map));
     }
 
     public void destroy(Long delay) {
@@ -84,23 +85,24 @@ public class TextDisplay extends Clientside {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
         map.put(23, Metadata.Chat(text));
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
-        if (storeViewers) PacketUtils.sendPacket((Audience) VIEWERS, entityMetaDataPacket1);
+        if (storeViewers) PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
         createEntityMetaDataPacket();
     }
 
     public void setPos(Pos pos) {
         this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
-        if (storeViewers) PacketUtils.sendPacket((Audience) VIEWERS, entityTeleportPacket);
+        if (storeViewers) PacketUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
     }
 
     @Override
     public void addCountry(Country country) {
-        List<Player> players = country.getPlayer();
+        List<CPlayer> players = country.getPlayer();
         if (storeViewers)
-            VIEWERS.addAll(players);
+            addPlayers(players);
+        List<Player> players1 = new ArrayList<>(players);
 
-        PacketUtils.sendGroupedPacket(players, new SpawnEntityPacket(
+        PacketUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
@@ -108,24 +110,24 @@ public class TextDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        PacketUtils.sendGroupedPacket(players, entityMetaDataPacket);
+        PacketUtils.sendGroupedPacket(players1, entityMetaDataPacket);
 
-        PacketUtils.sendGroupedPacket(players, entityTeleportPacket);
+        PacketUtils.sendGroupedPacket(players1, entityTeleportPacket);
     }
 
     @Override
     public void removeCountry(Country country) {
-        List<Player> players = country.getPlayer();
+        List<CPlayer> players = country.getPlayer();
         if (storeViewers)
-            VIEWERS.removeAll(players);
+            removePlayers(players);
 
-        PacketUtils.sendGroupedPacket(players, new DestroyEntitiesPacket(this.entityId));
+        PacketUtils.sendGroupedPacket(new ArrayList<>(players), new DestroyEntitiesPacket(this.entityId));
     }
 
     @Override
-    public void addViewer(Player p) {
+    public void addViewer(CPlayer p) {
         if (storeViewers)
-            VIEWERS.add(p);
+            addPlayer(p);
 
         PacketUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
@@ -141,11 +143,27 @@ public class TextDisplay extends Clientside {
     }
 
     @Override
-    public void removeViewer(Player p) {
+    public void removeViewer(CPlayer p) {
         if (storeViewers)
-            VIEWERS.remove(p);
+            addViewer(p);
 
         PacketUtils.sendPacket(p, new DestroyEntitiesPacket(this.entityId));
+    }
+
+    @Override
+    public SpawnEntityPacket getSpawnPacket() {
+        return new SpawnEntityPacket(
+                entityId,
+                uuid,
+                EntityType.TEXT_DISPLAY.id(),
+                pos,
+                0f, 0, (short) 0, (short) 0, (short) 0
+        );
+    }
+
+    @Override
+    public DestroyEntitiesPacket getDestroyPacket() {
+        return new DestroyEntitiesPacket(this.entityId);
     }
 
     public static class create {

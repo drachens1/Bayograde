@@ -9,6 +9,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.events.demands.DemandAcceptedEvent;
@@ -88,7 +89,7 @@ public class DemandIncomingCMD extends Command {
                     Demand demand = new WW2Demands(sentDemand.getToCountry(), sentDemand.getFromCountry());
                     demand.copyButOpposite(sentDemand);
                     demandManager.addActive(p, demand);
-                    inventoryManager.assignInventory(p, "demand");
+                    inventoryManager.assignInventory(p, InventoryEnum.demand);
                     EventDispatcher.call(new DemandCounterOfferEvent(to, from));
                     break;
             }
@@ -120,7 +121,7 @@ public class DemandIncomingCMD extends Command {
                     Demand demand = new WW2Demands(sentDemand.getToCountry(), sentDemand.getFromCountry());
                     demand.copyButOpposite(sentDemand);
                     demandManager.addActive(p, demand);
-                    inventoryManager.assignInventory(p, "demand");
+                    inventoryManager.assignInventory(p, InventoryEnum.demand);
                     EventDispatcher.call(new DemandCounterOfferEvent(to, from));
                     break;
                 case "view":

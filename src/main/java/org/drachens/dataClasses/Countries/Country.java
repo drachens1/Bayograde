@@ -15,15 +15,16 @@ import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
-import org.drachens.dataClasses.Armys.Troop;
+import org.drachens.bossbars.CapitulationBar;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
-import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.Economics.Loan;
 import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.*;
@@ -49,13 +50,13 @@ import java.util.List;
 import static org.drachens.util.KyoriUtil.*;
 import static org.drachens.util.Messages.broadcast;
 
-public class Country implements Cloneable {
+public abstract class Country implements Cloneable {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     private final MapGen mapGen;
-    private final List<Player> players;
+    private final List<CPlayer> players;
     private final Vault vault;
     private final List<Material> city = new ArrayList<>();
-    private final HashMap<BuildTypes, List<Building>> buildTypesListHashMap = new HashMap<>();
+    private final HashMap<BuildingEnum, List<Building>> buildTypesListHashMap = new HashMap<>();
     private final List<Country> wars = new ArrayList<>();
     private final Ideology ideology;
     private final Election elections;
@@ -66,8 +67,6 @@ public class Country implements Cloneable {
     private final AStarPathfinder aStarPathfinder;
     private final Instance instance;
     private final List<Clientside> clientsides = new ArrayList<>();
-    private final List<Clientside> allyTroopClientsides = new ArrayList<>();
-    private final List<Troop> troops = new ArrayList<>();
     private final List<Player> playerInvites = new ArrayList<>();
     private final List<String> factionInvites = new ArrayList<>();
     private final HashMap<Country, Demand> demandHashMap = new HashMap<>();
@@ -79,7 +78,7 @@ public class Country implements Cloneable {
     private EconomyFactionType economyFactionType;
     private MilitaryFactionType militaryFactionType;
     private List<Province> occupies;
-    private List<Province> cities;
+    private final List<Province> cities;
     private String name;
     private Component nameComponent;
     private Material block;
@@ -88,11 +87,6 @@ public class Country implements Cloneable {
     private float capitulationPoints;
     private float maxCapitulationPoints;
     private boolean capitulated = false;
-    private CountryEnums.Type type;
-    private CountryEnums.RelationsStyle relationsStyle;
-    private CountryEnums.History history;
-    private CountryEnums.Focuses focuses;
-    private CountryEnums.PreviousWar previousWar;
     private Component prefix;
     private Component description;
     private float maxBuildingSlotBoost = 1f;
@@ -104,6 +98,8 @@ public class Country implements Cloneable {
     private float weeklyStabilityGain = 0f;
     private final Stability stability = new Stability(50f,this);
     private final Relations relations = new Relations(this);
+    private final HashMap<String,Loan> loanRequests = new HashMap<>();
+    private final CapitulationBar capitulationBar = new CapitulationBar();
 
     public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         this.occupies = new ArrayList<>();
@@ -175,14 +171,6 @@ public class Country implements Cloneable {
         capitulationPoints = 0;
     }
 
-    public List<Province> getCities() {
-        return cities;
-    }
-
-    public void setCities(List<Province> cities) {
-        this.cities = cities;
-    }
-
     public void addCity(Province city) {
         this.maxCapitulationPoints += this.city.indexOf(city.getMaterial());
         this.capitulationPoints += this.city.indexOf(city.getMaterial());
@@ -194,20 +182,8 @@ public class Country implements Cloneable {
         this.cities.remove(city);
     }
 
-    public float getCapitulationPoints() {
-        return capitulationPoints;
-    }
-
-    public float getMaxCapitulationPoints() {
-        return maxCapitulationPoints;
-    }
-
     public List<Province> getOccupies() {
         return occupies;
-    }
-
-    public void setOccupies(List<Province> provinces) {
-        occupies = provinces;
     }
 
     public void addOccupied(Province province) {
@@ -258,23 +234,29 @@ public class Country implements Cloneable {
         this.capital = capital;
     }
 
-
+    Component countryJoin = getCountryMessages("countryJoin");
+    Component getCountryJoin2 = getCountryMessages("broadcastedCountryJoin");
+    Component getCountryLeave = getCountryMessages("countryLeave");
     public void addPlayer(CPlayer p) {
         EventDispatcher.call(new CountryJoinEvent(this, p));
+        capitulationBar.addPlayer(p);
         this.players.add(p);
-        p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryJoin"), "%country%", this.name)));
-        broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryMessages("broadcastedCountryJoin"), "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
+        p.sendMessage(mergeComp(getPrefixes("country"), replaceString(countryJoin, "%country%", this.name)));
+        broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryJoin2, "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         scoreboardManager.openScoreboard(new DefaultCountryScoreboard(),p);
         clientsides.forEach(clientside -> clientside.addViewer(p));
         if (playerLeader == null)
             setPlayerLeader(p);
+        onAddPlayer(p);
     }
+    protected abstract void onAddPlayer(CPlayer p);
 
-    public void removePlayer(Player p, boolean left) {
+    public void removePlayer(CPlayer p, boolean left) {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
+        capitulationBar.removePlayer(p);
         this.players.remove(p);
-        p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryMessages("countryLeave"), "%country%", this.name)));
+        p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryLeave, "%country%", this.name)));
         clientsides.forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
             if (players.isEmpty()) {
@@ -283,7 +265,11 @@ public class Country implements Cloneable {
                 setPlayerLeader(players.getFirst());
         }
         demandManager.removeActive(p);
+        onRemovePlayer(p);
     }
+
+    protected abstract void onRemovePlayer(CPlayer p);
+
 
     public void changeCountry(CPlayer p) {
         Country country = p.getCountry();
@@ -299,7 +285,7 @@ public class Country implements Cloneable {
         addPlayer(p);
     }
 
-    public List<Player> getPlayer() {
+    public List<CPlayer> getPlayer() {
         return players;
     }
 
@@ -310,11 +296,19 @@ public class Country implements Cloneable {
                 broadcast(mergeComp(getPrefixes("country"), compBuild(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)), capital.getInstance());
             }
         }
-        System.out.println(capitulationPoints + " : " + maxCapitulationPoints * (0.8 * capitulationBoostPercentage) + " : " + 0.8 * capitulationBoostPercentage);
-        if (capitulationPoints >= maxCapitulationPoints * (0.8 * capitulationBoostPercentage) && !capitulated) {
+        float capPercentage = bound(0.8f * capitulationBoostPercentage);
+        float capPoints = maxCapitulationPoints * capPercentage;
+        capitulationBar.setProgress(capitulationPoints/capPoints);
+        if (capitulationPoints >= capPoints && !capitulated) {
             capitulated = true;
             capitulate(attacker);
         }
+    }
+
+    private float bound(float d){
+        if (d>1)return 1;
+        if (d<0)return 0;
+        return d;
     }
 
     public void calculateIncrease() {
@@ -333,7 +327,8 @@ public class Country implements Cloneable {
         wars.forEach(aggressor -> EventDispatcher.call(new EndWarEvent(aggressor, this)));
     }
 
-    public void addPayment(Payment payment) {
+    public void addPayment(Payment payment, Component msg) {
+        sendMessage(msg);
         vault.addPayment(payment);
     }
 
@@ -361,6 +356,11 @@ public class Country implements Cloneable {
         return vault.canMinus(cost);
     }
 
+    public void minusThenLoan(Payment payment, Country from){
+        getVault().minusThenLoan(payment,from);
+    }
+
+
     public void addTextDisplay(TextDisplay textDisplay) {
         players.forEach(textDisplay::addViewer);
         this.clientsides.add(textDisplay);
@@ -371,21 +371,6 @@ public class Country implements Cloneable {
         this.clientsides.remove(textDisplay);
     }
 
-    public CountryEnums.Type getType() {
-        return type;
-    }
-
-    public void setType(CountryEnums.Type newType) {
-        type = newType;
-    }
-
-    public CountryEnums.History getHistory() {
-        return history;
-    }
-
-    public void setHistory(CountryEnums.History history) {
-        this.history = history;
-    }
 
     public Ideology getIdeology() {
         return ideology;
@@ -414,30 +399,6 @@ public class Country implements Cloneable {
 
     public Boolean atWar(Country country) {
         return wars.contains(country);
-    }
-
-    public CountryEnums.Focuses getFocuses() {
-        return focuses;
-    }
-
-    public void setFocuses(CountryEnums.Focuses f) {
-        this.focuses = f;
-    }
-
-    public CountryEnums.PreviousWar getPreviousWar() {
-        return previousWar;
-    }
-
-    public void setPreviousWar(CountryEnums.PreviousWar p) {
-        this.previousWar = p;
-    }
-
-    public CountryEnums.RelationsStyle getRelationsStyle() {
-        return relationsStyle;
-    }
-
-    public void setRelationsStyle(CountryEnums.RelationsStyle relationsStyle) {
-        this.relationsStyle = relationsStyle;
     }
 
     public Component getPrefix() {
@@ -547,7 +508,7 @@ public class Country implements Cloneable {
 
         this.nameComponent = Component.text()
                 .append(Component.text(name, NamedTextColor.GOLD, TextDecoration.BOLD))
-                .clickEvent(ClickEvent.runCommand("/country info " + getName()))
+                .clickEvent(ClickEvent.runCommand("/country info general " + getName()))
                 .hoverEvent(description)
                 .build();
     }
@@ -726,21 +687,8 @@ public class Country implements Cloneable {
         clientsides.remove(building.getItemDisplay());
     }
 
-    public List<Building> getBuildings(BuildTypes buildTypes) {
-        return buildTypesListHashMap.get(buildTypes);
-    }
-
-    public void addTroop(Troop troop) {
-        troop.getTroop().addCountry(this);
-        troops.add(troop);
-        clientsides.add(troop.getTroop());
-        clientsides.add(troop.getAlly());
-    }
-
-    public void removeTroop(Troop troop) {
-        troop.getTroop().removeCountry(this);
-        troops.remove(troop);
-        clientsides.remove(troop.getTroop());
+    public List<Building> getBuildings(BuildingEnum buildingEnum) {
+        return buildTypesListHashMap.get(buildingEnum);
     }
 
 
@@ -753,11 +701,6 @@ public class Country implements Cloneable {
         clientsides.forEach(clientside -> players.forEach(clientside::removeViewer));
         this.clientsides.removeAll(clientsides);
     }
-
-    public List<Clientside> getAlliedTroopClientsides() {
-        return allyTroopClientsides;
-    }
-
     public void loadClientside(Clientside clientside) {
         players.forEach(clientside::addViewer);
         this.clientsides.add(clientside);
@@ -857,5 +800,14 @@ public class Country implements Cloneable {
     }
     public float getRelationsBoost(){
         return relationsBoost;
+    }
+    public void addLoanRequest(Loan loan){
+        loanRequests.put(loan.getFromCountry().getName(),loan);
+    }
+    public void acceptLoan(String from){
+        vault.addLoan(loanRequests.get(from));
+    }
+    public HashMap<String, Loan> getLoanRequests(){
+        return loanRequests;
     }
 }

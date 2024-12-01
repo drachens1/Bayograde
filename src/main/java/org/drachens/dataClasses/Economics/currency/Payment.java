@@ -1,11 +1,18 @@
 package org.drachens.dataClasses.Economics.currency;
 
 import net.kyori.adventure.text.Component;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 
 public class Payment implements Cloneable {
     private final CurrencyTypes currencyType;
     private float amount;
     private Component message;
+
+    public Payment(CurrencyEnum currencyEnum, float amount){
+        this.currencyType = ContinentalManagers.defaultsStorer.currencies.getCurrencyType(currencyEnum.name());
+        this.amount = amount;
+    }
 
     public Payment(CurrencyTypes currencyType, float amount) {
         this.currencyType = currencyType;

@@ -2,7 +2,6 @@ package org.drachens.dataClasses.Economics;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Modifier;
 
@@ -25,5 +24,8 @@ public class Stability {
         float toAdd = country.getWeeklyStabilityGain()*country.getStabilityGainBoost();
         stability+=toAdd;
         stabilityModifier.setProductionBoost((stability-50f)/100);
+    }
+    public float getStability(){
+        return stability;
     }
 }

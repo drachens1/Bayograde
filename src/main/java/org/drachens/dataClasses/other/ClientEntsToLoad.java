@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.other;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.instance.Instance;
 
 import java.util.ArrayList;
@@ -10,14 +10,14 @@ import java.util.List;
 public class ClientEntsToLoad {
     private HashMap<Instance, List<Clientside>> toLoad = new HashMap<>();
 
-    public void loadPlayer(Player p) {
+    public void loadPlayer(CPlayer p) {
         if (!toLoad.containsKey(p.getInstance())) return;
         for (Clientside ents : toLoad.get(p.getInstance())) {
             ents.addViewer(p);
         }
     }
 
-    public void unloadPlayer(Player p) {
+    public void unloadPlayer(CPlayer p) {
         if (!toLoad.containsKey(p.getInstance())) return;
         for (Clientside ents : toLoad.get(p.getInstance())) {
             ents.removeViewer(p);
