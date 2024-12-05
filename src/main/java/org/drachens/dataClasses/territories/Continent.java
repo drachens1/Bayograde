@@ -1,7 +1,6 @@
 package org.drachens.dataClasses.territories;
 
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Province;
 
 import java.util.ArrayList;
 import java.util.List;

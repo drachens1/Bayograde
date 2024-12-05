@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.BuildingTypes;
@@ -17,18 +18,29 @@ import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.advancement.Advancement;
+import org.drachens.advancement.AdvancementManager;
+import org.drachens.advancement.AdvancementSection;
+import org.drachens.dataClasses.ComponentListBuilder;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.NoneCustomisableInventory;
+import org.drachens.dataClasses.Research.ResearchCategoryEnum;
 import org.drachens.dataClasses.Research.ResearchCenter;
-import org.drachens.interfaces.VotingOption;
+import org.drachens.dataClasses.Research.tree.ResearchCategory;
+import org.drachens.dataClasses.Research.tree.ResearchOption;
+import org.drachens.dataClasses.Research.tree.TechTree;
+import org.drachens.dataClasses.VotingOption;
+import org.drachens.events.NewDay;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.items.HotbarItemButton;
@@ -74,10 +86,10 @@ public class Main {
             "Christian", "Andrea", "Roger", "Hannah", "Noah", "Martha", "Gerald", "Jacqueline", "Carl", "Frances",
             "Terry", "Gloria", "Sean", "Ann", "Austin", "Teresa", "Arthur", "Sara", "Lawrence", "Janice",
             "Jesse", "Jean", "Dylan", "Alice", "Bryan", "Madison", "Joe", "Doris", "Jordan", "Abigail",
-            "Billy", "Julia", "Bruce", "Judy", "Albert", "Grace", "Willie", "Denise", "Gabriel", "Amber",
+            "Billy", "Julia", "Bruce", "Judty", "Albert", "Grace", "Willie", "Denise", "Gabriel", "Amber",
             "Logan", "Marilyn", "Alan", "Beverly", "Juan", "Danielle", "Wayne", "Theresa", "Roy", "Sophia",
             "Ralph", "Marie", "Randy", "Diana", "Eugene", "Brittany", "Vincent", "Natalie", "Russell", "Isabella",
-            "Elijah", "Charlotte", "Louis", "Rose", "Bobby", "Alexis", "Philip", "Kayla", "Johnny", "Lillian",
+            "Elijah", "Charlotte", "Louis", "Rose", "Bobby", "Alexis", "Philipt", "Kayla", "Johnny", "Lillian",
             "Howard", "Clara", "Mary", "Jacob", "Landon", "Savannah", "Oliver", "Liam", "Mason", "Sofia",
             "Jayden", "Ella", "Logan", "Ava", "Isabella", "Zoe", "Caden", "Aiden", "Jack", "Brooklyn",
             "Elena", "Henry", "Zachary", "Mia", "Joshua", "Matthew", "Samuel", "Levi", "Nathan", "Lucas",
@@ -153,6 +165,8 @@ public class Main {
 
         new Factory();
 
+        createAdvancements();
+
         EventHandlerProviderManager.hook();
         ContinentalManagers.defaultsStorer.currencies.register(production);
         ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.defaultInv, new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10),BuildingEnum.factory), new TroopMover(),new ChangeInventoryButton(0,itemBuilder(Material.BOOK),InventoryEnum.scoreboardInv),new ChangeInventoryButton(1,itemBuilder(Material.BROWN_DYE),InventoryEnum.research)}));
@@ -168,6 +182,13 @@ public class Main {
         ));
 
         setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
+    }
+
+    private static void createAdvancements(){
+        AdvancementManager advancementManager = ContinentalManagers.advancementManager;
+        advancementManager.register(new AdvancementSection.Create("Magic",Material.BROWN_DYE, FrameType.TASK,compBuild("Title",NamedTextColor.BLUE),compBuild("Description",NamedTextColor.BLUE))
+                        .addAdvancement(new Advancement("cool", NewDay.class,Material.OAK_BOAT,FrameType.GOAL,new int[]{1,1},compBuild("Title",NamedTextColor.BLUE),compBuild("Description",NamedTextColor.BLUE),null))
+                .build());
     }
 
     private static void createWW2VotingOption() {
@@ -330,8 +351,39 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
+                        .setTechTree(new TechTree.Create(compBuild("Tech",NamedTextColor.BLUE))
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory,compBuild("Modifies and increase production for factories.",NamedTextColor.BLUE),compBuild("Factories",TextColor.color(22,160,9)))
+                                        .addResearchOption(new ResearchOption.Create("a",itemBuilder(Material.BROWN_DYE,compBuild("a",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(Component.text()
+                                                                .append(Component.text("W"))
+                                                                .build())
+                                                        .build())
+                                                .addOr("b")
+                                                .addRequires("b")
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("b",itemBuilder(Material.BROWN_DYE,compBuild("b",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("c",itemBuilder(Material.BROWN_DYE,compBuild("c",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("d",itemBuilder(Material.BROWN_DYE,compBuild("d",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("e",itemBuilder(Material.BROWN_DYE,compBuild("e",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("f",itemBuilder(Material.BROWN_DYE,compBuild("f",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("f",itemBuilder(Material.BROWN_DYE,compBuild("g",NamedTextColor.BLUE)),new Payment(CurrencyEnum.research,2f))
+                                                .setComparedToLast(1,3)
+                                                .build())
+                                        .build())
+                                .build())
                 .build(), VotingWinner.ww2_clicks);
-
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())

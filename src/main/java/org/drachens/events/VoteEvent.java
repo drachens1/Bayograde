@@ -1,8 +1,8 @@
 package org.drachens.events;
 
 import net.minestom.server.entity.Player;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.interfaces.Event;
-import org.drachens.interfaces.VotingOption;
 
 public class VoteEvent extends Event {
     private final Player p;

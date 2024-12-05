@@ -9,7 +9,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.interfaces.items.HotbarItemButton;
 
 public class BuildItem extends HotbarItemButton {

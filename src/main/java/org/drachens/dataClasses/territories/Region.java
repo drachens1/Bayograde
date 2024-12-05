@@ -3,7 +3,6 @@ package org.drachens.dataClasses.territories;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
-import org.drachens.dataClasses.Province;
 
 import java.util.ArrayList;
 import java.util.List;

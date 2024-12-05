@@ -1,7 +1,7 @@
 package org.drachens.Manager.defaults.defaultsStorer;
 
 import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
-import org.drachens.interfaces.VotingOption;
+import org.drachens.dataClasses.VotingOption;
 
 import java.util.HashMap;
 

@@ -56,7 +56,7 @@ public class EconomyFactionType extends Factions {
     private float calculateBoost(float distance, int numOfCountries, Instance instance) {
         if (numOfCountries == 1) return 0f;
         float boost = distance / numOfCountries;
-        MapGen mapGenerator = ContinentalManagers.world(instance).votingManager().getWinner().getMapGenerator();
+        MapGen mapGenerator = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
         float mapSize = (mapGenerator.getSizeX() + mapGenerator.getSizeY()) / 2f;
         return boost * mapSize;
     }

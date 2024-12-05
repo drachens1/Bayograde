@@ -1,6 +1,7 @@
 package org.drachens.interfaces;
 
 import net.minestom.server.instance.Instance;
+import org.drachens.dataClasses.VotingOption;
 
 import java.util.ArrayList;
 import java.util.List;

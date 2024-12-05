@@ -10,10 +10,11 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.dataClasses.DataStorer;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
 import org.drachens.events.VoteEvent;
-import org.drachens.interfaces.VotingOption;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -46,10 +47,6 @@ public class VotingManager {
     public void vote(VotingOption votingOption, Player p) {
         votes.get(votingOption).add(p);
         voted = true;
-    }
-
-    public VotingOption getWinner() {
-        return winner;
     }
 
     public void setWinner() {
@@ -93,7 +90,9 @@ public class VotingManager {
                 reset();
             } else {
                 setWinner();
-                ContinentalManagers.world(instance).dataStorer().votingWinner= VotingWinner.valueOf(winner.getName());
+                DataStorer dataStorer = ContinentalManagers.world(instance).dataStorer();
+                dataStorer.votingWinner= VotingWinner.valueOf(winner.getName());
+                dataStorer.votingOption=winner;
                 EventDispatcher.call(new StartGameEvent(instance, winner));
                 task.cancel();
             }

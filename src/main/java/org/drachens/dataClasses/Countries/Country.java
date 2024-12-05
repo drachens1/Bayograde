@@ -27,17 +27,21 @@ import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.Loan;
 import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Economics.Vault;
-import org.drachens.dataClasses.Economics.currency.*;
+import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
+import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.dataClasses.territories.Region;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.EndWarEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.events.NewDay;
 import org.drachens.interfaces.MapGen;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.util.AStarPathfinder;
@@ -77,7 +81,7 @@ public abstract class Country implements Cloneable {
     private Leader leader;
     private EconomyFactionType economyFactionType;
     private MilitaryFactionType militaryFactionType;
-    private List<Province> occupies;
+    private final List<Province> occupies;
     private final List<Province> cities;
     private String name;
     private Component nameComponent;
@@ -101,9 +105,10 @@ public abstract class Country implements Cloneable {
     private final HashMap<String,Loan> loanRequests = new HashMap<>();
     private final CapitulationBar capitulationBar = new CapitulationBar();
 
-    public Country(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
+    public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
-        this.vault = new Vault(this, startingCurrencies);
+        this.vault = vault;
+        vault.setCountry(this);
         this.nameComponent = nameComponent;
         this.name = name;
         this.setPrefix(compBuild(name, NamedTextColor.BLUE));
@@ -118,7 +123,7 @@ public abstract class Country implements Cloneable {
         city.addAll(Arrays.stream(tempCities).toList());
         this.instance = instance;
         aStarPathfinder = new AStarPathfinder(ContinentalManagers.world(instance).provinceManager());
-        this.mapGen = ContinentalManagers.world(instance).votingManager().getWinner().getMapGenerator();
+        this.mapGen = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
     }
 
     public void addModifier(Modifier modifier) {
@@ -127,7 +132,6 @@ public abstract class Country implements Cloneable {
 
     public void addModifier(Modifier modifier, boolean update) {
         if (modifiers.contains(modifier)) {
-
             return;
         }
 
@@ -137,7 +141,7 @@ public abstract class Country implements Cloneable {
         this.capitulationBoostPercentage += modifier.getCapitulationBoostPercentage();
         this.totalProductionBoost += modifier.getProductionBoost();
         modifier.getCurrencyBoostList().forEach(this::addBoost);
-        if (!update) createInfo();
+        if (!update && modifier.shouldDisplay()) createInfo();
     }
 
     public void updateModifier(Modifier modifier, Modifier old) {
@@ -172,7 +176,6 @@ public abstract class Country implements Cloneable {
     }
 
     public void addCity(Province city) {
-        this.maxCapitulationPoints += this.city.indexOf(city.getMaterial());
         this.capitulationPoints += this.city.indexOf(city.getMaterial());
         this.cities.add(city);
     }
@@ -456,6 +459,7 @@ public abstract class Country implements Cloneable {
         if (mapGen.isGenerating(instance)) return;
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : modifiers) {
+            if (!modifier.shouldDisplay())continue;
             modifierComps.add(modifier.getName());
             modifierComps.add(Component.text(", "));
         }
@@ -547,10 +551,6 @@ public abstract class Country implements Cloneable {
 
     public void setOverlord(Country country) {
         this.overlord = country;
-    }
-
-    public HashMap<CurrencyTypes, CurrencyBoost> getEconomyBoosts() {
-        return economyBoosts;
     }
 
     public void endGame() {
@@ -810,4 +810,6 @@ public abstract class Country implements Cloneable {
     public HashMap<String, Loan> getLoanRequests(){
         return loanRequests;
     }
+
+    public abstract void newWeek(NewDay newDay);
 }

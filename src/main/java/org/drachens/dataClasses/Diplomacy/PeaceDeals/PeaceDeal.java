@@ -2,7 +2,7 @@ package org.drachens.dataClasses.Diplomacy.PeaceDeals;
 
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
 
 import java.util.List;
 

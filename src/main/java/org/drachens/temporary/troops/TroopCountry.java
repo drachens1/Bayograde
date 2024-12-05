@@ -12,6 +12,8 @@ import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.other.Clientside;
+import org.drachens.events.NewDay;
+import org.drachens.temporary.clicks.ClicksVault;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ public class TroopCountry extends Country {
     private final List<Troop> troops = new ArrayList<>();
 
     public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
-        super(startingCurrencies, name, nameComponent, block, border, defaultIdeologies, election, instance);
+        super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies));
     }
 
     @Override
@@ -37,6 +39,11 @@ public class TroopCountry extends Country {
 
     @Override
     protected void onRemovePlayer(CPlayer p) {
+
+    }
+
+    @Override
+    public void newWeek(NewDay newDay) {
 
     }
 

@@ -14,7 +14,7 @@ import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Delay;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.Countries.CountryCoopPlayerEvent;
 import org.drachens.events.Countries.CountrySetLeaderEvent;
 import org.drachens.events.Factions.*;
@@ -25,6 +25,8 @@ import org.drachens.events.demands.DemandAcceptedEvent;
 import org.drachens.events.demands.DemandCompletionEvent;
 import org.drachens.events.demands.DemandCounterOfferEvent;
 import org.drachens.events.demands.DemandDeniedEvent;
+import org.drachens.events.research.ResearchCompletionEvent;
+import org.drachens.events.research.ResearchStartEvent;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.broadcast;
@@ -257,6 +259,22 @@ public class MessageManager {
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
                             .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
                             .build())
+                    .build());
+        });
+
+        globEHandler.addListener(ResearchStartEvent.class,e->{
+            e.getCountry().sendMessage(Component.text()
+                            .append(country)
+                            .append(Component.text("You have started researching "))
+                            .append(Component.text(e.getResearchOption().getIdentifier()))
+                    .build());
+        });
+
+        globEHandler.addListener(ResearchCompletionEvent.class, e->{
+            e.getCountry().sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("You have finished researching "))
+                    .append(Component.text(e.getResearchOption().getIdentifier()))
                     .build());
         });
     }

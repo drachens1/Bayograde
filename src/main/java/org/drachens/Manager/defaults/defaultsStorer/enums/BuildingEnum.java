@@ -5,5 +5,6 @@ public enum BuildingEnum {
     library,
     factory,
     researchCenter,
-    researchLab
+    researchLab,
+    research
 }

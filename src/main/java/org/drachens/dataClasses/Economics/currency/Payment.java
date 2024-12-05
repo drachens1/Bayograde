@@ -25,6 +25,11 @@ public class Payment implements Cloneable {
         this.message = message;
     }
 
+    public Payment(Currencies currencies){
+        this.currencyType=currencies.getCurrencyType();
+        this.amount=currencies.getAmount();
+    }
+
     public float getAmount() {
         return amount;
     }
@@ -53,6 +58,15 @@ public class Payment implements Cloneable {
         return false;
     }
 
+    public Payment minusMaxAmount(Payment payment){
+        if (currencyType!=payment.getCurrencyType())return new Payment(payment.currencyType,0f);
+        if (amount>payment.amount)return new Payment(payment.currencyType,0f);
+        amount-=payment.amount;
+        Payment p = new Payment(payment.currencyType,Math.abs(amount));
+        amount=0f;
+        return p;
+    }
+
     public void multiply(float multiply) {
         amount *= multiply;
     }
@@ -60,8 +74,7 @@ public class Payment implements Cloneable {
     @Override
     public Payment clone() {
         try {
-            Payment clone = (Payment) super.clone();
-            return clone;
+            return (Payment) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

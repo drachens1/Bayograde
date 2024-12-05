@@ -18,11 +18,11 @@ import org.drachens.dataClasses.Countries.*;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.territories.Continent;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.dataClasses.territories.Region;
 import org.drachens.interfaces.MapGen;
-import org.drachens.interfaces.VotingOption;
 import org.drachens.temporary.clicks.ClicksCountry;
 import org.drachens.temporary.troops.TroopCountry;
 

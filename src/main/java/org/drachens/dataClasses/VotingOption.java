@@ -1,9 +1,12 @@
-package org.drachens.interfaces;
+package org.drachens.dataClasses;
 
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Research.tree.TechTree;
+import org.drachens.interfaces.MapGen;
+import org.drachens.interfaces.War;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ public class VotingOption {
     List<IdeologyTypes> ideologyTypes;
     List<ElectionTypes> electionTypes;
     HashMap<CurrencyTypes, Currencies> defaultCurrencies;
+    TechTree tree;
 
     VotingOption(create c) {
         this.startingYear = c.startingYear;
@@ -30,6 +34,7 @@ public class VotingOption {
         if (c.war != null) war = c.war;
         if (c.ideologyTypes != null) ideologyTypes = c.ideologyTypes;
         if (c.defaultCurrencies != null) defaultCurrencies = c.defaultCurrencies;
+        if (c.tree!=null) tree=c.tree;
         countries = c.countries;
         if (c.electionTypes != null) electionTypes = c.electionTypes;
     }
@@ -78,6 +83,10 @@ public class VotingOption {
         return ideologyTypes;
     }
 
+    public TechTree getTree(){
+        return tree;
+    }
+
     public static class create {
         int startingYear;
         int endYear;
@@ -89,6 +98,7 @@ public class VotingOption {
         List<ElectionTypes> electionTypes;
         List<IdeologyTypes> ideologyTypes = new ArrayList<>();
         HashMap<CurrencyTypes, Currencies> defaultCurrencies = new HashMap<>();
+        TechTree tree;
 
         public create(int startingYear, int endYear, Long dayLength, String name) {
             this.startingYear = startingYear;
@@ -124,6 +134,11 @@ public class VotingOption {
 
         public create setElections(List<ElectionTypes> elections) {
             this.electionTypes = elections;
+            return this;
+        }
+
+        public create setTechTree(TechTree tree){
+            this.tree=tree;
             return this;
         }
 

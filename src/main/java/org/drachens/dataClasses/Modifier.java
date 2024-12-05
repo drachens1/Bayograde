@@ -24,8 +24,9 @@ public class Modifier implements Cloneable {
     private float relationsBoost;
     private float baseRelationsBoost;
     private Modifier oldModifier;
+    private final boolean display;
 
-    private Modifier(create c) {
+    protected Modifier(create c) {
         this.justCompName = c.name;
         this.capitulationBoostPercentage = c.capitulationBoostPercentage;
         this.currencyBoostList = c.currencyBoostList;
@@ -40,6 +41,11 @@ public class Modifier implements Cloneable {
                 .hoverEvent(HoverEvent.showText(description))
                 .build();
         oldModifier = this.clone();
+        display=c.display;
+    }
+
+    public boolean shouldDisplay(){
+        return display;
     }
 
     public void createDescription() {
@@ -135,13 +141,17 @@ public class Modifier implements Cloneable {
 
     }
 
-    public float getMaxBuildingSlotBoost() {
-        return maxBuildingSlotBoost;
+    public void addModifier(Modifier c){
+        this.capitulationBoostPercentage = c.capitulationBoostPercentage;
+        this.currencyBoostList = c.currencyBoostList;
+        this.relationsBoost = c.relationsBoost;
+        this.baseRelationsBoost = c.baseRelationsBoost;
+        this.maxBuildingSlotBoost = c.maxBuildingSlotBoost;
+        update();
     }
 
-    public void setMaxBuildingSlotBoost(float maxBoost) {
-        this.maxBuildingSlotBoost = maxBoost;
-        update();
+    public float getMaxBuildingSlotBoost() {
+        return maxBuildingSlotBoost;
     }
 
     public float getCapitulationBoostPercentage() {
@@ -254,6 +264,7 @@ public class Modifier implements Cloneable {
         private float baseRelationsBoost = 0f;
         private float productionBoost = 0f;
         private TextColor textColor;
+        private boolean display = true;
 
         public create(Component name) {
             this.name = name;
@@ -316,6 +327,11 @@ public class Modifier implements Cloneable {
 
         public create setMaxBuildingSlotBoost(float maxBuildingSlotBoost) {
             this.maxBuildingSlotBoost = maxBuildingSlotBoost;
+            return this;
+        }
+
+        public create setDisplay(boolean choice){
+            display=choice;
             return this;
         }
 

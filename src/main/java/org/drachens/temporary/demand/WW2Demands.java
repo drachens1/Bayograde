@@ -15,7 +15,7 @@ import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
 
 import java.util.ArrayList;
 import java.util.HashMap;

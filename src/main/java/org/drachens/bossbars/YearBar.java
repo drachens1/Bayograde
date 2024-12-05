@@ -6,10 +6,10 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.NewDay;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.interfaces.HideableBossBar;
-import org.drachens.interfaces.VotingOption;
 
 import java.time.temporal.ChronoUnit;
 

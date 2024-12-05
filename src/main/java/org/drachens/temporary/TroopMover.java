@@ -8,7 +8,7 @@ import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.interfaces.items.HotbarItemButton;
 
 import java.util.HashMap;

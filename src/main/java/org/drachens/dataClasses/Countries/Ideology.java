@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Countries;
 
 import it.unimi.dsi.fastutil.Pair;
-import org.drachens.interfaces.VotingOption;
+import org.drachens.dataClasses.VotingOption;
 
 import java.util.*;
 

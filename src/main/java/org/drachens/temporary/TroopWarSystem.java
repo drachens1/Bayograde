@@ -13,7 +13,7 @@ import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.TrainedTroop;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Armys.TroopType;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.interfaces.War;
 import org.drachens.temporary.troops.TroopCountry;
 

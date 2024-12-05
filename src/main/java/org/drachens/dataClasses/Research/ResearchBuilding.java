@@ -8,12 +8,14 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
+
+import java.util.List;
 
 public abstract class ResearchBuilding extends BuildTypes {
     protected final BuildingEnum researchCenter = BuildingEnum.researchCenter;
     public ResearchBuilding(int[] lvls, Material material, BuildingEnum identifier) {
-        super(lvls, material, identifier);
+        super(lvls, material, identifier, List.of(BuildingEnum.research));
     }
 
     @Override
@@ -21,7 +23,7 @@ public abstract class ResearchBuilding extends BuildTypes {
         if (!canBuild(country,province,p))return;
         new Building(this,province);
         province.getBuilding().getItemDisplay().addViewer((CPlayer) p);
-        p.sendMessage("built");
+
     }
     public abstract Payment generate(Building building);
 }

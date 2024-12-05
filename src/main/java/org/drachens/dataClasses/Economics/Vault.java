@@ -14,16 +14,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Vault {
-    private final Country country;
+public abstract class Vault {
+    private Country country;
     private final Map<CurrencyTypes, Currencies> amount;
     private final List<Loan> loans;
 
-    public Vault(Country country, Map<CurrencyTypes, Currencies> startingCurrencies) {
-        this.country = country;
+    public Vault(Map<CurrencyTypes, Currencies> startingCurrencies) {
         this.amount = new HashMap<>(startingCurrencies);
         this.loans = new ArrayList<>();
     }
+
+    public void setCountry(Country country){
+        this.country = country;
+        onCountrySet(country);
+    }
+
+    public abstract void onCountrySet(Country country);
 
     public void setCurrency(Currencies currency) {
         amount.put(currency.getCurrencyType(), currency);
@@ -78,8 +84,10 @@ public class Vault {
         Payment copy = payment.clone();
         Payment minus = new Payment(currencyTypes,currencies.getAmount());
         copy.remove(minus);
-        currencies.minus(minus);
-        return copy;
+        currencies.minus(payment);
+        Payment p = new Payment(currencyTypes,Math.abs(currencies.getAmount()));
+        currencies.set(0f);
+        return p;
     }
 
     public Payment minusMaximumPossible(Payment payment){
@@ -137,7 +145,10 @@ public class Vault {
             country.getOverlord().addPayments(toOverlord);
         }
         loans.forEach(Loan::payThisWeek);
+        extraCalcIncrease();
     }
+
+    public abstract void extraCalcIncrease();
 
     public boolean canMinus(Payment payment) {
         Currencies currency = amount.get(payment.getCurrencyType());
@@ -167,8 +178,14 @@ public class Vault {
     }
 
     public List<Currencies> getCurrencies() {
-        return new ArrayList<>(amount.values());
+        List<Currencies> currencies = new ArrayList<>();
+        currencies.addAll(amount.values());
+        currencies.addAll(getCustomCurrencies());
+        return currencies;
     }
+
+    protected abstract List<Currencies> getCustomCurrencies();
+
     public List<Loan> getLoans(){
         return loans;
     }

@@ -4,4 +4,5 @@ import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 
 public class DataStorer {
     public VotingWinner votingWinner = VotingWinner.none;
+    public VotingOption votingOption;
 }

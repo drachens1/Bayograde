@@ -11,16 +11,12 @@ import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
-import org.drachens.dataClasses.Province;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.drachens.dataClasses.territories.Province;
+import org.drachens.temporary.research.ResearchCountry;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
 
 public class ResearchCenter extends BuildTypes {
-    private final ResearchCenter researchBuilding = (ResearchCenter) defaultsStorer.buildingTypes.getBuildType(BuildingEnum.researchCenter);
-    private final List<ResearchBuilding> buildingList = new ArrayList<>();
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the research center : 5 Production", NamedTextColor.RED))
             .build();
@@ -35,6 +31,8 @@ public class ResearchCenter extends BuildTypes {
     public void onBuild(Country country, Province province, Player p) {
         country.removePayments(payments);
         new Building(this, province);
+        ResearchCountry c = (ResearchCountry) country;
+        c.addResearchCenter(province.getBuilding());
     }
 
     @Override
@@ -60,7 +58,11 @@ public class ResearchCenter extends BuildTypes {
 
     @Override
     protected void onCaptured(Country capturer, Building building) {
-
+        ResearchCountry c = (ResearchCountry) building.getCountry();
+        ResearchCountry s = (ResearchCountry) capturer;
+        c.removeResearchCenter(building);
+        s.addResearchCenter(building);
+        building.setCountry(capturer);
     }
 
     @Override
@@ -78,21 +80,16 @@ public class ResearchCenter extends BuildTypes {
 
     }
 
-    public void addResearchBuilding(ResearchBuilding researchBuilding){
-        buildingList.add(researchBuilding);
-    }
-
-    public void removeResearchBuilding(ResearchBuilding researchBuilding){
-        buildingList.remove(researchBuilding);
-    }
-
     public Payment generate(Building building){
         Payment central = new Payment(CurrencyEnum.research,0f);
-        building.getProvince().getNeighbours().forEach(province -> {
-            if (province.getBuilding().getBuildTypes().equals(researchBuilding)){
-                central.add(researchBuilding.generate(province.getBuilding()));
+        for (Province province : building.getProvince().getNeighbours()){
+            if (province.getBuilding()==null)continue;
+            if (province.getBuilding().getSynonyms().contains(BuildingEnum.research)){
+                Building building1 = province.getBuilding();
+                ResearchBuilding researchBuilding = (ResearchBuilding) defaultsStorer.buildingTypes.getBuildType(building1.getBuildTypes());
+                central.add(researchBuilding.generate(building1));
             }
-        });
-        return null;
+        }
+        return central;
     }
 }

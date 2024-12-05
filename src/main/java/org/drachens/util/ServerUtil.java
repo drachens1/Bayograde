@@ -56,6 +56,7 @@ import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.DataStorer;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -66,7 +67,6 @@ import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
-import org.drachens.interfaces.VotingOption;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
@@ -194,7 +194,7 @@ public class ServerUtil {
             p.setAllowFlying(true);
             scoreboardManager.openScoreboard(new DefaultScoreboard(),p);
             tabCreation(p);
-            ContinentalManagers.achievementsManager.addPlayerToAdv(p);
+            ContinentalManagers.advancementManager.addPlayer((CPlayer) p);
             ContinentalManagers.permissions.playerOp(p);
             ContinentalManagers.world(p.getInstance()).votingManager().getVoteBar().addPlayer(p);
             ContinentalManagers.inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
@@ -269,7 +269,7 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(p.getInstance()).votingManager().getVoteBar().isShown() && !ContinentalManagers.world(p.getInstance()).votingManager().getWinner().getMapGenerator().isGenerating(p.getInstance())) {
+            if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(p.getInstance()).votingManager().getVoteBar().isShown() && ContinentalManagers.world(p.getInstance()).dataStorer().votingOption!=null) {
                 p.sendMessage(mergeComp(getPrefixes("system"), getCountryMessages("outOfBounds")));
                 e.setCancelled(true);
             }
@@ -285,6 +285,7 @@ public class ServerUtil {
             ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> {
                 country.getVault().calculateIncrease();
                 country.getStability().newWeek();
+                country.newWeek(newDay);
             });
         }).setDelay(2).repeat().schedule());
 
@@ -304,20 +305,19 @@ public class ServerUtil {
 
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
-            if (ContinentalManagers.world(e.getInstance()).votingManager().getWinner() != null)
-                ContinentalManagers.world(e.getInstance()).votingManager().getWinner().getWar().onClick(e);
+            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+                ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
         });
         globEHandler.addListener(PlayerUseItemEvent.class, e -> {
-            if (ContinentalManagers.world(e.getInstance()).votingManager().getWinner() != null)
-                ContinentalManagers.world(e.getInstance()).votingManager().getWinner().getWar().onClick(e);
+            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+                ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
         });
         globEHandler.addListener(PlayerStartDiggingEvent.class, e -> {
-            if (ContinentalManagers.world(e.getInstance()).votingManager().getWinner() != null)
-                ContinentalManagers.world(e.getInstance()).votingManager().getWinner().getWar().onClick(e);
+            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+                ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
         });
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
-
 
         //Register cmds
         commandManager.register(new HelpCMD());
@@ -348,6 +348,7 @@ public class ServerUtil {
         commandManager.register(new GoldCMD());
         commandManager.register(new PlaytimeCMD());
         commandManager.register(new DemandCMD());
+        commandManager.register(new TechCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

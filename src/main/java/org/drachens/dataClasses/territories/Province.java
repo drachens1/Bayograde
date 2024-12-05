@@ -1,4 +1,4 @@
-package org.drachens.dataClasses;
+package org.drachens.dataClasses.territories;
 
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
@@ -90,13 +90,6 @@ public class Province implements Serializable {
 
     public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
-        List<Component> comps = new ArrayList<>();
-        neighbours.forEach(neighbour->{
-            comps.add( compBuild(neighbour.getPos().x()+", "+neighbour.getPos().y()+", "+neighbour.getPos().z()+" || ",NamedTextColor.BLUE));
-        });
-        p.sendMessage(Component.text()
-                        .append(comps)
-                .build());
         if (outdatedDescriptions) {
             description = createPublicDescription();
             secretDescription = createSecretDescription();

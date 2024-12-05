@@ -1,8 +1,8 @@
 package org.drachens.events.System;
 
 import net.minestom.server.instance.Instance;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.interfaces.Event;
-import org.drachens.interfaces.VotingOption;
 
 public class StartGameEvent extends Event {
     private final Instance instance;

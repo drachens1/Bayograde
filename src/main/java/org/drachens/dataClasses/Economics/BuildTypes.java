@@ -5,17 +5,30 @@ import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.territories.Province;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BuildTypes {
     private final int[] lvlsModelData;
     private final Material material;
     private final BuildingEnum identifier;
+    private final List<BuildingEnum> synonyms;
 
     public BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
+        this.synonyms = new ArrayList<>();
+        ContinentalManagers.defaultsStorer.buildingTypes.register(this);
+    }
+
+    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, List<BuildingEnum> synonyms) {
+        this.lvlsModelData = lvls;
+        this.material = material;
+        this.identifier = identifier;
+        this.synonyms = synonyms;
         ContinentalManagers.defaultsStorer.buildingTypes.register(this);
     }
 
@@ -67,5 +80,9 @@ public abstract class BuildTypes {
 
     public BuildingEnum getIdentifier() {
         return identifier;
+    }
+
+    public List<BuildingEnum> getSynonyms(){
+        return synonyms;
     }
 }
