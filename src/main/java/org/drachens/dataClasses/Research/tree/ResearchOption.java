@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.temporary.research.ResearchCountry;
 
@@ -107,10 +108,10 @@ public class ResearchOption {
         private final Payment cost;
         private Modifier modifier;
         private int[] comparedToLast;
-        public Create(String identifier, ItemStack item, Payment cost){
+        public Create(String identifier, ItemStack item, float cost){
             this.identifier=identifier;
             this.item=item;
-            this.cost=cost;
+            this.cost=new Payment(CurrencyEnum.research,cost);
         }
         public Create addRequires(String identifier){
             requires.add(identifier);
