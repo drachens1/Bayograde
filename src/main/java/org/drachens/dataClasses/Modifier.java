@@ -8,31 +8,25 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Modifier implements Cloneable {
     private final Component justCompName;
     private final List<Country> appliedCountries = new ArrayList<>();
-    private float productionBoost;
-    private float capitulationBoostPercentage;
-    private float maxBuildingSlotBoost;
-    private List<CurrencyBoost> currencyBoostList;
     private Component name;
     private Component description;
     private Component startDescription;
     private TextColor textColor;
-    private float relationsBoost;
-    private float baseRelationsBoost;
     private Modifier oldModifier;
     private final boolean display;
+    private HashMap<BoostEnum, Float> boostHashMap;
 
     protected Modifier(create c) {
         this.justCompName = c.name;
-        this.capitulationBoostPercentage = c.capitulationBoostPercentage;
-        this.currencyBoostList = c.currencyBoostList;
-        this.relationsBoost = c.relationsBoost;
-        this.baseRelationsBoost = c.baseRelationsBoost;
-        this.maxBuildingSlotBoost = c.maxBuildingSlotBoost;
+        this.boostHashMap=c.boostHashMap;
         if (c.description != null) this.startDescription = c.description;
         this.textColor = c.textColor;
         createDescription();
@@ -49,68 +43,25 @@ public class Modifier implements Cloneable {
     }
 
     public void createDescription() {
+        if (!shouldDisplay())return;
         List<Component> boostComp = new ArrayList<>();
-        for (CurrencyBoost currencyBoost : currencyBoostList) {
-            if (currencyBoost.getBoost() > 0) {
+        for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()){
+            float value = e.getValue();
+            Component symbol = e.getKey().getSymbol();
+            if (value > 0) {
                 boostComp.add(Component.text()
-                        .append(Component.text("+" + Math.round(currencyBoost.getBoost() * 100), NamedTextColor.GREEN))
+                        .append(Component.text("+" + Math.round(value * 100), NamedTextColor.GREEN))
                         .append(Component.text("%", NamedTextColor.GREEN))
-                        .append(currencyBoost.getCurrencyTypes().getSymbol())
+                        .append(symbol)
                         .appendNewline()
                         .build());
             } else {
                 boostComp.add(Component.text()
-                        .append(Component.text(Math.round(currencyBoost.getBoost() * 100), NamedTextColor.RED))
+                        .append(Component.text(Math.round(value * 100), NamedTextColor.RED))
                         .append(Component.text("%", NamedTextColor.RED))
-                        .append(currencyBoost.getCurrencyTypes().getSymbol())
+                        .append(symbol)
                         .appendNewline()
                         .build());
-            }
-        }
-        if (capitulationBoostPercentage != 0f) {
-            if (capitulationBoostPercentage > 0f) {
-                boostComp.add(Component.text()
-                        .append(Component.text("+" + Math.round(capitulationBoostPercentage * 100) + "%", NamedTextColor.GREEN))
-                        .append(Component.text("\uD83D\uDC3B"))
-                        .appendNewline()
-                        .build());
-            } else {
-                boostComp.add(Component.text()
-                        .append(Component.text(Math.round(capitulationBoostPercentage * 100) + "%", NamedTextColor.RED))
-                        .append(Component.text("\uD83D\uDC3B"))
-                        .appendNewline()
-                        .build());
-            }
-        }
-        if (relationsBoost != 0f) {
-            if (relationsBoost > 0f) {
-                boostComp.add(Component.text()
-                        .append(Component.text("+" + Math.round(relationsBoost * 100) + "%", NamedTextColor.GREEN))
-                        .append(Component.text("relations boost"))
-                        .appendNewline()
-                        .build());
-            } else {
-                boostComp.add(Component.text()
-                        .append(Component.text(Math.round(relationsBoost * 100) + "%", NamedTextColor.RED))
-                        .append(Component.text("relations boost"))
-                        .appendNewline()
-                        .build());
-            }
-        }
-        if (maxBuildingSlotBoost != 0f) {
-            if (maxBuildingSlotBoost > 0f) {
-                boostComp.add(Component.text()
-                        .append(Component.text("+" + Math.round(maxBuildingSlotBoost * 100) + "%", NamedTextColor.GREEN))
-                        .append(Component.text("\uD83D\uDC30"))
-                        .appendNewline()
-                        .build());
-            } else {
-                boostComp.add(Component.text()
-                        .append(Component.text(Math.round(maxBuildingSlotBoost * 100) + "%", NamedTextColor.RED))
-                        .append(Component.text("\uD83E\uDD8A"))
-                        .appendNewline()
-                        .build());
-
             }
         }
 
@@ -142,24 +93,16 @@ public class Modifier implements Cloneable {
     }
 
     public void addModifier(Modifier c){
-        this.capitulationBoostPercentage = c.capitulationBoostPercentage;
-        this.currencyBoostList = c.currencyBoostList;
-        this.relationsBoost = c.relationsBoost;
-        this.baseRelationsBoost = c.baseRelationsBoost;
-        this.maxBuildingSlotBoost = c.maxBuildingSlotBoost;
+        //todo update this to make it work
         update();
     }
 
-    public float getMaxBuildingSlotBoost() {
-        return maxBuildingSlotBoost;
+    public float getBoost(BoostEnum boostEnum){
+        return boostHashMap.get(boostEnum);
     }
 
-    public float getCapitulationBoostPercentage() {
-        return capitulationBoostPercentage;
-    }
-
-    public void setCapitulationBoostPercentage(float capitulationBoostPercentage) {
-        this.capitulationBoostPercentage = capitulationBoostPercentage;
+    public void setBoost(BoostEnum boostEnum, float amount){
+        boostHashMap.put(boostEnum,amount);
         update();
     }
 
@@ -189,43 +132,7 @@ public class Modifier implements Cloneable {
         this.description = description;
         update();
     }
-
-    public List<CurrencyBoost> getCurrencyBoostList() {
-        return currencyBoostList;
-    }
-
-    public void setCurrencyBoostList(List<CurrencyBoost> currencyBoostList) {
-        this.currencyBoostList = currencyBoostList;
-        update();
-    }
-
-    public float getProductionBoost() {
-        return productionBoost;
-    }
-
-    public void setProductionBoost(float productionBoost) {
-        this.productionBoost = productionBoost;
-        update();
-    }
-
-    public float getRelationsBoost() {
-        return relationsBoost;
-    }
-
-    public void setRelationsBoost(float relationsBoost) {
-        this.relationsBoost = relationsBoost;
-        update();
-    }
-
-    public float getBaseRelationsBoost() {
-        return baseRelationsBoost;
-    }
-
-    public void setBaseRelationsBoost(float baseRelationsBoost) {
-        this.baseRelationsBoost = baseRelationsBoost;
-        update();
-    }
-
+    
     public void addCountry(Country country) {
         this.appliedCountries.add(country);
     }
@@ -253,16 +160,8 @@ public class Modifier implements Cloneable {
 
     public static class create {
         private final Component name;
-        private final List<CurrencyBoost> currencyBoostList = new ArrayList<>();
-        private float maxBuildingSlotBoost = 0f;
         private Component description;
-        private float maxBoost = 0f;
-        private float capitulationBoostPercentage = 0f;
-        private float stabilityBaseBoost = 0f;
-        private float stabilityGainBoost = 0f;
-        private float relationsBoost = 0f;
-        private float baseRelationsBoost = 0f;
-        private float productionBoost = 0f;
+        private HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
         private TextColor textColor;
         private boolean display = true;
 
@@ -275,28 +174,8 @@ public class Modifier implements Cloneable {
             return this;
         }
 
-        public create addCurrencyBoost(CurrencyBoost currencyBoost) {
-            currencyBoostList.add(currencyBoost);
-            return this;
-        }
-
-        public create addMaxBoost(float amount) {
-            maxBoost += amount;
-            return this;
-        }
-
-        public create addCapitulationBoostPercentage(float amount) {
-            capitulationBoostPercentage += amount;
-            return this;
-        }
-
-        public create addStabilityBaseBoost(float amount) {
-            stabilityBaseBoost += amount;
-            return this;
-        }
-
-        public create addStabilityGainBoost(float amount) {
-            this.stabilityGainBoost += amount;
+        public create addBoost(BoostEnum boostEnum, float amount){
+            boostHashMap.put(boostEnum, amount);
             return this;
         }
 
@@ -305,31 +184,11 @@ public class Modifier implements Cloneable {
             return this;
         }
 
-        public create setRelationsBoost(float amount) {
-            relationsBoost = amount;
-            return this;
-        }
-
-        public create setBaseRelationsBoost(float amount) {
-            baseRelationsBoost = amount;
-            return this;
-        }
-
         public create setTextColour(int r, int g, int b) {
             this.textColor = TextColor.color(r, g, b);
             return this;
         }
-
-        public create setProductionBoost(float amount) {
-            this.productionBoost = amount;
-            return this;
-        }
-
-        public create setMaxBuildingSlotBoost(float maxBuildingSlotBoost) {
-            this.maxBuildingSlotBoost = maxBuildingSlotBoost;
-            return this;
-        }
-
+        
         public create setDisplay(boolean choice){
             display=choice;
             return this;

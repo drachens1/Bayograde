@@ -24,6 +24,7 @@ import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.advancement.Advancement;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.advancement.AdvancementSection;
+import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.ComponentListBuilder;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
@@ -154,13 +155,6 @@ public class Main {
     public static void completeStartup() {
         setupPrefixes();
         initSrv();
-
-        CurrencyTypes production = new CurrencyTypes(compBuild("production", TextColor.color(255, 165, 0)), compBuild("\uD83D\uDC35", TextColor.color(255, 165, 0)), "production");
-
-        CurrencyTypes research = new CurrencyTypes(compBuild("Research",NamedTextColor.BLUE),compBuild("\uD83D\uDC41",NamedTextColor.WHITE),"research");
-        ContinentalManagers.defaultsStorer.currencies.register(production);
-        ContinentalManagers.defaultsStorer.currencies.register(research);
-
         createWW2VotingOption();
 
         new Factory();
@@ -168,7 +162,6 @@ public class Main {
         createAdvancements();
 
         EventHandlerProviderManager.hook();
-        ContinentalManagers.defaultsStorer.currencies.register(production);
         ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.defaultInv, new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10),BuildingEnum.factory), new TroopMover(),new ChangeInventoryButton(0,itemBuilder(Material.BOOK),InventoryEnum.scoreboardInv),new ChangeInventoryButton(1,itemBuilder(Material.BROWN_DYE),InventoryEnum.research)}));
 
         ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.scoreboardInv, new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(),new ShowEconomy(),new ShowIdeology(),new ShowGeneralInfo(),new ExitItem()}));
@@ -344,6 +337,13 @@ public class Main {
         modifiers.register(major, votingName + "major");
         modifiers.register(minor, votingName + "minor");
 
+        Material capMaterial = Material.CYAN_DYE;
+        Material effMaterial = Material.CYAN_DYE;
+        Material antiBiotics = Material.CYAN_DYE;
+        Material gunMaterial = Material.ORANGE_DYE;
+        Material radMaterial = Material.SADDLE;
+        Material planMaterial = Material.BROWN_DYE;
+
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
@@ -353,93 +353,136 @@ public class Main {
                 .setElections(electionTypes)
                         .setTechTree(new TechTree.Create(compBuild("Tech",NamedTextColor.BLUE))
                                 .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_efficiency, compBuild("Increases production",NamedTextColor.DARK_PURPLE), compBuild("Factories efficiency", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                        .addResearchOption(new ResearchOption.Create("ww2_eff1",itemBuilder(Material.CYAN_DYE),100f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_eff1",itemBuilder(effMaterial),100f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Streamlines production"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .addCurrencyBoost(new CurrencyBoost(CurrencyEnum.production,0.1f))
+                                                        .addBoost(BoostEnum.production,0.1f)
                                                         .build())
+                                                .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_eff2",itemBuilder(Material.CYAN_DYE),1000f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_eff2",itemBuilder(effMaterial),1000f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Streamlines production"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .addCurrencyBoost(new CurrencyBoost(CurrencyEnum.production,0.1f))
+                                                        .addBoost(BoostEnum.production,0.1f)
                                                         .build())
                                                 .addRequires("ww2_eff1")
+                                                .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_eff3",itemBuilder(Material.CYAN_DYE),2000f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_eff3",itemBuilder(effMaterial),2000f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Streamlines production"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .addCurrencyBoost(new CurrencyBoost(CurrencyEnum.production,0.1f))
+                                                        .addBoost(BoostEnum.production,0.1f)
                                                         .build())
                                                 .addRequires("ww2_eff2")
+                                                .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_eff4",itemBuilder(Material.CYAN_DYE),3000f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_eff4",itemBuilder(effMaterial),3000f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Streamlines production"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .addCurrencyBoost(new CurrencyBoost(CurrencyEnum.production,0.1f))
+                                                        .addBoost(BoostEnum.production,0.1f)
                                                         .build())
                                                 .addRequires("ww2_eff3")
+                                                .setComparedToLast(0, 1)
                                         .build())
                                 .build())
                                 .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_capacity, compBuild("Increases factory capacity",NamedTextColor.DARK_PURPLE), compBuild("Factory capacity", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap1",itemBuilder(Material.CYAN_DYE,compBuild("Capacity increase", NamedTextColor.GOLD)),20f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap1",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),20f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .setMaxBuildingSlotBoost(0.1f)
+                                                        .addBoost(BoostEnum.buildingSlotBoost,0.1f)
                                                         .build())
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap2",itemBuilder(Material.CYAN_DYE,compBuild("Capacity increase", NamedTextColor.GOLD)),100f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap2",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),100f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .setMaxBuildingSlotBoost(0.1f)
+                                                        .addBoost(BoostEnum.buildingSlotBoost,0.1f)
                                                         .build())
                                                 .addRequires("ww2_cap1")
+                                                .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap3",itemBuilder(Material.CYAN_DYE,compBuild("Capacity increase", NamedTextColor.GOLD)),150f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap3",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),150f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .setMaxBuildingSlotBoost(0.1f)
+                                                        .addBoost(BoostEnum.buildingSlotBoost,0.1f)
                                                         .build())
                                                 .addRequires("ww2_cap2")
+                                                .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap4",itemBuilder(Material.CYAN_DYE,compBuild("Capacity increase", NamedTextColor.GOLD)),200f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap4",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),200f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
                                                                 .build())
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .setMaxBuildingSlotBoost(0.1f)
+                                                        .addBoost(BoostEnum.buildingSlotBoost,0.1f)
                                                         .build())
                                                 .addRequires("ww2_cap3")
+                                                .setComparedToLast(0, 1)
+                                        .build())
+                                .build())
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.radar, compBuild("Radar tech tree increases coordination massively",NamedTextColor.DARK_PURPLE),compBuild("Radar", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                        .addResearchOption(new ResearchOption.Create("ww2_radar1", itemBuilder(radMaterial), 30f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(compBuild("Increases fighter attack by 10% and troops damage by 5%", NamedTextColor.GRAY))
+                                                        .build())//todo Create an airport and plane system that can then have boosts 
+                                                .setModifier(new Modifier.create(null)
+                                                        .addBoost(BoostEnum.planes, 0.1f)
+                                                        .build())
+                                        .build())
+                                .build())
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.penicillin, compBuild("Antibiotics research means less people die", NamedTextColor.DARK_PURPLE), compBuild("Antibiotics", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                        .addResearchOption(new ResearchOption.Create("ww2_antibiotics1", itemBuilder(antiBiotics), 30f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(compBuild("10% less people die! - eventually", NamedTextColor.AQUA))//todo add MANPOWER
+                                                        .build())
+                                        .build())
+                                .build())
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.airoplane, compBuild("Airoplane research!", NamedTextColor.DARK_PURPLE),compBuild("Airoplane", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                        .addResearchOption(new ResearchOption.Create("ww2_air1", itemBuilder(planMaterial), 30f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(compBuild("Airoplanes are good at murdering people", NamedTextColor.AQUA))
+                                                        .build())
+                                        .build())
+                                .build())
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.guns, compBuild("Better guns", NamedTextColor.DARK_PURPLE), compBuild("GUNS", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                        .addResearchOption(new ResearchOption.Create("ww2_guns1",itemBuilder(gunMaterial),30f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(compBuild("something", NamedTextColor.AQUA))
+                                                        .build())
+                                                .setModifier(new Modifier.create(null)
+                                                        .addBoost(BoostEnum.gun_accuracy, 30f)
+                                                .build())
+                                        .build())
+                                        .addResearchOption(new ResearchOption.Create(votingName, itemBuilder(gunMaterial), 0)
                                         .build())
                                 .build())
                         .build())
