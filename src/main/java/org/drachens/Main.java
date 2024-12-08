@@ -185,7 +185,6 @@ public class Main {
     }
 
     private static void createWW2VotingOption() {
-        CurrencyTypes production = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
 
         BuildingTypes buildingTypes = ContinentalManagers.defaultsStorer.buildingTypes;
         buildingTypes.register(new ResearchUniversity());
@@ -195,15 +194,12 @@ public class Main {
 
         Modifier exampleModifier = new Modifier.create(compBuild("Example", NamedTextColor.GOLD))
                 .setDescription(compBuild("description", NamedTextColor.BLUE))
-                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
-                .addMaxBoost(1f)
-                .addCapitulationBoostPercentage(2f)
-                .addStabilityBaseBoost(3f)
-                .addStabilityGainBoost(4f)
-                .setRelationsBoost(5f)
-                .setBaseRelationsBoost(6f)
-                .setProductionBoost(0.1f)
-                .setMaxBuildingSlotBoost(2f)
+                .addBoost(BoostEnum.production, 0.1f)
+                .addBoost(BoostEnum.capitulation, 0.1f)
+                .addBoost(BoostEnum.stabilityBase, 0.1f)
+                .addBoost(BoostEnum.stabilityGain, 0.1f)
+                .addBoost(BoostEnum.relations, 0.1f)
+                .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
                 .build();
 
         Modifier fascistModifier = new Modifier.create(compBuild("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
@@ -480,11 +476,16 @@ public class Main {
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
                                                         .addBoost(BoostEnum.gun_accuracy, 30f)
-                                                .build())
+                                                        .build())
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create(votingName, itemBuilder(gunMaterial), 0)
+                                        .addResearchOption(new ResearchOption.Create("ww2_guns2", itemBuilder(gunMaterial,compBuild("Streamline production", NamedTextColor.GOLD)), 60f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(compBuild("Decreases the cost of guns by 10%", NamedTextColor.GRAY))
+                                                        .build())
+                                                .setModifier(new Modifier.create(null)
+                                                        .addBoost(BoostEnum.gun_cost, -0.1f)
+                                                        .build())
                                         .build())
-                                .build())
                         .build())
                 .build(), VotingWinner.ww2_clicks);
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
