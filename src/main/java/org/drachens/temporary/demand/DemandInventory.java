@@ -7,7 +7,6 @@ import org.drachens.interfaces.items.HotbarInventory;
 import org.drachens.interfaces.items.HotbarItemButton;
 
 public class DemandInventory extends HotbarInventory {
-    private final DemandManager demandManager = ContinentalManagers.demandManager;
 
     public DemandInventory() {
         super(new HotbarItemButton[]{new DemandProvince(), new DemandPuppet(), new DemandAnnexation(), new OfferProvince(), new OfferPuppet(), new OfferAnnexation()});

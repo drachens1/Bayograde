@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class Province implements Serializable {
     private final Instance instance;
     private final Pos pos;
@@ -285,7 +283,7 @@ public class Province implements Serializable {
     public void capture(Country attacker) {
         if (!attacker.atWar(occupier))
             EventDispatcher.call(new StartWarEvent(attacker, occupier));
-        occupier.sendActionBar(compBuild("You have been attacked at " + pos, NamedTextColor.RED));
+        occupier.sendActionBar(Component.text("You have been attacked at " + pos, NamedTextColor.RED));
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
         if (building != null) this.building.capture(attacker);
         setOccupier(attacker);

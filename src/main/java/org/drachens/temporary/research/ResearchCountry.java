@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public abstract class ResearchCountry extends Country {
     private final HashSet<String> completedResearch = new HashSet<>();
     private ResearchOption current = null;
@@ -33,7 +31,7 @@ public abstract class ResearchCountry extends Country {
 
     public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault);
-        researchModifier=new Modifier.create(compBuild("Research", NamedTextColor.BLUE))
+        researchModifier=new Modifier.create(Component.text("Research", NamedTextColor.BLUE))
                 .setDisplay(false)
                 .build();
         addModifier(researchModifier);

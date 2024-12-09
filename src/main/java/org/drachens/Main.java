@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Random;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.KyoriUtil.setupPrefixes;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;
@@ -163,9 +162,9 @@ public class Main {
         ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.research,new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1,itemBuilder(Material.BROWN_DYE,1), BuildingEnum.library),new BuildItem(2,itemBuilder(Material.BROWN_DYE,2),BuildingEnum.university),new BuildItem(3,itemBuilder(Material.BROWN_DYE,3),BuildingEnum.researchCenter),new BuildItem(4,itemBuilder(Material.BROWN_DYE,4),BuildingEnum.researchLab),new ExitItem()}));
 
         ContinentalManagers.cosmeticsManager.register(new StoreCategory("Something",
-                compBuild("example", NamedTextColor.AQUA),
-                itemBuilder(Material.LAPIS_BLOCK, compBuild("sm", NamedTextColor.AQUA)),
-                new Hat("1", 1, Material.PURPLE_DYE, compBuild("item", NamedTextColor.AQUA), 1)
+                Component.text("example", NamedTextColor.AQUA),
+                itemBuilder(Material.LAPIS_BLOCK, Component.text("sm", NamedTextColor.AQUA)),
+                new Hat("1", 1, Material.PURPLE_DYE, Component.text("item", NamedTextColor.AQUA), 1)
         ));
 
         setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
@@ -173,9 +172,9 @@ public class Main {
 
     private static void createAdvancements(){
         AdvancementManager advancementManager = ContinentalManagers.advancementManager;
-        advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,compBuild("WW2 inspired",NamedTextColor.GOLD),compBuild("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
-                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, compBuild("Built more than 10 factories", NamedTextColor.GOLD), compBuild("", NamedTextColor.BLUE), null, 10f,NewDay.class))
-                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, compBuild("Built more than 30 factories", NamedTextColor.GOLD), compBuild("", NamedTextColor.BLUE), "facs_built1", 30f,NewDay.class))
+        advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,Component.text("WW2 inspired",NamedTextColor.GOLD),Component.text("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
+                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, Component.text("Built more than 10 factories", NamedTextColor.GOLD), Component.text("", NamedTextColor.BLUE), null, 10f,NewDay.class))
+                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, Component.text("Built more than 30 factories", NamedTextColor.GOLD), Component.text("", NamedTextColor.BLUE), "facs_built1", 30f,NewDay.class))
 
                 .build());
     }
@@ -187,8 +186,8 @@ public class Main {
         buildingTypes.register(new ResearchLab());
         buildingTypes.register(new ResearchCenter());
 
-        Modifier exampleModifier = new Modifier.create(compBuild("Example", NamedTextColor.GOLD))
-                .setDescription(compBuild("description", NamedTextColor.BLUE))
+        Modifier exampleModifier = new Modifier.create(Component.text("Example", NamedTextColor.GOLD))
+                .setDescription(Component.text("description", NamedTextColor.BLUE))
                 .addBoost(BoostEnum.production,0.1f)
                 .addBoost(BoostEnum.capitulation,2f)
                 .addBoost(BoostEnum.stabilityBase,3f)
@@ -197,40 +196,40 @@ public class Main {
                 .addBoost(BoostEnum.buildingSlotBoost,2f)
                 .build();
 
-        Modifier fascistModifier = new Modifier.create(compBuild("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
+        Modifier fascistModifier = new Modifier.create(Component.text("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
                 .addBoost(BoostEnum.production,0.1f)
                 .addBoost(BoostEnum.stabilityBase,10f)
                 .addBoost(BoostEnum.stabilityGain,-0.1f)
                 .addBoost(BoostEnum.capitulation,5f)
                 .build();
 
-        Modifier centristModifier = new Modifier.create(compBuild("Centrist", TextColor.color(96, 96, 96), TextDecoration.BOLD))
+        Modifier centristModifier = new Modifier.create(Component.text("Centrist", TextColor.color(96, 96, 96), TextDecoration.BOLD))
                 .addBoost(BoostEnum.stabilityBase,50f)
                 .addBoost(BoostEnum.capitulation,-5f)
                 .addBoost(BoostEnum.production,0.2f)
                 .build();
 
-        Modifier anarchistModifier = new Modifier.create(compBuild("Anarchist", TextColor.color(7, 154, 12)))
+        Modifier anarchistModifier = new Modifier.create(Component.text("Anarchist", TextColor.color(7, 154, 12)))
                 .addBoost(BoostEnum.stabilityBase,-100f)
                 .addBoost(BoostEnum.stabilityGain,-5f)
                 .addBoost(BoostEnum.capitulation,0.5f)
                 .addBoost(BoostEnum.production,5f)
                 .build();
 
-        Modifier conservatistModifer = new Modifier.create(compBuild("Conservatism", TextColor.color(204, 0, 0)))
+        Modifier conservatistModifer = new Modifier.create(Component.text("Conservatism", TextColor.color(204, 0, 0)))
                 .addBoost(BoostEnum.stabilityBase,1f)
                 .build();
 
-        Modifier socialistModifier = new Modifier.create(compBuild("Socialist", TextColor.color(255, 0, 0)))
+        Modifier socialistModifier = new Modifier.create(Component.text("Socialist", TextColor.color(255, 0, 0)))
                 .addBoost(BoostEnum.stabilityBase,40f)
                 .addBoost(BoostEnum.stabilityGain,0.2f)
                 .addBoost(BoostEnum.production,0.2f)
                 .build();
 
-        Modifier liberalModifier = new Modifier.create(compBuild("Liberalist", TextColor.color(51, 253, 255)))
+        Modifier liberalModifier = new Modifier.create(Component.text("Liberalist", TextColor.color(51, 253, 255)))
                 .build();
 
-        Modifier capitalistModifier = new Modifier.create(compBuild("Capitalist", TextColor.color(0, 153, 0)))
+        Modifier capitalistModifier = new Modifier.create(Component.text("Capitalist", TextColor.color(0, 153, 0)))
                 .addBoost(BoostEnum.stabilityBase,-10f)
                 .addBoost(BoostEnum.production,0.5f)
                 .build();
@@ -296,7 +295,7 @@ public class Main {
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
         c.put(production, new Currencies(production, 10f));
 
-        Modifier superPower = new Modifier.create(compBuild("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
+        Modifier superPower = new Modifier.create(Component.text("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
 //                .addStabilityBaseBoost(10f)
 //                .addCurrencyBoost(new CurrencyBoost(production, 0.3f))
 //                .setDescription(Component.text()
@@ -304,7 +303,7 @@ public class Main {
 //                        .build())
                 .build();
 
-        Modifier major = new Modifier.create(compBuild("Major", NamedTextColor.GOLD, TextDecoration.BOLD))
+        Modifier major = new Modifier.create(Component.text("Major", NamedTextColor.GOLD, TextDecoration.BOLD))
 //                .addStabilityBaseBoost(5f)
 //                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
 //                .setDescription(Component.text()
@@ -312,7 +311,7 @@ public class Main {
 //                        .build())
                 .build();
 
-        Modifier minor = new Modifier.create(compBuild("Minor", NamedTextColor.GOLD, TextDecoration.BOLD))
+        Modifier minor = new Modifier.create(Component.text("Minor", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .setDescription(Component.text()
                         .append(Component.text("Just a wee lil nation.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
                         .build())
@@ -336,8 +335,8 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
-                        .setTechTree(new TechTree.Create(compBuild("Tech",NamedTextColor.BLUE))
-                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_efficiency, compBuild("Increases production",NamedTextColor.DARK_PURPLE), compBuild("Factories efficiency", NamedTextColor.GRAY, TextDecoration.ITALIC))
+                        .setTechTree(new TechTree.Create(Component.text("Tech",NamedTextColor.BLUE))
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_efficiency, Component.text("Increases production",NamedTextColor.DARK_PURPLE), Component.text("Factories efficiency", NamedTextColor.GRAY, TextDecoration.ITALIC))
                                         .addResearchOption(new ResearchOption.Create("ww2_eff1",itemBuilder(effMaterial),100f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
@@ -386,8 +385,8 @@ public class Main {
                                                 .setComparedToLast(0, 1)
                                         .build())
                                 .build())
-                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_capacity, compBuild("Increases factory capacity",NamedTextColor.DARK_PURPLE), compBuild("Factory capacity", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap1",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),20f)
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_capacity, Component.text("Increases factory capacity",NamedTextColor.DARK_PURPLE), Component.text("Factory capacity", NamedTextColor.GRAY, TextDecoration.ITALIC))
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap1",itemBuilder(capMaterial,Component.text("Capacity increase", NamedTextColor.GOLD)),20f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
@@ -397,7 +396,7 @@ public class Main {
                                                         .addBoost(BoostEnum.buildingSlotBoost,0.1f)
                                                         .build())
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap2",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),100f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap2",itemBuilder(capMaterial,Component.text("Capacity increase", NamedTextColor.GOLD)),100f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
@@ -409,7 +408,7 @@ public class Main {
                                                 .addRequires("ww2_cap1")
                                                 .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap3",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),150f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap3",itemBuilder(capMaterial,Component.text("Capacity increase", NamedTextColor.GOLD)),150f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
@@ -421,7 +420,7 @@ public class Main {
                                                 .addRequires("ww2_cap2")
                                                 .setComparedToLast(0, 1)
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_cap4",itemBuilder(capMaterial,compBuild("Capacity increase", NamedTextColor.GOLD)),200f)
+                                        .addResearchOption(new ResearchOption.Create("ww2_cap4",itemBuilder(capMaterial,Component.text("Capacity increase", NamedTextColor.GOLD)),200f)
                                                 .setDescription(new ComponentListBuilder()
                                                         .addComponent(Component.text()
                                                                 .append(Component.text("Increases the max number of factories by 10%"))
@@ -434,34 +433,34 @@ public class Main {
                                                 .setComparedToLast(0, 1)
                                         .build())
                                 .build())
-                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.radar, compBuild("Radar tech tree increases coordination massively",NamedTextColor.DARK_PURPLE),compBuild("Radar", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.radar, Component.text("Radar tech tree increases coordination massively",NamedTextColor.DARK_PURPLE),Component.text("Radar", NamedTextColor.GRAY,TextDecoration.ITALIC))
                                         .addResearchOption(new ResearchOption.Create("ww2_radar1", itemBuilder(radMaterial), 30f)
                                                 .setDescription(new ComponentListBuilder()
-                                                        .addComponent(compBuild("Increases fighter attack by 10% and troops damage by 5%", NamedTextColor.GRAY))
+                                                        .addComponent(Component.text("Increases fighter attack by 10% and troops damage by 5%", NamedTextColor.GRAY))
                                                         .build())//todo Create an airport and plane system that can then have boosts 
                                                 .setModifier(new Modifier.create(null)
                                                         .addBoost(BoostEnum.planes, 0.1f)
                                                         .build())
                                         .build())
                                 .build())
-                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.penicillin, compBuild("Antibiotics research means less people die", NamedTextColor.DARK_PURPLE), compBuild("Antibiotics", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.penicillin, Component.text("Antibiotics research means less people die", NamedTextColor.DARK_PURPLE), Component.text("Antibiotics", NamedTextColor.GRAY,TextDecoration.ITALIC))
                                         .addResearchOption(new ResearchOption.Create("ww2_antibiotics1", itemBuilder(antiBiotics), 30f)
                                                 .setDescription(new ComponentListBuilder()
-                                                        .addComponent(compBuild("10% less people die! - eventually", NamedTextColor.AQUA))//todo add MANPOWER
+                                                        .addComponent(Component.text("10% less people die! - eventually", NamedTextColor.AQUA))//todo add MANPOWER
                                                         .build())
                                         .build())
                                 .build())
-                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.airoplane, compBuild("Airoplane research!", NamedTextColor.DARK_PURPLE),compBuild("Airoplane", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.airoplane, Component.text("Airoplane research!", NamedTextColor.DARK_PURPLE),Component.text("Airoplane", NamedTextColor.GRAY,TextDecoration.ITALIC))
                                         .addResearchOption(new ResearchOption.Create("ww2_air1", itemBuilder(planMaterial), 30f)
                                                 .setDescription(new ComponentListBuilder()
-                                                        .addComponent(compBuild("Airoplanes are good at murdering people", NamedTextColor.AQUA))
+                                                        .addComponent(Component.text("Airoplanes are good at murdering people", NamedTextColor.AQUA))
                                                         .build())
                                         .build())
                                 .build())
-                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.guns, compBuild("Better guns", NamedTextColor.DARK_PURPLE), compBuild("GUNS", NamedTextColor.GRAY,TextDecoration.ITALIC))
+                                .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.guns, Component.text("Better guns", NamedTextColor.DARK_PURPLE), Component.text("GUNS", NamedTextColor.GRAY,TextDecoration.ITALIC))
                                         .addResearchOption(new ResearchOption.Create("ww2_guns1",itemBuilder(gunMaterial),30f)
                                                 .setDescription(new ComponentListBuilder()
-                                                        .addComponent(compBuild("something", NamedTextColor.AQUA))
+                                                        .addComponent(Component.text("something", NamedTextColor.AQUA))
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
                                                         .addBoost(BoostEnum.gunAccuracy, 30f)
@@ -487,7 +486,7 @@ public class Main {
     private static List<Leader> getLeaders(Modifier modifier, TextColor color) {
         List<Leader> leaders = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            leaders.add(new Leader.create(compBuild(getName(), color)).addModifier(modifier).build());
+            leaders.add(new Leader.create(Component.text(getName(), color)).addModifier(modifier).build());
         }
         return leaders;
     }

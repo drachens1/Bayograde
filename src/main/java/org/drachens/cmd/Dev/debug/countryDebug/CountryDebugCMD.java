@@ -13,8 +13,6 @@ import org.drachens.temporary.troops.TroopCountry;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.KyoriUtil.mergeComp;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CountryDebugCMD extends Command {
@@ -24,7 +22,7 @@ public class CountryDebugCMD extends Command {
         setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof Player p)) return;
             List<Component> components = new ArrayList<>();
-            components.add(compBuild("Countries: ", NamedTextColor.BLUE));
+            components.add(Component.text("Countries: ", NamedTextColor.BLUE));
             switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
                 case VotingWinner.none -> {
                     return;
@@ -78,7 +76,9 @@ public class CountryDebugCMD extends Command {
                     }
                 }
             }
-            p.sendMessage(mergeComp(components));
+            p.sendMessage(Component.text()
+                    .append(components)
+                    .build());
         });
     }
 }

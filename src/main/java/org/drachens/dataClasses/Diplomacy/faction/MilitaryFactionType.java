@@ -11,11 +11,9 @@ import org.drachens.temporary.troops.TroopCountry;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class MilitaryFactionType extends Factions {
     public MilitaryFactionType(Country creator, String name) {
-        super(creator, name, new Modifier.create(compBuild(name, NamedTextColor.RED)).build());
+        super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.RED)).build());
     }
 
     @Override

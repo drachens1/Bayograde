@@ -1,6 +1,7 @@
 package org.drachens.util;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.item.Material;
@@ -8,12 +9,11 @@ import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.InventorySystem.InventoryGUI;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class InventoryUtil {
     public static final int[] noneEdge = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43};
     private static final InventoryButton exit = new InventoryButton()
-            .creator(player -> itemBuilder(Material.BARRIER, compBuild("Exit", NamedTextColor.RED, TextDecoration.BOLD)))
+            .creator(player -> itemBuilder(Material.BARRIER, Component.text("Exit", NamedTextColor.RED, TextDecoration.BOLD)))
             .consumer(e -> e.getPlayer().closeInventory());
     private static final InventoryButton head = new InventoryButton()
             .creator(CPlayer::getPlayerHead)

@@ -104,7 +104,7 @@ public abstract class Country implements Cloneable {
         vault.setCountry(this);
         this.nameComponent = nameComponent;
         this.name = name;
-        this.setPrefix(compBuild(name, NamedTextColor.BLUE));
+        this.setPrefix(Component.text(name, NamedTextColor.BLUE));
         this.block = block;
         this.border = border;
         this.players = new ArrayList<>();
@@ -241,8 +241,8 @@ public abstract class Country implements Cloneable {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         capitulationBar.addPlayer(p);
         this.players.add(p);
-        p.sendMessage(mergeComp(getPrefixes("country"), replaceString(countryJoin, "%country%", this.name)));
-        broadcast(mergeComp(getPrefixes("country"), replaceString(replaceString(getCountryJoin2, "%country%", this.name), "%player%", p.getUsername())), p.getInstance());
+        p.sendMessage(Component.text().append(getPrefixes("country"), replaceString(countryJoin, "%country%", this.name)).build());
+        broadcast(Component.text().append(getPrefixes("country"), replaceString(replaceString(getCountryJoin2, "%country%", this.name), "%player%", p.getUsername())).build(), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         scoreboardManager.openScoreboard(new DefaultCountryScoreboard(),p);
         clientsides.forEach(clientside -> clientside.addViewer(p));
@@ -256,7 +256,7 @@ public abstract class Country implements Cloneable {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
         capitulationBar.removePlayer(p);
         this.players.remove(p);
-        p.sendMessage(mergeComp(getPrefixes("country"), replaceString(getCountryLeave, "%country%", this.name)));
+        p.sendMessage(Component.text().append(getPrefixes("country"), replaceString(getCountryLeave, "%country%", this.name)).build());
         clientsides.forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
             if (players.isEmpty()) {
@@ -293,7 +293,7 @@ public abstract class Country implements Cloneable {
         removeCity(capturedCity);
         if (!capitulated) {
             if (capital == capturedCity) {
-                broadcast(mergeComp(getPrefixes("country"), compBuild(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)), capital.getInstance());
+                broadcast(Component.text().append(getPrefixes("country"), Component.text(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)).build(), capital.getInstance());
             }
         }
         float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation,1f));
@@ -316,7 +316,7 @@ public abstract class Country implements Cloneable {
     }
 
     public void capitulate(Country attacker) {
-        broadcast(mergeComp(getPrefixes("country"), compBuild(this.name + " has capitulated to " + attacker.name, NamedTextColor.RED)), capital.getInstance());
+        broadcast(Component.text().append(getPrefixes("country"), Component.text(this.name + " has capitulated to " + attacker.name, NamedTextColor.RED)).build(), capital.getInstance());
         for (Province p : new ArrayList<>(this.occupies)) {
             p.setOccupier(attacker);
         }
@@ -448,7 +448,7 @@ public abstract class Country implements Cloneable {
         if (isInAnEconomicFaction()) {
             factionsComps.add(Component.text()
                     .append(economyFactionType1.getName())
-                    .append(compBuild(" : ", NamedTextColor.WHITE))
+                    .append(Component.text(" : ", NamedTextColor.WHITE))
                     .append(economyFactionType1.getNameComponent())
                     .build());
         }
@@ -456,7 +456,7 @@ public abstract class Country implements Cloneable {
         if (isInAMilitaryFaction()) {
             factionsComps.add(Component.text()
                     .append(militaryFactionType1.getName())
-                    .append(compBuild(" : ", NamedTextColor.WHITE))
+                    .append(Component.text(" : ", NamedTextColor.WHITE))
                     .append(militaryFactionType1.getNameComponent())
                     .build());
         }

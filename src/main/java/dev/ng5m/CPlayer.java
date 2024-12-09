@@ -1,5 +1,6 @@
 package dev.ng5m;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.PlayerSkin;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.OtherUtil.formatPlaytime;
 
 public class CPlayer extends Player {
@@ -82,7 +82,7 @@ public class CPlayer extends Player {
             return;
         }
         headItem = ItemStack.builder(Material.PLAYER_HEAD).set(ItemComponent.PROFILE, new HeadProfile(playerSkin))
-                .customName(compBuild(getUsername(), NamedTextColor.GOLD))
+                .customName(Component.text(getUsername(), NamedTextColor.GOLD))
                 .build();
     }
 

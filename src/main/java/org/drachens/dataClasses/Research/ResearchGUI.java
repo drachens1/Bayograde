@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import static org.drachens.util.InventoryUtil.addExitButton;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class ResearchGUI extends InventoryGUI {
     private final int startX;
@@ -53,10 +52,10 @@ public class ResearchGUI extends InventoryGUI {
             ResearchOption researchOption = e.getValue();
             addButton(coords,apple(researchOption.getItem(), researchOption,researchOption.getIdentifier(),researchOption.getRequires(),researchOption.getOr()));
         }
-        if (startX>=0) addButton(36,prevX(itemBuilder(Material.GREEN_CONCRETE,compBuild("Previous",NamedTextColor.GREEN))));
-        if (startY>=0) addButton(5,prevY(itemBuilder(Material.GREEN_CONCRETE,compBuild("Previous",NamedTextColor.GREEN))));
-        addButton(44,nextX(itemBuilder(Material.GREEN_CONCRETE,compBuild("Next",NamedTextColor.GREEN))));
-        addButton(6,nextY(itemBuilder(Material.GREEN_CONCRETE,compBuild("Next",NamedTextColor.GREEN))));
+        if (startX>=0) addButton(36,prevX(itemBuilder(Material.GREEN_CONCRETE,Component.text("Previous",NamedTextColor.GREEN))));
+        if (startY>=0) addButton(5,prevY(itemBuilder(Material.GREEN_CONCRETE,Component.text("Previous",NamedTextColor.GREEN))));
+        addButton(44,nextX(itemBuilder(Material.GREEN_CONCRETE,Component.text("Next",NamedTextColor.GREEN))));
+        addButton(6,nextY(itemBuilder(Material.GREEN_CONCRETE,Component.text("Next",NamedTextColor.GREEN))));
         addExitButton(this);
         super.decorate(p);
     }
@@ -104,18 +103,18 @@ public class ResearchGUI extends InventoryGUI {
                     List<Component> description = researchOption.createLore(country);
                     if (country.isResearching()){
                         if (Objects.equals(country.getCurrentResearch().getIdentifier(), identifier)){
-                            description.add(compBuild("Already researching this", NamedTextColor.RED));
+                            description.add(Component.text("Already researching this", NamedTextColor.RED));
                         }else {
-                            description.add(compBuild("Already researching", NamedTextColor.RED));
+                            description.add(Component.text("Already researching", NamedTextColor.RED));
                         }
                     } else if (!country.hasResearchedAll(prev)) {
-                        description.add(compBuild("Has not researched all the prequisites", NamedTextColor.GREEN));
+                        description.add(Component.text("Has not researched all the prequisites", NamedTextColor.GREEN));
                     } else if (country.hasResearchedAny(or)) {
-                        description.add(compBuild("Has not researched one of the or's", NamedTextColor.GREEN));
+                        description.add(Component.text("Has not researched one of the or's", NamedTextColor.GREEN));
                     } else if (country.hasResearched(identifier)) {
-                        description.add(compBuild("Has already been researched", NamedTextColor.GREEN));
+                        description.add(Component.text("Has already been researched", NamedTextColor.GREEN));
                     } else {
-                        description.add(compBuild("Can research", NamedTextColor.GREEN));
+                        description.add(Component.text("Can research", NamedTextColor.GREEN));
                     }
                     return i.withLore(description);
                 })

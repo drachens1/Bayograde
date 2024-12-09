@@ -1,12 +1,11 @@
 package org.drachens.dataClasses.Economics;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Modifier;
-
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class Stability {
     private final Country country;
@@ -15,7 +14,7 @@ public class Stability {
     public Stability(float startingStability, Country country){
         stability = startingStability;
         this.country = country;
-        stabilityModifier = new Modifier.create(compBuild("Stability", NamedTextColor.GREEN, TextDecoration.BOLD))
+        stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD))
                 .build();
     }
     public void addStability(float amount){

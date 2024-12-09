@@ -11,12 +11,6 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.sound.SoundEvent;
 import org.drachens.util.PlayerUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.KyoriUtil.mergeComp;
-
 public class ReplyCMD extends Command {
     public ReplyCMD() {
         super("reply", "r");
@@ -40,18 +34,18 @@ public class ReplyCMD extends Command {
 
     private void msgBuild(Player p, Player to, String[] msgs) {
         String msg = buildString(msgs);
-        List<Component> toComp = new ArrayList<>();
-        toComp.add(compBuild("To ", NamedTextColor.GOLD, TextDecoration.BOLD));
-        toComp.add(compBuild(to.getUsername(), NamedTextColor.GOLD));
-        toComp.add(compBuild(" : ", NamedTextColor.GOLD));
-        toComp.add(compBuild(msg, NamedTextColor.GOLD));
-        p.sendMessage(mergeComp(toComp));
-        toComp.clear();
-        toComp.add(compBuild("From ", NamedTextColor.GOLD, TextDecoration.BOLD));
-        toComp.add(compBuild(p.getUsername(), NamedTextColor.GOLD));
-        toComp.add(compBuild(" : ", NamedTextColor.GOLD));
-        toComp.add(compBuild(msg, NamedTextColor.GOLD));
-        to.sendMessage(mergeComp(toComp));
+        p.sendMessage(Component.text()
+                .append(Component.text("To ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                .append(Component.text(to.getUsername(), NamedTextColor.GOLD))
+                .append(Component.text(" : ", NamedTextColor.GOLD))
+                .append(Component.text(msg, NamedTextColor.GOLD))
+                .build());
+        to.sendMessage(Component.text()
+                .append(Component.text("From ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                .append(Component.text(p.getUsername(), NamedTextColor.GOLD))
+                .append(Component.text(" : ", NamedTextColor.GOLD))
+                .append(Component.text(msg, NamedTextColor.GOLD))
+                .build());
         to.playSound(Sound.sound(SoundEvent.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.Source.MASTER, 1f, 1f));
     }
 }

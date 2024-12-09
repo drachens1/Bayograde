@@ -1,6 +1,7 @@
 package org.drachens.Manager.per_instance.vote;
 
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
@@ -10,15 +11,13 @@ import org.drachens.interfaces.HideableBossBar;
 
 import java.time.temporal.ChronoUnit;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class VoteBar extends HideableBossBar {
     private final BossBar voteBar;
     private final Instance instance;
     private Task task;
 
     public VoteBar(Instance instance) {
-        super(BossBar.bossBar(compBuild("Vote session", NamedTextColor.WHITE), 0, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_12));
+        super(BossBar.bossBar(Component.text("Vote session", NamedTextColor.WHITE), 0, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_12));
         this.voteBar = getBossBar();
         this.instance = instance;
     }

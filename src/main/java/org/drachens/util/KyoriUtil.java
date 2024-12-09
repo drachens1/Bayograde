@@ -1,20 +1,11 @@
 package org.drachens.util;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.title.Title;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.intellij.lang.annotations.RegExp;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class KyoriUtil {
     private static Component wargoal;
@@ -38,63 +29,6 @@ public class KyoriUtil {
                 .match(from)
                 .replacement(to)
         );
-    }
-
-    private static Component updateClickEvent(Component component, String from, String to) {
-        ClickEvent clickEvent = component.clickEvent();
-        if (clickEvent != null) {
-            String newValue = clickEvent.value().replace(from, to);
-            ClickEvent newClickEvent = ClickEvent.runCommand(newValue);
-            component = component.clickEvent(newClickEvent);
-        }
-        return component;
-    }
-
-    private static TextComponent removeComp(TextComponent component, String from) {
-        String componentText = component.content();
-        ClickEvent clickEvent = component.clickEvent();
-
-        if (clickEvent != null && clickEvent.value().contains(from)) {
-            return Component.empty();
-        }
-        if (componentText.contains(from)) {
-            return Component.empty();
-        }
-
-        List<Component> updatedChildren = component.children().stream()
-                .map(child -> removeComp((TextComponent) child, from))
-                .filter(child -> child != null && !child.equals(Component.empty()))
-                .collect(Collectors.toList());
-
-        if (updatedChildren.size() == component.children().size()) {
-            return component;
-        }
-
-        return Component.text()
-                .append(updatedChildren)
-                .build();
-    }
-
-    public static void sendTitle(final @NonNull Audience target, String maintitle, String subtitles) {
-        final Component mainTitle = maintitle != null
-                ? Component.text(maintitle, NamedTextColor.WHITE)
-                : Component.empty();
-
-        final Component subtitle = subtitles != null
-                ? Component.text(subtitles, NamedTextColor.GRAY)
-                : Component.empty();
-
-        final Title title = Title.title(mainTitle, subtitle);
-
-        target.showTitle(title);
-    }
-
-    public static void sendActionBar(final @NonNull Audience target, String maintitle, NamedTextColor colour) {
-        final Component mainTitle = maintitle != null
-                ? Component.text(maintitle, colour)
-                : Component.empty();
-
-        target.sendActionBar(mainTitle);
     }
 
     public static Component getPrefixes(String wanted) {
@@ -195,61 +129,8 @@ public class KyoriUtil {
                 .append(Component.text()
                         .append(Component.text("Click here", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .clickEvent(ClickEvent.runCommand("/tp 0 0"))
-                        .hoverEvent(HoverEvent.showText(compBuild("Click to teleport to spawn", NamedTextColor.GOLD)))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click to teleport to spawn", NamedTextColor.GOLD)))
                 )
                 .append(Component.text(" To teleport to spawn", NamedTextColor.RED))
                 .build();
-    }
-
-    public static Component compBuild(String msg, TextColor colour) {
-        return Component.text()
-                .append(Component.text(msg, colour))
-                .build();
-    }
-
-    public static Component compBuild(String msg, NamedTextColor colour, TextDecoration txtDec) {
-        return Component.text()
-                .append(Component.text(msg, colour, txtDec))
-                .build();
-    }
-
-    public static Component compBuild(String msg, TextColor colour, TextDecoration txtDec) {
-        return Component.text()
-                .append(Component.text(msg, colour, txtDec))
-                .build();
-    }
-
-    public static Component compBuild(String msg, NamedTextColor colour) {
-        return Component.text()
-                .append(Component.text(msg, colour))
-                .build();
-    }
-
-    public static List<Component> compBuild(List<String> msg, NamedTextColor colour) {
-        List<Component> comp = new ArrayList<>();
-        for (String a : msg) {
-            comp.add(compBuild(a, colour));
-        }
-        return comp;
-    }
-
-    public static Component mergeComp(Component comp, Component comp2) {
-        return Component.text()
-                .append(comp)
-                .append(comp2)
-                .build();
-    }
-
-    public static Component mergeComp(List<Component> comps) {
-        return Component.text()
-                .append(comps)
-                .build();
-    }
-
-    public static Title titleBuild(String msg, NamedTextColor colour) {
-        return Title.title(Component.text()
-                .append(Component.text(msg, colour))
-                .build(), Component.empty()
-        );
-    }
-}
+    }}

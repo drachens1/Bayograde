@@ -8,8 +8,6 @@ import net.minestom.server.tag.Tag;
 
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class ItemStackUtil {
     public static ItemStack itemBuilder(Material material) {
         return ItemStack.of(material).builder()
@@ -59,14 +57,14 @@ public class ItemStackUtil {
     public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour) {
         return ItemStack.of(material).builder()
                 .maxStackSize(1)
-                .customName(compBuild(name, colour))
+                .customName(Component.text(name, colour))
                 .build();
     }
 
     public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour, int modelData) {
         return ItemStack.of(material).builder()
                 .maxStackSize(1)
-                .customName(compBuild(name, colour))
+                .customName(Component.text(name, colour))
                 .customModelData(modelData)
                 .build().withTag(Tag.Integer("CustomModelData"), modelData);
     }
@@ -74,7 +72,7 @@ public class ItemStackUtil {
     public static ItemStack itemBuilder(Material material, String name, NamedTextColor colour, int modelData, List<Component> lore) {
         return ItemStack.of(material).builder()
                 .maxStackSize(1)
-                .customName(compBuild(name, colour))
+                .customName(Component.text(name, colour))
                 .customModelData(modelData)
                 .lore(lore)
                 .build().withTag(Tag.Integer("CustomModelData"), modelData);

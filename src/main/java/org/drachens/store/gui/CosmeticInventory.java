@@ -1,6 +1,7 @@
 package org.drachens.store.gui;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.inventory.Inventory;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import static org.drachens.util.InventoryUtil.*;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class CosmeticInventory extends InventoryGUI {
     CosmeticsManager cosmeticsManager = ContinentalManagers.cosmeticsManager;
@@ -30,7 +30,7 @@ public class CosmeticInventory extends InventoryGUI {
 
     @Override
     public void decorate(@NotNull CPlayer player) {
-        outlineInventory(this, outline(itemBuilder(Material.BLUE_STAINED_GLASS_PANE, compBuild("", NamedTextColor.AQUA))));
+        outlineInventory(this, outline(itemBuilder(Material.BLUE_STAINED_GLASS_PANE, Component.text("", NamedTextColor.AQUA))));
         addExitButton(this);
         addPlayerHeadAtSlot(this, 4);
         this.addButton(3, addGoldView());
@@ -49,7 +49,7 @@ public class CosmeticInventory extends InventoryGUI {
     private InventoryButton addGoldView() {
         return new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GOLD_INGOT)
-                        .customName(compBuild(player.getGold() + "", NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .customName(Component.text(player.getGold() + "", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .build())
                 .consumer(e -> {
                 });
@@ -64,7 +64,7 @@ public class CosmeticInventory extends InventoryGUI {
 
     private InventoryButton cosmetic(StoreItem storeItem) {
         return new InventoryButton()
-                .creator(storeItem::getBoughtItem)
+                .creator(e->storeItem.getBoughtItem())
                 .consumer(e -> storeItem.clickAfterBought((CPlayer) e.getPlayer()));
     }
 }

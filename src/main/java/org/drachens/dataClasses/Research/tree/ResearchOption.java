@@ -11,8 +11,6 @@ import org.drachens.temporary.research.ResearchCountry;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class ResearchOption {
     private final String identifier;
     private final List<String> requiresString;
@@ -73,22 +71,22 @@ public class ResearchOption {
                 .append(cost.getCurrencyType().getSymbol())
                 .build());
         if (!requiresString.isEmpty()){
-            base.add(compBuild("Prequisites: ", NamedTextColor.BLUE));
+            base.add(Component.text("Prequisites: ", NamedTextColor.BLUE));
             requiresString.forEach(require->{
                 if (country.hasResearched(require)){
-                    base.add(compBuild("- "+require,NamedTextColor.GREEN));
+                    base.add(Component.text("- "+require,NamedTextColor.GREEN));
                 }else {
-                    base.add(compBuild("- "+require,NamedTextColor.RED));
+                    base.add(Component.text("- "+require,NamedTextColor.RED));
                 }
             });
         }
         if (!orString.isEmpty()){
-            base.add(compBuild("Or: ", NamedTextColor.BLUE));
+            base.add(Component.text("Or: ", NamedTextColor.BLUE));
             orString.forEach(or->{
                 if (country.hasResearched(or)){
-                    base.add(compBuild("- "+or,NamedTextColor.RED));
+                    base.add(Component.text("- "+or,NamedTextColor.RED));
                 }else {
-                    base.add(compBuild("- "+or,NamedTextColor.GREEN));
+                    base.add(Component.text("- "+or,NamedTextColor.GREEN));
                 }
             });
         }

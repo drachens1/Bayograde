@@ -1,15 +1,14 @@
 package org.drachens.bossbars;
 
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.interfaces.HideableBossBar;
-
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class CapitulationBar extends HideableBossBar {
     private final BossBar capBar = getBossBar();
     public CapitulationBar() {
-        super(BossBar.bossBar(compBuild("Capitulation", NamedTextColor.GOLD), 0, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6));
+        super(BossBar.bossBar(Component.text("Capitulation", NamedTextColor.GOLD), 0, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6));
         hide();
     }
     public void setProgress(double progress){

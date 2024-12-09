@@ -6,18 +6,16 @@ import org.drachens.dataClasses.Modifier;
 
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class IdeologyTypes {
     private final List<Leader> leaders;
-    private String identifier;
+    private final String identifier;
     private Component name;
-    private Component prefix;
-    private Modifier modifier;
+    private final Component prefix;
+    private final Modifier modifier;
 
     public IdeologyTypes(TextColor colour, String prefix, String name, List<Leader> leaders, Modifier modifier) {
-        this.name = compBuild(name, colour);
-        this.prefix = compBuild(prefix, colour);
+        this.name = Component.text(name, colour);
+        this.prefix = Component.text(prefix, colour);
         this.identifier = name;
         this.leaders = leaders;
         this.leaders.forEach((leader -> leader.setIdeologyTypes(this)));
@@ -34,10 +32,6 @@ public class IdeologyTypes {
 
     public Component getPrefix() {
         return prefix;
-    }
-
-    public void setPrefix(Component prefix) {
-        this.prefix = prefix;
     }
 
     public List<Leader> getLeaders() {

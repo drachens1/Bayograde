@@ -3,6 +3,7 @@ package org.drachens.temporary;
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator;
 import de.articdive.jnoise.pipeline.JNoise;
 import it.unimi.dsi.fastutil.Pair;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -29,7 +30,6 @@ import org.drachens.temporary.troops.TroopCountry;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.Messages.logMsg;
 import static org.drachens.util.ServerUtil.addChunk;
 
@@ -282,10 +282,10 @@ public class MapGeneratorManager extends MapGen {
         }
         switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
             case VotingWinner.ww2_clicks -> {
-                return new ClicksCountry(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+                return new ClicksCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
             }
             case VotingWinner.ww2_troops -> {
-                return new TroopCountry(newCurrencies, countryName, compBuild(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+                return new TroopCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
             }
         }
         return null;

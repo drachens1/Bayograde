@@ -12,14 +12,12 @@ import org.drachens.interfaces.MapGen;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class EconomyFactionType extends Factions {
-    private final Component name = compBuild("Economy", NamedTextColor.GOLD);
+    private final Component name = Component.text("Economy", NamedTextColor.GOLD);
 
     public EconomyFactionType(Country creator, String name) {
-        super(creator, name, new Modifier.create(compBuild(name, NamedTextColor.GREEN))
-                .setDescription(compBuild("The bonuses from the economic faction", NamedTextColor.GRAY))
+        super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.GREEN))
+                .setDescription(Component.text("The bonuses from the economic faction", NamedTextColor.GRAY))
                 .build());
     }
 

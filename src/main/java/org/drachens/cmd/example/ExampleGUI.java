@@ -1,6 +1,7 @@
 package org.drachens.cmd.example;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
@@ -11,7 +12,6 @@ import org.drachens.InventorySystem.InventoryGUI;
 import org.jetbrains.annotations.NotNull;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class ExampleGUI extends InventoryGUI {
     @Override
@@ -22,7 +22,7 @@ public class ExampleGUI extends InventoryGUI {
     @Override
     public void decorate(@NotNull CPlayer player) {
         for (int i = 0; i < getInventory().getSize(); i++){
-            addButton(i,button(itemBuilder(Material.GREEN_CONCRETE,compBuild(i+" Num", NamedTextColor.BLUE))));
+            addButton(i,button(itemBuilder(Material.GREEN_CONCRETE, Component.text(i+" Num", NamedTextColor.BLUE))));
         }
         super.decorate(player);
     }
@@ -30,8 +30,6 @@ public class ExampleGUI extends InventoryGUI {
     private InventoryButton button(ItemStack i){
         return new InventoryButton()
                 .creator(player -> i)
-                .consumer(e -> {
-                    CPlayer p = (CPlayer) e.getPlayer();
-                });
+                .consumer(e -> {});
     }
 }

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public abstract class StoreItem {
@@ -23,9 +22,9 @@ public abstract class StoreItem {
     private final Component name;
     private final Component description;
     private final int modelData;
-    private final Component canAfford = compBuild("Can afford", NamedTextColor.GREEN, TextDecoration.BOLD);
-    private final Component cantAfford = compBuild("Cant afford", NamedTextColor.RED, TextDecoration.BOLD);
-    private final Component purchased = compBuild("purchased", NamedTextColor.GREEN, TextDecoration.BOLD);
+    private final Component canAfford = Component.text("Can afford", NamedTextColor.GREEN, TextDecoration.BOLD);
+    private final Component cantAfford = Component.text("Cant afford", NamedTextColor.RED, TextDecoration.BOLD);
+    private final Component purchased = Component.text("purchased", NamedTextColor.GREEN, TextDecoration.BOLD);
 
     public StoreItem(String identifier, int cost, Material material, Component name, int modelData) {
         this.cost = cost;
@@ -43,34 +42,15 @@ public abstract class StoreItem {
                 .build();
     }
 
-    public StoreItem(String identifier, int cost, Material material, Component name, Component description, int modelData) {
-        this.cost = cost;
-        this.material = material;
-        this.name = name;
-        this.description = description;
-        this.identifier = identifier;
-        this.modelData = modelData;
-        boughtMessage = Component.text()
-                .append(getPrefixes("system"))
-                .append(Component.text("You have successfully bought "))
-                .append(name)
-                .append(Component.text(" for "))
-                .append(Component.text(cost))
-                .build();
-    }
-
     public ItemStack getItem(CPlayer p) {
-        if (description != null) {
-            return itemBuilder(material, name, modelData, getDescription(p));
-        }
         return itemBuilder(material, name, modelData, getDescription(p));
     }
 
-    public ItemStack getBoughtItem(CPlayer p) {
-        return itemBuilder(material, name, modelData, getBoughtDescription(p));
+    public ItemStack getBoughtItem() {
+        return itemBuilder(material, name, modelData, getBoughtDescription());
     }
 
-    public List<Component> getBoughtDescription(CPlayer p) {
+    public List<Component> getBoughtDescription() {
         List<Component> comps = new ArrayList<>();
         if (description != null)
             comps.add(description);

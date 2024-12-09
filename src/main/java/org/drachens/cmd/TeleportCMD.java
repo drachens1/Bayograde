@@ -1,12 +1,13 @@
 package org.drachens.cmd;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 
-import static org.drachens.util.KyoriUtil.*;
+import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.ServerUtil.getAllowedChunks;
 
 public class TeleportCMD extends Command {
@@ -21,7 +22,7 @@ public class TeleportCMD extends Command {
             }
             Pos ps = new Pos(context.get(x), 1, context.get(z));
             if (!getAllowedChunks().contains(p.getInstance().getChunk(ps.chunkX(), ps.chunkZ()))) {
-                p.sendMessage(mergeComp(getPrefixes("system"), compBuild("you cannot teleport out of bounds", NamedTextColor.RED)));
+                p.sendMessage(Component.text().append(getPrefixes("system"), Component.text("you cannot teleport out of bounds", NamedTextColor.RED)).build());
                 return;
             }
             p.teleport(ps);

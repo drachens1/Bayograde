@@ -1,19 +1,12 @@
 package org.drachens.Manager.per_instance;
 
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.scoreboard.Team;
-import net.minestom.server.scoreboard.TeamManager;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.drachens.util.KyoriUtil.compBuild;
 
 public class CountryDataManager {
     private final List<String> countryNameList = new ArrayList<>();
@@ -23,7 +16,6 @@ public class CountryDataManager {
     private final List<Factions> factions = new ArrayList<>();
     private final List<String> factionNames = new ArrayList<>();
     private List<Country> countries;
-    private Team defaultTeam;
 
     public CountryDataManager(Instance instance, List<Country> countries) {
         this.instance = instance;
@@ -32,12 +24,6 @@ public class CountryDataManager {
             countryNameList.add(country.getName());
             countryHashMap.put(country.getName(), country);
         }
-        TeamManager teamManager = MinecraftServer.getTeamManager();
-        defaultTeam = teamManager.createBuilder("spectator")
-                .prefix(compBuild("Spectator ", NamedTextColor.GRAY, TextDecoration.BOLD))
-                .teamColor(NamedTextColor.GRAY)
-                .build();
-
     }
 
     public List<Country> getCountries() {

@@ -1,6 +1,7 @@
 package org.drachens.temporary;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
@@ -16,7 +17,6 @@ import org.drachens.dataClasses.territories.Province;
 import org.drachens.interfaces.War;
 import org.jetbrains.annotations.NotNull;
 
-import static org.drachens.util.KyoriUtil.compBuild;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 
 
@@ -63,7 +63,7 @@ public class ClickWarSystem implements War {
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
         if (province == null || province.getOccupier() == country || !province.isCapturable()) return;
         if (!country.canMinusCost(payment)) {
-            p.sendActionBar(compBuild("You cannot afford this", NamedTextColor.RED));
+            p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;
         }
         if (!AdjacentBlocks(province.getPos(), country, instance)) return;

@@ -81,7 +81,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.drachens.util.KyoriUtil.*;
+import static org.drachens.util.KyoriUtil.getCountryMessages;
+import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
 
@@ -188,7 +189,7 @@ public class ServerUtil {
         });
 
         Function<Player, Component> displayNameSupplier = Player::getName;
-        Rank r = new Rank(displayNameSupplier, compBuild("cool", NamedTextColor.BLUE), compBuild("cool2", NamedTextColor.BLUE), NamedTextColor.RED, "cool");
+        Rank r = new Rank(displayNameSupplier, Component.text("cool", NamedTextColor.BLUE), Component.text("cool2", NamedTextColor.BLUE), NamedTextColor.RED, "cool");
 
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             Player p = e.getPlayer();
@@ -228,7 +229,7 @@ public class ServerUtil {
             Country c = p.getCountry();
             Component prefix;
             if (c == null) {
-                prefix = compBuild("spectator", NamedTextColor.GRAY, TextDecoration.BOLD);
+                prefix = Component.text("spectator", NamedTextColor.GRAY, TextDecoration.BOLD);
             } else {
                 prefix = c.getPrefix();
             }
@@ -250,7 +251,7 @@ public class ServerUtil {
                 components.add(Component.text(" : ", NamedTextColor.GRAY));
                 components.add(Component.text(e.getMessage(), NamedTextColor.GRAY));
             }
-            return mergeComp(components);
+            return Component.text().append(components).build();
         };
 
         globEHandler.addListener(PlayerChatEvent.class, e -> e.setChatFormat(chatEvent));
@@ -271,7 +272,7 @@ public class ServerUtil {
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
             if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(p.getInstance()).votingManager().getVoteBar().isShown() && ContinentalManagers.world(p.getInstance()).dataStorer().votingOption!=null) {
-                p.sendMessage(mergeComp(getPrefixes("system"), getCountryMessages("outOfBounds")));
+                p.sendMessage(Component.text().append(getPrefixes("system")).append(getCountryMessages("outOfBounds")).build());
                 e.setCancelled(true);
             }
         });

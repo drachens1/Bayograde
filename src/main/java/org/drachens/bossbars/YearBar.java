@@ -1,6 +1,7 @@
 package org.drachens.bossbars;
 
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
@@ -13,15 +14,13 @@ import org.drachens.interfaces.HideableBossBar;
 
 import java.time.temporal.ChronoUnit;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-
 public class YearBar extends HideableBossBar {
     private final BossBar yearBar = getBossBar();
     private final Instance instance;
     private Task task;
 
     public YearBar(Instance instance) {
-        super(BossBar.bossBar(compBuild("", NamedTextColor.GOLD), 0, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6));
+        super(BossBar.bossBar(Component.text("", NamedTextColor.GOLD), 0, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6));
         this.instance = instance;
         hide();
     }
@@ -39,11 +38,11 @@ public class YearBar extends HideableBossBar {
             int day = 0;
             int month = 0;
             int year = votingOption.getStartingYear();
-            int endYear = votingOption.getEndYear();
+            final int endYear = votingOption.getEndYear();
 
             @Override
             public void run() {
-                yearBar.name(compBuild(day + "/" + month + "/" + year, NamedTextColor.GOLD));
+                yearBar.name(Component.text(day + "/" + month + "/" + year, NamedTextColor.GOLD));
                 day++;
                 if (day > daysInMonth[month]) {
                     day = 1;

@@ -16,8 +16,6 @@ import org.drachens.temporary.troops.TroopCountry;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.compBuild;
-import static org.drachens.util.KyoriUtil.mergeComp;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CountryTypesCMD extends Command {
@@ -37,7 +35,7 @@ public class CountryTypesCMD extends Command {
             if (!sender.hasPermission(permission)) return;
             List<Component> components = new ArrayList<>();
             CountryEnums.Type choice = CountryEnums.Type.valueOf(context.get(type));
-            components.add(compBuild(context.get(type), NamedTextColor.BLUE));
+            components.add(Component.text(context.get(type), NamedTextColor.BLUE));
             components.add(Component.newline());
             switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
                 case VotingWinner.none -> {
@@ -47,8 +45,8 @@ public class CountryTypesCMD extends Command {
                     for (Country c : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
                         ClicksCountry country = (ClicksCountry) c;
                         if (country.getType().equals(choice)) {
-                            components.add(compBuild(country.getName(), NamedTextColor.GOLD));
-                            components.add(compBuild(", ", NamedTextColor.BLUE));
+                            components.add(Component.text(country.getName(), NamedTextColor.GOLD));
+                            components.add(Component.text(", ", NamedTextColor.BLUE));
                         }
                     }
                 }
@@ -56,14 +54,16 @@ public class CountryTypesCMD extends Command {
                     for (Country c : getWorldClasses(p.getInstance()).countryDataManager().getCountries()) {
                         TroopCountry country = (TroopCountry) c;
                         if (country.getType().equals(choice)) {
-                            components.add(compBuild(country.getName(), NamedTextColor.GOLD));
-                            components.add(compBuild(", ", NamedTextColor.BLUE));
+                            components.add(Component.text(country.getName(), NamedTextColor.GOLD));
+                            components.add(Component.text(", ", NamedTextColor.BLUE));
                         }
                     }
                 }
             }
 
-            p.sendMessage(mergeComp(components));
+            p.sendMessage(Component.text()
+                    .append(components)
+                    .build());
         }, type);
     }
 }
