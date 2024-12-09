@@ -3,14 +3,11 @@ package org.drachens.dataClasses;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 public class Modifier implements Cloneable {
@@ -19,23 +16,21 @@ public class Modifier implements Cloneable {
     private Component name;
     private Component description;
     private Component startDescription;
-    private TextColor textColor;
     private Modifier oldModifier;
     private final boolean display;
-    private HashMap<BoostEnum, Float> boostHashMap;
+    private final HashMap<BoostEnum, Float> boostHashMap;
 
     protected Modifier(create c) {
         this.justCompName = c.name;
         this.boostHashMap=c.boostHashMap;
         if (c.description != null) this.startDescription = c.description;
-        this.textColor = c.textColor;
-        createDescription();
-        this.name = Component.text()
-                .append(c.name)
-                .hoverEvent(HoverEvent.showText(description))
-                .build();
-        oldModifier = this.clone();
         display=c.display;
+        createDescription();
+        oldModifier = this.clone();
+    }
+
+    public HashMap<BoostEnum, Float> getBoostHashMap(){
+        return boostHashMap;
     }
 
     public boolean shouldDisplay(){
@@ -43,7 +38,7 @@ public class Modifier implements Cloneable {
     }
 
     public void createDescription() {
-        if (!shouldDisplay())return;
+        if (!shouldDisplay()||justCompName==null)return;
         List<Component> boostComp = new ArrayList<>();
         for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()){
             float value = e.getValue();
@@ -90,15 +85,15 @@ public class Modifier implements Cloneable {
                     .build();
         }
 
+        this.name = Component.text()
+                .append(justCompName)
+                .hoverEvent(HoverEvent.showText(description))
+                .build();
     }
 
     public void addModifier(Modifier c){
-        //todo update this to make it work
+        c.getBoostHashMap().forEach(this::addBoost);
         update();
-    }
-
-    public float getBoost(BoostEnum boostEnum){
-        return boostHashMap.get(boostEnum);
     }
 
     public void setBoost(BoostEnum boostEnum, float amount){
@@ -106,13 +101,9 @@ public class Modifier implements Cloneable {
         update();
     }
 
-    public TextColor getTextColor() {
-        return textColor;
-    }
-
-    public void setTextColor(TextColor textColor) {
-        this.textColor = textColor;
-        update();
+    public void addBoost(BoostEnum boostEnum, float amount){
+        float current = boostHashMap.getOrDefault(boostEnum,1f);
+        boostHashMap.put(boostEnum,current+amount);
     }
 
     public Component getName() {
@@ -151,8 +142,7 @@ public class Modifier implements Cloneable {
     @Override
     public Modifier clone() {
         try {
-            Modifier clone = (Modifier) super.clone();
-            return clone;
+            return (Modifier) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
@@ -161,8 +151,7 @@ public class Modifier implements Cloneable {
     public static class create {
         private final Component name;
         private Component description;
-        private HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
-        private TextColor textColor;
+        private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
         private boolean display = true;
 
         public create(Component name) {
@@ -179,16 +168,6 @@ public class Modifier implements Cloneable {
             return this;
         }
 
-        public create setTextColour(TextColor textColor) {
-            this.textColor = textColor;
-            return this;
-        }
-
-        public create setTextColour(int r, int g, int b) {
-            this.textColor = TextColor.color(r, g, b);
-            return this;
-        }
-        
         public create setDisplay(boolean choice){
             display=choice;
             return this;

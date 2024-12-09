@@ -102,4 +102,8 @@ public class PlayerDataFile extends YamlFileType {
     public void removeCosmetic(String cosmetic) {
         addToList(cosmetic, String.class, "Cosmetics");
     }
+
+    public float getAdvancement(String identifier){
+        return getConfigurationNode().node("advancements",identifier).getFloat();
+    }
 }

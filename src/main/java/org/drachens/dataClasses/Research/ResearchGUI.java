@@ -26,9 +26,11 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.KyoriUtil.compBuild;
 
 public class ResearchGUI extends InventoryGUI {
-    int start;
-    public ResearchGUI(int i){
-        start=i;
+    private final int startX;
+    private final int startY;
+    public ResearchGUI(int startX, int startY){
+        this.startX=startX;
+        this.startY=startY;
     }
     @Override
     protected Inventory createInventory() {
@@ -41,34 +43,57 @@ public class ResearchGUI extends InventoryGUI {
         int max = p.getInventory().getSize();
         for (Map.Entry<Integer[], ResearchOption> e : tree.getResearchOptionMap().entrySet()){
             int x = e.getKey()[1];
-            if (x<start || x>=8+start)continue;
-            int coords = e.getKey()[0]*9+x-start;
+            if (x<startX || x>=8+startX)continue;
+            int y = e.getKey()[0];
+            if (y<startY || y>=8+startY)continue;
+            int coords = (y-startY)*9+x-startX;
             if (coords>max){
                 continue;
             }
             ResearchOption researchOption = e.getValue();
             addButton(coords,apple(researchOption.getItem(), researchOption,researchOption.getIdentifier(),researchOption.getRequires(),researchOption.getOr()));
         }
-        if (start>=0) addButton(36,prev(itemBuilder(Material.GREEN_CONCRETE,compBuild("Previous",NamedTextColor.GREEN))));
-        addButton(44,next(itemBuilder(Material.GREEN_CONCRETE,compBuild("Next",NamedTextColor.GREEN))));
+        if (startX>=0) addButton(36,prevX(itemBuilder(Material.GREEN_CONCRETE,compBuild("Previous",NamedTextColor.GREEN))));
+        if (startY>=0) addButton(5,prevY(itemBuilder(Material.GREEN_CONCRETE,compBuild("Previous",NamedTextColor.GREEN))));
+        addButton(44,nextX(itemBuilder(Material.GREEN_CONCRETE,compBuild("Next",NamedTextColor.GREEN))));
+        addButton(6,nextY(itemBuilder(Material.GREEN_CONCRETE,compBuild("Next",NamedTextColor.GREEN))));
         addExitButton(this);
         super.decorate(p);
     }
 
-    private InventoryButton next(ItemStack i){
+    private InventoryButton nextX(ItemStack i){
         return new InventoryButton()
                 .creator(player -> i)
                 .consumer(e -> {
                     CPlayer p = (CPlayer) e.getPlayer();
-                    ContinentalManagers.guiManager.openGUI(new ResearchGUI(start+=3),p);
+                    ContinentalManagers.guiManager.openGUI(new ResearchGUI(startX+3,startY),p);
                 });
     }
-    private InventoryButton prev(ItemStack i){
+
+    private InventoryButton prevX(ItemStack i){
         return new InventoryButton()
                 .creator(player -> i)
                 .consumer(e -> {
                     CPlayer p = (CPlayer) e.getPlayer();
-                    ContinentalManagers.guiManager.openGUI(new ResearchGUI(start-=3),p);
+                    ContinentalManagers.guiManager.openGUI(new ResearchGUI(startX-3,startY),p);
+                });
+    }
+
+    private InventoryButton nextY(ItemStack i){
+        return new InventoryButton()
+                .creator(player -> i)
+                .consumer(e -> {
+                    CPlayer p = (CPlayer) e.getPlayer();
+                    ContinentalManagers.guiManager.openGUI(new ResearchGUI(startX,startY+3),p);
+                });
+    }
+
+    private InventoryButton prevY(ItemStack i){
+        return new InventoryButton()
+                .creator(player -> i)
+                .consumer(e -> {
+                    CPlayer p = (CPlayer) e.getPlayer();
+                ContinentalManagers.guiManager.openGUI(new ResearchGUI(startX,startY-3),p);
                 });
     }
 

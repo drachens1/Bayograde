@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.interfaces.MapGen;
@@ -50,7 +51,7 @@ public class EconomyFactionType extends Factions {
             }
         }
         float boost = calculateBoost(totalDistance, numOfCountries, instance);
-        getModifier().setProductionBoost(boost);
+        getModifier().setBoost(BoostEnum.production,boost);
     }
 
     private float calculateBoost(float distance, int numOfCountries, Instance instance) {

@@ -2,7 +2,6 @@ package org.drachens.Manager.defaults.defaultsStorer;
 
 public class DefaultsStorer {
     public final Ideologies ideologies = new Ideologies();
-    public final Currencies currencies = new Currencies();
     public final Elections elections = new Elections();
     public final BuildingTypes buildingTypes = new BuildingTypes();
 

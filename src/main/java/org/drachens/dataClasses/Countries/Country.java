@@ -18,6 +18,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.bossbars.CapitulationBar;
+import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
@@ -27,8 +28,6 @@ import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.Loan;
 import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Economics.Vault;
-import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
-import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Modifier;
@@ -75,7 +74,6 @@ public abstract class Country implements Cloneable {
     private final List<String> factionInvites = new ArrayList<>();
     private final HashMap<Country, Demand> demandHashMap = new HashMap<>();
     private final List<String> demandCountryNames = new ArrayList<>();
-    private final HashMap<CurrencyTypes, CurrencyBoost> economyBoosts = new HashMap<>();
     private final DemandManager demandManager = ContinentalManagers.demandManager;
     private Player playerLeader;
     private Leader leader;
@@ -93,17 +91,12 @@ public abstract class Country implements Cloneable {
     private boolean capitulated = false;
     private Component prefix;
     private Component description;
-    private float maxBuildingSlotBoost = 1f;
-    private float capitulationBoostPercentage = 1f;
     private Country overlord = null;
-    private float relationsBoost = 0f;
-    private float totalProductionBoost = 1f;
-    private float stabilityGainBoost = 1f;
-    private float weeklyStabilityGain = 0f;
     private final Stability stability = new Stability(50f,this);
     private final Relations relations = new Relations(this);
     private final HashMap<String,Loan> loanRequests = new HashMap<>();
     private final CapitulationBar capitulationBar = new CapitulationBar();
+    private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
@@ -137,11 +130,18 @@ public abstract class Country implements Cloneable {
 
         modifiers.add(modifier);
         modifier.addCountry(this);
-        this.maxBuildingSlotBoost += modifier.getMaxBuildingSlotBoost();
-        this.capitulationBoostPercentage += modifier.getCapitulationBoostPercentage();
-        this.totalProductionBoost += modifier.getProductionBoost();
-        modifier.getCurrencyBoostList().forEach(this::addBoost);
+        modifier.getBoostHashMap().forEach(this::addBoost);
         if (!update && modifier.shouldDisplay()) createInfo();
+    }
+
+    public void addBoost(BoostEnum boostEnum, float value){
+        float current = boostHashmap.getOrDefault(boostEnum,1f);
+        boostHashmap.put(boostEnum,value+current);
+    }
+
+    public void minusBoost(BoostEnum boostEnum, float value){
+        float current = boostHashmap.getOrDefault(boostEnum,1f);
+        boostHashmap.put(boostEnum,current-value);
     }
 
     public void updateModifier(Modifier modifier, Modifier old) {
@@ -155,10 +155,7 @@ public abstract class Country implements Cloneable {
 
         modifiers.remove(modifier);
         modifier.removeCountry(this);
-        this.maxBuildingSlotBoost -= modifier.getMaxBuildingSlotBoost();
-        this.capitulationBoostPercentage -= modifier.getCapitulationBoostPercentage();
-        this.totalProductionBoost -= modifier.getProductionBoost();
-        modifier.getCurrencyBoostList().forEach(this::minusBoost);
+        modifier.getBoostHashMap().forEach(this::minusBoost);
         createInfo();
     }
 
@@ -299,7 +296,7 @@ public abstract class Country implements Cloneable {
                 broadcast(mergeComp(getPrefixes("country"), compBuild(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)), capital.getInstance());
             }
         }
-        float capPercentage = bound(0.8f * capitulationBoostPercentage);
+        float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation,1f));
         float capPoints = maxCapitulationPoints * capPercentage;
         capitulationBar.setProgress(capitulationPoints/capPoints);
         if (capitulationPoints >= capPoints && !capitulated) {
@@ -316,10 +313,6 @@ public abstract class Country implements Cloneable {
 
     public void calculateIncrease() {
         vault.calculateIncrease();
-    }
-
-    public float getTotalProductionBoost() {
-        return totalProductionBoost;
     }
 
     public void capitulate(Country attacker) {
@@ -431,38 +424,21 @@ public abstract class Country implements Cloneable {
     public void setLeader(Leader leader) {
         this.leader = leader;
         leader.getModifier().forEach((this::addModifier));
-
-        createInfo();
     }
 
-    public void addBoost(CurrencyBoost currencyBoost) {
-        if (economyBoosts.containsKey(currencyBoost.getCurrencyTypes())) {
-            economyBoosts.get(currencyBoost.getCurrencyTypes()).addBoost(currencyBoost.getBoost());
-        } else {
-            CurrencyBoost currencyBoost1 = new CurrencyBoost(currencyBoost);
-            economyBoosts.put(currencyBoost1.getCurrencyTypes(), currencyBoost1);
-        }
-    }
-
-    public void minusBoost(CurrencyBoost currencyBoost) {
-        CurrencyTypes c = currencyBoost.getCurrencyTypes();
-        if (economyBoosts.containsKey(c)) {
-            economyBoosts.get(c).addBoost(currencyBoost.getBoost());
-        } else {
-            CurrencyBoost cb = new CurrencyBoost(c, 0f);
-            economyBoosts.put(c, cb);
-            economyBoosts.get(c).minusBoost(currencyBoost.getBoost());
-        }
+    public float getBoost(BoostEnum boostEnum){
+        return boostHashmap.getOrDefault(boostEnum,1f);
     }
 
     public void createInfo() {
         if (mapGen.isGenerating(instance)) return;
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : modifiers) {
+            if (modifier.getName()==null)continue;
             if (!modifier.shouldDisplay())continue;
             modifierComps.add(modifier.getName());
-            modifierComps.add(Component.text(", "));
         }
+
         Component leaderComp = Component.text()
                 .append(Component.text("Faction: "))
                 .build();
@@ -531,10 +507,6 @@ public abstract class Country implements Cloneable {
 
     public List<Region> getRegion() {
         return region;
-    }
-
-    public float getMaxBuildingSlotBoost() {
-        return maxBuildingSlotBoost;
     }
 
     public List<Country> getPuppets() {
@@ -776,20 +748,8 @@ public abstract class Country implements Cloneable {
         return vault;
     }
 
-    public float getEconomyBoost(CurrencyTypes currencyTypes) {
-        return economyBoosts.getOrDefault(currencyTypes, new CurrencyBoost(currencyTypes, 0)).getBoost() + totalProductionBoost;
-    }
-
     public boolean isAtWar(Country country){
         return wars.contains(country);
-    }
-
-    public float getStabilityGainBoost(){
-        return stabilityGainBoost;
-    }
-
-    public float getWeeklyStabilityGain(){
-        return weeklyStabilityGain;
     }
 
     public Stability getStability(){
@@ -797,9 +757,6 @@ public abstract class Country implements Cloneable {
     }
     public Relations getRelations(){
         return relations;
-    }
-    public float getRelationsBoost(){
-        return relationsBoost;
     }
     public void addLoanRequest(Loan loan){
         loanRequests.put(loan.getFromCountry().getName(),loan);

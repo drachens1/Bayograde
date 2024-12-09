@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Leader {
     private final List<Modifier> modifiers;
-    private Component name;
+    private final Component name;
     private Component description;
     private IdeologyTypes ideologyTypes;
 
@@ -16,11 +16,6 @@ public class Leader {
         name = leaderBuilder.name;
         if (leaderBuilder.description != null) description = leaderBuilder.description;
         modifiers = leaderBuilder.modifier;
-        if (leaderBuilder.ideologyTypes != null) ideologyTypes = leaderBuilder.ideologyTypes;
-    }
-
-    public void rename(Component name) {
-        this.name = name;
     }
 
     public Component getName() {
@@ -39,7 +34,8 @@ public class Leader {
         if (description == null) {
             List<Component> modifierComps = new ArrayList<>();
             for (Modifier modifier : modifiers) {
-                modifierComps.add(Component.text()
+                if (modifier.shouldDisplay())
+                    modifierComps.add(Component.text()
                         .appendNewline()
                         .append(modifier.getDescription())
                         .build());
@@ -62,8 +58,7 @@ public class Leader {
     public static class create {
         private final Component name;
         private Component description;
-        private List<Modifier> modifier = new ArrayList<>();
-        private IdeologyTypes ideologyTypes;
+        private final List<Modifier> modifier = new ArrayList<>();
 
         public create(Component name) {
             this.name = name;
@@ -76,11 +71,6 @@ public class Leader {
 
         public create setDescription(Component description) {
             this.description = description;
-            return this;
-        }
-
-        public create setIdeologyTypes(IdeologyTypes ideologyTypes) {
-            this.ideologyTypes = ideologyTypes;
             return this;
         }
 

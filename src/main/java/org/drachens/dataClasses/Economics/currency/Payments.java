@@ -34,12 +34,6 @@ public class Payments {
         payments.forEach((payment -> payment.multiply(multiply)));
     }
 
-    public void multiply(CurrencyTypes currencyType, CurrencyBoost currencyBoost) {
-        payments.forEach((payment -> {
-            if (payment.getCurrencyType() == currencyType) payment.multiply(currencyBoost.getBoost());
-        }));
-    }
-
     public Component getMessages() {
         List<Component> comps = new ArrayList<>();
         payments.forEach(payment -> {

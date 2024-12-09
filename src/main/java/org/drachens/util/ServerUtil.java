@@ -51,6 +51,7 @@ import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
+import org.drachens.cmd.example.ExampleCMD;
 import org.drachens.cmd.plan.PlanCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
@@ -194,7 +195,6 @@ public class ServerUtil {
             p.setAllowFlying(true);
             scoreboardManager.openScoreboard(new DefaultScoreboard(),p);
             tabCreation(p);
-            ContinentalManagers.advancementManager.addPlayer((CPlayer) p);
             ContinentalManagers.permissions.playerOp(p);
             ContinentalManagers.world(p.getInstance()).votingManager().getVoteBar().addPlayer(p);
             ContinentalManagers.inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
@@ -210,6 +210,7 @@ public class ServerUtil {
             p.getInstance().enableAutoChunkLoad(false);
             r.addPlayer(p);
             p.refreshCommands();
+            ContinentalManagers.advancementManager.addPlayer((CPlayer) p);
         });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
@@ -349,6 +350,7 @@ public class ServerUtil {
         commandManager.register(new PlaytimeCMD());
         commandManager.register(new DemandCMD());
         commandManager.register(new TechCMD());
+        commandManager.register(new ExampleCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

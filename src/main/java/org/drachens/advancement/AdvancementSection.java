@@ -41,7 +41,7 @@ public class AdvancementSection {
         return frameType;
     }
     public static class Create{
-        private final String identifier;
+        private final String identifier; //has to be lower case
         private final Material item;
         private final Component title;
         private final Component description;

@@ -3,8 +3,8 @@ package org.drachens.dataClasses.Research.tree;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
-import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
+import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.temporary.research.ResearchCountry;
 

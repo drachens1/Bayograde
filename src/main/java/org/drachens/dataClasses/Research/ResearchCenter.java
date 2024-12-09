@@ -21,7 +21,7 @@ public class ResearchCenter extends BuildTypes {
             .append(Component.text("You cannot afford the research center : 5 Production", NamedTextColor.RED))
             .build();
 
-    private final Payments payments = new Payments(new Payment(defaultsStorer.currencies.getCurrencyType("production"), 5f));
+    private final Payments payments = new Payments(new Payment(CurrencyEnum.production, 5f));
 
     public ResearchCenter() {
         super(new int[]{3}, Material.BROWN_DYE, BuildingEnum.researchCenter);

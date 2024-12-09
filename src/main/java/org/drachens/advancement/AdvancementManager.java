@@ -21,19 +21,16 @@ public class AdvancementManager {
         advancementSections.forEach(advancementSection -> {
             HashMap<String, net.minestom.server.advancements.Advancement> advancementHashMap = new HashMap<>();
             AdvancementRoot advancementRoot = new AdvancementRoot(advancementSection.getTitle(),advancementSection.getDescription(),
-                    advancementSection.getItem(), advancementSection.getFrameType(),0,0,"a");
+                    advancementSection.getItem(), advancementSection.getFrameType(),0,0,"section");
 
-            AdvancementTab advancementTab =advancementManager.createTab(p.getUuid()+advancementSection.getIdentifier(),advancementRoot);
+            AdvancementTab advancementTab = advancementManager.createTab(advancementSection.getIdentifier(),advancementRoot);
 
-            advancementSection.getAdvancements().forEach(advancement -> advancementHashMap.put(advancement.getIdentifier(),
-                    new net.minestom.server.advancements.Advancement(advancement.getTitle(),advancement.getDescription(),advancement.getItem(),
-                            advancement.getFrameType(),advancement.getCoords()[0], advancement.getCoords()[1])));
+            advancementSection.getAdvancements().forEach(advancement -> advancementHashMap.put(advancement.identifier(),
+                    new net.minestom.server.advancements.Advancement(advancement.title(),advancement.description(),advancement.item(),
+                            advancement.frameType(),advancement.coords()[0], advancement.coords()[1])));
 
-            advancementSection.getAdvancements().forEach(advancement -> {
-                advancementTab.createAdvancement(advancement.getIdentifier(),
-                        advancementHashMap.get(advancement.getIdentifier()), advancementHashMap.getOrDefault(advancement.getParent(), advancementRoot));
-            });
-
+            advancementSection.getAdvancements().forEach(advancement -> advancementTab.createAdvancement(advancement.identifier(),
+                    advancementHashMap.get(advancement.identifier()), advancementHashMap.getOrDefault(advancement.parent(), advancementRoot)));
             advancementTab.addViewer(p);
         });
     }

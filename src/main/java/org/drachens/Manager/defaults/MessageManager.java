@@ -35,6 +35,11 @@ public class MessageManager {
     private final Component system = getPrefixes("system");
     private final Component country = getPrefixes("country");
     private final Component factionPref = getPrefixes("faction");
+    private final Component noOccupier = Component.text()
+            .append(Component.text("_______/", NamedTextColor.BLUE))
+            .append(Component.text("UNOCCUPIED", NamedTextColor.GOLD))
+            .append(Component.text("\\_______", NamedTextColor.BLUE))
+            .build();
 
     public MessageManager() {
         Component gameOver = Component.text()
@@ -60,8 +65,12 @@ public class MessageManager {
             if (!player.isSneaking())return;
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
             if (p == null || provinceDelay.hasCooldown(player)) return;
-            player.sendMessage(p.getDescription((CPlayer) player));
             provinceDelay.startCooldown(player);
+            if (p.getOccupier()==null){
+                player.sendMessage(noOccupier);
+                return;
+            }
+            player.sendMessage(p.getDescription((CPlayer) player));
         });
 
         globEHandler.addListener(ResetEvent.class, e -> broadcast(gameOver, e.getInstance()));

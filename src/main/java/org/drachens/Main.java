@@ -24,23 +24,17 @@ import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.advancement.Advancement;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.advancement.AdvancementSection;
-import org.drachens.dataClasses.BoostEnum;
-import org.drachens.dataClasses.ComponentListBuilder;
+import org.drachens.dataClasses.*;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
-import org.drachens.dataClasses.Economics.currency.CurrencyBoost;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Modifier;
-import org.drachens.dataClasses.NoneCustomisableInventory;
 import org.drachens.dataClasses.Research.ResearchCategoryEnum;
 import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.tree.ResearchCategory;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
-import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.NewDay;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ChangeInventoryButton;
@@ -179,13 +173,14 @@ public class Main {
 
     private static void createAdvancements(){
         AdvancementManager advancementManager = ContinentalManagers.advancementManager;
-        advancementManager.register(new AdvancementSection.Create("Magic",Material.BROWN_DYE, FrameType.TASK,compBuild("Title",NamedTextColor.BLUE),compBuild("Description",NamedTextColor.BLUE))
-                        .addAdvancement(new Advancement("cool", NewDay.class,Material.OAK_BOAT,FrameType.GOAL,new int[]{1,1},compBuild("Title",NamedTextColor.BLUE),compBuild("Description",NamedTextColor.BLUE),null))
+        advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,compBuild("WW2 inspired",NamedTextColor.GOLD),compBuild("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
+                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, compBuild("Built more than 10 factories", NamedTextColor.GOLD), compBuild("", NamedTextColor.BLUE), null, 10f,NewDay.class))
+                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, compBuild("Built more than 30 factories", NamedTextColor.GOLD), compBuild("", NamedTextColor.BLUE), "facs_built1", 30f,NewDay.class))
+
                 .build());
     }
 
     private static void createWW2VotingOption() {
-
         BuildingTypes buildingTypes = ContinentalManagers.defaultsStorer.buildingTypes;
         buildingTypes.register(new ResearchUniversity());
         buildingTypes.register(new ResearchLibrary());
@@ -194,57 +189,50 @@ public class Main {
 
         Modifier exampleModifier = new Modifier.create(compBuild("Example", NamedTextColor.GOLD))
                 .setDescription(compBuild("description", NamedTextColor.BLUE))
-                .addBoost(BoostEnum.production, 0.1f)
-                .addBoost(BoostEnum.capitulation, 0.1f)
-                .addBoost(BoostEnum.stabilityBase, 0.1f)
-                .addBoost(BoostEnum.stabilityGain, 0.1f)
-                .addBoost(BoostEnum.relations, 0.1f)
-                .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
+                .addBoost(BoostEnum.production,0.1f)
+                .addBoost(BoostEnum.capitulation,2f)
+                .addBoost(BoostEnum.stabilityBase,3f)
+                .addBoost(BoostEnum.stabilityGain,4f)
+                .addBoost(BoostEnum.relations,6f)
+                .addBoost(BoostEnum.buildingSlotBoost,2f)
                 .build();
 
         Modifier fascistModifier = new Modifier.create(compBuild("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
-                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
-                .addStabilityBaseBoost(10f)
-                .addStabilityGainBoost(-0.1f)
-                .addCapitulationBoostPercentage(5f)
-                .setTextColour(204, 0, 0)
+                .addBoost(BoostEnum.production,0.1f)
+                .addBoost(BoostEnum.stabilityBase,10f)
+                .addBoost(BoostEnum.stabilityGain,-0.1f)
+                .addBoost(BoostEnum.capitulation,5f)
                 .build();
 
         Modifier centristModifier = new Modifier.create(compBuild("Centrist", TextColor.color(96, 96, 96), TextDecoration.BOLD))
-                .addStabilityBaseBoost(50f)
-                .addCapitulationBoostPercentage(-5f)
-                .addCurrencyBoost(new CurrencyBoost(production, 0.2f))
-                .setTextColour(96, 96, 96)
+                .addBoost(BoostEnum.stabilityBase,50f)
+                .addBoost(BoostEnum.capitulation,-5f)
+                .addBoost(BoostEnum.production,0.2f)
                 .build();
 
         Modifier anarchistModifier = new Modifier.create(compBuild("Anarchist", TextColor.color(7, 154, 12)))
-                .addStabilityBaseBoost(-100f)
-                .addStabilityGainBoost(-5f)
-                .addCapitulationBoostPercentage(0.5f)
-                .addCurrencyBoost(new CurrencyBoost(production, 5f))
-                .setTextColour(7, 154, 12)
+                .addBoost(BoostEnum.stabilityBase,-100f)
+                .addBoost(BoostEnum.stabilityGain,-5f)
+                .addBoost(BoostEnum.capitulation,0.5f)
+                .addBoost(BoostEnum.production,5f)
                 .build();
 
         Modifier conservatistModifer = new Modifier.create(compBuild("Conservatism", TextColor.color(204, 0, 0)))
-                .addStabilityBaseBoost(1)
-                .setTextColour(204, 0, 0)
+                .addBoost(BoostEnum.stabilityBase,1f)
                 .build();
 
         Modifier socialistModifier = new Modifier.create(compBuild("Socialist", TextColor.color(255, 0, 0)))
-                .addStabilityGainBoost(0.2f)
-                .addStabilityBaseBoost(40f)
-                .addCurrencyBoost(new CurrencyBoost(production, 0.2f))
-                .setTextColour(255, 0, 0)
+                .addBoost(BoostEnum.stabilityBase,40f)
+                .addBoost(BoostEnum.stabilityGain,0.2f)
+                .addBoost(BoostEnum.production,0.2f)
                 .build();
 
         Modifier liberalModifier = new Modifier.create(compBuild("Liberalist", TextColor.color(51, 253, 255)))
-                .setTextColour(51, 253, 255)
                 .build();
 
         Modifier capitalistModifier = new Modifier.create(compBuild("Capitalist", TextColor.color(0, 153, 0)))
-                .addStabilityBaseBoost(-10f)
-                .addCurrencyBoost(new CurrencyBoost(production, 0.5f))
-                .setTextColour(0, 153, 0)
+                .addBoost(BoostEnum.stabilityBase,-10f)
+                .addBoost(BoostEnum.production,0.5f)
                 .build();
 
         String votingName = "ww2-";
@@ -259,13 +247,13 @@ public class Main {
         modifiers.register(capitalistModifier, votingName + "capitalistModifier");
         modifiers.register(exampleModifier, votingName + "example");
 
-        IdeologyTypes fascist = new IdeologyTypes(TextColor.color(0, 0, 0), "F", "Fascist", getLeaders(fascistModifier), fascistModifier);
-        IdeologyTypes neutral = new IdeologyTypes(TextColor.color(165, 157, 157), "N", "Centrist", getLeaders(centristModifier), centristModifier);
-        IdeologyTypes anarchist = new IdeologyTypes(TextColor.color(7, 154, 12), "A", "Anarchism", getLeaders(anarchistModifier), anarchistModifier);
-        IdeologyTypes conservatism = new IdeologyTypes(TextColor.color(204, 0, 0), "C", "Conservative", getLeaders(conservatistModifer), conservatistModifer);
-        IdeologyTypes socialist = new IdeologyTypes(TextColor.color(255, 0, 0), "S", "Socialist", getLeaders(socialistModifier), socialistModifier);
-        IdeologyTypes liberalist = new IdeologyTypes(TextColor.color(51, 253, 255), "L", "Liberalist", getLeaders(liberalModifier), liberalModifier);
-        IdeologyTypes capitalist = new IdeologyTypes(TextColor.color(0, 153, 0), "C", "Capitalist", getLeaders(capitalistModifier), capitalistModifier);
+        IdeologyTypes fascist = new IdeologyTypes(TextColor.color(0, 0, 0), "F", "Fascist", getLeaders(fascistModifier,TextColor.color(0, 0, 0)), fascistModifier);
+        IdeologyTypes neutral = new IdeologyTypes(TextColor.color(165, 157, 157), "N", "Centrist", getLeaders(centristModifier,TextColor.color(165, 157, 157)), centristModifier);
+        IdeologyTypes anarchist = new IdeologyTypes(TextColor.color(7, 154, 12), "A", "Anarchism", getLeaders(anarchistModifier,TextColor.color(7, 154, 12)), anarchistModifier);
+        IdeologyTypes conservatism = new IdeologyTypes(TextColor.color(204, 0, 0), "C", "Conservative", getLeaders(conservatistModifer,TextColor.color(204, 0, 0)), conservatistModifer);
+        IdeologyTypes socialist = new IdeologyTypes(TextColor.color(255, 0, 0), "S", "Socialist", getLeaders(socialistModifier,TextColor.color(255, 0, 0)), socialistModifier);
+        IdeologyTypes liberalist = new IdeologyTypes(TextColor.color(51, 253, 255), "L", "Liberalist", getLeaders(liberalModifier,TextColor.color(51, 253, 255)), liberalModifier);
+        IdeologyTypes capitalist = new IdeologyTypes(TextColor.color(0, 153, 0), "C", "Capitalist", getLeaders(capitalistModifier,TextColor.color(0, 153, 0)), capitalistModifier);
 
         Ideologies ideologies = ContinentalManagers.defaultsStorer.ideologies;
 
@@ -305,22 +293,23 @@ public class Main {
         electionTypes.add(republic);
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
+        CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
         c.put(production, new Currencies(production, 10f));
 
         Modifier superPower = new Modifier.create(compBuild("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .addStabilityBaseBoost(10f)
-                .addCurrencyBoost(new CurrencyBoost(production, 0.3f))
-                .setDescription(Component.text()
-                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-                        .build())
+//                .addStabilityBaseBoost(10f)
+//                .addCurrencyBoost(new CurrencyBoost(production, 0.3f))
+//                .setDescription(Component.text()
+//                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
+//                        .build())
                 .build();
 
         Modifier major = new Modifier.create(compBuild("Major", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .addStabilityBaseBoost(5f)
-                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
-                .setDescription(Component.text()
-                        .append(Component.text("This nation is a major power its below super power but above minor.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-                        .build())
+//                .addStabilityBaseBoost(5f)
+//                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
+//                .setDescription(Component.text()
+//                        .append(Component.text("This nation is a major power its below super power but above minor.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
+//                        .build())
                 .build();
 
         Modifier minor = new Modifier.create(compBuild("Minor", NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -475,17 +464,12 @@ public class Main {
                                                         .addComponent(compBuild("something", NamedTextColor.AQUA))
                                                         .build())
                                                 .setModifier(new Modifier.create(null)
-                                                        .addBoost(BoostEnum.gun_accuracy, 30f)
-                                                        .build())
+                                                        .addBoost(BoostEnum.gunAccuracy, 30f)
+                                                .build())
                                         .build())
-                                        .addResearchOption(new ResearchOption.Create("ww2_guns2", itemBuilder(gunMaterial,compBuild("Streamline production", NamedTextColor.GOLD)), 60f)
-                                                .setDescription(new ComponentListBuilder()
-                                                        .addComponent(compBuild("Decreases the cost of guns by 10%", NamedTextColor.GRAY))
-                                                        .build())
-                                                .setModifier(new Modifier.create(null)
-                                                        .addBoost(BoostEnum.gun_cost, -0.1f)
-                                                        .build())
+                                        .addResearchOption(new ResearchOption.Create(votingName, itemBuilder(gunMaterial), 0)
                                         .build())
+                                .build())
                         .build())
                 .build(), VotingWinner.ww2_clicks);
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
@@ -500,10 +484,10 @@ public class Main {
         ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.demand, new DemandInventory());
     }
 
-    private static List<Leader> getLeaders(Modifier modifier) {
+    private static List<Leader> getLeaders(Modifier modifier, TextColor color) {
         List<Leader> leaders = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            leaders.add(new Leader.create(compBuild(getName(), modifier.getTextColor())).addModifier(modifier).build());
+            leaders.add(new Leader.create(compBuild(getName(), color)).addModifier(modifier).build());
         }
         return leaders;
     }

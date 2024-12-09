@@ -8,6 +8,7 @@ import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -20,7 +21,7 @@ import static org.drachens.util.ServerUtil.blockVecToPos;
 
 
 public class ClickWarSystem implements War {
-    private final CurrencyTypes hits = ContinentalManagers.defaultsStorer.currencies.getCurrencyType("production");
+    private final CurrencyTypes hits = CurrencyEnum.production.getCurrencyType();
     private final Payment payment = new Payment(hits, 1);
     int[][] directions = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},

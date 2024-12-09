@@ -10,7 +10,7 @@ public class TechCMD extends Command {
         super("tech");
 
         setDefaultExecutor((sender,context)->{
-            ContinentalManagers.guiManager.openGUI(new ResearchGUI(0),(CPlayer) sender);
+            ContinentalManagers.guiManager.openGUI(new ResearchGUI(0,0),(CPlayer) sender);
         });
     }
 }

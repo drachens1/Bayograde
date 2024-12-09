@@ -7,15 +7,13 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
-import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.animation.Animation;
+import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
-import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -26,7 +24,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Random;
 
-import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Factory extends BuildTypes {
@@ -42,7 +39,6 @@ public class Factory extends BuildTypes {
             .append(Component.text("Max capacity has been reached", NamedTextColor.RED))
             .build();
     private final HashMap<Material, Integer> materialLvls = new HashMap<>();
-    private final CurrencyTypes production = defaultsStorer.currencies.getCurrencyType("production");
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     int[] constructionFrames = {2, 3, 4, 5};
     private final Animation constructionAnimation = new Animation(1000, Material.CYAN_DYE, constructionFrames);
@@ -51,7 +47,6 @@ public class Factory extends BuildTypes {
 
     public Factory() {
         super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory);
-        DefaultsStorer defaultsStorer = ContinentalManagers.defaultsStorer;
         produces = new Payments(new Payment(CurrencyEnum.production, 2f));
         System.out.println(produces.getPayments().getFirst().getAmount() + " Factory");
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
@@ -95,8 +90,8 @@ public class Factory extends BuildTypes {
             return false;
         }
         int maxLvl = materialLvls.get(province.getMaterial());
-        maxLvl = Math.round(maxLvl * country.getMaxBuildingSlotBoost());
-        System.out.println(maxLvl + " = " + materialLvls.get(province.getMaterial()) + " * " + country.getMaxBuildingSlotBoost());
+        maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
+        System.out.println(maxLvl + " = " + materialLvls.get(province.getMaterial()) + " * " + country.getBoost(BoostEnum.buildingSlotBoost));
         if (!(building.getCurrentLvl() + add <= maxLvl)) {
             p.sendMessage(maxCapacityReached);
             return false;
@@ -139,7 +134,7 @@ public class Factory extends BuildTypes {
     public Payments generate(Building building) {
         Country country = building.getCountry();
         Payments payments1 = new Payments(produces);
-        payments1.multiply(country.getEconomyBoost(production) + building.getCurrentLvl());
+        payments1.multiply(country.getBoost(BoostEnum.production) + building.getCurrentLvl());
         createFloatingText(building, payments1.getMessages());
         return payments1;
     }

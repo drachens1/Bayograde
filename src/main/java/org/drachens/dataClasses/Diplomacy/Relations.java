@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Diplomacy;
 
+import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class Relations {
         this.country = country;
     }
     public void increase(Country country, float amount){
-        amount*=country.getRelationsBoost();
+        amount*=country.getBoost(BoostEnum.relations);
         if (!relationsHashMap.containsKey(country)){
             relationsHashMap.put(country,amount);
             return;

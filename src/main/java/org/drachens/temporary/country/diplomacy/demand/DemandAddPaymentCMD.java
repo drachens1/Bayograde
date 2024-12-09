@@ -10,7 +10,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.Currencies;
+import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -20,7 +20,6 @@ import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class DemandAddPaymentCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
-    private final Currencies currencies = ContinentalManagers.defaultsStorer.currencies;
 
     public DemandAddPaymentCMD() {
         super("payment");
@@ -34,8 +33,9 @@ public class DemandAddPaymentCMD extends Command {
 
         var payments = ArgumentType.String("currency")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (hasDemand(sender))
-                        currencies.getCurrencyNames().forEach(s -> suggestion.addEntry(new SuggestionEntry(s)));
+                    if (hasDemand(sender)){
+                        suggestion.addEntry(new SuggestionEntry(CurrencyEnum.production.name()));
+                    }
                 });
 
         var amount = ArgumentType.Float("Amount");
@@ -59,7 +59,7 @@ public class DemandAddPaymentCMD extends Command {
             if (!(choice.equalsIgnoreCase("offer") || choice.equalsIgnoreCase("demand"))) return;
             CPlayer p = (CPlayer) sender;
             WW2Demands demand = (WW2Demands) demandManager.getDemand(p);
-            CurrencyTypes currencyTypes = currencies.getCurrencyType(context.get(payments));
+            CurrencyTypes currencyTypes = CurrencyEnum.valueOf(context.get(payments)).getCurrencyType();
             if (currencyTypes == null) {
                 p.sendMessage(currencyDoesntExist);
                 return;

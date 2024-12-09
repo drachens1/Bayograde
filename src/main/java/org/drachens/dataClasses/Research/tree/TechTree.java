@@ -24,6 +24,10 @@ public class TechTree {
         for (ResearchCategory researchCategory : researchCategories){
             int[] last = new int[]{0,0};
             for (ResearchOption researchOption : researchCategory.getResearchOptionList()){
+                if (researchOption.getComparedToLast()==null){
+                    researchOptionMap.put(new Integer[]{i+last[0],last[1]},researchOption);
+                    continue;
+                }
                 int[] a = researchOption.getComparedToLast();
                 last= new int[]{last[0]+a[0]+i, last[1]+a[1]};
                 researchOptionMap.put(new Integer[]{i+last[0],last[1]},researchOption);
