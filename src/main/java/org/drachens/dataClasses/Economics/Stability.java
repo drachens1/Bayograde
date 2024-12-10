@@ -7,25 +7,36 @@ import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Modifier;
 
+import static org.drachens.util.OtherUtil.bound;
+
 public class Stability {
     private final Country country;
-    private float stability;
+    private float stabilityTotal;
+    private float visibleStability;
     private final Modifier stabilityModifier;
+    private float prevBase;
     public Stability(float startingStability, Country country){
-        stability = startingStability;
+        stabilityTotal = startingStability;
         this.country = country;
         stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD))
                 .build();
     }
-    public void addStability(float amount){
-        stability+=amount;
-    }
     public void newWeek(){
-        float toAdd = country.getBoost(BoostEnum.stabilityBase)*country.getBoost(BoostEnum.stabilityGain);
-        stability+=toAdd;
-        stabilityModifier.setBoost(BoostEnum.production,(stability-50f)/100);
+        float stabilityBase = country.getBoost(BoostEnum.stabilityBase);
+        if (prevBase!=stabilityBase){
+            stabilityTotal+=stabilityBase;
+            stabilityBase-=prevBase;
+        }
+        prevBase=stabilityBase;
+        float stabilityGain = country.getBoost(BoostEnum.stabilityGain);
+        stabilityTotal = stabilityTotal + stabilityGain ;
+        visibleStability=bound(100f,0f,stabilityTotal);
+        stabilityModifier.setBoost(BoostEnum.production,(visibleStability-50f)/100);
+        if (!country.getPlayer().isEmpty()){
+            System.out.println(stabilityTotal+" stability : "+stabilityBase+" : "+stabilityGain);
+        }
     }
     public float getStability(){
-        return stability;
+        return visibleStability;
     }
 }

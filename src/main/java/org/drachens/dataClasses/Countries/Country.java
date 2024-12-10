@@ -234,9 +234,22 @@ public abstract class Country implements Cloneable {
         this.capital = capital;
     }
 
-    Component countryJoin = getCountryMessages("countryJoin");
-    Component getCountryJoin2 = getCountryMessages("broadcastedCountryJoin");
-    Component getCountryLeave = getCountryMessages("countryLeave");
+    Component countryJoin = Component.text()
+            .append(Component.text("You have joined ", NamedTextColor.BLUE))
+            .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .build();
+
+    Component getCountryJoin2  = Component.text()
+            .append(Component.text("You have left ", NamedTextColor.BLUE))
+            .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .build();
+
+    Component getCountryLeave = Component.text()
+            .append(Component.text("%player%", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" has joined ", NamedTextColor.BLUE))
+            .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .build();
+
     public void addPlayer(CPlayer p) {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         capitulationBar.addPlayer(p);
@@ -437,6 +450,9 @@ public abstract class Country implements Cloneable {
             if (modifier.getName()==null)continue;
             if (!modifier.shouldDisplay())continue;
             modifierComps.add(modifier.getName());
+            if (modifiers.getLast()!=modifier){
+                modifierComps.add(Component.text(" ,"));
+            }
         }
 
         Component leaderComp = Component.text()
@@ -539,10 +555,6 @@ public abstract class Country implements Cloneable {
 
     public boolean isMajorCity(Province province) {
         return majorCityBlocks.containsKey(province);
-    }
-
-    public boolean canJoinAFaction() {
-        return getEconomyFactionType() == null || getMilitaryFactionType() == null;
     }
 
     public boolean canJoinFaction(Factions factions) {
@@ -768,5 +780,11 @@ public abstract class Country implements Cloneable {
         return loanRequests;
     }
 
-    public abstract void newWeek(NewDay newDay);
+    public void nextWeek(NewDay newDay){
+        getVault().calculateIncrease();
+        getStability().newWeek();
+        newWeek(newDay);
+    }
+
+    protected abstract void newWeek(NewDay newDay);
 }

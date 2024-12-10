@@ -175,7 +175,6 @@ public class Main {
         advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,Component.text("WW2 inspired",NamedTextColor.GOLD),Component.text("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
                         .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, Component.text("Built more than 10 factories", NamedTextColor.GOLD), Component.text("", NamedTextColor.BLUE), null, 10f,NewDay.class))
                         .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, Component.text("Built more than 30 factories", NamedTextColor.GOLD), Component.text("", NamedTextColor.BLUE), "facs_built1", 30f,NewDay.class))
-
                 .build());
     }
 
@@ -296,19 +295,19 @@ public class Main {
         c.put(production, new Currencies(production, 10f));
 
         Modifier superPower = new Modifier.create(Component.text("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
-//                .addStabilityBaseBoost(10f)
-//                .addCurrencyBoost(new CurrencyBoost(production, 0.3f))
-//                .setDescription(Component.text()
-//                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-//                        .build())
+                .addBoost(BoostEnum.stabilityBase,10f)
+                .addBoost(BoostEnum.production,0.3f)
+                .setDescription(Component.text()
+                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
+                        .build())
                 .build();
 
         Modifier major = new Modifier.create(Component.text("Major", NamedTextColor.GOLD, TextDecoration.BOLD))
-//                .addStabilityBaseBoost(5f)
-//                .addCurrencyBoost(new CurrencyBoost(production, 0.1f))
-//                .setDescription(Component.text()
-//                        .append(Component.text("This nation is a major power its below super power but above minor.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-//                        .build())
+                .addBoost(BoostEnum.stabilityBase,5f)
+                .addBoost(BoostEnum.production,0.1f)
+                .setDescription(Component.text()
+                        .append(Component.text("This nation is a major power its below super power but above minor.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
+                        .build())
                 .build();
 
         Modifier minor = new Modifier.create(Component.text("Minor", NamedTextColor.GOLD, TextDecoration.BOLD))

@@ -4,6 +4,8 @@ import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.Rank;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
@@ -81,7 +83,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.drachens.util.KyoriUtil.getCountryMessages;
 import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
@@ -269,10 +270,21 @@ public class ServerUtil {
 
         WhitelistManager whitelistManager = new WhitelistManager();
 
+        Component oob = Component.text()
+                .append(getPrefixes("system"))
+                .append(Component.text("You have went out of bounds! ", NamedTextColor.RED))
+                .append(Component.text()
+                        .append(Component.text("Click here", NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .clickEvent(ClickEvent.runCommand("/tp 0 0"))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click to teleport to spawn", NamedTextColor.GOLD)))
+                )
+                .append(Component.text(" To teleport to spawn", NamedTextColor.RED))
+                .build();
+
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
             if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(p.getInstance()).votingManager().getVoteBar().isShown() && ContinentalManagers.world(p.getInstance()).dataStorer().votingOption!=null) {
-                p.sendMessage(Component.text().append(getPrefixes("system")).append(getCountryMessages("outOfBounds")).build());
+                p.sendMessage(oob);
                 e.setCancelled(true);
             }
         });
@@ -284,11 +296,7 @@ public class ServerUtil {
         ContinentalSchedulerManager schedulerManager = ContinentalManagers.schedulerManager;
         schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
             if (!(e instanceof NewDay newDay)) return;
-            ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> {
-                country.getVault().calculateIncrease();
-                country.getStability().newWeek();
-                country.newWeek(newDay);
-            });
+            ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(newDay));
         }).setDelay(2).repeat().schedule());
 
         schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e->{

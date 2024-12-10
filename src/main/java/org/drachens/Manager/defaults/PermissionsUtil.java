@@ -3,12 +3,11 @@ package org.drachens.Manager.defaults;
 import net.minestom.server.entity.Player;
 import net.minestom.server.permission.Permission;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.drachens.util.YamlUtil.addToList;
 
 public class PermissionsUtil {
     private final List<Permission> operator = new ArrayList<>();
@@ -43,5 +42,21 @@ public class PermissionsUtil {
         ConfigurationNode p = permNode.node("permissions").node(name);
         permss.forEach(perm -> addToList(p, perm.getPermissionName()));
         ContinentalManagers.configFileManager.specificSave("permissions");
+    }
+    private void addToList(ConfigurationNode configurationNode, String s) {
+        try {
+            List<String> list = configurationNode.getList(String.class);
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+
+            if (!list.contains(s)) {
+                list.add(s);
+            }
+
+            configurationNode.setList(String.class, list);
+        } catch (SerializationException e) {
+            System.err.println("Error adding " + s + " " + e.getMessage());
+        }
     }
 }

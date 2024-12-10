@@ -43,21 +43,38 @@ public class Modifier implements Cloneable {
         for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()){
             float value = e.getValue();
             Component symbol = e.getKey().getSymbol();
-            if (value > 0) {
-                boostComp.add(Component.text()
-                        .append(Component.text("+" + Math.round(value * 100), NamedTextColor.GREEN))
-                        .append(Component.text("%", NamedTextColor.GREEN))
-                        .append(symbol)
-                        .appendNewline()
-                        .build());
-            } else {
-                boostComp.add(Component.text()
-                        .append(Component.text(Math.round(value * 100), NamedTextColor.RED))
-                        .append(Component.text("%", NamedTextColor.RED))
-                        .append(symbol)
-                        .appendNewline()
-                        .build());
+            if (e.getKey().isPercentage()){
+                if (value > 0) {
+                    boostComp.add(Component.text()
+                            .append(Component.text("+" + Math.round(value * 100), NamedTextColor.GREEN))
+                            .append(Component.text("%", NamedTextColor.GREEN))
+                            .append(symbol)
+                            .appendNewline()
+                            .build());
+                } else {
+                    boostComp.add(Component.text()
+                            .append(Component.text(Math.round(value * 100), NamedTextColor.RED))
+                            .append(Component.text("%", NamedTextColor.RED))
+                            .append(symbol)
+                            .appendNewline()
+                            .build());
+                }
+            }else {
+                if (value > 0) {
+                    boostComp.add(Component.text()
+                            .append(Component.text("+" + value, NamedTextColor.GREEN))
+                            .append(symbol)
+                            .appendNewline()
+                            .build());
+                } else {
+                    boostComp.add(Component.text()
+                            .append(Component.text(value, NamedTextColor.RED))
+                            .append(symbol)
+                            .appendNewline()
+                            .build());
+                }
             }
+
         }
 
 
