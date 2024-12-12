@@ -1,8 +1,11 @@
 package org.drachens.cmd;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.EventDispatcher;
+import org.drachens.interfaces.AdvancementEvent;
 
 public class SpawnCMD extends Command {
     public SpawnCMD() {
@@ -12,6 +15,7 @@ public class SpawnCMD extends Command {
                 return;
             }
             p.teleport(new Pos(0, 1, 0));
+            EventDispatcher.call(new AdvancementEvent(p.getInstance(),(CPlayer) p,"factoryBuilt"));
         });
     }
 }

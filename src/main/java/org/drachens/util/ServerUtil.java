@@ -69,7 +69,9 @@ import org.drachens.events.NewDay;
 import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
+import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.fileManagement.databases.Table;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
@@ -212,7 +214,10 @@ public class ServerUtil {
             p.getInstance().enableAutoChunkLoad(false);
             r.addPlayer(p);
             p.refreshCommands();
-            ContinentalManagers.advancementManager.addPlayer((CPlayer) p);
+            CPlayer player = (CPlayer) p;
+            ContinentalManagers.advancementManager.addPlayer(player);
+            Table table = ContinentalManagers.database.getTable("player_info");
+            table.addEntry(new PlayerInfoEntry(player,table));
         });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {

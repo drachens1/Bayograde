@@ -1,8 +1,6 @@
 package org.drachens.temporary.demand;
 
 import net.minestom.server.entity.Player;
-import org.drachens.Manager.DemandManager;
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.interfaces.items.HotbarInventory;
 import org.drachens.interfaces.items.HotbarItemButton;
 

@@ -50,7 +50,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.*;
+import static org.drachens.util.KyoriUtil.getPrefixes;
+import static org.drachens.util.KyoriUtil.replaceString;
 import static org.drachens.util.Messages.broadcast;
 
 public abstract class Country implements Cloneable {

@@ -19,38 +19,11 @@ dependencies {
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("de.articdive:jnoise-pipeline:4.1.0")
-    implementation("org.joml:joml:1.10.5")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
-tasks {
-    jar {
-        manifest {
-            attributes["Main-Class"] = "org.drachens.Main"
-        }
-    }
-
-    build {
-        dependsOn(shadowJar)
-    }
-    shadowJar {
-        mergeServiceFiles()
-        archiveClassifier.set("")
-    }
-}
-
-publishing { //to run  ./gradlew publishToMavenLocal
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-        }
-    }
-    repositories {
-        mavenLocal()
     }
 }

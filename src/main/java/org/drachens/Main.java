@@ -35,7 +35,10 @@ import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.tree.ResearchCategory;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
-import org.drachens.events.NewDay;
+import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.fileManagement.databases.DataTypeEum;
+import org.drachens.fileManagement.databases.Database;
+import org.drachens.fileManagement.databases.Table;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.items.HotbarItemButton;
@@ -168,13 +171,30 @@ public class Main {
         ));
 
         setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
+
+        ServerPropertiesFile spf = ContinentalManagers.configFileManager.getServerPropertiesFile();
+
+        ContinentalManagers.database = new Database("server",spf.getDatabaseHost(),spf.getPort(),spf.getDatabaseUser(),spf.getDatabasePassword());
+        ContinentalManagers.database.createTable(new Table.Create("player_info")
+                .addColumn("uuid", DataTypeEum.STRING,true,true)
+                .addColumn("name", DataTypeEum.STRING)
+                .addColumn("last_online", DataTypeEum.STRING)
+                .addColumn("first_joined", DataTypeEum.STRING)
+                .addColumn("playtime", DataTypeEum.LONG)
+                .addColumn("gold", DataTypeEum.INTEGER)
+                .addColumn("permissions", DataTypeEum.STRING)
+                .addColumn("cosmetics", DataTypeEum.STRING)
+                .addColumn("achievements", DataTypeEum.STRING)
+                .build());
     }
 
     private static void createAdvancements(){
         AdvancementManager advancementManager = ContinentalManagers.advancementManager;
         advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,Component.text("WW2 inspired",NamedTextColor.GOLD),Component.text("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
-                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, Component.text("Built more than 10 factories", NamedTextColor.GOLD), Component.text("", NamedTextColor.BLUE), null, 10f,NewDay.class))
-                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, Component.text("Built more than 30 factories", NamedTextColor.GOLD), Component.text("", NamedTextColor.BLUE), "facs_built1", 30f,NewDay.class))
+                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, Component.text("10 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 10f, "factoryBuilt"))
+                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, Component.text("30 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built1", 30f,"factoryBuilt"))
+                        .addAdvancement(new Advancement("facs_built3", Material.OAK_BOAT, FrameType.GOAL, new int[]{3, 0}, Component.text("50 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built2",50f,"factoryBuilt"))
+
                 .build());
     }
 
@@ -470,6 +490,7 @@ public class Main {
                                 .build())
                         .build())
                 .build(), VotingWinner.ww2_clicks);
+
         ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())

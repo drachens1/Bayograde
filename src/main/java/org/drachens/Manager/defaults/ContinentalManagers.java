@@ -12,6 +12,7 @@ import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.fileManagement.ConfigFileManager;
+import org.drachens.fileManagement.databases.Database;
 import org.drachens.store.CosmeticsManager;
 
 import static org.drachens.util.ServerUtil.getWorldClasses;
@@ -28,6 +29,7 @@ public class ContinentalManagers {
     public static final ContinentalSchedulerManager schedulerManager = new ContinentalSchedulerManager();
     public static final ScoreboardManager scoreboardManager = new ScoreboardManager();
     public static final AdvancementManager advancementManager = new AdvancementManager();
+    public static Database database;
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);
