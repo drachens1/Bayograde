@@ -5,6 +5,7 @@ import net.minestom.server.instance.Instance;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
+import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.defaultsStorer.DefaultsStorer;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
@@ -30,6 +31,7 @@ public class ContinentalManagers {
     public static final ScoreboardManager scoreboardManager = new ScoreboardManager();
     public static final AdvancementManager advancementManager = new AdvancementManager();
     public static Database database;
+    public static final WorldManager worldManager = new WorldManager();
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

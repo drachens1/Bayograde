@@ -43,7 +43,7 @@ import org.drachens.events.Factions.FactionJoinEvent;
 import org.drachens.events.NewDay;
 import org.drachens.interfaces.MapGen;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
-import org.drachens.util.AStarPathfinder;
+import org.drachens.util.AStarPathfinderXZ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public abstract class Country implements Cloneable {
     private final List<Modifier> modifiers = new ArrayList<>();
     private final List<Country> puppets = new ArrayList<>();
     private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
-    private final AStarPathfinder aStarPathfinder;
+    private final AStarPathfinderXZ aStarPathfinder;
     private final Instance instance;
     private final List<Clientside> clientsides = new ArrayList<>();
     private final List<Player> playerInvites = new ArrayList<>();
@@ -116,7 +116,7 @@ public abstract class Country implements Cloneable {
                 Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
         city.addAll(Arrays.stream(tempCities).toList());
         this.instance = instance;
-        aStarPathfinder = new AStarPathfinder(ContinentalManagers.world(instance).provinceManager());
+        aStarPathfinder = new AStarPathfinderXZ(ContinentalManagers.world(instance).provinceManager());
         this.mapGen = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
     }
 
@@ -612,7 +612,7 @@ public abstract class Country implements Cloneable {
         return militaryFactionType != null && militaryFactionType.getLeader() == this;
     }
 
-    public AStarPathfinder getaStarPathfinder() {
+    public AStarPathfinderXZ getaStarPathfinder() {
         return aStarPathfinder;
     }
 

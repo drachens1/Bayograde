@@ -21,15 +21,16 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
-import net.minestom.server.instance.*;
-import net.minestom.server.instance.block.Block;
+import net.minestom.server.instance.Chunk;
+import net.minestom.server.instance.Instance;
+import net.minestom.server.instance.Weather;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
 import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
+import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.MessageManager;
-import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
@@ -69,20 +70,15 @@ import org.drachens.events.NewDay;
 import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
-import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
-import org.drachens.fileManagement.databases.Table;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
-import org.drachens.temporary.scoreboards.DefaultScoreboard;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
+import org.drachens.temporary.worlds.ContinentalWorld;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;
@@ -90,7 +86,7 @@ import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
 
 public class ServerUtil {
-    private static final List<Chunk> allowedChunks = new ArrayList<>();
+    private static final HashSet<Chunk> allowedChunks = new HashSet<>();
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
     private static final HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
@@ -134,12 +130,11 @@ public class ServerUtil {
         setup();
         ContinentalManagers.configFileManager.startup();
 
-        //Create the instance(world)
-        InstanceManager instMan = MinecraftServer.getInstanceManager();
-        InstanceContainer instCon = instMan.createInstanceContainer();
+        WorldManager worldManager = ContinentalManagers.worldManager;
+        ContinentalWorld continentalWorld = new ContinentalWorld();
+        worldManager.registerWorld(continentalWorld);
+        worldManager.setDefaultWorld(continentalWorld);
 
-        //Generate the world
-        instCon.setGenerator(unit -> unit.modifier().fillHeight(-1, 0, Block.LAPIS_BLOCK));
 
         List<VotingOption> votingOptions = new ArrayList<>();
         for (Map.Entry<VotingWinner, VotingOption> entry : ContinentalManagers.defaultsStorer.voting.getVotingOptionHashMap().entrySet()) {
@@ -161,8 +156,6 @@ public class ServerUtil {
             );
         }
         new MessageManager();
-        //lighting
-        instCon.setChunkSupplier(LightingChunk::new);
 
         GlobalEventHandler globEHandler = getEventHandler();
 
@@ -173,7 +166,7 @@ public class ServerUtil {
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
             //Gets the player
             final Player p = e.getPlayer();
-            e.setSpawningInstance(instCon);
+            e.setSpawningInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
             p.setRespawnPoint(new Pos(0, 1, 0));
         });
 
@@ -191,34 +184,6 @@ public class ServerUtil {
             playerRanks.put(p, new ArrayList<>());
         });
 
-        Function<Player, Component> displayNameSupplier = Player::getName;
-        Rank r = new Rank(displayNameSupplier, Component.text("cool", NamedTextColor.BLUE), Component.text("cool2", NamedTextColor.BLUE), NamedTextColor.RED, "cool");
-
-        globEHandler.addListener(PlayerSpawnEvent.class, e -> {
-            Player p = e.getPlayer();
-            p.setAllowFlying(true);
-            scoreboardManager.openScoreboard(new DefaultScoreboard(),p);
-            tabCreation(p);
-            ContinentalManagers.permissions.playerOp(p);
-            ContinentalManagers.world(p.getInstance()).votingManager().getVoteBar().addPlayer(p);
-            ContinentalManagers.inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
-            if (ContinentalManagers.yearManager.getYearBar(p.getInstance()) != null) {
-                ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
-            } else {
-                ContinentalManagers.yearManager.addBar(p.getInstance());
-                ContinentalManagers.yearManager.getYearBar(p.getInstance()).addPlayer(p);
-            }
-            ContinentalManagers.configFileManager.createPlayersData(p);
-            worldClassesHashMap.get(p.getInstance()).clientEntsToLoad().loadPlayer((CPlayer) p);
-
-            p.getInstance().enableAutoChunkLoad(false);
-            r.addPlayer(p);
-            p.refreshCommands();
-            CPlayer player = (CPlayer) p;
-            ContinentalManagers.advancementManager.addPlayer(player);
-            Table table = ContinentalManagers.database.getTable("player_info");
-            table.addEntry(new PlayerInfoEntry(player,table));
-        });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
             final CPlayer p = (CPlayer) e.getPlayer();
@@ -288,7 +253,8 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (!allowedChunks.contains(p.getChunk()) && !worldClassesHashMap.get(p.getInstance()).votingManager().getVoteBar().isShown() && ContinentalManagers.world(p.getInstance()).dataStorer().votingOption!=null) {
+            WorldClasses worldClasses = worldClassesHashMap.get(e.getInstance());
+            if (worldClasses!=null && !allowedChunks.contains(p.getChunk()) && !worldClasses.votingManager().getVoteBar().isShown() && worldClasses.dataStorer().votingOption!=null) {
                 p.sendMessage(oob);
                 e.setCancelled(true);
             }
@@ -317,20 +283,6 @@ public class ServerUtil {
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
         for (VotingOption votingOption : votingOptions)
             votingOptionsCMD.add(new VotingOptionCMD(votingOption));
-
-
-        globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
-            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
-                ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
-        });
-        globEHandler.addListener(PlayerUseItemEvent.class, e -> {
-            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
-                ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
-        });
-        globEHandler.addListener(PlayerStartDiggingEvent.class, e -> {
-            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
-                ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
-        });
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
 
@@ -365,6 +317,7 @@ public class ServerUtil {
         commandManager.register(new DemandCMD());
         commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
+        commandManager.register(new MiniGameCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -395,7 +348,7 @@ public class ServerUtil {
         allowedChunks.add(chunk);
     }
 
-    public static List<Chunk> getAllowedChunks() {
+    public static HashSet<Chunk> getAllowedChunks() {
         return allowedChunks;
     }
 
@@ -403,11 +356,6 @@ public class ServerUtil {
         startSrv();
     }
 
-    private static void tabCreation(Player p) {
-        final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
-        final Component footer = Component.text("----------------");
-        p.sendPlayerListHeaderAndFooter(header, footer);
-    }
 
     public static WorldClasses getWorldClasses(Instance instance) {
         return worldClassesHashMap.get(instance);

@@ -174,7 +174,7 @@ public class Main {
 
         ServerPropertiesFile spf = ContinentalManagers.configFileManager.getServerPropertiesFile();
 
-        ContinentalManagers.database = new Database("server",spf.getDatabaseHost(),spf.getPort(),spf.getDatabaseUser(),spf.getDatabasePassword());
+        ContinentalManagers.database = new Database("server",spf.getDatabaseHost(),spf.getDatabasePort(),spf.getDatabaseUser(),spf.getDatabasePassword());
         ContinentalManagers.database.createTable(new Table.Create("player_info")
                 .addColumn("uuid", DataTypeEum.STRING,true,true)
                 .addColumn("name", DataTypeEum.STRING)

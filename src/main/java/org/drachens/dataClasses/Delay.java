@@ -4,12 +4,11 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.timer.Scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 public class Delay {
-    private final List<Player> cd = new ArrayList<>();
+    private final HashSet<Player> cd = new HashSet<>();
     private final Long length;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
 
