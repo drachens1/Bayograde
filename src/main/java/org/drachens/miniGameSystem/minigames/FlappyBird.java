@@ -13,10 +13,12 @@ import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;
+import org.drachens.miniGameSystem.MiniGameRunnable;
 import org.drachens.miniGameSystem.Monitor;
 import org.drachens.miniGameSystem.Sprite;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -38,7 +40,7 @@ public class FlappyBird extends MiniGame
     private static final String SID_BIRD = "bird";
     private static final String SID_PIPE = "flappyPipe";
 
-    private final Set<Sprite> pipes = new HashSet<>();
+    private final Set<PipeSprite> pipes = new HashSet<>();
 
     private final CPlayer player;
 
@@ -80,23 +82,12 @@ public class FlappyBird extends MiniGame
     private void pipePair() {
         int pipeHeight = ThreadLocalRandom.current().nextInt(10);
 
-        pipeSprite(true, pipeHeight, new Pos(realX + 10, yMax, 0), getMonitor());
-        pipeSprite(false, pipeHeight, new Pos(realX + 10, yMax / 2d - pipeHeight, 0), getMonitor());
+        pipeSprite(true, pipeHeight, new Pos(realX + 10, yMax, 0));
+        pipeSprite(false, pipeHeight, new Pos(realX + 10, yMax / 2d - pipeHeight, 0));
     }
 
-    private Sprite pipeSprite(boolean down, int height, Pos pos, Monitor monitor) {
-        Sprite sprite = new Sprite.Builder()
-                .setLayout(
-                        down
-                                ? (" ###\n".repeat(height) + "#####")
-                                : ("#####\n" + " ###\n".repeat(height))
-                )
-                .setIngredient('#', Material.GREEN_CONCRETE)
-                .setIdentifier(SID_PIPE)
-                .build(pos, monitor);
-        pipes.add(sprite);
-
-        return sprite;
+    private void pipeSprite(boolean down, int height, Pos pos) {
+        pipes.add(new PipeSprite(height, down, pos));
     }
 
     private void loseCallback() {
@@ -105,6 +96,19 @@ public class FlappyBird extends MiniGame
 
         player.sendMessage(Component.text("You lose!"));
         player.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
+    }
+
+    class PipeSprite extends Sprite {
+        public double realX = 0;
+
+        public PipeSprite(int height, boolean down, Pos pos) {
+            super(pos, FlappyBird.this.getMonitor(), SID_PIPE, null);
+
+            Sprite.Builder.loadLayout(0,
+                    down
+                    ? (" ###\n".repeat(height) + "#####")
+                    : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
+        }
     }
 
     static class FlappyWorld extends World {
@@ -131,7 +135,8 @@ public class FlappyBird extends MiniGame
                         pipeSprite.delete();
                     }
 
-                    pipeSprite.setPos(pos.add(1, 0, 0));
+                    pipeSprite.realX += 0.1;
+                    pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
                 });
 
                 flappyBird.p -= gravity;

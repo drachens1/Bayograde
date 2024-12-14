@@ -82,6 +82,7 @@ public class Sprite {
 
 
     public void onCollision(Sprite collided) {
+        if (miniGameRunnable == null) return;
         miniGameRunnable.run(collided);
     }
 
@@ -117,12 +118,8 @@ public class Sprite {
             return this;
         }
 
-        public Sprite build(Pos pos, Monitor monitor) {
-            Preconditions.assertNotNull(s, "Layout cannot be null");
-
-            Sprite sprite = new Sprite(pos, monitor, identifier, collisionFunction);
-
-            var spl = s.split("\n");
+        public static void loadLayout(int weight, String layout, Map<Character, Material> ingredients, Sprite sprite) {
+            var spl = layout.split("\n");
 
             for (int y = 0; y < spl.length; ++y) {
                 for (int x = 0; x < spl[y].length(); ++x) {
@@ -133,6 +130,14 @@ public class Sprite {
                     sprite.addDynamicPixel(new RelativePos(-x, -y), new DynamicPixel(weight, ingredients.get(c)));
                 }
             }
+        }
+
+        public Sprite build(Pos pos, Monitor monitor) {
+            Preconditions.assertNotNull(s, "Layout cannot be null");
+
+            Sprite sprite = new Sprite(pos, monitor, identifier, collisionFunction);
+
+            loadLayout(weight, s, ingredients, sprite);
 
             return sprite;
         }
