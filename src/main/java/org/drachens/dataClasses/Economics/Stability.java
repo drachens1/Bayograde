@@ -32,9 +32,6 @@ public class Stability {
         stabilityTotal = stabilityTotal + stabilityGain ;
         visibleStability=bound(100f,0f,stabilityTotal);
         stabilityModifier.setBoost(BoostEnum.production,(visibleStability-50f)/100);
-        if (!country.getPlayer().isEmpty()){
-            System.out.println(stabilityTotal+" stability : "+stabilityBase+" : "+stabilityGain);
-        }
     }
     public float getStability(){
         return visibleStability;

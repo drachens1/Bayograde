@@ -17,15 +17,14 @@ import org.drachens.miniGameSystem.Sprite;
 
 import static java.lang.Math.floor;
 
-public class FlappyBird extends MiniGame
-        implements EventHandlerProvider {
+public class FlappyBird extends MiniGame implements EventHandlerProvider {
     private final Sprite bird;
     private static final double gravity = 0.5;
     private double realX = 0;
     private double realY = 0;
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
-        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld());
+        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(),new Pos());
         ((FlappyWorld) getWorld()).setInstance(this);
 
         realX = xMax - 3;

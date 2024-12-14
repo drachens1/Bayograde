@@ -29,7 +29,7 @@ public class TechTree {
                     continue;
                 }
                 int[] a = researchOption.getComparedToLast();
-                last= new int[]{last[0]+a[0]+i, last[1]+a[1]};
+                last= new int[]{last[0]+a[0], last[1]+a[1]};
                 researchOptionMap.put(new Integer[]{i+last[0],last[1]},researchOption);
             }
             i+=3;
