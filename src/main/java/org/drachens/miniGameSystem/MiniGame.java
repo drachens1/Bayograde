@@ -12,11 +12,11 @@ public abstract class MiniGame {
     private final Monitor monitor;
     private final World world;
 
-    public MiniGame(CPlayer p, int xMax, int yMax, World world){
+    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, World world){
         this.world=world;
         ContinentalManagers.worldManager.registerWorld(world);
         Instance instance = world.getInstance();
-        monitor = new Monitor(instance);
+        monitor = new Monitor(instance,defaultMaterial);
         for (int x = 0; x < xMax; x++){
             for (int y = 0; y < yMax; y++){
                 monitor.addPixel(new Pos(x,y,0),new Pixel(Material.BLACK_CONCRETE,new Pos(x,y,0),monitor));

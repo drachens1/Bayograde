@@ -8,12 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Monitor {
+    private Material defaultMaterial;
     private final Instance instance;
     private final Map<Pos, Pixel> pixelHashMap = new HashMap<>();
     private final AStarPathfinderMiniGame aStarPathfinder = new AStarPathfinderMiniGame();
 
-    public Monitor(Instance instance) {
+    public Monitor(Instance instance, Material defaultMaterial) {
         this.instance = instance;
+        this.defaultMaterial=defaultMaterial;
     }
 
     public void addPixel(Pos pos, Pixel pixel) {
@@ -44,7 +46,7 @@ public class Monitor {
 
     public void clear(Material newMat){
         pixelHashMap.forEach((pos, pixel) -> {
-            pixel.setDefaultMaterial(newMat);
+            pixel.setMaterial(newMat);
             pixel.clear();
         });
     }
@@ -55,6 +57,14 @@ public class Monitor {
 
     public AStarPathfinderMiniGame getAStarPathfinder() {
         return aStarPathfinder;
+    }
+
+    public void setDefaultMaterial(Material material){
+        this.defaultMaterial=material;
+    }
+
+    public Material getDefaultMaterial(){
+        return defaultMaterial;
     }
 }
 
