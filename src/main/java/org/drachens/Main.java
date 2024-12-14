@@ -44,6 +44,7 @@ import org.drachens.fileManagement.databases.Table;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.items.HotbarItemButton;
+import org.drachens.miniGameSystem.minigames.FlappyBird;
 import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
 import org.drachens.temporary.*;
@@ -534,6 +535,8 @@ public class Main {
 
     public static void initHooks() {
         MinecraftServer.getConnectionManager().setPlayerProvider(CPlayer::new);
+
+        EventHandlerProviderManager.registerProvider(FlappyBird.class);
 
         new GreetEvents().hook(
                 new GreetEvents.GreetSettings(

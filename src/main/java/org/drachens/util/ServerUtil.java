@@ -298,6 +298,7 @@ public class ServerUtil {
         commandManager.register(new MsgCMD());
         commandManager.register(new GamemodeCMD());
         commandManager.register(new FlyCMD());
+        commandManager.register(new FlappyCMD());
         commandManager.register(new FlyspeedCMD());
         commandManager.register(new CountryCMD());
         commandManager.register(new TeleportCMD());

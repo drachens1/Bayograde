@@ -10,9 +10,9 @@ public abstract class World {
     private final Instance instance;
     private final InstanceContainer instanceContainer;
 
-    public World(InstanceContainer instance){
-        this.instance=instance;
-        this.instanceContainer=instance;
+    public World(InstanceContainer instance) {
+        this.instance = instance;
+        this.instanceContainer = instance;
         instance.setChunkSupplier(LightingChunk::new);
     }
 
@@ -20,21 +20,31 @@ public abstract class World {
 
     public abstract void removePlayer(CPlayer p);
 
-    public abstract void playerMove(PlayerMoveEvent e);
+    public void playerMove(PlayerMoveEvent e) {
 
-    public abstract void playerBlockInteract(PlayerBlockInteractEvent e);
+    }
 
-    public abstract void playerUseItem(PlayerUseItemEvent e);
+    public void playerBlockInteract(PlayerBlockInteractEvent e) {
 
-    public abstract void playerStartDigging(PlayerStartDiggingEvent e);
+    }
 
-    public abstract void playerDisconnect(PlayerDisconnectEvent e);
+    public void playerUseItem(PlayerUseItemEvent e) {
 
-    public Instance getInstance(){
+    }
+
+    public void playerStartDigging(PlayerStartDiggingEvent e) {
+
+    }
+
+    public void playerDisconnect(PlayerDisconnectEvent e) {
+
+    }
+
+    public Instance getInstance() {
         return instance;
     }
 
-    public InstanceContainer getInstanceContainer(){
+    public InstanceContainer getInstanceContainer() {
         return instanceContainer;
     }
 }

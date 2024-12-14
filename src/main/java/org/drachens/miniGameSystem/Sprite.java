@@ -1,7 +1,9 @@
 package org.drachens.miniGameSystem;
 
+import dev.ng5m.util.Preconditions;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.item.Material;
 import net.minestom.server.timer.Task;
 
 import java.time.temporal.ChronoUnit;
@@ -64,5 +66,41 @@ public class Sprite {
 
     public Pos getPos() {
         return pos;
+    }
+
+    public static class Builder {
+        private String s;
+        private final HashMap<Character, Material> ingredients = new HashMap<>();
+
+        public Builder setIngredient(char c, Material m) {
+            ingredients.put(c, m);
+            return this;
+        }
+
+        public Builder setLayout(String layout) {
+            this.s = layout;
+            return this;
+        }
+
+        public Sprite build(Pos pos, Monitor monitor) {
+            Preconditions.assertNotNull(s, "Layout cannot be null");
+
+            Sprite sprite = new Sprite(pos, monitor);
+
+            var spl = s.split("\n");
+
+            for (int y = 0; y < spl.length; ++y) {
+                for (int x = 0; x < spl[y].length(); ++x) {
+                    char c = spl[y].charAt(x);
+
+                    if (!ingredients.containsKey(c)) continue;
+
+                    sprite.addDynamicPixel(new RelativePos(-x, -y), new DynamicPixel(0, ingredients.get(c)));
+                }
+            }
+
+            return sprite;
+        }
+
     }
 }

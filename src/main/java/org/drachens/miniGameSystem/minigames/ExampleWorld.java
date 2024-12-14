@@ -20,8 +20,8 @@ public class ExampleWorld extends World {
 
     }
 
-    public void setMiniGame(MiniGame miniGame){
-        this.miniGame= (Example) miniGame;
+    public void setMiniGame(MiniGame miniGame) {
+        this.miniGame = (Example) miniGame;
     }
 
     @Override
@@ -29,16 +29,17 @@ public class ExampleWorld extends World {
 
         MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             Pos last = p.getPosition();
+
             @Override
             public void run() {
                 Sprite sprite = miniGame.getSprite();
                 Pos change = p.getPosition();
-                int x = (int) (last.x()-change.x());
-                int y = (int) (last.y()-change.y());
-                Pos pos1 = new Pos(sprite.getPos().x()-x,sprite.getPos().y()-y,0);
-                last=p.getPosition();
+                int x = (int) (last.x() - change.x());
+                int y = (int) (last.y() - change.y());
+                Pos pos1 = new Pos(sprite.getPos().x() - x, sprite.getPos().y() - y, 0);
+                last = p.getPosition();
                 System.out.println(pos1);
-                sprite.move(pos1,0L);
+                sprite.move(pos1, 0L);
             }
         }).repeat(300L, ChronoUnit.MILLIS).schedule();
     }
@@ -47,6 +48,7 @@ public class ExampleWorld extends World {
     public void removePlayer(CPlayer p) {
 
     }
+
     @Override
     public void playerMove(PlayerMoveEvent e) {
 
