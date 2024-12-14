@@ -29,6 +29,7 @@ public class Sprite {
 
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
         materialHashMap.put(relativePos, dynamicPixel);
+        dynamicPixel.setSprite(this);
         double x = pos.x() + relativePos.getX();
         double y = pos.y() + relativePos.getY();
         monitor.addDynamicPixel(new Pos(x, y, 0), dynamicPixel);

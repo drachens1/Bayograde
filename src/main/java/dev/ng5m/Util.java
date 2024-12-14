@@ -56,4 +56,8 @@ public class Util {
 
         return arr;
     }
+
+    public static void noop(Object... args) {
+
+    }
 }
