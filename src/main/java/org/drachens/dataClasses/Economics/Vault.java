@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.Economics;
 
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
@@ -119,7 +118,7 @@ public abstract class Vault {
     }
 
     public void calculateIncrease() {
-        Factory factory = (Factory) ContinentalManagers.defaultsStorer.buildingTypes.getBuildType(BuildingEnum.factory);
+        Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
         List<Building> buildings = country.getBuildings(BuildingEnum.factory);
         if (buildings == null) return;
 

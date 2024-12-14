@@ -3,7 +3,6 @@ package org.drachens;
 import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.Util;
-import dev.ng5m.bansystem.BanManager;
 import dev.ng5m.events.EventHandlerProviderManager;
 import dev.ng5m.greet.GreetEvents;
 import net.kyori.adventure.text.Component;
@@ -13,50 +12,40 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
-import org.checkerframework.checker.units.qual.N;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.BuildingTypes;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
 import org.drachens.advancement.Advancement;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.advancement.AdvancementSection;
-import org.drachens.dataClasses.*;
+import org.drachens.dataClasses.BoostEnum;
+import org.drachens.dataClasses.ComponentListBuilder;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Research.ResearchCategoryEnum;
-import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.tree.ResearchCategory;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.databases.DataTypeEum;
 import org.drachens.fileManagement.databases.Database;
 import org.drachens.fileManagement.databases.Table;
-import org.drachens.interfaces.inventories.BuildItem;
-import org.drachens.interfaces.inventories.ChangeInventoryButton;
-import org.drachens.interfaces.items.HotbarItemButton;
 import org.drachens.miniGameSystem.minigames.FlappyBird;
 import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
-import org.drachens.temporary.*;
-import org.drachens.temporary.demand.DemandInventory;
-import org.drachens.temporary.inventories.ExitItem;
-import org.drachens.temporary.research.ResearchLab;
-import org.drachens.temporary.research.ResearchLibrary;
-import org.drachens.temporary.research.ResearchUniversity;
-import org.drachens.temporary.scoreboards.items.ShowDiplomacy;
-import org.drachens.temporary.scoreboards.items.ShowEconomy;
-import org.drachens.temporary.scoreboards.items.ShowGeneralInfo;
-import org.drachens.temporary.scoreboards.items.ShowIdeology;
+import org.drachens.temporary.Factory;
+import org.drachens.temporary.MapGeneratorManager;
+import org.drachens.temporary.clicks.ClickWarSystem;
+import org.drachens.temporary.troops.TroopWarSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,11 +150,6 @@ public class Main {
         createAdvancements();
 
         EventHandlerProviderManager.hook();
-        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.defaultInv, new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10),BuildingEnum.factory), new TroopMover(),new ChangeInventoryButton(0,itemBuilder(Material.BOOK),InventoryEnum.scoreboardInv),new ChangeInventoryButton(1,itemBuilder(Material.BROWN_DYE),InventoryEnum.research)}));
-
-        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.scoreboardInv, new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(),new ShowEconomy(),new ShowIdeology(),new ShowGeneralInfo(),new ExitItem()}));
-
-        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.research,new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1,itemBuilder(Material.BROWN_DYE,1), BuildingEnum.library),new BuildItem(2,itemBuilder(Material.BROWN_DYE,2),BuildingEnum.university),new BuildItem(3,itemBuilder(Material.BROWN_DYE,3),BuildingEnum.researchCenter),new BuildItem(4,itemBuilder(Material.BROWN_DYE,4),BuildingEnum.researchLab),new ExitItem()}));
 
         ContinentalManagers.cosmeticsManager.register(new StoreCategory("Something",
                 Component.text("example", NamedTextColor.AQUA),
@@ -217,12 +201,6 @@ public class Main {
     }
 
     private static void createWW2VotingOption() {
-        BuildingTypes buildingTypes = ContinentalManagers.defaultsStorer.buildingTypes;
-        buildingTypes.register(new ResearchUniversity());
-        buildingTypes.register(new ResearchLibrary());
-        buildingTypes.register(new ResearchLab());
-        buildingTypes.register(new ResearchCenter());
-
         Modifier exampleModifier = new Modifier.create(Component.text("Example", NamedTextColor.GOLD))
                 .setDescription(Component.text("description", NamedTextColor.BLUE))
                 .addBoost(BoostEnum.production,0.1f)
@@ -576,6 +554,28 @@ public class Main {
                                                 .addRequires("ww2_submachine")
                                                 .setComparedToLast(0,1)
                                                 .build())
+                                        .addResearchOption(new ResearchOption.Create("ww2_full_auto", itemBuilder(gunMaterial), 100f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(Component.text("Begin fully automatic guns development", NamedTextColor.GOLD))
+                                                        .build())
+                                                .setModifier(new Modifier.create(null)
+                                                        .addBoost(BoostEnum.gunCost,0.1f)
+                                                        .addBoost(BoostEnum.gunAccuracy,0.1f)
+                                                        .build())
+                                                .addRequires("ww2_guns3")
+                                                .setComparedToLast(-1,-1)
+                                                .build())
+                                        .addResearchOption(new ResearchOption.Create("ww2_cooling", itemBuilder(gunMaterial), 100f)
+                                                .setDescription(new ComponentListBuilder()
+                                                        .addComponent(Component.text("Better gun cooling", NamedTextColor.GOLD))
+                                                        .build())
+                                                .setModifier(new Modifier.create(null)
+                                                        .addBoost(BoostEnum.gunCost,0.1f)
+                                                        .addBoost(BoostEnum.gunAccuracy,0.05f)
+                                                        .build())
+                                                .addRequires("ww2_full_auto")
+                                                .setComparedToLast(0,1)
+                                                .build())
                                 .build())
                         .build())
                 .build(), VotingWinner.ww2_clicks);
@@ -587,9 +587,8 @@ public class Main {
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
+                .setDefaultInventory(InventoryEnum.troops_default)
                 .build(), VotingWinner.ww2_troops);
-
-        ContinentalManagers.inventoryManager.registerInventory(InventoryEnum.demand, new DemandInventory());
     }
 
     private static List<Leader> getLeaders(Modifier modifier, TextColor color) {

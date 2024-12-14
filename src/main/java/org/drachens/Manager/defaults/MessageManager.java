@@ -11,6 +11,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Delay;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
@@ -51,6 +52,9 @@ public class MessageManager {
 
         globEHandler.addListener(StartGameEvent.class, e -> {
             e.getVotingOption().getMapGenerator().generate(e.getInstance(), e.getVotingOption());
+            InventoryEnum hotbarInventory = e.getVotingOption().getDefaultInventory();
+            if (hotbarInventory!=null)
+                e.getInstance().getPlayers().forEach(p -> ContinentalManagers.inventoryManager.assignInventory(p,hotbarInventory));
             broadcast(Component.text()
                     .append(system)
                     .append(Component.text(e.getVotingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
@@ -271,20 +275,16 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(ResearchStartEvent.class,e->{
-            e.getCountry().sendMessage(Component.text()
-                            .append(country)
-                            .append(Component.text("You have started researching "))
-                            .append(Component.text(e.getResearchOption().getIdentifier()))
-                    .build());
-        });
+        globEHandler.addListener(ResearchStartEvent.class,e-> e.getCountry().sendMessage(Component.text()
+                        .append(country)
+                        .append(Component.text("You have started researching "))
+                        .append(Component.text(e.getResearchOption().getIdentifier()))
+                .build()));
 
-        globEHandler.addListener(ResearchCompletionEvent.class, e->{
-            e.getCountry().sendMessage(Component.text()
-                    .append(country)
-                    .append(Component.text("You have finished researching "))
-                    .append(Component.text(e.getResearchOption().getIdentifier()))
-                    .build());
-        });
+        globEHandler.addListener(ResearchCompletionEvent.class, e-> e.getCountry().sendMessage(Component.text()
+                .append(country)
+                .append(Component.text("You have finished researching "))
+                .append(Component.text(e.getResearchOption().getIdentifier()))
+                .build()));
     }
 }

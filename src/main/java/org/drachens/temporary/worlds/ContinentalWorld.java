@@ -30,12 +30,16 @@ public class ContinentalWorld extends World {
         final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
         ContinentalManagers.world(instance).votingManager().getVoteBar().addPlayer(p);
-        ContinentalManagers.inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
-        if (ContinentalManagers.yearManager.getYearBar(instance) != null) {
-            ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
-        } else {
-            ContinentalManagers.yearManager.addBar(instance);
-            ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
+        if (ContinentalManagers.world(instance).votingManager()!=null){
+            InventoryEnum inventoryEnum = ContinentalManagers.world(instance).dataStorer().votingOption.getDefaultInventory();
+            if (inventoryEnum!=null)
+                ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
+            if (ContinentalManagers.yearManager.getYearBar(instance) != null) {
+                ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
+            } else {
+                ContinentalManagers.yearManager.addBar(instance);
+                ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
+            }
         }
         ContinentalManagers.world(instance).clientEntsToLoad().loadPlayer(p);
 

@@ -28,6 +28,7 @@ public class Sprite {
     }
 
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
+        dynamicPixel.setSprite(this);
         materialHashMap.put(relativePos, dynamicPixel);
         double x = pos.x() + relativePos.getX();
         double y = pos.y() + relativePos.getY();
@@ -75,9 +76,12 @@ public class Sprite {
         return identifier;
     }
 
-
     public void onCollision(Sprite collided){
         miniGameRunnable.run(collided);
+    }
+
+    public void delete(){
+        materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x()+relativePos.getX(),pos.y()+relativePos.getY(),0),dynamicPixel));
     }
 
     public static class Builder {

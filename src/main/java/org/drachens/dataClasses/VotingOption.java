@@ -1,5 +1,6 @@
 package org.drachens.dataClasses;
 
+import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
@@ -23,6 +24,7 @@ public class VotingOption {
     List<IdeologyTypes> ideologyTypes;
     List<ElectionTypes> electionTypes;
     HashMap<CurrencyTypes, Currencies> defaultCurrencies;
+    InventoryEnum defaultInventory;
     TechTree tree;
 
     VotingOption(create c) {
@@ -37,6 +39,7 @@ public class VotingOption {
         if (c.tree!=null) tree=c.tree;
         countries = c.countries;
         if (c.electionTypes != null) electionTypes = c.electionTypes;
+        if (c.defaultInventory!=null) defaultInventory = c.defaultInventory;
     }
 
     public String getName() {
@@ -87,6 +90,10 @@ public class VotingOption {
         return tree;
     }
 
+    public InventoryEnum getDefaultInventory(){
+        return defaultInventory;
+    }
+
     public static class create {
         int startingYear;
         int endYear;
@@ -99,6 +106,7 @@ public class VotingOption {
         List<IdeologyTypes> ideologyTypes = new ArrayList<>();
         HashMap<CurrencyTypes, Currencies> defaultCurrencies = new HashMap<>();
         TechTree tree;
+        InventoryEnum defaultInventory;
 
         public create(int startingYear, int endYear, Long dayLength, String name) {
             this.startingYear = startingYear;
@@ -109,6 +117,11 @@ public class VotingOption {
 
         public create setWar(War war) {
             this.war = war;
+            return this;
+        }
+
+        public create setDefaultInventory(InventoryEnum hotbarInventory){
+            this.defaultInventory=hotbarInventory;
             return this;
         }
 

@@ -1,8 +1,6 @@
 package org.drachens.dataClasses.Economics;
 
 import net.minestom.server.entity.Player;
-import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.BuildingTypes;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -13,7 +11,6 @@ import java.util.List;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Building {
-    private final BuildingTypes buildingTypes = ContinentalManagers.defaultsStorer.buildingTypes;
     private final List<BuildingEnum> synonyms;
     private final BuildingEnum buildType;
     private final Province province;
@@ -41,15 +38,15 @@ public class Building {
     }
 
     public void capture(Country capturer) {
-        buildingTypes.getBuildType(buildType).capture(capturer, this);
+        buildType.getBuildTypes().capture(capturer, this);
     }
 
     public void upgrade(int amount, Country country, Player p) {
-        buildingTypes.getBuildType(buildType).upgrade(amount, this, country, p);
+        buildType.getBuildTypes().upgrade(amount, this, country, p);
     }
 
     public void bomb(float bomb) {
-        buildingTypes.getBuildType(buildType).bomb(bomb);
+        buildType.getBuildTypes().bomb(bomb);
     }
 
     public ItemDisplay getItemDisplay() {

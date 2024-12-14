@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.CountryEnums;
 import org.drachens.dataClasses.Countries.Election;
 import org.drachens.dataClasses.Countries.Ideology;
@@ -14,12 +13,13 @@ import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.events.NewDay;
 import org.drachens.temporary.clicks.ClicksVault;
+import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TroopCountry extends Country {
+public class TroopCountry extends ResearchCountry {
     private CountryEnums.Type type;
     private CountryEnums.RelationsStyle relationsStyle;
     private CountryEnums.History history;

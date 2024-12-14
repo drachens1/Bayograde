@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InventoryManager {
-    private final HashMap<InventoryEnum, HotbarInventory> inventoryHashMap = new HashMap<>();
     private final HashMap<Player, HotbarInventory> activeHotBar = new HashMap<>();
     private final List<Player> playersCooldown = new ArrayList<>();
 
@@ -46,12 +45,9 @@ public class InventoryManager {
         });
     }
 
-    public void registerInventory(InventoryEnum name, HotbarInventory inventory) {
-        inventoryHashMap.put(name, inventory);
-    }
 
     public void assignInventory(Player p, InventoryEnum inventory) {
-        changeInventory(p, inventoryHashMap.get(inventory));
+        changeInventory(p, inventory.getHotbarInventory());
     }
     private void changeInventory(Player p, HotbarInventory inventory) {
         p.getInventory().clear();

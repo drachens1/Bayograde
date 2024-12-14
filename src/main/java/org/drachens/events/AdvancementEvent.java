@@ -1,7 +1,6 @@
 package org.drachens.events;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.instance.Instance;
 import org.drachens.interfaces.Event;
 
 public class AdvancementEvent extends Event {

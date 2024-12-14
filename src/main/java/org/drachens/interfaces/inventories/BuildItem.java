@@ -17,7 +17,7 @@ public class BuildItem extends HotbarItemButton {
 
     public BuildItem(int modelData, ItemStack item, BuildingEnum buildingEnum) {
         super(modelData, item);
-        buildTypes= ContinentalManagers.defaultsStorer.buildingTypes.getBuildType(buildingEnum);
+        buildTypes= buildingEnum.getBuildTypes();
     }
 
     @Override

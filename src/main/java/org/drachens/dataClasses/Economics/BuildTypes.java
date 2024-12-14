@@ -2,7 +2,6 @@ package org.drachens.dataClasses.Economics;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
@@ -21,7 +20,6 @@ public abstract class BuildTypes {
         this.material = material;
         this.identifier = identifier;
         this.synonyms = new ArrayList<>();
-        ContinentalManagers.defaultsStorer.buildingTypes.register(this);
     }
 
     public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, List<BuildingEnum> synonyms) {
@@ -29,7 +27,6 @@ public abstract class BuildTypes {
         this.material = material;
         this.identifier = identifier;
         this.synonyms = synonyms;
-        ContinentalManagers.defaultsStorer.buildingTypes.register(this);
     }
 
     public void build(Country country, Province province, Player p) {

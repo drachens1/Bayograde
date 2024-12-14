@@ -16,7 +16,7 @@ import java.util.Map;
 
 public abstract class ResearchVault extends Vault {
     private final Currencies research = new Currencies(CurrencyEnum.research,0f);
-    private final ResearchCenter researchCenter = (ResearchCenter) ContinentalManagers.defaultsStorer.buildingTypes.getBuildType(BuildingEnum.researchCenter);
+    private final ResearchCenter researchCenter = (ResearchCenter) BuildingEnum.researchCenter.getBuildTypes();
     private ResearchCountry country;
 
     public ResearchVault(Map<CurrencyTypes, Currencies> startingCurrencies) {

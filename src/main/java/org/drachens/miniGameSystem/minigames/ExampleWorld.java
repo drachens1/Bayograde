@@ -4,7 +4,6 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.*;
-import net.minestom.server.instance.InstanceContainer;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;

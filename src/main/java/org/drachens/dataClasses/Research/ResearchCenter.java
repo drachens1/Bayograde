@@ -86,7 +86,7 @@ public class ResearchCenter extends BuildTypes {
             if (province.getBuilding()==null)continue;
             if (province.getBuilding().getSynonyms().contains(BuildingEnum.research)){
                 Building building1 = province.getBuilding();
-                ResearchBuilding researchBuilding = (ResearchBuilding) defaultsStorer.buildingTypes.getBuildType(building1.getBuildTypes());
+                ResearchBuilding researchBuilding = (ResearchBuilding) building1.getBuildTypes().getBuildTypes();
                 central.add(researchBuilding.generate(building1));
             }
         }
