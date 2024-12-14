@@ -26,7 +26,7 @@ public class FlappyBird extends MiniGame
     private final CPlayer player;
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
-        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(), new Pos(xMax / 2d, yMax / 2d, xMax / 2d));
+        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(), new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
         this.player = p;
         ((FlappyWorld) getWorld()).setInstance(this);
 
