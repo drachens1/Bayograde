@@ -3,6 +3,7 @@ package org.drachens;
 import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.Util;
+import dev.ng5m.bansystem.BanManager;
 import dev.ng5m.events.EventHandlerProviderManager;
 import dev.ng5m.greet.GreetEvents;
 import net.kyori.adventure.text.Component;
@@ -12,6 +13,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
+import org.checkerframework.checker.units.qual.N;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.BuildingTypes;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
@@ -184,17 +186,32 @@ public class Main {
                 .addColumn("gold", DataTypeEum.INTEGER)
                 .addColumn("permissions", DataTypeEum.STRING)
                 .addColumn("cosmetics", DataTypeEum.STRING)
-                .addColumn("achievements", DataTypeEum.STRING)
+                .addColumn("event_count", DataTypeEum.STRING)
                 .build());
     }
 
     private static void createAdvancements(){
         AdvancementManager advancementManager = ContinentalManagers.advancementManager;
-        advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,Component.text("WW2 inspired",NamedTextColor.GOLD),Component.text("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
-                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, new int[]{1, 0}, Component.text("10 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 10f, "factoryBuilt"))
-                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, new int[]{2, 0}, Component.text("30 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built1", 30f,"factoryBuilt"))
-                        .addAdvancement(new Advancement("facs_built3", Material.OAK_BOAT, FrameType.GOAL, new int[]{3, 0}, Component.text("50 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built2",50f,"factoryBuilt"))
-
+        advancementManager.register(new AdvancementSection.Create("magic",Material.BROWN_DYE, FrameType.TASK,Component.text("WW2 inspired",NamedTextColor.WHITE),Component.text("The advancement tree for the ww2 inspired mode",NamedTextColor.GRAY))
+                        .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, 1, 0, Component.text("10 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 10f, "factoryBuilt"))
+                        .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, 2, 0, Component.text("30 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built1", 30f,"factoryBuilt"))
+                        .addAdvancement(new Advancement("facs_built3", Material.OAK_BOAT, FrameType.GOAL, 3, 0, Component.text("50 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built2",50f,"factoryBuilt"))
+                        .addAdvancement(new Advancement("facs_built4",Material.OAK_BOAT, FrameType.GOAL,4, 0,Component.text("100 Factories built", NamedTextColor.GOLD), Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"facs_build3",100f,"factoryBuilt"))
+                        .addAdvancement(new Advancement("facs_built5",Material.OAK_BOAT,FrameType.GOAL,5, 0,Component.text("1000 Factories built", NamedTextColor.GOLD), Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"facs_build4",1000f,"factoryBuilt"))
+                //War
+                        .addAdvancement(new Advancement("conquer",Material.IRON_SWORD,FrameType.GOAL,0,2,Component.text("Conquer",NamedTextColor.GOLD),Component.text("Attack a country to complete",NamedTextColor.GRAY,TextDecoration.ITALIC),null,1f,"captureBlock"))
+                        .addAdvancement(new Advancement("speedrun",Material.IRON_SWORD,FrameType.GOAL,0,3,Component.text("Speedrun",NamedTextColor.GOLD),Component.text("Conquer the world in one year",NamedTextColor.GRAY,TextDecoration.ITALIC),"conquer",1f,"capturedWorldInOneYear"))
+                        .addAdvancement(new Advancement("nowarconquer",Material.IRON_SWORD,FrameType.GOAL,1,2,Component.text("Not a drop",NamedTextColor.GOLD),Component.text("Conquer the world without starting a war",NamedTextColor.GRAY,TextDecoration.ITALIC),"conquer",1f,"nowarconq"))
+                        .addAdvancement(new Advancement("properconquest",Material.IRON_SWORD,FrameType.GOAL,-1,2,Component.text("Victory in the face of foe", NamedTextColor.GOLD),Component.text("Conquer the world when there is 5 people online",NamedTextColor.GRAY,TextDecoration.ITALIC),"conquer",1f,"conquerwhenothers"))
+                //diplomacy
+                        .addAdvancement(new Advancement("diplomacy",Material.BOOK,FrameType.GOAL,-1,-1,Component.text("Diplomacy",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),null,1f,"diplomacy"))
+                        .addAdvancement(new Advancement("factioncreation",Material.BOOK,FrameType.GOAL,-2,-2,Component.text("Created a faction",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"diplomacy",1f,"factionCreate"))
+                        .addAdvancement(new Advancement("merger",Material.BOOK,FrameType.GOAL,-2,-3,Component.text("Merged into a country",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"diplomacy",1f,"mergeCountries"))
+                        .addAdvancement(new Advancement("coop",Material.BOOK,FrameType.GOAL,-3,-3,Component.text("Win as a co-op",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"diplomacy",1f,"coopwin"))
+                //research
+                        .addAdvancement(new Advancement("research",Material.BROWN_DYE,FrameType.GOAL,-2,0,Component.text("Research",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),null,1f,"research"))
+                        .addAdvancement(new Advancement("allofthem",Material.BROWN_DYE,FrameType.GOAL,-3,0,Component.text("ALL OF THEM?!",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"research",1f,"allofthem"))
+                        .addAdvancement(new Advancement("gunmaster",Material.BROWN_DYE,FrameType.GOAL,-3,1,Component.text("Research the whole gun tree",NamedTextColor.GOLD),Component.text("",NamedTextColor.GRAY,TextDecoration.ITALIC),"research",1f,"guntreeall"))
                 .build());
     }
 

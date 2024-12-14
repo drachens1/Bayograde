@@ -1,8 +1,6 @@
 package org.drachens.fileManagement;
 
-import net.minestom.server.entity.Player;
 import org.drachens.cmd.Dev.whitelist.Whitelist;
-import org.drachens.fileManagement.customTypes.PlayerDataFile;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -95,10 +93,6 @@ public class ConfigFileManager {
             System.out.println("Players loading error " + e.getMessage());
         }
         whitelist = new Whitelist(new ArrayList<>(), false);
-    }
-
-    public void createPlayersData(Player player) {
-        new PlayerDataFile(player);
     }
 
     private void fileExists(File f) {

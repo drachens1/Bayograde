@@ -45,15 +45,14 @@ public class WorldManager {
     }
 
     public void initialJoin(CPlayer p){
+        Table table = ContinentalManagers.database.getTable("player_info");
+        new PlayerInfoEntry(p,table);
         r.addPlayer(p);
         ContinentalManagers.permissions.playerOp(p);
-        ContinentalManagers.configFileManager.createPlayersData(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
         p.refreshCommands();
         ContinentalManagers.advancementManager.addPlayer(p);
-        Table table = ContinentalManagers.database.getTable("player_info");
-        table.addEntry(new PlayerInfoEntry(p,table));
     }
 
     public void setDefaultWorld(World world){

@@ -1,13 +1,14 @@
-package org.drachens.interfaces;
+package org.drachens.events;
 
 import dev.ng5m.CPlayer;
 import net.minestom.server.instance.Instance;
+import org.drachens.interfaces.Event;
 
-public class AdvancementEvent extends Event{
+public class AdvancementEvent extends Event {
     private final String name;
     private final CPlayer p;
-    public AdvancementEvent(Instance instance, CPlayer p, String identifier) {
-        super(instance);
+    public AdvancementEvent(CPlayer p, String identifier) {
+        super(p.getInstance());
         this.p=p;
         this.name=identifier;
     }

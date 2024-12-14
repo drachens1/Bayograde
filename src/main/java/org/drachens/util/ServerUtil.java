@@ -184,14 +184,13 @@ public class ServerUtil {
             playerRanks.put(p, new ArrayList<>());
         });
 
-
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
             final CPlayer p = (CPlayer) e.getPlayer();
+            p.addPlayTime(LocalTime.now());
+            p.getPlayerInfoEntry().applyChanges();
             Country country = p.getCountry();
             if (country != null) country.removePlayer(p, true);
             globalBroadcast(p.getUsername() + " has left the game");
-            p.getPlayerDataFile().save();
-            p.addPlayTime(LocalTime.now());
         });
 
         Function<PlayerChatEvent, Component> chatEvent = e -> {

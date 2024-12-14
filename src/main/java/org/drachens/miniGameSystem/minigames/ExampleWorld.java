@@ -5,6 +5,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.*;
 import net.minestom.server.instance.InstanceContainer;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;
 import org.drachens.miniGameSystem.Sprite;
@@ -68,6 +69,7 @@ public class ExampleWorld extends World {
 
     @Override
     public void playerDisconnect(PlayerDisconnectEvent e) {
-
+        MinecraftServer.getInstanceManager().unregisterInstance(getInstance());
+        ContinentalManagers.worldManager.unregisterWorld(this);
     }
 }

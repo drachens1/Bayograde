@@ -25,12 +25,12 @@ public class CosmeticsManager {
     }
 
     public void addCosmetic(CPlayer p, String identifier) {
-        p.getPlayerDataFile().addCosmetic(identifier);
+        p.getPlayerInfoEntry().addCosmetic(identifier);
         p.addCosmetic(identifier);
     }
 
     public void removeCosmetic(CPlayer p, String identifier) {
-        p.getPlayerDataFile().removeCosmetic(identifier);
+        p.getPlayerInfoEntry().removeCosmetic(identifier);
         p.removeCosmetic(identifier);
     }
 

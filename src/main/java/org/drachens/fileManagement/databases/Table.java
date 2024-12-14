@@ -8,8 +8,6 @@ public class Table {
     private final String createStatement;
     private final HashMap<String,Column> columns;
     private final String updateMsg;
-    private final String createEntryMsg;
-    private final HashMap<String, Entry> entryHashMap = new HashMap<>();
     private final String primaryKeyName;
 
     private Table(String tableName, String createStatement, HashMap<String,Column> columns, String primaryKeyName) {
@@ -18,7 +16,6 @@ public class Table {
         this.columns=columns;
         this.primaryKeyName=primaryKeyName;
         updateMsg="UPDATE "+tableName+" SET ";
-        createEntryMsg="INSERT INTO "+createStatement+" ";
         columns.forEach((key, value) -> {
             value.setTable(this);
             value.setColumnNumber(createStatement.indexOf(key));
@@ -34,20 +31,8 @@ public class Table {
         this.database=database;
     }
 
-    public void addEntry(Entry entry){
-        entryHashMap.put(entry.getIdentifier(),entry);
-    }
-
     public String getCreateStatement(){
         return createStatement;
-    }
-
-    public void delete(){
-        database.deleteTable(this);
-    }
-
-    public String getDeleteStatement(){
-        return "DELETE TABLE "+tableName+";";
     }
 
     public String getTableName(){
@@ -75,26 +60,6 @@ public class Table {
         public Create(String tableName) {
             this.tableName = tableName;
             this.createStatementBuilder = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
-        }
-
-        public Create addColumn(String name, DataTypeEum dataType, boolean primaryKey, boolean notNull, boolean autoIncrement) {
-            createStatementBuilder.append(name)
-                    .append(" ")
-                    .append(dataType.getName());
-
-            if (primaryKey){
-                this.primaryKey=name;
-            }
-            if (notNull){
-                createStatementBuilder.append(" NOT NULL ");
-            }
-            if (autoIncrement){
-                createStatementBuilder.append(" AUTO_INCREMENT ");
-            }
-
-            columns.put(name, new Column(name));
-            createStatementBuilder.append(", ");
-            return this;
         }
 
         public Create addColumn(String name, DataTypeEum dataType, boolean primaryKey, boolean notNull) {

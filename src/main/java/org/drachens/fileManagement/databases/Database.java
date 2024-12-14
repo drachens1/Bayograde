@@ -16,7 +16,7 @@ public class Database {
         try {
             connection = (Connection) DriverManager.getConnection("jdbc:mariadb://"+host+":"+port+"/"+database+"?user="+user+"&password="+password);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error connecting to the database "+e.getMessage());
         }
     }
 
@@ -38,17 +38,7 @@ public class Database {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        table.setDatabase(this);
-        tableHashMap.put(table.getTableName(), table);
-    }
-
-    public void deleteTable(Table table){
-        try {
-            org.mariadb.jdbc.Statement stmt = getConnection().createStatement();
-            stmt.execute(table.getDeleteStatement());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        addTable(table);
     }
 
     public String getName(){

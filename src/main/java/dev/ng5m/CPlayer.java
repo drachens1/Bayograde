@@ -11,7 +11,7 @@ import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.Clientside;
-import org.drachens.fileManagement.customTypes.PlayerDataFile;
+import org.drachens.fileManagement.PlayerInfoEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -33,24 +33,24 @@ public class CPlayer extends Player {
     private LocalTime joinTime;
     private Long playTime;
     private LocalTime lastCheck;
-    private PlayerDataFile playerDataFile;
+    private PlayerInfoEntry playerInfoEntry;
     private final List<Clientside> clientsides = new ArrayList<>();
 
     public CPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
         super(uuid, username, playerConnection);
     }
 
-    public PlayerDataFile getPlayerDataFile() {
-        return playerDataFile;
+    public PlayerInfoEntry getPlayerInfoEntry() {
+        return playerInfoEntry;
     }
 
-    public void setPlayerDataFile(PlayerDataFile playerDataFile) {
-        this.playerDataFile = playerDataFile;
+    public void setPlayerDataFile(PlayerInfoEntry playerInfoEntry) {
+        this.playerInfoEntry = playerInfoEntry;
     }
 
     public void setPlayTime(Long pt) {
         this.playTime = pt;
-        playerDataFile.setPlaytime(playTime);
+        playerInfoEntry.setPlaytime(playTime);
     }
 
     public void addPlayTime(LocalTime localTime) {
@@ -64,7 +64,7 @@ public class CPlayer extends Player {
             playTime += Duration.between(lastCheck, localTime).toSeconds();
             lastCheck = localTime;
         }
-        playerDataFile.setPlaytime(playTime);
+        playerInfoEntry.setPlaytime(playTime);
     }
 
     public void setJoinTime(LocalTime instant) {
@@ -108,17 +108,17 @@ public class CPlayer extends Player {
 
     public void setGold(int gold) {
         this.gold = gold;
-        playerDataFile.setGold(gold);
+        playerInfoEntry.setGold(gold);
     }
 
     public void minusGold(int amount) {
         gold -= amount;
-        playerDataFile.setGold(gold);
+        playerInfoEntry.setGold(gold);
     }
 
     public void addGold(int amount) {
         gold += amount;
-        playerDataFile.setGold(gold);
+        playerInfoEntry.setGold(gold);
     }
 
     public void addCosmetic(String identifier) {

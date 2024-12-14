@@ -29,7 +29,6 @@ public class ContinentalWorld extends World {
         final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
         final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
-        ContinentalManagers.permissions.playerOp(p);
         ContinentalManagers.world(instance).votingManager().getVoteBar().addPlayer(p);
         ContinentalManagers.inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
         if (ContinentalManagers.yearManager.getYearBar(instance) != null) {
@@ -38,7 +37,6 @@ public class ContinentalWorld extends World {
             ContinentalManagers.yearManager.addBar(instance);
             ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
         }
-        ContinentalManagers.configFileManager.createPlayersData(p);
         ContinentalManagers.world(instance).clientEntsToLoad().loadPlayer(p);
 
     }
