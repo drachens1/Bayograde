@@ -9,7 +9,7 @@ public class Pixel {
     private final Monitor monitor;
     private final Pos pos;
     private final LinkedList<DynamicPixel> dynamicPixels = new LinkedList<>();
-    private final Material defaultMaterial;
+    private Material defaultMaterial;
     private Material material;
 
     public Pixel(Material material, Pos pos, Monitor monitor) {
@@ -46,5 +46,13 @@ public class Pixel {
     public void setMaterial(Material material) {
         this.material = material;
         monitor.getInstance().setBlock(pos, material.block());
+    }
+
+    public void setDefaultMaterial(Material material){
+        defaultMaterial=material;
+    }
+
+    public void clear(){
+        dynamicPixels.clear();
     }
 }

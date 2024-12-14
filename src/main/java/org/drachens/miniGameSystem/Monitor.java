@@ -2,6 +2,7 @@ package org.drachens.miniGameSystem;
 
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.item.Material;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,13 @@ public class Monitor {
             removeDynamicPixel(prev, dynamicPixel);
             addDynamicPixel(next, dynamicPixel);
         }
+    }
+
+    public void clear(Material newMat){
+        pixelHashMap.forEach((pos, pixel) -> {
+            pixel.setDefaultMaterial(newMat);
+            pixel.clear();
+        });
     }
 
     public Instance getInstance() {
