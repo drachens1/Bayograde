@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class ResearchBuilding extends BuildTypes {
     protected final BuildingEnum researchCenter = BuildingEnum.researchCenter;
     public ResearchBuilding(int[] lvls, Material material, BuildingEnum identifier) {
-        super(lvls, material, identifier, List.of(BuildingEnum.research));
+        super(lvls, material, identifier);
     }
 
     @Override

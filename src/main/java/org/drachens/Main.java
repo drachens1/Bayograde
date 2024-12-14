@@ -145,7 +145,6 @@ public class Main {
         initSrv();
         createWW2VotingOption();
 
-        new Factory();
 
         createAdvancements();
 

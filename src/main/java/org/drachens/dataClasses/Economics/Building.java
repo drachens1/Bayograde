@@ -6,12 +6,13 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.territories.Province;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class Building {
-    private final List<BuildingEnum> synonyms;
+    private final HashSet<String> synonyms;
     private final BuildingEnum buildType;
     private final Province province;
     private final ItemDisplay itemDisplay;
@@ -61,7 +62,7 @@ public class Building {
         return buildType;
     }
 
-    public List<BuildingEnum> getSynonyms(){
+    public HashSet<String> getSynonyms(){
         return synonyms;
     }
 

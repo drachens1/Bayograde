@@ -7,26 +7,19 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public abstract class BuildTypes {
     private final int[] lvlsModelData;
     private final Material material;
     private final BuildingEnum identifier;
-    private final List<BuildingEnum> synonyms;
 
     public BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
-        this.synonyms = new ArrayList<>();
-    }
-
-    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, List<BuildingEnum> synonyms) {
-        this.lvlsModelData = lvls;
-        this.material = material;
-        this.identifier = identifier;
-        this.synonyms = synonyms;
     }
 
     public void build(Country country, Province province, Player p) {
@@ -79,7 +72,7 @@ public abstract class BuildTypes {
         return identifier;
     }
 
-    public List<BuildingEnum> getSynonyms(){
-        return synonyms;
+    public HashSet<String> getSynonyms(){
+        return identifier.getSynonyms();
     }
 }
