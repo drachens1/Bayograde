@@ -13,7 +13,7 @@ public class FlappyCMD extends Command {
                 return;
             }
 
-            new FlappyBird(p, 100, 100);
+            new FlappyBird(p, 40, 20);
         });
     }
 }

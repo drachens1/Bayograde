@@ -70,6 +70,7 @@ public class Sprite {
 
     public static class Builder {
         private String s;
+        private int weight = 0;
         private final HashMap<Character, Material> ingredients = new HashMap<>();
 
         public Builder setIngredient(char c, Material m) {
@@ -79,6 +80,11 @@ public class Sprite {
 
         public Builder setLayout(String layout) {
             this.s = layout;
+            return this;
+        }
+
+        public Builder setWeight(int weight) {
+            this.weight = weight;
             return this;
         }
 
@@ -95,7 +101,7 @@ public class Sprite {
 
                     if (!ingredients.containsKey(c)) continue;
 
-                    sprite.addDynamicPixel(new RelativePos(-x, -y), new DynamicPixel(0, ingredients.get(c)));
+                    sprite.addDynamicPixel(new RelativePos(-x, -y), new DynamicPixel(weight, ingredients.get(c)));
                 }
             }
 
