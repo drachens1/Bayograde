@@ -23,12 +23,11 @@ public class Sprite {
         this.pos = pos;
         this.materialHashMap = new HashMap<>();
         this.monitor = monitor;
-        this.identifier=identifier;
-        this.miniGameRunnable=miniGameRunnable;
+        this.identifier = identifier;
+        this.miniGameRunnable = miniGameRunnable;
     }
 
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
-        dynamicPixel.setSprite(this);
         materialHashMap.put(relativePos, dynamicPixel);
         double x = pos.x() + relativePos.getX();
         double y = pos.y() + relativePos.getY();
@@ -48,6 +47,10 @@ public class Sprite {
             monitor.moveDynamicPixel(new Pos(prevX, prevY, 0), new Pos(newX, newY, 0), dynamicPixel);
         }
         this.pos = newPos;
+    }
+
+    public void delete() {
+        materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x() + relativePos.getX(), pos.y() + relativePos.getY(), 0), dynamicPixel));
     }
 
     public void move(Pos to, Long delayInMillis) {
@@ -72,21 +75,20 @@ public class Sprite {
         return pos;
     }
 
-    public String getIdentifier(){
+    public String getIdentifier() {
         return identifier;
     }
 
-    public void onCollision(Sprite collided){
-        miniGameRunnable.run(collided);
-    }
 
-    public void delete(){
-        materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x()+relativePos.getX(),pos.y()+relativePos.getY(),0),dynamicPixel));
+    public void onCollision(Sprite collided) {
+        miniGameRunnable.run(collided);
     }
 
     public static class Builder {
         private String s;
         private int weight = 0;
+        private String identifier;
+        private MiniGameRunnable collisionFunction;
         private final HashMap<Character, Material> ingredients = new HashMap<>();
 
         public Builder setIngredient(char c, Material m) {
@@ -99,15 +101,25 @@ public class Sprite {
             return this;
         }
 
+        public Builder setIdentifier(String identifier) {
+            this.identifier = identifier;
+            return this;
+        }
+
+        public Builder setCollisionFunction(MiniGameRunnable collisionFunction) {
+            this.collisionFunction = collisionFunction;
+            return this;
+        }
+
         public Builder setWeight(int weight) {
             this.weight = weight;
             return this;
         }
 
-        public Sprite build(Pos pos, Monitor monitor, MiniGameRunnable miniGameRunnable, String identifier) {
+        public Sprite build(Pos pos, Monitor monitor) {
             Preconditions.assertNotNull(s, "Layout cannot be null");
 
-            Sprite sprite = new Sprite(pos, monitor, identifier, miniGameRunnable);
+            Sprite sprite = new Sprite(pos, monitor, identifier, collisionFunction);
 
             var spl = s.split("\n");
 
