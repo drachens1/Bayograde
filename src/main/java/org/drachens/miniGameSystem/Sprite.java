@@ -14,21 +14,24 @@ import java.util.Map;
 public class Sprite {
     private final Monitor monitor;
     private final Map<RelativePos, DynamicPixel> materialHashMap;
+    private final String identifier;
     private Pos pos;
     private Task task;
+    private final MiniGameRunnable miniGameRunnable;
 
-    public Sprite(Pos pos, Monitor monitor) {
+    public Sprite(Pos pos, Monitor monitor, String identifier, MiniGameRunnable miniGameRunnable) {
         this.pos = pos;
         this.materialHashMap = new HashMap<>();
         this.monitor = monitor;
+        this.identifier=identifier;
+        this.miniGameRunnable=miniGameRunnable;
     }
 
-    public Sprite addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
+    public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
         materialHashMap.put(relativePos, dynamicPixel);
         double x = pos.x() + relativePos.getX();
         double y = pos.y() + relativePos.getY();
         monitor.addDynamicPixel(new Pos(x, y, 0), dynamicPixel);
-        return this;
     }
 
     public void setPos(Pos newPos) {
@@ -68,6 +71,15 @@ public class Sprite {
         return pos;
     }
 
+    public String getIdentifier(){
+        return identifier;
+    }
+
+
+    public void onCollision(Sprite collided){
+        miniGameRunnable.run(collided);
+    }
+
     public static class Builder {
         private String s;
         private int weight = 0;
@@ -88,10 +100,10 @@ public class Sprite {
             return this;
         }
 
-        public Sprite build(Pos pos, Monitor monitor) {
+        public Sprite build(Pos pos, Monitor monitor, MiniGameRunnable miniGameRunnable, String identifier) {
             Preconditions.assertNotNull(s, "Layout cannot be null");
 
-            Sprite sprite = new Sprite(pos, monitor);
+            Sprite sprite = new Sprite(pos, monitor, identifier, miniGameRunnable);
 
             var spl = s.split("\n");
 

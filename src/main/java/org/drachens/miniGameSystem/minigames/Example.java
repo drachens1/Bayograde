@@ -12,7 +12,9 @@ public class Example extends MiniGame {
         ExampleWorld exampleWorld = (ExampleWorld) getWorld();
         exampleWorld.setMiniGame(this);
         Monitor monitor = getMonitor();
-        sprite = new Sprite(new Pos(100,100,0),monitor);
+        sprite = new Sprite(new Pos(100, 100, 0), monitor, "WOMP", collided -> {
+
+        });
         sprite.addDynamicPixel(new RelativePos(0,0),new DynamicPixel(10, Material.ORANGE_CONCRETE));
     }
     public Sprite getSprite(){

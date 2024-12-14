@@ -19,6 +19,13 @@ public class Pixel {
     }
 
     public void add(DynamicPixel dynamicPixel) {
+        if (!dynamicPixels.isEmpty()){
+            dynamicPixels.forEach(dynamicPixel1 -> {
+                dynamicPixel1.getSprite().onCollision(dynamicPixel.getSprite());
+                dynamicPixel.getSprite().onCollision(dynamicPixel1.getSprite());
+            });
+
+        }
         if (dynamicPixels.isEmpty() || dynamicPixels.getFirst().weight() <= dynamicPixel.weight()) {
             dynamicPixels.addFirst(dynamicPixel);
         } else {
