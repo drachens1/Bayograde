@@ -19,7 +19,7 @@ public abstract class MiniGame {
         monitor = new Monitor(instance,defaultMaterial);
         for (int x = 0; x < xMax; x++){
             for (int y = 0; y < yMax; y++){
-                monitor.addPixel(new Pos(x,y,0),new Pixel(Material.BLACK_CONCRETE,new Pos(x,y,0),monitor));
+                monitor.addPixel(new Pos(x,y,0),new Pixel(defaultMaterial,new Pos(x,y,0),monitor));
             }
         }
 
