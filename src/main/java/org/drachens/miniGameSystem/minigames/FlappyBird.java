@@ -31,8 +31,6 @@ public class FlappyBird extends MiniGame
         realX = xMax - 3;
         realY = yMax / 2d - 1d;
 
-        getMonitor().clear(Material.BLUE_CONCRETE);
-
         bird = new Sprite.Builder().setLayout(
                   " Y\n"
                 + "YYY"

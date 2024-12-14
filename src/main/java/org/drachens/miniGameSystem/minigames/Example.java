@@ -8,7 +8,7 @@ import org.drachens.miniGameSystem.*;
 public class Example extends MiniGame {
     private final Sprite sprite;
     public Example(CPlayer p, int xMax, int yMax) {
-        super(p, xMax, yMax,new ExampleWorld());
+        super(p, xMax, yMax, Material.BLACK_CONCRETE, new ExampleWorld());
         ExampleWorld exampleWorld = (ExampleWorld) getWorld();
         exampleWorld.setMiniGame(this);
         Monitor monitor = getMonitor();
