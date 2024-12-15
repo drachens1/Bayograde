@@ -14,17 +14,15 @@ import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
-import org.drachens.interfaces.HideableBossBar;
 import org.drachens.miniGameSystem.MiniGame;
-import org.drachens.miniGameSystem.MiniGameRunnable;
-import org.drachens.miniGameSystem.Monitor;
 import org.drachens.miniGameSystem.Sprite;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.floor;
-import static java.lang.Math.scalb;
 
 public class FlappyBird extends MiniGame
         implements EventHandlerProvider {
@@ -76,7 +74,7 @@ public class FlappyBird extends MiniGame
                         " Y\n"
                                 + "YYY"
                 ).setIngredient('Y', Material.YELLOW_CONCRETE)
-                .setCollisionFunction((collided) -> {
+                .setCollisionFunction((collided,pos) -> {
                     if (!collided.getIdentifier().equals(SID_PIPE)) return;
 
                     loseCallback();
@@ -140,8 +138,8 @@ public class FlappyBird extends MiniGame
 
             MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
                 flappyBird.pipes.forEach(pipeSprite -> {
-                    pipeSprite.realX += 0.2 + (flappyBird.score / 200d);
                     pipeSprite.delete();
+                    pipeSprite.realX += 0.2 + (flappyBird.score / 200d);
                     pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
                 });
 

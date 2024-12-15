@@ -30,9 +30,7 @@ public class Sprite {
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
         materialHashMap.put(relativePos, dynamicPixel);
         dynamicPixel.setSprite(this);
-        double x = pos.x() + relativePos.getX();
-        double y = pos.y() + relativePos.getY();
-        monitor.addDynamicPixel(new Pos(x, y, 0), dynamicPixel);
+        monitor.addDynamicPixel(new Pos(pos.x() + relativePos.getX(), pos.y() + relativePos.getY(), 0), dynamicPixel);
     }
 
     public void setPos(Pos newPos) {
@@ -54,8 +52,8 @@ public class Sprite {
         materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x() + relativePos.getX(), pos.y() + relativePos.getY(), 0), dynamicPixel));
     }
 
-    public Map<RelativePos, DynamicPixel> getMaterialHashMap() {
-        return materialHashMap;
+    public DynamicPixel getDynamicPixel(Pos pos){
+        return materialHashMap.get(new RelativePos((int) (pos.x()-this.pos.x()), (int) (pos.y()-this.pos.y())));
     }
 
     public void move(Pos to, Long delayInMillis) {
@@ -85,9 +83,9 @@ public class Sprite {
     }
 
 
-    public void onCollision(Sprite collided) {
+    public void onCollision(Sprite collided, Pos pos) {
         if (miniGameRunnable == null) return;
-        miniGameRunnable.run(collided);
+        miniGameRunnable.run(collided,pos);
     }
 
     public static class Builder {
