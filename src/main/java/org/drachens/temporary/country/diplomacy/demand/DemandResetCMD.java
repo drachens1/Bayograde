@@ -28,7 +28,7 @@ public class DemandResetCMD extends Command {
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemand(sender)) return;
                     String start = context.get(types1);
-                    if (!(start.equalsIgnoreCase("demanded")||start.equalsIgnoreCase("offer")))return;
+                    if (!(start.equalsIgnoreCase("demanded") || start.equalsIgnoreCase("offer"))) return;
                     suggestion.addEntry(new SuggestionEntry("annexation"));
                     suggestion.addEntry(new SuggestionEntry("provinces"));
                     suggestion.addEntry(new SuggestionEntry("puppets"));
@@ -42,39 +42,39 @@ public class DemandResetCMD extends Command {
             CPlayer p = (CPlayer) sender;
             WW2Demands ww2Demands = (WW2Demands) demandManager.getDemand(p);
             boolean demand;
-            switch (context.get(types1)){
+            switch (context.get(types1)) {
                 case "demanded":
-                    demand=true;
+                    demand = true;
                     break;
                 case "offer":
-                    demand=false;
+                    demand = false;
                     break;
                 default:
                     return;
             }
-            switch (context.get(types2)){
+            switch (context.get(types2)) {
                 case "annexation":
-                    if (demand){
+                    if (demand) {
                         ww2Demands.resetDemandedAnnexation();
-                    }else
+                    } else
                         ww2Demands.resetOfferAnnexation();
                     break;
                 case "provinces":
-                    if (demand){
+                    if (demand) {
                         ww2Demands.resetDemandedProvinces();
-                    }else
+                    } else
                         ww2Demands.resetOfferProvinces();
                     break;
                 case "puppets":
-                    if (demand){
+                    if (demand) {
                         ww2Demands.resetDemandedPuppets();
-                    }else
+                    } else
                         ww2Demands.resetOfferPuppets();
                     break;
                 case "payments":
-                    if (demand){
+                    if (demand) {
                         ww2Demands.resetDemandedPayments();
-                    }else
+                    } else
                         ww2Demands.resetOfferPayments();
                     break;
             }

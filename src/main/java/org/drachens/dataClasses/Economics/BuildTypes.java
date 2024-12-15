@@ -72,7 +72,7 @@ public abstract class BuildTypes {
         return identifier;
     }
 
-    public HashSet<String> getSynonyms(){
+    public HashSet<String> getSynonyms() {
         return identifier.getSynonyms();
     }
 }

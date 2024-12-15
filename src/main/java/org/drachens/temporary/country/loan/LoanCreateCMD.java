@@ -35,26 +35,30 @@ public class LoanCreateCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, countries1);
                 });
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
-        addSyntax((sender,context)->{},countries);
-        addSyntax((sender,context)->{},countries,amount);
-        addSyntax((sender,context)->{},countries,interest);
+        addSyntax((sender, context) -> {
+        }, countries);
+        addSyntax((sender, context) -> {
+        }, countries, amount);
+        addSyntax((sender, context) -> {
+        }, countries, interest);
 
         addSyntax(((sender, context) -> {
-            if (!isLeaderOfCountry(sender))return;
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (target==null)return;
+            if (target == null) return;
             float a = context.get(amount);
             float i = context.get(interest);
             int t = context.get(termLength);
-            Loan loan = new Loan(a,production,i,t,country,target);
+            Loan loan = new Loan(a, production, i, t, country, target);
             target.addLoanRequest(loan);
-            EventDispatcher.call(new LoanSendEvent(p.getInstance(),country,target,loan));
-        }),countries,amount,interest,termLength);
+            EventDispatcher.call(new LoanSendEvent(p.getInstance(), country, target, loan));
+        }), countries, amount, interest, termLength);
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();

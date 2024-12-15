@@ -9,8 +9,8 @@ public class TechCMD extends Command {
     public TechCMD() {
         super("tech");
 
-        setDefaultExecutor((sender,context)->{
-            ContinentalManagers.guiManager.openGUI(new ResearchGUI(0,0),(CPlayer) sender);
+        setDefaultExecutor((sender, context) -> {
+            ContinentalManagers.guiManager.openGUI(new ResearchGUI(0, 0), (CPlayer) sender);
         });
     }
 }

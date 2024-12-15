@@ -21,35 +21,35 @@ public class PlayerInfoEntry implements Entry {
     private List<String> cosmetics;
     private final HashMap<String, Integer> eventAchievementTrigger = new HashMap<>();
 
-    public PlayerInfoEntry(CPlayer p, Table table){
+    public PlayerInfoEntry(CPlayer p, Table table) {
         p.setPlayerDataFile(this);
-        this.uuid= String.valueOf(p.getUuid());
-        this.name=p.getUsername();
-        this.table=table;
+        this.uuid = String.valueOf(p.getUuid());
+        this.name = p.getUsername();
+        this.table = table;
         insert();
     }
 
-    public void setPlaytime(Long playtime){
-        this.playtime=playtime;
+    public void setPlaytime(Long playtime) {
+        this.playtime = playtime;
     }
 
-    public void setGold(int gold){
-        this.gold=gold;
+    public void setGold(int gold) {
+        this.gold = gold;
     }
 
-    public void setPermissions(ArrayList<String> permissions){
-        this.permissions=permissions;
+    public void setPermissions(ArrayList<String> permissions) {
+        this.permissions = permissions;
     }
 
-    public void setCosmetics(ArrayList<String> cosmetics){
-        this.cosmetics=cosmetics;
+    public void setCosmetics(ArrayList<String> cosmetics) {
+        this.cosmetics = cosmetics;
     }
 
-    public void addCosmetic(String toAdd){
+    public void addCosmetic(String toAdd) {
         cosmetics.add(toAdd);
     }
 
-    public void removeCosmetic(String toAdd){
+    public void removeCosmetic(String toAdd) {
         cosmetics.remove(toAdd);
     }
 
@@ -57,8 +57,8 @@ public class PlayerInfoEntry implements Entry {
         return eventAchievementTrigger;
     }
 
-    public void addAchievementEventTriggered(String identifier, int count){
-        eventAchievementTrigger.put(identifier,count);
+    public void addAchievementEventTriggered(String identifier, int count) {
+        eventAchievementTrigger.put(identifier, count);
     }
 
     public List<String> getCosmetics() {
@@ -87,7 +87,7 @@ public class PlayerInfoEntry implements Entry {
 
     @Override
     public void insert() {
-        String checkSql = "SELECT * FROM " + table.getTableName() + " WHERE uuid = \""+uuid+"\";";
+        String checkSql = "SELECT * FROM " + table.getTableName() + " WHERE uuid = \"" + uuid + "\";";
         boolean insertRequired = false;
         System.out.println(checkSql);
 
@@ -100,7 +100,7 @@ public class PlayerInfoEntry implements Entry {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error inserting 1: "+e.getMessage());
+            System.err.println("Error inserting 1: " + e.getMessage());
             return;
         }
 
@@ -118,10 +118,10 @@ public class PlayerInfoEntry implements Entry {
                 insertStatement.setString(7, "");
                 insertStatement.setString(8, "");
                 insertStatement.setString(9, "");
-                insertStatement.setString(10,"");
+                insertStatement.setString(10, "");
                 insertStatement.executeUpdate();
             } catch (SQLException e) {
-                System.err.println("Error inserting the info "+e.getMessage());
+                System.err.println("Error inserting the info " + e.getMessage());
             }
 
             this.gold = 0;
@@ -163,10 +163,10 @@ public class PlayerInfoEntry implements Entry {
                 }
 
 
-                table.getColumn("last_online").onlySetThisValue(getTime(),uuid);
+                table.getColumn("last_online").onlySetThisValue(getTime(), uuid);
             }
         } catch (SQLException e) {
-            System.err.println("Error loading from the database: "+e.getMessage());
+            System.err.println("Error loading from the database: " + e.getMessage());
         }
     }
 
@@ -202,7 +202,7 @@ public class PlayerInfoEntry implements Entry {
 
             updateStatement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error applying changes: "+e.getMessage());
+            System.err.println("Error applying changes: " + e.getMessage());
         }
     }
 }

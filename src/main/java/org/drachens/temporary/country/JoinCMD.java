@@ -16,11 +16,11 @@ public class JoinCMD extends Command {
         setDefaultExecutor((sender, context) -> sender.sendMessage("Default usage: /country join <country>"));
         var countries = ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-            if (!(sender instanceof Player p)) {
-                return;
-            }
-            getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
-        });
+                    if (!(sender instanceof Player p)) {
+                        return;
+                    }
+                    getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
+                });
 
         addSyntax((sender, context) -> {
             if (!(sender instanceof CPlayer p))

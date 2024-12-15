@@ -11,23 +11,24 @@ import org.drachens.dataClasses.Research.ResearchBuilding;
 import org.drachens.dataClasses.territories.Province;
 
 public class ResearchLab extends ResearchBuilding {
-    private final Payment cost = new Payment(CurrencyEnum.production,2f);
+    private final Payment cost = new Payment(CurrencyEnum.production, 2f);
+
     public ResearchLab() {
         super(new int[]{4}, Material.BROWN_DYE, BuildingEnum.researchLab);
     }
 
     @Override
     public Payment generate(Building building) {
-        return new Payment(CurrencyEnum.research,5f);
+        return new Payment(CurrencyEnum.research, 5f);
     }
 
     @Override
     public boolean canBuild(Country country, Province province, Player p) {
-        if (province.getOccupier()!=country||province.getBuilding()!=null)return false;
-        if (!country.canMinusCost(cost))return false;
-        for (Province neighbour : province.getNeighbours()){
-            if (neighbour.getBuilding()==null || neighbour.getOccupier()!=country)continue;
-            if (neighbour.getBuilding().getBuildTypes()==researchCenter){
+        if (province.getOccupier() != country || province.getBuilding() != null) return false;
+        if (!country.canMinusCost(cost)) return false;
+        for (Province neighbour : province.getNeighbours()) {
+            if (neighbour.getBuilding() == null || neighbour.getOccupier() != country) continue;
+            if (neighbour.getBuilding().getBuildTypes() == researchCenter) {
                 return true;
             }
         }

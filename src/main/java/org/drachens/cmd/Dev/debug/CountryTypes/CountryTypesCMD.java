@@ -37,7 +37,7 @@ public class CountryTypesCMD extends Command {
             CountryEnums.Type choice = CountryEnums.Type.valueOf(context.get(type));
             components.add(Component.text(context.get(type), NamedTextColor.BLUE));
             components.add(Component.newline());
-            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
+            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner) {
                 case VotingWinner.none -> {
                     return;
                 }

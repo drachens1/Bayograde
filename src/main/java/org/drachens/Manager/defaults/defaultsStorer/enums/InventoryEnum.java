@@ -18,27 +18,29 @@ import org.drachens.temporary.troops.inventory.TroopMover;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public enum InventoryEnum {
-    scoreboardInv(new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(),new ShowEconomy(),new ShowIdeology(),new ShowGeneralInfo(),new ExitItem()})),
+    scoreboardInv(new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(), new ShowEconomy(), new ShowIdeology(), new ShowGeneralInfo(), new ExitItem()})),
 
     demand(new DemandInventory()),
 
-    research(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1,itemBuilder(Material.BROWN_DYE,1), BuildingEnum.library),
-            new BuildItem(2,itemBuilder(Material.BROWN_DYE,2),BuildingEnum.university),new BuildItem(3,itemBuilder(Material.BROWN_DYE,3),BuildingEnum.researchCenter),
-            new BuildItem(4,itemBuilder(Material.BROWN_DYE,4),BuildingEnum.researchLab),new ExitItem()})),
+    research(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1, itemBuilder(Material.BROWN_DYE, 1), BuildingEnum.library),
+            new BuildItem(2, itemBuilder(Material.BROWN_DYE, 2), BuildingEnum.university), new BuildItem(3, itemBuilder(Material.BROWN_DYE, 3), BuildingEnum.researchCenter),
+            new BuildItem(4, itemBuilder(Material.BROWN_DYE, 4), BuildingEnum.researchLab), new ExitItem()})),
 
-    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10),BuildingEnum.factory),
-            new ChangeInventoryButton(0,itemBuilder(Material.BOOK),
-            InventoryEnum.scoreboardInv),new ChangeInventoryButton(1,itemBuilder(Material.BROWN_DYE),InventoryEnum.research)})),
+    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10), BuildingEnum.factory),
+            new ChangeInventoryButton(0, itemBuilder(Material.BOOK),
+                    InventoryEnum.scoreboardInv), new ChangeInventoryButton(1, itemBuilder(Material.BROWN_DYE), InventoryEnum.research)})),
 
-    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10),BuildingEnum.factory),
-            new TroopMover(), new TroopDeployer(),new ChangeInventoryButton(0,itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),
-            new ChangeInventoryButton(1,itemBuilder(Material.BROWN_DYE),InventoryEnum.research)}));
+    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10), BuildingEnum.factory),
+            new TroopMover(), new TroopDeployer(), new ChangeInventoryButton(0, itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),
+            new ChangeInventoryButton(1, itemBuilder(Material.BROWN_DYE), InventoryEnum.research)}));
 
     private final HotbarInventory hotbarInventory;
-    InventoryEnum(HotbarInventory hotbarInventory){
-        this.hotbarInventory=hotbarInventory;
+
+    InventoryEnum(HotbarInventory hotbarInventory) {
+        this.hotbarInventory = hotbarInventory;
     }
-    public HotbarInventory getHotbarInventory(){
+
+    public HotbarInventory getHotbarInventory() {
         return hotbarInventory;
     }
 }

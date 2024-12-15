@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ResearchVault extends Vault {
-    private final Currencies research = new Currencies(CurrencyEnum.research,0f);
+    private final Currencies research = new Currencies(CurrencyEnum.research, 0f);
     private final ResearchCenter researchCenter = (ResearchCenter) BuildingEnum.researchCenter.getBuildTypes();
     private ResearchCountry country;
 
@@ -25,19 +25,19 @@ public abstract class ResearchVault extends Vault {
 
     @Override
     public void onCountrySet(Country country) {
-        this.country=(ResearchCountry) country;
+        this.country = (ResearchCountry) country;
     }
 
     @Override
     public void extraCalcIncrease() {
-        Payment central = new Payment(CurrencyEnum.research,0f);
-        for (Building building : country.getResearchCentersBuildings()){
+        Payment central = new Payment(CurrencyEnum.research, 0f);
+        for (Building building : country.getResearchCentersBuildings()) {
             central.add(researchCenter.generate(building));
         }
         research.set(central.getAmount());
     }
 
-    public Payment getResearch(){
+    public Payment getResearch() {
         return new Payment(research);
     }
 

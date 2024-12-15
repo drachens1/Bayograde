@@ -10,8 +10,9 @@ public class LoanCMD extends Command {
         super("loan");
         addSubcommand(new LoanAcceptCMD());
         addSubcommand(new LoanCreateCMD());
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();

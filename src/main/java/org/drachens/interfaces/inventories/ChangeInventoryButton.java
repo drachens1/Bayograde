@@ -12,6 +12,7 @@ import org.drachens.interfaces.items.HotbarItemButton;
 public class ChangeInventoryButton extends HotbarItemButton {
     private final InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
     private final InventoryEnum inventoryEnum;
+
     public ChangeInventoryButton(int modelData, ItemStack item, InventoryEnum inventoryEnum) {
         super(modelData, item);
         this.inventoryEnum = inventoryEnum;
@@ -19,12 +20,12 @@ public class ChangeInventoryButton extends HotbarItemButton {
 
     @Override
     public void onUse(PlayerUseItemEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(),inventoryEnum);
+        inventoryManager.assignInventory(e.getPlayer(), inventoryEnum);
     }
 
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(),inventoryEnum);
+        inventoryManager.assignInventory(e.getPlayer(), inventoryEnum);
     }
 
     @Override

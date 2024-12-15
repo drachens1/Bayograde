@@ -21,15 +21,16 @@ public class ExampleGUI extends InventoryGUI {
 
     @Override
     public void decorate(@NotNull CPlayer player) {
-        for (int i = 0; i < getInventory().getSize(); i++){
-            addButton(i,button(itemBuilder(Material.GREEN_CONCRETE, Component.text(i+" Num", NamedTextColor.BLUE))));
+        for (int i = 0; i < getInventory().getSize(); i++) {
+            addButton(i, button(itemBuilder(Material.GREEN_CONCRETE, Component.text(i + " Num", NamedTextColor.BLUE))));
         }
         super.decorate(player);
     }
 
-    private InventoryButton button(ItemStack i){
+    private InventoryButton button(ItemStack i) {
         return new InventoryButton()
                 .creator(player -> i)
-                .consumer(e -> {});
+                .consumer(e -> {
+                });
     }
 }

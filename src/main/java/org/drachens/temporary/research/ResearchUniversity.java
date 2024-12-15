@@ -11,7 +11,7 @@ import org.drachens.dataClasses.Research.ResearchBuilding;
 import org.drachens.dataClasses.territories.Province;
 
 public class ResearchUniversity extends ResearchBuilding {
-    private final Payment cost = new Payment(CurrencyEnum.production,5f);
+    private final Payment cost = new Payment(CurrencyEnum.production, 5f);
 
     public ResearchUniversity() {
         super(new int[]{2}, Material.BROWN_DYE, BuildingEnum.university);
@@ -19,11 +19,11 @@ public class ResearchUniversity extends ResearchBuilding {
 
     @Override
     public boolean canBuild(Country country, Province province, Player p) {
-        if (province.getOccupier()!=country||province.getBuilding()!=null)return false;
-        if (!country.canMinusCost(cost))return false;
-        for (Province neighbour : province.getNeighbours()){
-            if (neighbour.getBuilding()==null || neighbour.getOccupier()!=country)continue;
-            if (neighbour.getBuilding().getBuildTypes()==researchCenter){
+        if (province.getOccupier() != country || province.getBuilding() != null) return false;
+        if (!country.canMinusCost(cost)) return false;
+        for (Province neighbour : province.getNeighbours()) {
+            if (neighbour.getBuilding() == null || neighbour.getOccupier() != country) continue;
+            if (neighbour.getBuilding().getBuildTypes() == researchCenter) {
                 return true;
             }
         }
@@ -63,6 +63,6 @@ public class ResearchUniversity extends ResearchBuilding {
 
     @Override
     public Payment generate(Building building) {
-        return new Payment(CurrencyEnum.research,5f);
+        return new Payment(CurrencyEnum.research, 5f);
     }
 }

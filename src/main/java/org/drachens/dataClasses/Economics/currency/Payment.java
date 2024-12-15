@@ -8,8 +8,8 @@ public class Payment implements Cloneable {
     private float amount;
     private Component message;
 
-    public Payment(CurrencyEnum currencyEnum, float amount){
-        currencyType=currencyEnum.getCurrencyType();
+    public Payment(CurrencyEnum currencyEnum, float amount) {
+        currencyType = currencyEnum.getCurrencyType();
         this.amount = amount;
     }
 
@@ -24,9 +24,9 @@ public class Payment implements Cloneable {
         this.message = message;
     }
 
-    public Payment(Currencies currencies){
-        this.currencyType=currencies.getCurrencyType();
-        this.amount=currencies.getAmount();
+    public Payment(Currencies currencies) {
+        this.currencyType = currencies.getCurrencyType();
+        this.amount = currencies.getAmount();
     }
 
     public float getAmount() {
@@ -57,12 +57,12 @@ public class Payment implements Cloneable {
         return false;
     }
 
-    public Payment minusMaxAmount(Payment payment){
-        if (currencyType!=payment.getCurrencyType())return new Payment(payment.currencyType,0f);
-        if (amount>payment.amount)return new Payment(payment.currencyType,0f);
-        amount-=payment.amount;
-        Payment p = new Payment(payment.currencyType,Math.abs(amount));
-        amount=0f;
+    public Payment minusMaxAmount(Payment payment) {
+        if (currencyType != payment.getCurrencyType()) return new Payment(payment.currencyType, 0f);
+        if (amount > payment.amount) return new Payment(payment.currencyType, 0f);
+        amount -= payment.amount;
+        Payment p = new Payment(payment.currencyType, Math.abs(amount));
+        amount = 0f;
         return p;
     }
 

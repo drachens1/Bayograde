@@ -46,8 +46,8 @@ public class OtherUtil {
         return formattedTime.toString().trim();
     }
 
-    public static float bound(float upper, float lower, float value){
-        if (value>upper){
+    public static float bound(float upper, float lower, float value) {
+        if (value > upper) {
             return upper;
         }
         return Math.max(value, lower);

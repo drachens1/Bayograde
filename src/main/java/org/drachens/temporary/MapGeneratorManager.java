@@ -237,10 +237,10 @@ public class MapGeneratorManager extends MapGen {
                 addChunk(province.getChunk());
             }
         }
-        scheduler.buildTask(()->{
+        scheduler.buildTask(() -> {
             setNeighbours();
             createCountries(countries);
-        }).delay(10,ChronoUnit.MILLIS).schedule();
+        }).delay(10, ChronoUnit.MILLIS).schedule();
 
     }
 
@@ -280,7 +280,7 @@ public class MapGeneratorManager extends MapGen {
         for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()) {
             newCurrencies.put(e.getKey(), e.getValue().clone());
         }
-        switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+        switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
             case VotingWinner.ww2_clicks -> {
                 return new ClicksCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
             }
@@ -401,7 +401,7 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void generateCities(List<Country> countries) {
-        switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+        switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
             case VotingWinner.ww2_clicks -> {
                 for (Country c : countries) {
                     ClicksCountry country = (ClicksCountry) c;
@@ -450,7 +450,7 @@ public class MapGeneratorManager extends MapGen {
         }
         float medianSize = calculateTopPercent(size, 0.2f);
         for (int b = 0; b < size.size(); b++) {
-            switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+            switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
                 case VotingWinner.ww2_clicks -> {
                     ClicksCountry country = (ClicksCountry) countries.get(b);
                     if (size.get(b) >= medianSize) {
@@ -556,7 +556,7 @@ public class MapGeneratorManager extends MapGen {
 
         Modifier modifier = modifiers.getModifier("ww2-example");
         for (Country c : countries) {
-            switch (ContinentalManagers.world(instance).dataStorer().votingWinner){
+            switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
                 case VotingWinner.ww2_clicks -> {
                     ClicksCountry country = (ClicksCountry) c;
                     country.getIdeology().changeLeadingIdeology();
@@ -672,6 +672,7 @@ public class MapGeneratorManager extends MapGen {
             }
         }
     }
+
     private void historyAssignMajor(ClicksCountry country) {
         if (new Random().nextBoolean()) {
             country.setHistory(CountryEnums.History.colonialPower);
@@ -827,6 +828,7 @@ public class MapGeneratorManager extends MapGen {
                 break;
         }
     }
+
     private void leadershipStyle(ClicksCountry country) {
         int num2 = new Random().nextInt(0, 5);
         switch (num2) {

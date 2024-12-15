@@ -12,23 +12,24 @@ public class Loan {
     private float balanceToPayOff;
     private final float perWeek;
     private final int termlength;
-    public Loan(Payment payment,int termLength, Country from, Country to){
+
+    public Loan(Payment payment, int termLength, Country from, Country to) {
         this.balanceToPayOff = payment.getAmount();
         this.currencyTypes = payment.getCurrencyType();
         this.fromCountry = from;
         this.toCountry = to;
         this.termlength = termLength;
-        perWeek = balanceToPayOff/termLength;
+        perWeek = balanceToPayOff / termLength;
     }
 
-    public Loan(float payment, CurrencyTypes currencyTypes,float interest, int termLength, Country from, Country to) {
-        to.getVault().addPayment(new Payment(currencyTypes,payment));
-        this.balanceToPayOff = payment*(interest/100);
+    public Loan(float payment, CurrencyTypes currencyTypes, float interest, int termLength, Country from, Country to) {
+        to.getVault().addPayment(new Payment(currencyTypes, payment));
+        this.balanceToPayOff = payment * (interest / 100);
         this.currencyTypes = currencyTypes;
         this.fromCountry = from;
         this.toCountry = to;
         this.termlength = -1;
-        perWeek = balanceToPayOff/termLength;
+        perWeek = balanceToPayOff / termLength;
     }
 
     public void payOff(Payment payment) {
@@ -36,21 +37,21 @@ public class Loan {
         balanceToPayOff -= payment.getAmount();
     }
 
-    public void payThisWeek(){
-        if (balanceToPayOff<=0){
+    public void payThisWeek() {
+        if (balanceToPayOff <= 0) {
             return;
         }
-        balanceToPayOff-=perWeek;
-        Payment payment = new Payment(currencyTypes,perWeek);
+        balanceToPayOff -= perWeek;
+        Payment payment = new Payment(currencyTypes, perWeek);
         toCountry.getVault().minusPayment(payment);
         fromCountry.getVault().addPayment(payment);
     }
 
-    public void close(){
+    public void close() {
         toCountry.getVault().removeLoan(this);
     }
 
-    public Component getDescription(){
+    public Component getDescription() {
         return Component.text()
                 .append(Component.text("____/Loan\\_____"))
                 .append(Component.text("From: "))
@@ -67,7 +68,7 @@ public class Loan {
                 .build();
     }
 
-    public Country getFromCountry(){
+    public Country getFromCountry() {
         return fromCountry;
     }
 

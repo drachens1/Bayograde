@@ -122,6 +122,7 @@ public class AStarPathfinderMiniGame {
         public double getF() {
             return g + h; //
         }
+
         private static class LocationKey {
             private final int x, y;
 

@@ -43,7 +43,7 @@ public class AllInformationCMD extends Command {
                 modifierComps.add(modifier.getName());
                 modifierComps.add(Component.text(", "));
             }
-            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
+            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner) {
                 case VotingWinner.ww2_clicks -> {
                     ClicksCountry country = (ClicksCountry) c;
                     p.sendMessage(Component.text()

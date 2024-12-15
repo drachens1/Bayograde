@@ -15,7 +15,7 @@ public class Monitor {
 
     public Monitor(Instance instance, Material defaultMaterial) {
         this.instance = instance;
-        this.defaultMaterial=defaultMaterial;
+        this.defaultMaterial = defaultMaterial;
     }
 
     public void addPixel(Pos pos, Pixel pixel) {
@@ -44,7 +44,7 @@ public class Monitor {
         }
     }
 
-    public void clear(Material newMat){
+    public void clear(Material newMat) {
         pixelHashMap.forEach((pos, pixel) -> {
             pixel.setMaterial(newMat);
             pixel.clear();
@@ -59,11 +59,11 @@ public class Monitor {
         return aStarPathfinder;
     }
 
-    public void setDefaultMaterial(Material material){
-        this.defaultMaterial=material;
+    public void setDefaultMaterial(Material material) {
+        this.defaultMaterial = material;
     }
 
-    public Material getDefaultMaterial(){
+    public Material getDefaultMaterial() {
         return defaultMaterial;
     }
 }

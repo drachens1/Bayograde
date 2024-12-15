@@ -12,30 +12,30 @@ public abstract class MiniGame {
     private final Monitor monitor;
     private final World world;
 
-    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, World world, Pos playerSpawning){
-        this.world=world;
+    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, World world, Pos playerSpawning) {
+        this.world = world;
         ContinentalManagers.worldManager.registerWorld(world);
         Instance instance = world.getInstance();
-        monitor = new Monitor(instance,defaultMaterial);
-        for (int x = 0; x < xMax; x++){
-            for (int y = 0; y < yMax; y++){
-                monitor.addPixel(new Pos(x,y,0),new Pixel(defaultMaterial,new Pos(x,y,0),monitor));
+        monitor = new Monitor(instance, defaultMaterial);
+        for (int x = 0; x < xMax; x++) {
+            for (int y = 0; y < yMax; y++) {
+                monitor.addPixel(new Pos(x, y, 0), new Pixel(defaultMaterial, new Pos(x, y, 0), monitor));
             }
         }
 
-        instance.setBlock(playerSpawning.add(0,-1,0), Block.BLACK_CONCRETE);
-        p.setInstance(instance,playerSpawning.add(0,2,0));
+        instance.setBlock(playerSpawning.add(0, -1, 0), Block.BLACK_CONCRETE);
+        p.setInstance(instance, playerSpawning.add(0, 2, 0));
     }
 
-    public Monitor getMonitor(){
+    public Monitor getMonitor() {
         return monitor;
     }
 
-    public Instance getInstance(){
+    public Instance getInstance() {
         return world.getInstance();
     }
 
-    public World getWorld(){
+    public World getWorld() {
         return world;
     }
 }

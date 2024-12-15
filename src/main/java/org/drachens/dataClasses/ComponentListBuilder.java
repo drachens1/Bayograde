@@ -7,12 +7,16 @@ import java.util.List;
 
 public class ComponentListBuilder {
     private final List<Component> components = new ArrayList<>();
-    public ComponentListBuilder(){}
-    public ComponentListBuilder addComponent(Component component){
+
+    public ComponentListBuilder() {
+    }
+
+    public ComponentListBuilder addComponent(Component component) {
         components.add(component);
         return this;
     }
-    public List<Component> build(){
+
+    public List<Component> build() {
         return components;
     }
 }

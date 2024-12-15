@@ -12,19 +12,21 @@ import org.drachens.temporary.demand.WW2Demands;
 
 public class DemandSetPeaceCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
+
     public DemandSetPeaceCMD() {
         super("peace");
         var option = ArgumentType.Boolean("option");
 
         setCondition(((sender, s) -> hasDemand(sender)));
 
-        addSyntax((sender,context)->{
-            if (!hasDemand(sender))return;
+        addSyntax((sender, context) -> {
+            if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             WW2Demands demand = (WW2Demands) demandManager.getDemand(p);
             demand.setPeace(context.get(option));
-        },option);
+        }, option);
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();

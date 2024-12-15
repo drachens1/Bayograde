@@ -87,16 +87,18 @@ public class TroopCountry extends ResearchCountry {
         this.relationsStyle = relationsStyle;
     }
 
-    public void addTroop(Troop troop){
+    public void addTroop(Troop troop) {
         troops.add(troop);
         loadClientside(troop.getTroop());
         allyTroopClientsides.add(troop.getAlly());
     }
-    public void removeTroop(Troop troop){
+
+    public void removeTroop(Troop troop) {
         troops.remove(troop);
         unloadClientside(troop.getTroop());
         allyTroopClientsides.add(troop.getAlly());
     }
+
     public List<Clientside> getAlliedTroopClientsides() {
         return allyTroopClientsides;
     }

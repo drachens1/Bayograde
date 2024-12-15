@@ -141,13 +141,15 @@ public class CPlayer extends Player {
         return headItem;
     }
 
-    public List<Clientside> getClientsides(){
+    public List<Clientside> getClientsides() {
         return clientsides;
     }
-    public void addClientside(Clientside clientside){
+
+    public void addClientside(Clientside clientside) {
         clientsides.add(clientside);
     }
-    public void removeClientside(Clientside clientside){
+
+    public void removeClientside(Clientside clientside) {
         clientsides.remove(clientside);
     }
 }

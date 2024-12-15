@@ -12,19 +12,19 @@ public class Database {
     private Connection connection;
 
     public Database(String database, String host, int port, String user, String password) {
-        this.database=database;
+        this.database = database;
         try {
-            connection = (Connection) DriverManager.getConnection("jdbc:mariadb://"+host+":"+port+"/"+database+"?user="+user+"&password="+password);
+            connection = (Connection) DriverManager.getConnection("jdbc:mariadb://" + host + ":" + port + "/" + database + "?user=" + user + "&password=" + password);
         } catch (Exception e) {
-            System.err.println("Error connecting to the database "+e.getMessage());
+            System.err.println("Error connecting to the database " + e.getMessage());
         }
     }
 
-    public Table getTable(String s){
+    public Table getTable(String s) {
         return tableHashMap.get(s);
     }
 
-    public void addTable(Table table){
+    public void addTable(Table table) {
         table.setDatabase(this);
         tableHashMap.put(table.getTableName(), table);
     }
@@ -41,11 +41,11 @@ public class Database {
         addTable(table);
     }
 
-    public String getName(){
+    public String getName() {
         return database;
     }
 
-    public Connection getConnection(){
+    public Connection getConnection() {
         return connection;
     }
 }

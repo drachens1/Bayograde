@@ -6,48 +6,48 @@ public class Table {
     private Database database;
     private final String tableName;
     private final String createStatement;
-    private final HashMap<String,Column> columns;
+    private final HashMap<String, Column> columns;
     private final String updateMsg;
     private final String primaryKeyName;
 
-    private Table(String tableName, String createStatement, HashMap<String,Column> columns, String primaryKeyName) {
+    private Table(String tableName, String createStatement, HashMap<String, Column> columns, String primaryKeyName) {
         this.tableName = tableName;
         this.createStatement = createStatement;
-        this.columns=columns;
-        this.primaryKeyName=primaryKeyName;
-        updateMsg="UPDATE "+tableName+" SET ";
+        this.columns = columns;
+        this.primaryKeyName = primaryKeyName;
+        updateMsg = "UPDATE " + tableName + " SET ";
         columns.forEach((key, value) -> {
             value.setTable(this);
             value.setColumnNumber(createStatement.indexOf(key));
         });
     }
 
-    public Column getColumn(String identifier){
-        if (!columns.containsKey(identifier)) System.err.println(identifier+" not in columns array");
+    public Column getColumn(String identifier) {
+        if (!columns.containsKey(identifier)) System.err.println(identifier + " not in columns array");
         return columns.get(identifier);
     }
 
-    public void setDatabase(Database database){
-        this.database=database;
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 
-    public String getCreateStatement(){
+    public String getCreateStatement() {
         return createStatement;
     }
 
-    public String getTableName(){
+    public String getTableName() {
         return tableName;
     }
 
-    public Database getDatabase(){
+    public Database getDatabase() {
         return database;
     }
 
-    public String getUpdateMsg(){
+    public String getUpdateMsg() {
         return updateMsg;
     }
 
-    public String getPrimaryKeyName(){
+    public String getPrimaryKeyName() {
         return primaryKeyName;
     }
 
@@ -67,10 +67,10 @@ public class Table {
                     .append(" ")
                     .append(dataType.getName());
 
-            if (primaryKey){
-                this.primaryKey=name;
+            if (primaryKey) {
+                this.primaryKey = name;
             }
-            if (notNull){
+            if (notNull) {
                 createStatementBuilder.append(" NOT NULL ");
             }
 
@@ -92,9 +92,9 @@ public class Table {
 
         public Table build() {
             int length = createStatementBuilder.length();
-            if (primaryKey!=null){
+            if (primaryKey != null) {
                 createStatementBuilder.append(" PRIMARY KEY (").append(primaryKey).append("));");
-            }else {
+            } else {
                 createStatementBuilder.replace(length - 2, length, ");");
             }
             return new Table(tableName, createStatementBuilder.toString(), columns, primaryKey);

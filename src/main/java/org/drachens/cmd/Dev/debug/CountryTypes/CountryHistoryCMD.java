@@ -37,7 +37,7 @@ public class CountryHistoryCMD extends Command {
             CountryEnums.History choice = CountryEnums.History.valueOf(context.get(type));
             components.add(Component.text(context.get(type), NamedTextColor.BLUE));
             components.add(Component.newline());
-            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
+            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner) {
                 case VotingWinner.none -> {
                     return;
                 }

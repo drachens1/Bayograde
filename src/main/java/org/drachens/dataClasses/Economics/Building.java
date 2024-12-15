@@ -62,7 +62,7 @@ public class Building {
         return buildType;
     }
 
-    public HashSet<String> getSynonyms(){
+    public HashSet<String> getSynonyms() {
         return synonyms;
     }
 
@@ -74,7 +74,7 @@ public class Building {
         this.current = current;
     }
 
-    public boolean hasSynonym(BuildingEnum buildingEnum){
+    public boolean hasSynonym(BuildingEnum buildingEnum) {
         return synonyms.contains(buildingEnum);
     }
 

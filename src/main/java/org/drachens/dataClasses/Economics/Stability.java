@@ -15,25 +15,28 @@ public class Stability {
     private float visibleStability;
     private final Modifier stabilityModifier;
     private float prevBase;
-    public Stability(float startingStability, Country country){
+
+    public Stability(float startingStability, Country country) {
         stabilityTotal = startingStability;
         this.country = country;
         stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD))
                 .build();
     }
-    public void newWeek(){
+
+    public void newWeek() {
         float stabilityBase = country.getBoost(BoostEnum.stabilityBase);
-        if (prevBase!=stabilityBase){
-            stabilityTotal+=stabilityBase;
-            stabilityBase-=prevBase;
+        if (prevBase != stabilityBase) {
+            stabilityTotal += stabilityBase;
+            stabilityBase -= prevBase;
         }
-        prevBase=stabilityBase;
+        prevBase = stabilityBase;
         float stabilityGain = country.getBoost(BoostEnum.stabilityGain);
-        stabilityTotal = stabilityTotal + stabilityGain ;
-        visibleStability=bound(100f,0f,stabilityTotal);
-        stabilityModifier.setBoost(BoostEnum.production,(visibleStability-50f)/100);
+        stabilityTotal = stabilityTotal + stabilityGain;
+        visibleStability = bound(100f, 0f, stabilityTotal);
+        stabilityModifier.setBoost(BoostEnum.production, (visibleStability - 50f) / 100);
     }
-    public float getStability(){
+
+    public float getStability() {
         return visibleStability;
     }
 }

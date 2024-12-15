@@ -24,8 +24,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.Math.floor;
-import static java.lang.Math.scalb;
+import static java.lang.Math.*;
 
 public class FlappyBird extends MiniGame
         implements EventHandlerProvider {
@@ -91,7 +90,7 @@ public class FlappyBird extends MiniGame
     }
 
     private void pipePair() {
-        int pipeHeight = ThreadLocalRandom.current().nextInt(10) + (score / 20);
+        int pipeHeight = new Random(new Random().nextLong()).nextInt(10) + (score / 20);
 
         pipeSprite(true, pipeHeight, new Pos(realX + 10, yMax, 0));
         pipeSprite(false, pipeHeight, new Pos(realX + 10, yMax / 2d - pipeHeight, 0));
@@ -183,19 +182,21 @@ public class FlappyBird extends MiniGame
         @Override
         public void addPlayer(CPlayer p) {
             Entity entity = new Entity(EntityType.BOAT);
+            entity.setInvisible(true);
             entity.setInstance(this.getInstance(), p.getPosition());
             entity.addPassenger(p);
+            p.setPose(Entity.Pose.STANDING);
             flappyBird.flappyBar.addPlayer(p);
-            
+
 
             MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
                 flappyBird.pipes.forEach(pipeSprite -> {
-                    pipeSprite.realX += 0.2 + (flappyBird.score / 200d);
+                    pipeSprite.realX += 0.2 + (flappyBird.score / 100d);
                     pipeSprite.delete();
                     pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
                 });
 
-                if (flappyBird.pipes.getLast().realX >= 10) {
+                if (flappyBird.pipes.getLast().realX >= 10 - max(flappyBird.score / 100d, 3)) {
                     flappyBird.pipePair();
                     flappyBird.score++;
                     flappyBird.flappyBar.setScore(flappyBird.score);
@@ -217,21 +218,21 @@ public class FlappyBird extends MiniGame
         private final BossBar bossBar;
 
         public FlappyBar() {
-            bossBar = BossBar.bossBar(Component.text(),1f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+            bossBar = BossBar.bossBar(Component.text(), 1f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
         }
 
-        public void addPlayer(Player p){
+        public void addPlayer(Player p) {
             bossBar.addViewer(p);
         }
 
-        public void removePlayer(Player p){
+        public void removePlayer(Player p) {
             bossBar.removeViewer(p);
         }
 
-        public void setScore(int score){
+        public void setScore(int score) {
             bossBar.name(Component.text()
-                            .append(Component.text("Score: "))
-                            .append(Component.text(score))
+                    .append(Component.text("Score: "))
+                    .append(Component.text(score))
                     .build());
         }
     }

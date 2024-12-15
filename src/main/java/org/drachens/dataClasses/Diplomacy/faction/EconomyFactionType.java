@@ -49,7 +49,7 @@ public class EconomyFactionType extends Factions {
             }
         }
         float boost = calculateBoost(totalDistance, numOfCountries, instance);
-        getModifier().setBoost(BoostEnum.production,boost);
+        getModifier().setBoost(BoostEnum.production, boost);
     }
 
     private float calculateBoost(float distance, int numOfCountries, Instance instance) {

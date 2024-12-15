@@ -77,4 +77,5 @@ public class KyoriUtil {
                 .append(Component.text("AGENDA", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
                 .build();
-    }}
+    }
+}

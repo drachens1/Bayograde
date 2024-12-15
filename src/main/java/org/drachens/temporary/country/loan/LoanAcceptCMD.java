@@ -19,8 +19,8 @@ public class LoanAcceptCMD extends Command {
         Component noLoanFound = Component.text()
                 .append(getPrefixes("country"))
                 .append(Component.text("You don't have a loan request from that country"))
-                        .build();
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+                .build();
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
         var countries = ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!isLeaderOfCountry(sender)) {
@@ -28,21 +28,22 @@ public class LoanAcceptCMD extends Command {
                     }
                     CPlayer p = (CPlayer) sender;
                     List<String> countries1 = new ArrayList<>();
-                    p.getCountry().getLoanRequests().forEach((country,loan)-> countries1.add(country));
+                    p.getCountry().getLoanRequests().forEach((country, loan) -> countries1.add(country));
                     getSuggestionBasedOnInput(suggestion, countries1);
                 });
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             String countryName = context.get(countries);
-            if (!country.getLoanRequests().containsKey(countryName)){
+            if (!country.getLoanRequests().containsKey(countryName)) {
                 p.sendMessage(noLoanFound);
                 return;
             }
             country.acceptLoan(countryName);
-        },countries);
+        }, countries);
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
