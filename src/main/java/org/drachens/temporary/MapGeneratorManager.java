@@ -116,7 +116,7 @@ public class MapGeneratorManager extends MapGen {
 
         String[] countryName = {
                 "Afghanistan", "Akrotiri", "Albania", "Algeria", "AmericanSamoa", "Andorra", "Angola", "Anguilla", "Antarctica",
-                "Antiguaand_Barbuda", "Argentina", "Armenia", "Aruba", "Ashmoreand_Cartier_Islands", "Australia", "Austria", "Azerbaijan",
+                "Antiguaand_Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
                 "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Bassasda_India", "Belarus", "Belgium", "Belize", "Benin", "Bermuda",
                 "Bhutan", "Bolivia", "Bosniaand_Herzegovina", "Botswana", "BouvetIsland", "Brazil", "BritishIndian_Ocean_Territory",
                 "BritishVirgin_Islands", "Brunei", "Bulgaria", "BurkinaFaso", "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "CapeVerde",
@@ -136,12 +136,12 @@ public class MapGeneratorManager extends MapGen {
                 "Palau", "Panama", "PapuaNew_Guinea", "ParacelIslands", "Paraguay", "Peru", "Philippines", "PitcairnIslands", "Poland", "Portugal", "PuertoRico",
                 "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "SaintHelena", "SaintKitts_and_Nevis", "SaintLucia", "SaintPierre_and_Miquelon",
                 "SaintVincent_and_the_Grenadines", "Samoa", "SanMarino", "SaoTome_and_Principe", "SaudiArabia", "Senegal", "Serbiaand_Montenegro", "Seychelles",
-                "SierraLeone", "Singapore", "Slovakia", "Slovenia", "SolomonIslands", "Somalia", "SouthAfrica", "SouthGeorgia_and_the_South_Sandwich_Islands",
+                "SierraLeone", "Singapore", "Slovakia", "Slovenia", "SolomonIslands", "Somalia", "SouthAfrica",
                 "Spain", "SpratlyIslands", "SriLanka", "Sudan", "Suriname", "Svalbard", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan",
                 "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidadand_Tobago", "TromelinIsland", "Tunisia", "Turkey", "Turkmenistan",
                 "Turksand_Caicos_Islands", "Tuvalu", "Uganda", "Ukraine", "UnitedArab_Emirates", "UnitedKingdom", "UnitedStates", "Uruguay", "Uzbekistan", "Vanuatu",
                 "Venezuela", "Vietnam", "VirginIslands", "WakeIsland", "Wallisand_Futuna", "WestBank", "WesternSahara", "Yemen", "Zambia", "Zimbabwe",
-                "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire", "Republic_of_the_belgorod_people",
+                "Ingsoc", "Atlantis", "Greater_London", "Imperuim", "Wakanda", "Panem", "Narnia", "Oz", "Mordor", "The_Romulan_Star_Empire",
                 "USSR", "Elementia"
         };
         Collections.addAll(BLOCKS, block);

@@ -12,6 +12,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.defaultsStorer.Elections;
 import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
 import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
+import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
 import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
@@ -27,6 +28,7 @@ import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Research.ResearchCategoryEnum;
+import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.tree.ResearchCategory;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
@@ -37,9 +39,14 @@ import org.drachens.fileManagement.databases.Database;
 import org.drachens.fileManagement.databases.Table;
 import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
+import org.drachens.temporary.Factory;
 import org.drachens.temporary.MapGeneratorManager;
 import org.drachens.temporary.clicks.ClickWarSystem;
+import org.drachens.temporary.research.ResearchLab;
+import org.drachens.temporary.research.ResearchLibrary;
+import org.drachens.temporary.research.ResearchUniversity;
 import org.drachens.temporary.troops.TroopWarSystem;
+import org.drachens.temporary.troops.buildings.Barracks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,6 +146,12 @@ public class Main {
         initSrv();
         createWW2VotingOption();
 
+        BuildingEnum.university.setBuildType(new ResearchUniversity());
+        BuildingEnum.researchLab.setBuildType(new ResearchLab());
+        BuildingEnum.library.setBuildType(new ResearchLibrary());
+        BuildingEnum.researchCenter.setBuildType(new ResearchCenter());
+        BuildingEnum.factory.setBuildType(new Factory());
+        BuildingEnum.barracks.setBuildType(new Barracks());
 
         createAdvancements();
 

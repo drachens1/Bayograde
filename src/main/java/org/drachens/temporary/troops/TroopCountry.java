@@ -4,6 +4,7 @@ import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.CountryEnums;
 import org.drachens.dataClasses.Countries.Election;
@@ -27,6 +28,7 @@ public class TroopCountry extends ResearchCountry {
     private CountryEnums.PreviousWar previousWar;
     private final List<Clientside> allyTroopClientsides = new ArrayList<>();
     private final List<Troop> troops = new ArrayList<>();
+    private final List<DivisionDesign> divisionDesigns = new ArrayList<>();
 
     public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies));
@@ -45,6 +47,14 @@ public class TroopCountry extends ResearchCountry {
     @Override
     public void newWeek(NewDay newDay) {
 
+    }
+
+    public void addDivisionDesign(DivisionDesign divisionDesign){
+        this.divisionDesigns.add(divisionDesign);
+    }
+
+    public void removeDivisionDesign(DivisionDesign divisionDesign){
+        this.divisionDesigns.remove(divisionDesign);
     }
 
     public CountryEnums.Type getType() {
