@@ -317,7 +317,6 @@ public class ServerUtil {
         commandManager.register(new DemandCMD());
         commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
-        commandManager.register(new MiniGameCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

@@ -47,7 +47,10 @@ public class ContinentalWorld extends World {
 
     @Override
     public void removePlayer(CPlayer p) {
-
+        ContinentalManagers.world(getInstance()).votingManager().getVoteBar().removePlayer(p);
+        if (p.getCountry()!=null){
+            p.getCountry().removePlayer(p,true);
+        }
     }
 
     @Override

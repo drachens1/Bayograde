@@ -5,15 +5,18 @@ import dev.ng5m.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.util.MiniGameUtil;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
+import org.drachens.interfaces.HideableBossBar;
 import org.drachens.miniGameSystem.MiniGame;
 import org.drachens.miniGameSystem.Sprite;
 
@@ -22,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.floor;
+import static java.lang.Math.scalb;
 
 public class FlappyBird extends MiniGame
         implements EventHandlerProvider {
@@ -41,6 +45,8 @@ public class FlappyBird extends MiniGame
     private static final String SID_BIRD = "bird";
     private static final String SID_PIPE = "flappyPipe";
 
+    private final FlappyBar flappyBar;
+
     private final List<PipeSprite> pipes = new ArrayList<>();
 
     private final CPlayer player;
@@ -52,6 +58,8 @@ public class FlappyBird extends MiniGame
         this.xMax = xMax;
         this.yMax = yMax;
         this.player = p;
+
+        flappyBar = new FlappyBar();
 
         ((FlappyWorld) getWorld()).setInstance(this);
 
@@ -177,38 +185,54 @@ public class FlappyBird extends MiniGame
             Entity entity = new Entity(EntityType.BOAT);
             entity.setInstance(this.getInstance(), p.getPosition());
             entity.addPassenger(p);
+            flappyBird.flappyBar.addPlayer(p);
+            
 
-            MiniGameUtil.startGameLoop(flappyBird, 60, new Runnable() {
-                int i = 0;
-                @Override
-                public void run() {
-                    flappyBird.pipes.forEach(pipeSprite -> {
-                        var pos = pipeSprite.getPos();
-                        if (pos.x() > flappyBird.xMax || i < 2) {
-                            i++;
-                            pipeSprite.delete();
-                        }
+            MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
+                flappyBird.pipes.forEach(pipeSprite -> {
+                    pipeSprite.realX += 0.2 + (flappyBird.score / 200d);
+                    pipeSprite.delete();
+                    pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
+                });
 
-                        pipeSprite.realX += 0.1 + (flappyBird.score / 200d);
-                        pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
-                    });
-
-                    if (flappyBird.pipes.getLast().realX >= 10) {
-                        flappyBird.pipePair();
-                        flappyBird.score++;
-                    }
-
-                    flappyBird.p -= gravity;
-
-                    flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
+                if (flappyBird.pipes.getLast().realX >= 10) {
+                    flappyBird.pipePair();
+                    flappyBird.score++;
+                    flappyBird.flappyBar.setScore(flappyBird.score);
                 }
 
+                flappyBird.p -= gravity;
+
+                flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
             });
         }
 
         @Override
         public void removePlayer(CPlayer p) {
+            flappyBird.flappyBar.removePlayer(p);
+        }
+    }
 
+    static class FlappyBar {
+        private final BossBar bossBar;
+
+        public FlappyBar() {
+            bossBar = BossBar.bossBar(Component.text(),1f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+        }
+
+        public void addPlayer(Player p){
+            bossBar.addViewer(p);
+        }
+
+        public void removePlayer(Player p){
+            bossBar.removeViewer(p);
+        }
+
+        public void setScore(int score){
+            bossBar.name(Component.text()
+                            .append(Component.text("Score: "))
+                            .append(Component.text(score))
+                    .build());
         }
     }
 }
