@@ -208,15 +208,15 @@ public class WW2Demands extends Demand {
             }
         }
 
-        if (getFromCountry().isAtWar(getToCountry())){
+        if (getFromCountry().isAtWar(getToCountry())) {
             comps.add(Component.text()
-                            .appendNewline()
-                            .append(Component.text("Peace: ",NamedTextColor.GREEN,TextDecoration.BOLD))
+                    .appendNewline()
+                    .append(Component.text("Peace: ", NamedTextColor.GREEN, TextDecoration.BOLD))
                     .build());
-            if (peace){
-                comps.add(Component.text(String.valueOf(true),NamedTextColor.GREEN));
-            }else
-                comps.add(Component.text(String.valueOf(false),NamedTextColor.RED));
+            if (peace) {
+                comps.add(Component.text(String.valueOf(true), NamedTextColor.GREEN));
+            } else
+                comps.add(Component.text(String.valueOf(false), NamedTextColor.RED));
         }
 
         return Component.text()
@@ -239,14 +239,14 @@ public class WW2Demands extends Demand {
             from.addPuppet(country);
         });
         demandedProvinces.forEach(province -> province.setOccupier(from));
-        demandedPayments.forEach(payment -> to.minusThenLoan(payment,from));
+        demandedPayments.forEach(payment -> to.minusThenLoan(payment, from));
         offeredAnnexation.forEach(country -> country.getOccupies().forEach(province -> province.setOccupier(to)));
         offeredPuppets.forEach(country -> {
             country.setOverlord(to);
             to.addPuppet(country);
         });
         offeredProvinces.forEach(province -> province.setOccupier(to));
-        offeredPayments.forEach(payment -> from.minusThenLoan(payment,to));
+        offeredPayments.forEach(payment -> from.minusThenLoan(payment, to));
     }
 
     @Override

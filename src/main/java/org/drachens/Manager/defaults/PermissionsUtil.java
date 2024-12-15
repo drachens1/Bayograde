@@ -43,6 +43,7 @@ public class PermissionsUtil {
         permss.forEach(perm -> addToList(p, perm.getPermissionName()));
         ContinentalManagers.configFileManager.specificSave("permissions");
     }
+
     private void addToList(ConfigurationNode configurationNode, String s) {
         try {
             List<String> list = configurationNode.getList(String.class);

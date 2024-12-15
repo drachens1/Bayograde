@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -41,6 +43,16 @@ public class Util {
         }
 
         return sb.toString();
+    }
+
+    public static void writeString(File file, String s) {
+        try {
+            var writer = new FileWriter(file);
+            writer.write(s);
+            writer.close();
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        }
     }
 
     public static Component colored(String text, Constants.Colors color) {

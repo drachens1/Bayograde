@@ -64,7 +64,7 @@ public class CosmeticInventory extends InventoryGUI {
 
     private InventoryButton cosmetic(StoreItem storeItem) {
         return new InventoryButton()
-                .creator(e->storeItem.getBoughtItem())
+                .creator(e -> storeItem.getBoughtItem())
                 .consumer(e -> storeItem.clickAfterBought((CPlayer) e.getPlayer()));
     }
 }

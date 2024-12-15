@@ -53,8 +53,8 @@ public class MessageManager {
         globEHandler.addListener(StartGameEvent.class, e -> {
             e.getVotingOption().getMapGenerator().generate(e.getInstance(), e.getVotingOption());
             InventoryEnum hotbarInventory = e.getVotingOption().getDefaultInventory();
-            if (hotbarInventory!=null)
-                e.getInstance().getPlayers().forEach(p -> ContinentalManagers.inventoryManager.assignInventory(p,hotbarInventory));
+            if (hotbarInventory != null)
+                e.getInstance().getPlayers().forEach(p -> ContinentalManagers.inventoryManager.assignInventory(p, hotbarInventory));
             broadcast(Component.text()
                     .append(system)
                     .append(Component.text(e.getVotingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
@@ -66,11 +66,11 @@ public class MessageManager {
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
             Player player = e.getPlayer();
-            if (!player.isSneaking())return;
+            if (!player.isSneaking()) return;
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
             if (p == null || provinceDelay.hasCooldown(player)) return;
             provinceDelay.startCooldown(player);
-            if (p.getOccupier()==null){
+            if (p.getOccupier() == null) {
                 player.sendMessage(noOccupier);
                 return;
             }
@@ -275,13 +275,13 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(ResearchStartEvent.class,e-> e.getCountry().sendMessage(Component.text()
-                        .append(country)
-                        .append(Component.text("You have started researching "))
-                        .append(Component.text(e.getResearchOption().getIdentifier()))
+        globEHandler.addListener(ResearchStartEvent.class, e -> e.getCountry().sendMessage(Component.text()
+                .append(country)
+                .append(Component.text("You have started researching "))
+                .append(Component.text(e.getResearchOption().getIdentifier()))
                 .build()));
 
-        globEHandler.addListener(ResearchCompletionEvent.class, e-> e.getCountry().sendMessage(Component.text()
+        globEHandler.addListener(ResearchCompletionEvent.class, e -> e.getCountry().sendMessage(Component.text()
                 .append(country)
                 .append(Component.text("You have finished researching "))
                 .append(Component.text(e.getResearchOption().getIdentifier()))

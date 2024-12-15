@@ -17,7 +17,7 @@ public class BuildItem extends HotbarItemButton {
 
     public BuildItem(int modelData, ItemStack item, BuildingEnum buildingEnum) {
         super(modelData, item);
-        buildTypes= buildingEnum.getBuildTypes();
+        buildTypes = buildingEnum.getBuildTypes();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class BuildItem extends HotbarItemButton {
         Country country = ((CPlayer) e.getPlayer()).getCountry();
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
         if (country == null || province == null) return;
-        if (province.getBuilding() != null && province.getBuilding().getBuildTypes()==buildTypes.getIdentifier()) {
+        if (province.getBuilding() != null && province.getBuilding().getBuildTypes() == buildTypes.getIdentifier()) {
             province.getBuilding().upgrade(1, country, e.getPlayer());
         } else {
             buildTypes.build(country, province, e.getPlayer());

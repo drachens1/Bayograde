@@ -22,10 +22,10 @@ public class ServerPropertiesFile extends YamlFileType {
             addDefault("localhost", "server", "host");
             addDefault(false, "velocity", "active");
             addDefault("null", "velocity", "secret");
-            addDefault("","database","host");
-            addDefault(25560,"database","port");
-            addDefault("","database","user");
-            addDefault("","database","password");
+            addDefault("", "database", "host");
+            addDefault(25560, "database", "port");
+            addDefault("", "database", "user");
+            addDefault("", "database", "password");
             save();
         } catch (SerializationException e) {
             throw new RuntimeException(e);
@@ -48,19 +48,19 @@ public class ServerPropertiesFile extends YamlFileType {
         return getConfigurationNode().node("velocity", "secret").getString();
     }
 
-    public String getDatabaseHost(){
-        return getConfigurationNode().node("database","host").getString();
+    public String getDatabaseHost() {
+        return getConfigurationNode().node("database", "host").getString();
     }
 
-    public String getDatabaseUser(){
-        return getConfigurationNode().node("database","user").getString();
+    public String getDatabaseUser() {
+        return getConfigurationNode().node("database", "user").getString();
     }
 
-    public String getDatabasePassword(){
-        return getConfigurationNode().node("database","password").getString();
+    public String getDatabasePassword() {
+        return getConfigurationNode().node("database", "password").getString();
     }
 
-    public int getDatabasePort(){
-        return getConfigurationNode().node("database","port").getInt();
+    public int getDatabasePort() {
+        return getConfigurationNode().node("database", "port").getInt();
     }
 }

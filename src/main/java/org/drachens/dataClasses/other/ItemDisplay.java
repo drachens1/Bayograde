@@ -114,13 +114,13 @@ public class ItemDisplay extends Clientside {
         PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
     }
 
-    public void setGlowing(boolean glowing){
-        this.glowing=glowing;
+    public void setGlowing(boolean glowing) {
+        this.glowing = glowing;
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
-        if (glowing){
-            map.put(0,Metadata.Byte((byte) 0x40));
-        }else
-            map.put(0,Metadata.Byte((byte) 0));
+        if (glowing) {
+            map.put(0, Metadata.Byte((byte) 0x40));
+        } else
+            map.put(0, Metadata.Byte((byte) 0));
         EntityMetaDataPacket entityMetaDataPacket = new EntityMetaDataPacket(entityId, map);
         PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket);
     }
@@ -131,10 +131,10 @@ public class ItemDisplay extends Clientside {
         setPos(pos);
     }
 
-    public EntityMetaDataPacket getEntityMetaDataPacket(){
+    public EntityMetaDataPacket getEntityMetaDataPacket() {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
 
-        if (glowing) map.put(0,Metadata.Byte((byte) 0x40));
+        if (glowing) map.put(0, Metadata.Byte((byte) 0x40));
         map.put(8, Metadata.VarInt(-1));
         map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
         map.put(23, Metadata.ItemStack(item));

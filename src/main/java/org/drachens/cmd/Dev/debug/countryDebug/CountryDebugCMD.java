@@ -23,7 +23,7 @@ public class CountryDebugCMD extends Command {
             if (!(sender instanceof Player p)) return;
             List<Component> components = new ArrayList<>();
             components.add(Component.text("Countries: ", NamedTextColor.BLUE));
-            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner){
+            switch (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner) {
                 case VotingWinner.none -> {
                     return;
                 }

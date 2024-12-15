@@ -9,6 +9,7 @@ public class LoanSendEvent extends Event {
     private final Country from;
     private final Country to;
     private final Loan loan;
+
     public LoanSendEvent(Instance instance, Country from, Country to, Loan loan) {
         super(instance);
         this.from = from;

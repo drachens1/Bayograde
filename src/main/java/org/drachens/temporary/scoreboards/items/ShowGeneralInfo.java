@@ -18,20 +18,21 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ShowGeneralInfo extends HotbarItemButton {
     public ShowGeneralInfo() {
-        super(5, itemBuilder(Material.BOOK,5));
+        super(5, itemBuilder(Material.BOOK, 5));
     }
 
     ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     List<CPlayer> active = new ArrayList<>();
+
     @Override
     public void onUse(PlayerUseItemEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         ContinentalScoreboards continentalScoreboards = scoreboardManager.getScoreboard(p);
-        if (!(continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard))return;
-        if (!active.contains(p)){
+        if (!(continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard)) return;
+        if (!active.contains(p)) {
             defaultCountryScoreboard.closeGeneralInfo();
             active.add(p);
-        }else {
+        } else {
             defaultCountryScoreboard.openGeneralInfo();
             active.remove(p);
         }

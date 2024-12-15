@@ -253,7 +253,7 @@ public class ServerUtil {
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
             WorldClasses worldClasses = worldClassesHashMap.get(e.getInstance());
-            if (worldClasses!=null && !allowedChunks.contains(p.getChunk()) && !worldClasses.votingManager().getVoteBar().isShown() && worldClasses.dataStorer().votingOption!=null) {
+            if (worldClasses != null && !allowedChunks.contains(p.getChunk()) && !worldClasses.votingManager().getVoteBar().isShown() && worldClasses.dataStorer().votingOption != null) {
                 p.sendMessage(oob);
                 e.setCancelled(true);
             }
@@ -269,11 +269,11 @@ public class ServerUtil {
             ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(newDay));
         }).setDelay(2).repeat().schedule());
 
-        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e->{
+        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
             if (!(e instanceof NewDay newDay)) return;
             newDay.getInstance().getPlayers().forEach(player -> {
                 ContinentalScoreboards continentalScoreboards = scoreboardManager.getScoreboard(player);
-                if (continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard){
+                if (continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard) {
                     defaultCountryScoreboard.updateAll();
                 }
             });
@@ -341,7 +341,7 @@ public class ServerUtil {
             ));
         });
 
-        globEHandler.addListener(PlayerBlockPlaceEvent.class,e->{
+        globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> {
             e.setCancelled(true);
         });
 

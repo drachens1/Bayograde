@@ -22,28 +22,28 @@ public class Modifier implements Cloneable {
 
     protected Modifier(create c) {
         this.justCompName = c.name;
-        this.boostHashMap=c.boostHashMap;
+        this.boostHashMap = c.boostHashMap;
         if (c.description != null) this.startDescription = c.description;
-        display=c.display;
+        display = c.display;
         createDescription();
         oldModifier = this.clone();
     }
 
-    public HashMap<BoostEnum, Float> getBoostHashMap(){
+    public HashMap<BoostEnum, Float> getBoostHashMap() {
         return boostHashMap;
     }
 
-    public boolean shouldDisplay(){
+    public boolean shouldDisplay() {
         return display;
     }
 
     public void createDescription() {
-        if (!shouldDisplay()||justCompName==null)return;
+        if (!shouldDisplay() || justCompName == null) return;
         List<Component> boostComp = new ArrayList<>();
-        for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()){
+        for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()) {
             float value = e.getValue();
             Component symbol = e.getKey().getSymbol();
-            if (e.getKey().isPercentage()){
+            if (e.getKey().isPercentage()) {
                 if (value > 0) {
                     boostComp.add(Component.text()
                             .append(Component.text("+" + Math.round(value * 100), NamedTextColor.GREEN))
@@ -59,7 +59,7 @@ public class Modifier implements Cloneable {
                             .appendNewline()
                             .build());
                 }
-            }else {
+            } else {
                 if (value > 0) {
                     boostComp.add(Component.text()
                             .append(Component.text("+" + value, NamedTextColor.GREEN))
@@ -108,19 +108,19 @@ public class Modifier implements Cloneable {
                 .build();
     }
 
-    public void addModifier(Modifier c){
+    public void addModifier(Modifier c) {
         c.getBoostHashMap().forEach(this::addBoost);
         update();
     }
 
-    public void setBoost(BoostEnum boostEnum, float amount){
-        boostHashMap.put(boostEnum,amount);
+    public void setBoost(BoostEnum boostEnum, float amount) {
+        boostHashMap.put(boostEnum, amount);
         update();
     }
 
-    public void addBoost(BoostEnum boostEnum, float amount){
-        float current = boostHashMap.getOrDefault(boostEnum,1f);
-        boostHashMap.put(boostEnum,current+amount);
+    public void addBoost(BoostEnum boostEnum, float amount) {
+        float current = boostHashMap.getOrDefault(boostEnum, 1f);
+        boostHashMap.put(boostEnum, current + amount);
     }
 
     public Component getName() {
@@ -140,7 +140,7 @@ public class Modifier implements Cloneable {
         this.description = description;
         update();
     }
-    
+
     public void addCountry(Country country) {
         this.appliedCountries.add(country);
     }
@@ -180,13 +180,13 @@ public class Modifier implements Cloneable {
             return this;
         }
 
-        public create addBoost(BoostEnum boostEnum, float amount){
+        public create addBoost(BoostEnum boostEnum, float amount) {
             boostHashMap.put(boostEnum, amount);
             return this;
         }
 
-        public create setDisplay(boolean choice){
-            display=choice;
+        public create setDisplay(boolean choice) {
+            display = choice;
             return this;
         }
 

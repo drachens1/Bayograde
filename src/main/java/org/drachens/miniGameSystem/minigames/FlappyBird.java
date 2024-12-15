@@ -1,6 +1,8 @@
 package org.drachens.miniGameSystem.minigames;
 
+import com.google.gson.*;
 import dev.ng5m.CPlayer;
+import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.util.MiniGameUtil;
 import net.kyori.adventure.bossbar.BossBar;
@@ -14,18 +16,20 @@ import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
+import org.drachens.interfaces.HideableBossBar;
 import org.drachens.miniGameSystem.MiniGame;
 import org.drachens.miniGameSystem.Sprite;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.Math.floor;
+import static java.lang.Math.*;
 
 public class FlappyBird extends MiniGame
         implements EventHandlerProvider {
+    public static final File db = new File("flappy.json");
+
     private final Sprite bird;
     private static final double gravity = 0.5;
     private double p = 0;
@@ -74,7 +78,7 @@ public class FlappyBird extends MiniGame
                         " Y\n"
                                 + "YYY"
                 ).setIngredient('Y', Material.YELLOW_CONCRETE)
-                .setCollisionFunction((collided,pos) -> {
+                .setCollisionFunction((collided) -> {
                     if (!collided.getIdentifier().equals(SID_PIPE)) return;
 
                     loseCallback();
@@ -86,7 +90,7 @@ public class FlappyBird extends MiniGame
     }
 
     private void pipePair() {
-        int pipeHeight = ThreadLocalRandom.current().nextInt(10) + (score / 20);
+        int pipeHeight = new Random(new Random().nextLong()).nextInt(10) + (score / 20);
 
         pipeSprite(true, pipeHeight, new Pos(realX + 10, yMax, 0));
         pipeSprite(false, pipeHeight, new Pos(realX + 10, yMax / 2d - pipeHeight, 0));
@@ -96,11 +100,58 @@ public class FlappyBird extends MiniGame
         pipes.add(new PipeSprite(height, down, pos));
     }
 
+    private JsonObject getDBRoot() {
+        return JsonParser.parseString(Util.readFile(db.toPath())).getAsJsonObject();
+    }
+
+    private String getLeaderboard() {
+        JsonObject root = getDBRoot();
+
+        HashMap<String, Integer> nameToScoreMap = new HashMap<>();
+
+        for (String key : root.keySet()) {
+            int score = root.get(key).getAsInt();
+
+            nameToScoreMap.put(key, score);
+        }
+
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(nameToScoreMap.entrySet());
+        entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        LinkedHashMap<String, Integer> sortedScores = new LinkedHashMap<>();
+
+        for (Map.Entry<String, Integer> entry : entryList) {
+            sortedScores.put(entry.getKey(), entry.getValue());
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : sortedScores.entrySet()) {
+            sb.append(entry.getKey()).append(": ").append(entry.getValue());
+        }
+
+        return sb.toString();
+    }
+
+    private void updateDB(String playerName, int score) {
+        JsonObject root = getDBRoot();
+
+        if (root.has(playerName)) {
+            root.remove(playerName);
+        }
+
+        root.add(playerName, new JsonPrimitive(score));
+
+        Util.writeString(db, root.toString());
+    }
+
     private void loseCallback() {
         if (gameEnded || !gameStarted) return;
         gameEnded = true;
 
+        updateDB(player.getUsername(), score);
+
         player.sendMessage(Component.text("You lose! Score: %d".formatted(score)));
+        player.sendMessage(Component.text(getLeaderboard()));
         player.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
     }
 
@@ -131,19 +182,21 @@ public class FlappyBird extends MiniGame
         @Override
         public void addPlayer(CPlayer p) {
             Entity entity = new Entity(EntityType.BOAT);
+            entity.setInvisible(true);
             entity.setInstance(this.getInstance(), p.getPosition());
             entity.addPassenger(p);
+            p.setPose(Entity.Pose.STANDING);
             flappyBird.flappyBar.addPlayer(p);
-            
+
 
             MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
                 flappyBird.pipes.forEach(pipeSprite -> {
+                    pipeSprite.realX += 0.2 + (flappyBird.score / 100d);
                     pipeSprite.delete();
-                    pipeSprite.realX += 0.2 + (flappyBird.score / 200d);
                     pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
                 });
 
-                if (flappyBird.pipes.getLast().realX >= 10) {
+                if (flappyBird.pipes.getLast().realX >= 10 - max(flappyBird.score / 100d, 3)) {
                     flappyBird.pipePair();
                     flappyBird.score++;
                     flappyBird.flappyBar.setScore(flappyBird.score);
@@ -165,21 +218,21 @@ public class FlappyBird extends MiniGame
         private final BossBar bossBar;
 
         public FlappyBar() {
-            bossBar = BossBar.bossBar(Component.text(),1f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+            bossBar = BossBar.bossBar(Component.text(), 1f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
         }
 
-        public void addPlayer(Player p){
+        public void addPlayer(Player p) {
             bossBar.addViewer(p);
         }
 
-        public void removePlayer(Player p){
+        public void removePlayer(Player p) {
             bossBar.removeViewer(p);
         }
 
-        public void setScore(int score){
+        public void setScore(int score) {
             bossBar.name(Component.text()
-                            .append(Component.text("Score: "))
-                            .append(Component.text(score))
+                    .append(Component.text("Score: "))
+                    .append(Component.text(score))
                     .build());
         }
     }

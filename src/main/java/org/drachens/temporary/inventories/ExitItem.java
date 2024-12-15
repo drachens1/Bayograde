@@ -13,8 +13,9 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ExitItem extends HotbarItemButton {
     private final InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
+
     public ExitItem() {
-        super(10, itemBuilder(Material.BARRIER,10));
+        super(10, itemBuilder(Material.BARRIER, 10));
     }
 
     @Override
@@ -24,7 +25,7 @@ public class ExitItem extends HotbarItemButton {
 
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(),InventoryEnum.defaultInv);
+        inventoryManager.assignInventory(e.getPlayer(), InventoryEnum.defaultInv);
     }
 
     @Override

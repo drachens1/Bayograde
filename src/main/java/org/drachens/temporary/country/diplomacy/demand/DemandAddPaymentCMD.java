@@ -33,7 +33,7 @@ public class DemandAddPaymentCMD extends Command {
 
         var payments = ArgumentType.String("currency")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (hasDemand(sender)){
+                    if (hasDemand(sender)) {
                         suggestion.addEntry(new SuggestionEntry(CurrencyEnum.production.name()));
                     }
                 });

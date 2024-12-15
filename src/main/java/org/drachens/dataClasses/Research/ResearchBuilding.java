@@ -14,16 +14,18 @@ import java.util.List;
 
 public abstract class ResearchBuilding extends BuildTypes {
     protected final BuildingEnum researchCenter = BuildingEnum.researchCenter;
+
     public ResearchBuilding(int[] lvls, Material material, BuildingEnum identifier) {
         super(lvls, material, identifier);
     }
 
     @Override
     public void onBuild(Country country, Province province, Player p) {
-        if (!canBuild(country,province,p))return;
-        new Building(this,province);
+        if (!canBuild(country, province, p)) return;
+        new Building(this, province);
         province.getBuilding().getItemDisplay().addViewer((CPlayer) p);
 
     }
+
     public abstract Payment generate(Building building);
 }

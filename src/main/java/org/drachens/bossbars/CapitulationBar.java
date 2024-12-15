@@ -7,20 +7,23 @@ import org.drachens.interfaces.HideableBossBar;
 
 public class CapitulationBar extends HideableBossBar {
     private final BossBar capBar = getBossBar();
+
     public CapitulationBar() {
         super(BossBar.bossBar(Component.text("Capitulation", NamedTextColor.GOLD), 0, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6));
         hide();
     }
-    public void setProgress(double progress){
+
+    public void setProgress(double progress) {
         capBar.progress(bound(progress));
-        if (progress==1){
+        if (progress == 1) {
             hide();
-        }else show();
+        } else show();
         System.out.println(progress);
     }
-    public float bound(double d){
-        if (d>1)return 1;
-        if (d<0)return 0;
+
+    public float bound(double d) {
+        if (d > 1) return 1;
+        if (d < 0) return 0;
         return (float) d;
     }
 }

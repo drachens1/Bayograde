@@ -8,15 +8,18 @@ import org.drachens.interfaces.Event;
 public class ResearchCompletionEvent extends Event {
     private final Country country;
     private final ResearchOption researchOption;
+
     public ResearchCompletionEvent(Instance instance, Country country, ResearchOption researchOption) {
         super(instance);
-        this.country=country;
-        this.researchOption=researchOption;
+        this.country = country;
+        this.researchOption = researchOption;
     }
-    public Country getCountry(){
+
+    public Country getCountry() {
         return country;
     }
-    public ResearchOption getResearchOption(){
+
+    public ResearchOption getResearchOption() {
         return researchOption;
     }
 }

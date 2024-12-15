@@ -12,8 +12,8 @@ public class ScoreboardManager {
         return activeScoreboards.get(p);
     }
 
-    public void openScoreboard(ContinentalScoreboards continentalScoreboards,Player p){
-        activeScoreboards.put(p,continentalScoreboards);
+    public void openScoreboard(ContinentalScoreboards continentalScoreboards, Player p) {
+        activeScoreboards.put(p, continentalScoreboards);
         continentalScoreboards.setup((CPlayer) p);
     }
 }

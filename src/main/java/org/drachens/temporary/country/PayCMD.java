@@ -36,23 +36,24 @@ public class PayCMD extends Command {
 
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
 
-        addSyntax((sender,context)->{},countries);
+        addSyntax((sender, context) -> {
+        }, countries);
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (to==null)return;
+            if (to == null) return;
             Country from = p.getCountry();
             float value = context.get(amount);
-            Payment payment = new Payment(production,value);
-            if (from.canMinusCost(payment)){
+            Payment payment = new Payment(production, value);
+            if (from.canMinusCost(payment)) {
                 to.addPayment(payment, Component.text()
-                                .append(prefix)
-                                .append(from.getNameComponent())
-                                .append(Component.text(" has sent you "))
-                                .append(Component.text(value))
-                                .append(production.getSymbol())
+                        .append(prefix)
+                        .append(from.getNameComponent())
+                        .append(Component.text(" has sent you "))
+                        .append(Component.text(value))
+                        .append(production.getSymbol())
                         .build());
                 from.sendMessage(Component.text()
                         .append(prefix)
@@ -62,9 +63,10 @@ public class PayCMD extends Command {
                         .append(Component.text(value))
                         .build());
             }
-        },countries,amount);
+        }, countries, amount);
 
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();

@@ -49,6 +49,7 @@ public class InventoryManager {
     public void assignInventory(Player p, InventoryEnum inventory) {
         changeInventory(p, inventory.getHotbarInventory());
     }
+
     private void changeInventory(Player p, HotbarInventory inventory) {
         p.getInventory().clear();
         inventory.getItems().forEach((itemStack -> p.getInventory().addItemStack(itemStack.getItem())));

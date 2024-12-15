@@ -21,7 +21,8 @@ public class ResearchOption {
     private final Payment cost;
     private final List<Component> description;
     private ResearchCategory researchCategory;
-    protected ResearchOption(Create create){
+
+    protected ResearchOption(Create create) {
         identifier = create.identifier;
         requiresString = create.requires;
         item = create.item;
@@ -29,75 +30,75 @@ public class ResearchOption {
         comparedToLast = create.comparedToLast;
         orString = create.or;
         cost = create.cost;
-        description=create.description;
+        description = create.description;
     }
 
-    public Payment getCost(){
+    public Payment getCost() {
         return cost.clone();
     }
 
-    public Modifier getModifier(){
+    public Modifier getModifier() {
         return modifier;
     }
 
-    public List<String> getOr(){
+    public List<String> getOr() {
         return orString;
     }
 
-    public List<String> getRequires(){
+    public List<String> getRequires() {
         return requiresString;
     }
 
-    public ItemStack getItem(){
+    public ItemStack getItem() {
         return item;
     }
 
-    public int[] getComparedToLast(){
+    public int[] getComparedToLast() {
         return comparedToLast;
     }
 
-    public String getIdentifier(){
+    public String getIdentifier() {
         return identifier;
     }
 
-    public void setResearchCategory(ResearchCategory researchCategory){
-        this.researchCategory=researchCategory;
+    public void setResearchCategory(ResearchCategory researchCategory) {
+        this.researchCategory = researchCategory;
     }
 
-    public List<Component> createLore(ResearchCountry country){
+    public List<Component> createLore(ResearchCountry country) {
         List<Component> base = new ArrayList<>();
         base.add(Component.text()
                 .append(Component.text(cost.getAmount()))
                 .append(cost.getCurrencyType().getSymbol())
                 .build());
-        if (!requiresString.isEmpty()){
+        if (!requiresString.isEmpty()) {
             base.add(Component.text("Prequisites: ", NamedTextColor.BLUE));
-            requiresString.forEach(require->{
-                if (country.hasResearched(require)){
-                    base.add(Component.text("- "+require,NamedTextColor.GREEN));
-                }else {
-                    base.add(Component.text("- "+require,NamedTextColor.RED));
+            requiresString.forEach(require -> {
+                if (country.hasResearched(require)) {
+                    base.add(Component.text("- " + require, NamedTextColor.GREEN));
+                } else {
+                    base.add(Component.text("- " + require, NamedTextColor.RED));
                 }
             });
         }
-        if (!orString.isEmpty()){
+        if (!orString.isEmpty()) {
             base.add(Component.text("Or: ", NamedTextColor.BLUE));
-            orString.forEach(or->{
-                if (country.hasResearched(or)){
-                    base.add(Component.text("- "+or,NamedTextColor.RED));
-                }else {
-                    base.add(Component.text("- "+or,NamedTextColor.GREEN));
+            orString.forEach(or -> {
+                if (country.hasResearched(or)) {
+                    base.add(Component.text("- " + or, NamedTextColor.RED));
+                } else {
+                    base.add(Component.text("- " + or, NamedTextColor.GREEN));
                 }
             });
         }
-        if (description!=null)
+        if (description != null)
             base.addAll(description);
-        if (researchCategory!=null)
+        if (researchCategory != null)
             base.add(researchCategory.getType());
         return base;
     }
 
-    public static class Create{
+    public static class Create {
         private List<Component> description;
         private final String identifier;
         private final ItemStack item;
@@ -106,32 +107,39 @@ public class ResearchOption {
         private final Payment cost;
         private Modifier modifier;
         private int[] comparedToLast;
-        public Create(String identifier, ItemStack item, float cost){
-            this.identifier=identifier;
-            this.item=item;
-            this.cost=new Payment(CurrencyEnum.research,cost);
+
+        public Create(String identifier, ItemStack item, float cost) {
+            this.identifier = identifier;
+            this.item = item;
+            this.cost = new Payment(CurrencyEnum.research, cost);
         }
-        public Create addRequires(String identifier){
+
+        public Create addRequires(String identifier) {
             requires.add(identifier);
             return this;
         }
-        public Create addOr(String identifier){
+
+        public Create addOr(String identifier) {
             or.add(identifier);
             return this;
         }
-        public Create setModifier(Modifier modifier){
+
+        public Create setModifier(Modifier modifier) {
             this.modifier = modifier;
             return this;
         }
-        public Create setComparedToLast(int y, int x){
-            this.comparedToLast=new int[]{y,x};
+
+        public Create setComparedToLast(int y, int x) {
+            this.comparedToLast = new int[]{y, x};
             return this;
         }
-        public Create setDescription(List<Component> description){
+
+        public Create setDescription(List<Component> description) {
             this.description = description;
             return this;
         }
-        public ResearchOption build(){
+
+        public ResearchOption build() {
             return new ResearchOption(this);
         }
     }

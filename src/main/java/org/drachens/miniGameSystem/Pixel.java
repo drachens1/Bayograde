@@ -19,7 +19,7 @@ public class Pixel {
     }
 
     public void add(DynamicPixel dynamicPixel) {
-        if (!dynamicPixels.isEmpty()){
+        if (!dynamicPixels.isEmpty()) {
             Sprite sprite = dynamicPixel.getSprite();
             dynamicPixels.forEach(dynamicPixel1 -> {
                 dynamicPixel1.getSprite().onCollision(sprite,pos);
@@ -54,7 +54,7 @@ public class Pixel {
         monitor.getInstance().setBlock(pos, material.block());
     }
 
-    public void clear(){
+    public void clear() {
         dynamicPixels.clear();
     }
 }

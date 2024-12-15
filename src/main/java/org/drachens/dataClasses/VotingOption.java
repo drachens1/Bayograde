@@ -36,10 +36,10 @@ public class VotingOption {
         if (c.war != null) war = c.war;
         if (c.ideologyTypes != null) ideologyTypes = c.ideologyTypes;
         if (c.defaultCurrencies != null) defaultCurrencies = c.defaultCurrencies;
-        if (c.tree!=null) tree=c.tree;
+        if (c.tree != null) tree = c.tree;
         countries = c.countries;
         if (c.electionTypes != null) electionTypes = c.electionTypes;
-        if (c.defaultInventory!=null) defaultInventory = c.defaultInventory;
+        if (c.defaultInventory != null) defaultInventory = c.defaultInventory;
     }
 
     public String getName() {
@@ -86,11 +86,11 @@ public class VotingOption {
         return ideologyTypes;
     }
 
-    public TechTree getTree(){
+    public TechTree getTree() {
         return tree;
     }
 
-    public InventoryEnum getDefaultInventory(){
+    public InventoryEnum getDefaultInventory() {
         return defaultInventory;
     }
 
@@ -120,8 +120,8 @@ public class VotingOption {
             return this;
         }
 
-        public create setDefaultInventory(InventoryEnum hotbarInventory){
-            this.defaultInventory=hotbarInventory;
+        public create setDefaultInventory(InventoryEnum hotbarInventory) {
+            this.defaultInventory = hotbarInventory;
             return this;
         }
 
@@ -150,8 +150,8 @@ public class VotingOption {
             return this;
         }
 
-        public create setTechTree(TechTree tree){
-            this.tree=tree;
+        public create setTechTree(TechTree tree) {
+            this.tree = tree;
             return this;
         }
 

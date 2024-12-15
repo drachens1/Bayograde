@@ -6,16 +6,20 @@ import net.minestom.server.scoreboard.Sidebar;
 public abstract class ContinentalScoreboards {
     private Sidebar sidebar;
     private CPlayer p;
-    public void setup(CPlayer p){
+
+    public void setup(CPlayer p) {
         sidebar = createSidebar(p);
         sidebar.addViewer(p);
         this.p = p;
     }
+
     protected abstract Sidebar createSidebar(CPlayer p);
-    public Sidebar getSidebar(){
+
+    public Sidebar getSidebar() {
         return sidebar;
     }
-    public CPlayer getPlayer(){
+
+    public CPlayer getPlayer() {
         return p;
     }
 }

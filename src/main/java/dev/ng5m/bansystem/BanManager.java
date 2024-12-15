@@ -24,7 +24,7 @@ public class BanManager {
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                writeString("{}");
+                Util.writeString(file, "{}");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -46,20 +46,10 @@ public class BanManager {
         return parser.getAsJsonObject();
     }
 
-    private void writeString(String s) {
-        try {
-            var writer = new FileWriter(file);
-            writer.write(s);
-            writer.close();
-        } catch (Exception x) {
-            throw new RuntimeException(x);
-        }
-    }
-
     private void write(JsonObject root) {
         var serialized = root.toString();
 
-        writeString(serialized);
+        Util.writeString(file, serialized);
     }
 
     public void banPlayer(UUID uuid, long duration) {

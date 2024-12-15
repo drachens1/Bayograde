@@ -117,8 +117,9 @@ public class Province implements Serializable {
             .append(Component.text("Unoccupied", TextColor.color(51, 129, 255)))
             .append(Component.text("\\_______", NamedTextColor.BLUE))
             .build();
+
     private Component createProvinceDescription() {
-        if (occupier==null)return unoccupied;
+        if (occupier == null) return unoccupied;
         return Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text("Province", TextColor.color(51, 129, 255)))

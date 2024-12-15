@@ -36,9 +36,9 @@ public class Leader {
             for (Modifier modifier : modifiers) {
                 if (modifier.shouldDisplay())
                     modifierComps.add(Component.text()
-                        .appendNewline()
-                        .append(modifier.getDescription())
-                        .build());
+                            .appendNewline()
+                            .append(modifier.getDescription())
+                            .build());
             }
             description = Component.text()
                     .append(modifierComps)

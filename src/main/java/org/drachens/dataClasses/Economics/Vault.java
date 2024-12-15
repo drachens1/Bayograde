@@ -23,7 +23,7 @@ public abstract class Vault {
         this.loans = new ArrayList<>();
     }
 
-    public void setCountry(Country country){
+    public void setCountry(Country country) {
         this.country = country;
         onCountrySet(country);
     }
@@ -73,31 +73,31 @@ public abstract class Vault {
         payments.getPayments().forEach(this::minusPayment);
     }
 
-    public Payment minusMaximumPossible(Payment payment, Country beneficiary){
-        if (canMinus(payment)){
-            minusPayment(payment,beneficiary);
-            return new Payment(payment.getCurrencyType(),0);
+    public Payment minusMaximumPossible(Payment payment, Country beneficiary) {
+        if (canMinus(payment)) {
+            minusPayment(payment, beneficiary);
+            return new Payment(payment.getCurrencyType(), 0);
         }
         CurrencyTypes currencyTypes = payment.getCurrencyType();
         Currencies currencies = amount.get(currencyTypes);
         Payment copy = payment.clone();
-        Payment minus = new Payment(currencyTypes,currencies.getAmount());
+        Payment minus = new Payment(currencyTypes, currencies.getAmount());
         copy.remove(minus);
         currencies.minus(payment);
-        Payment p = new Payment(currencyTypes,Math.abs(currencies.getAmount()));
+        Payment p = new Payment(currencyTypes, Math.abs(currencies.getAmount()));
         currencies.set(0f);
         return p;
     }
 
-    public Payment minusMaximumPossible(Payment payment){
-        if (canMinus(payment)){
+    public Payment minusMaximumPossible(Payment payment) {
+        if (canMinus(payment)) {
             minusPayment(payment);
-            return new Payment(payment.getCurrencyType(),0);
+            return new Payment(payment.getCurrencyType(), 0);
         }
         CurrencyTypes currencyTypes = payment.getCurrencyType();
         Currencies currencies = amount.get(currencyTypes);
         Payment copy = payment.clone();
-        Payment minus = new Payment(currencyTypes,currencies.getAmount());
+        Payment minus = new Payment(currencyTypes, currencies.getAmount());
         copy.remove(minus);
         currencies.minus(minus);
         return copy;
@@ -107,14 +107,14 @@ public abstract class Vault {
         loans.add(loan);
     }
 
-    public void removeLoan(Loan loan){
+    public void removeLoan(Loan loan) {
         loans.remove(loan);
     }
 
-    public void minusThenLoan(Payment payment, Country from){
-        if (canMinus(payment))return;
-        Payment returned = minusMaximumPossible(payment,from);
-        addLoan(new Loan(returned,10,from,country));
+    public void minusThenLoan(Payment payment, Country from) {
+        if (canMinus(payment)) return;
+        Payment returned = minusMaximumPossible(payment, from);
+        addLoan(new Loan(returned, 10, from, country));
     }
 
     public void calculateIncrease() {
@@ -185,7 +185,7 @@ public abstract class Vault {
 
     protected abstract List<Currencies> getCustomCurrencies();
 
-    public List<Loan> getLoans(){
+    public List<Loan> getLoans() {
         return loans;
     }
 }

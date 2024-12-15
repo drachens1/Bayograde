@@ -93,9 +93,9 @@ public abstract class Country implements Cloneable {
     private Component prefix;
     private Component description;
     private Country overlord = null;
-    private final Stability stability = new Stability(50f,this);
+    private final Stability stability = new Stability(50f, this);
     private final Relations relations = new Relations(this);
-    private final HashMap<String,Loan> loanRequests = new HashMap<>();
+    private final HashMap<String, Loan> loanRequests = new HashMap<>();
     private final CapitulationBar capitulationBar = new CapitulationBar();
     private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
 
@@ -135,14 +135,14 @@ public abstract class Country implements Cloneable {
         if (!update && modifier.shouldDisplay()) createInfo();
     }
 
-    public void addBoost(BoostEnum boostEnum, float value){
-        float current = boostHashmap.getOrDefault(boostEnum,1f);
-        boostHashmap.put(boostEnum,value+current);
+    public void addBoost(BoostEnum boostEnum, float value) {
+        float current = boostHashmap.getOrDefault(boostEnum, 1f);
+        boostHashmap.put(boostEnum, value + current);
     }
 
-    public void minusBoost(BoostEnum boostEnum, float value){
-        float current = boostHashmap.getOrDefault(boostEnum,1f);
-        boostHashmap.put(boostEnum,current-value);
+    public void minusBoost(BoostEnum boostEnum, float value) {
+        float current = boostHashmap.getOrDefault(boostEnum, 1f);
+        boostHashmap.put(boostEnum, current - value);
     }
 
     public void updateModifier(Modifier modifier, Modifier old) {
@@ -240,7 +240,7 @@ public abstract class Country implements Cloneable {
             .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
             .build();
 
-    Component getCountryJoin2  = Component.text()
+    Component getCountryJoin2 = Component.text()
             .append(Component.text("You have left ", NamedTextColor.BLUE))
             .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
             .build();
@@ -258,12 +258,13 @@ public abstract class Country implements Cloneable {
         p.sendMessage(Component.text().append(getPrefixes("country"), replaceString(countryJoin, "%country%", this.name)).build());
         broadcast(Component.text().append(getPrefixes("country"), replaceString(replaceString(getCountryJoin2, "%country%", this.name), "%player%", p.getUsername())).build(), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
-        scoreboardManager.openScoreboard(new DefaultCountryScoreboard(),p);
+        scoreboardManager.openScoreboard(new DefaultCountryScoreboard(), p);
         clientsides.forEach(clientside -> clientside.addViewer(p));
         if (playerLeader == null)
             setPlayerLeader(p);
         onAddPlayer(p);
     }
+
     protected abstract void onAddPlayer(CPlayer p);
 
     public void removePlayer(CPlayer p, boolean left) {
@@ -310,18 +311,18 @@ public abstract class Country implements Cloneable {
                 broadcast(Component.text().append(getPrefixes("country"), Component.text(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)).build(), capital.getInstance());
             }
         }
-        float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation,1f));
+        float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
         float capPoints = maxCapitulationPoints * capPercentage;
-        capitulationBar.setProgress(capitulationPoints/capPoints);
+        capitulationBar.setProgress(capitulationPoints / capPoints);
         if (capitulationPoints >= capPoints && !capitulated) {
             capitulated = true;
             capitulate(attacker);
         }
     }
 
-    private float bound(float d){
-        if (d>1)return 1;
-        if (d<0)return 0;
+    private float bound(float d) {
+        if (d > 1) return 1;
+        if (d < 0) return 0;
         return d;
     }
 
@@ -366,8 +367,8 @@ public abstract class Country implements Cloneable {
         return vault.canMinus(cost);
     }
 
-    public void minusThenLoan(Payment payment, Country from){
-        getVault().minusThenLoan(payment,from);
+    public void minusThenLoan(Payment payment, Country from) {
+        getVault().minusThenLoan(payment, from);
     }
 
 
@@ -440,18 +441,18 @@ public abstract class Country implements Cloneable {
         leader.getModifier().forEach((this::addModifier));
     }
 
-    public float getBoost(BoostEnum boostEnum){
-        return boostHashmap.getOrDefault(boostEnum,1f);
+    public float getBoost(BoostEnum boostEnum) {
+        return boostHashmap.getOrDefault(boostEnum, 1f);
     }
 
     public void createInfo() {
         if (mapGen.isGenerating(instance)) return;
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : modifiers) {
-            if (modifier.getName()==null)continue;
-            if (!modifier.shouldDisplay())continue;
+            if (modifier.getName() == null) continue;
+            if (!modifier.shouldDisplay()) continue;
             modifierComps.add(modifier.getName());
-            if (modifiers.getLast()!=modifier){
+            if (modifiers.getLast() != modifier) {
                 modifierComps.add(Component.text(" ,"));
             }
         }
@@ -686,6 +687,7 @@ public abstract class Country implements Cloneable {
         clientsides.forEach(clientside -> players.forEach(clientside::removeViewer));
         this.clientsides.removeAll(clientsides);
     }
+
     public void loadClientside(Clientside clientside) {
         players.forEach(clientside::addViewer);
         this.clientsides.add(clientside);
@@ -761,27 +763,31 @@ public abstract class Country implements Cloneable {
         return vault;
     }
 
-    public boolean isAtWar(Country country){
+    public boolean isAtWar(Country country) {
         return wars.contains(country);
     }
 
-    public Stability getStability(){
+    public Stability getStability() {
         return stability;
     }
-    public Relations getRelations(){
+
+    public Relations getRelations() {
         return relations;
     }
-    public void addLoanRequest(Loan loan){
-        loanRequests.put(loan.getFromCountry().getName(),loan);
+
+    public void addLoanRequest(Loan loan) {
+        loanRequests.put(loan.getFromCountry().getName(), loan);
     }
-    public void acceptLoan(String from){
+
+    public void acceptLoan(String from) {
         vault.addLoan(loanRequests.get(from));
     }
-    public HashMap<String, Loan> getLoanRequests(){
+
+    public HashMap<String, Loan> getLoanRequests() {
         return loanRequests;
     }
 
-    public void nextWeek(NewDay newDay){
+    public void nextWeek(NewDay newDay) {
         getVault().calculateIncrease();
         getStability().newWeek();
         newWeek(newDay);

@@ -13,8 +13,8 @@ public class LoanInfoCMD extends Command {
     public LoanInfoCMD() {
         super("loan_info");
         setCondition(((sender, s) -> isLeaderOfCountry(sender)));
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             List<Component> comps = new ArrayList<>();
@@ -22,6 +22,7 @@ public class LoanInfoCMD extends Command {
             p.sendMessage(Component.text().append(comps).build());
         });
     }
+
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();

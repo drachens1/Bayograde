@@ -80,11 +80,11 @@ public class ResearchCenter extends BuildTypes {
 
     }
 
-    public Payment generate(Building building){
-        Payment central = new Payment(CurrencyEnum.research,0f);
-        for (Province province : building.getProvince().getNeighbours()){
-            if (province.getBuilding()==null)continue;
-            if (province.getBuilding().getSynonyms().contains("research")){
+    public Payment generate(Building building) {
+        Payment central = new Payment(CurrencyEnum.research, 0f);
+        for (Province province : building.getProvince().getNeighbours()) {
+            if (province.getBuilding() == null) continue;
+            if (province.getBuilding().getSynonyms().contains("research")) {
                 Building building1 = province.getBuilding();
                 ResearchBuilding researchBuilding = (ResearchBuilding) building1.getBuildTypes().getBuildTypes();
                 central.add(researchBuilding.generate(building1));

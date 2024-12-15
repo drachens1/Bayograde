@@ -91,8 +91,8 @@ public class VotingManager {
             } else {
                 setWinner();
                 DataStorer dataStorer = ContinentalManagers.world(instance).dataStorer();
-                dataStorer.votingWinner= VotingWinner.valueOf(winner.getName());
-                dataStorer.votingOption=winner;
+                dataStorer.votingWinner = VotingWinner.valueOf(winner.getName());
+                dataStorer.votingOption = winner;
                 EventDispatcher.call(new StartGameEvent(instance, winner));
                 task.cancel();
             }

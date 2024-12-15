@@ -29,6 +29,7 @@ public class TroopDeployer extends HotbarItemButton {
     private final TroopPathing troopPathing = new TroopPathing();
     int[][] attack = {{3000, 1}, {200, 2}, {300, 3}};
     int[] moving = {5, 4, 6, 4};
+
     public TroopDeployer() {
         super(1, itemBuilder(Material.GOLD_BLOCK));
         troopType = new TroopType(

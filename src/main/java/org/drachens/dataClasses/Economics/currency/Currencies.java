@@ -12,8 +12,8 @@ public class Currencies implements Cloneable {
         this.amount = amount;
     }
 
-    public Currencies(CurrencyEnum currencyEnum, float amount){
-        currencyType=currencyEnum.getCurrencyType();
+    public Currencies(CurrencyEnum currencyEnum, float amount) {
+        currencyType = currencyEnum.getCurrencyType();
         this.amount = amount;
     }
 
@@ -41,8 +41,8 @@ public class Currencies implements Cloneable {
         amount -= payment.getAmount();
     }
 
-    public void set(float amount){
-        this.amount=amount;
+    public void set(float amount) {
+        this.amount = amount;
     }
 
     public void minus(float minus) {

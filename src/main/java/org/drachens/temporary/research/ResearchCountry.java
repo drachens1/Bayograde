@@ -31,7 +31,7 @@ public abstract class ResearchCountry extends Country {
 
     public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault);
-        researchModifier=new Modifier.create(Component.text("Research", NamedTextColor.BLUE))
+        researchModifier = new Modifier.create(Component.text("Research", NamedTextColor.BLUE))
                 .setDisplay(false)
                 .build();
         addModifier(researchModifier);
@@ -39,66 +39,67 @@ public abstract class ResearchCountry extends Country {
 
     @Override
     public void newWeek(NewDay newDay) {
-        if (current!=null){
+        if (current != null) {
             ClicksVault vault = (ClicksVault) getVault();
             researchCurrent.remove(vault.getResearch());
-            if (researchCurrent.getAmount()<=0){
+            if (researchCurrent.getAmount() <= 0) {
                 completeActiveResearch();
             }
         }
     }
 
-    public void addResearchCenter(Building building){
-        if (building.getBuildTypes()!= BuildingEnum.researchCenter)return;
+    public void addResearchCenter(Building building) {
+        if (building.getBuildTypes() != BuildingEnum.researchCenter) return;
         researchCentersBuildings.add(building);
     }
 
-    public void removeResearchCenter(Building building){
-        if (building.getBuildTypes()!=BuildingEnum.researchCenter)return;
+    public void removeResearchCenter(Building building) {
+        if (building.getBuildTypes() != BuildingEnum.researchCenter) return;
         researchCentersBuildings.remove(building);
     }
 
-    public void setCurrentResearch(ResearchOption identifier){
-        current=identifier;
-        researchCurrent=identifier.getCost();
+    public void setCurrentResearch(ResearchOption identifier) {
+        current = identifier;
+        researchCurrent = identifier.getCost();
     }
 
-    public boolean isResearching(){
-        return current!=null;
+    public boolean isResearching() {
+        return current != null;
     }
 
-    public ResearchOption getCurrentResearch(){
+    public ResearchOption getCurrentResearch() {
         return current;
     }
 
-    public void completeActiveResearch(){
-        EventDispatcher.call(new ResearchCompletionEvent(getInstance(),this,current));
+    public void completeActiveResearch() {
+        EventDispatcher.call(new ResearchCompletionEvent(getInstance(), this, current));
         completedResearch.add(current.getIdentifier());
-        if (current.getModifier()!=null){
+        if (current.getModifier() != null) {
             researchModifier.addModifier(current.getModifier());
         }
-        current=null;
-        researchCurrent=null;
+        current = null;
+        researchCurrent = null;
     }
 
-    public boolean hasResearched(String identifier){
+    public boolean hasResearched(String identifier) {
         return completedResearch.contains(identifier);
     }
 
-    public List<Building> getResearchCentersBuildings(){
+    public List<Building> getResearchCentersBuildings() {
         return researchCentersBuildings;
     }
 
-    public boolean hasResearchedAny(List<String> researches){
-        for (String s : researches){
-            if (hasResearched(s))return true;
+    public boolean hasResearchedAny(List<String> researches) {
+        for (String s : researches) {
+            if (hasResearched(s)) return true;
         }
         return false;
     }
-    public boolean hasResearchedAll(List<String> researches){
-        if (researches.isEmpty())return true;
-        for (String s : researches){
-            if (!hasResearched(s))return false;
+
+    public boolean hasResearchedAll(List<String> researches) {
+        if (researches.isEmpty()) return true;
+        for (String s : researches) {
+            if (!hasResearched(s)) return false;
         }
         return true;
     }

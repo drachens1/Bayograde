@@ -18,24 +18,26 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ShowIdeology extends HotbarItemButton {
     public ShowIdeology() {
-        super(2, itemBuilder(Material.BOOK,2));
+        super(2, itemBuilder(Material.BOOK, 2));
     }
 
     ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     List<CPlayer> active = new ArrayList<>();
+
     @Override
     public void onUse(PlayerUseItemEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         ContinentalScoreboards continentalScoreboards = scoreboardManager.getScoreboard(p);
-        if (!(continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard))return;
-        if (active.contains(p)){
+        if (!(continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard)) return;
+        if (active.contains(p)) {
             defaultCountryScoreboard.closeIdeologies();
             active.remove(p);
-        }else {
+        } else {
             defaultCountryScoreboard.openIdeologies();
             active.add(p);
         }
     }
+
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
 
