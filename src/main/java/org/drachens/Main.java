@@ -607,5 +607,6 @@ public class Main {
     public static void initHooks() {
         NG5M.hook();
     }
+
 }
 

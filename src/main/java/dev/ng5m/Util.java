@@ -55,6 +55,7 @@ public class Util {
         }
     }
 
+
     public static Component colored(String text, Constants.Colors color) {
         return Component.text(text).color(color.color);
     }

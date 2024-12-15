@@ -31,6 +31,7 @@ public class BanManager {
         }
     }
 
+
     public Function<Player, Component> getBanMessage() {
         return banMessage;
     }
