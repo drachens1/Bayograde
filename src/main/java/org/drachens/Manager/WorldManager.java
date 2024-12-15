@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class WorldManager {
     private World defaultWorld;
     private final HashMap<Instance, World> worldHashMap = new HashMap<>();
-    private final HashSet<CPlayer> playerHashSet = new HashSet<>();
+    private final HashMap<CPlayer, Instance> playerHashSet = new HashMap<>();
     private final Function<Player, Component> displayNameSupplier = Player::getName;
     private final Rank r = new Rank(displayNameSupplier, Component.text("cool", NamedTextColor.BLUE), Component.text("cool2", NamedTextColor.BLUE), NamedTextColor.RED, "cool");
 
@@ -34,12 +34,12 @@ public class WorldManager {
         globEHandler.addListener(PlayerDisconnectEvent.class,e->worldHashMap.get(e.getInstance()).playerDisconnect(e));
         globEHandler.addListener(PlayerSpawnEvent.class,e->{
             CPlayer p = (CPlayer) e.getPlayer();
-            if (playerHashSet.contains(p)) {
-                worldHashMap.get(p.getInstance()).removePlayer(p);
+            if (playerHashSet.containsKey(p)) {
+                worldHashMap.get(playerHashSet.get(p)).removePlayer(p);
             } else {
-                playerHashSet.add(p);
                 initialJoin(p);
             }
+            playerHashSet.put(p,p.getInstance());
             worldHashMap.get(p.getInstance()).addPlayer(p);
         });
     }
