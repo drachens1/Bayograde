@@ -105,7 +105,6 @@ public class FlappyBird extends MiniGame
         return JsonParser.parseString(Util.readFile(db.toPath())).getAsJsonObject();
     }
 
-
     private String getLeaderboard() {
         JsonObject root = getDBRoot();
 
