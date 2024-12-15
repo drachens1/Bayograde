@@ -341,6 +341,11 @@ public class ServerUtil {
                     new DataStorer()
             ));
         });
+
+        globEHandler.addListener(PlayerBlockPlaceEvent.class,e->{
+            e.setCancelled(true);
+        });
+
         start();
     }
 

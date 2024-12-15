@@ -30,7 +30,7 @@ public class ContinentalWorld extends World {
         final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
         ContinentalManagers.world(instance).votingManager().getVoteBar().addPlayer(p);
-        if (ContinentalManagers.world(instance).votingManager()!=null){
+        if (ContinentalManagers.world(instance).votingManager()!=null && ContinentalManagers.world(instance).dataStorer().votingOption!=null){
             InventoryEnum inventoryEnum = ContinentalManagers.world(instance).dataStorer().votingOption.getDefaultInventory();
             if (inventoryEnum!=null)
                 ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);

@@ -21,19 +21,10 @@ import java.util.HashMap;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 
 public class TroopWarSystem implements War {
-    private final TroopType troopType;
-    private final TroopPathing troopPathing = new TroopPathing();
-    int[][] attack = {{3000, 1}, {200, 2}, {300, 3}};
-    int[] moving = {5, 4, 6, 4};
+
 
     public TroopWarSystem() {
-        troopType = new TroopType(
-                7, Material.ORANGE_DYE,
-                14, Material.ORANGE_DYE,
-                21, Material.ORANGE_DYE,
-                new Animation(250L, Material.ORANGE_DYE, moving),
-                new DynamicAnimation(Material.ORANGE_DYE, attack),
-                new Animation(1000L, null, null));
+
     }
 
     @Override
@@ -48,14 +39,6 @@ public class TroopWarSystem implements War {
 
     @Override
     public void onClick(PlayerStartDiggingEvent e) {
-        CPlayer p = (CPlayer) e.getPlayer();
-        TroopCountry country = (TroopCountry) p.getCountry();
-        if (country == null) return;
-        Instance instance = e.getInstance();
-        Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
-        if (province == null || !(province.getOccupier() == country)) return;
-        System.out.println("spawn troop");
-        TrainedTroop trainedTroop = new TrainedTroop(troopType, new DivisionDesign("design", new HashMap<>(), null, country), 10f);
-        new Troop(province, trainedTroop, troopPathing);
+
     }
 }

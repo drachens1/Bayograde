@@ -35,7 +35,7 @@ public class AdvancementManager {
             HashMap<String,Pair<Integer,List<Pair<Advancement, net.minestom.server.advancements.Advancement>>>> eventsLists = new HashMap<>();
 
             AdvancementRoot advancementRoot = new AdvancementRoot(advancementSection.getTitle(),advancementSection.getDescription(),
-                    advancementSection.getItem(), advancementSection.getFrameType(),0,0,"section");
+                    advancementSection.getItem(), advancementSection.getFrameType(),0,0,"textures/advancements/backgrounds/red");
             advancementRoot.setAchieved(true);
 
             AdvancementTab advancementTab = advancementManager.createTab(name,advancementRoot);

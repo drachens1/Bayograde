@@ -21,9 +21,7 @@ public class Pixel {
     public void add(DynamicPixel dynamicPixel) {
         if (!dynamicPixels.isEmpty()){
             Sprite sprite = dynamicPixel.getSprite();
-            if (sprite==null)return;
             dynamicPixels.forEach(dynamicPixel1 -> {
-                if (dynamicPixel1.getSprite()==null)return;
                 dynamicPixel1.getSprite().onCollision(sprite);
                 sprite.onCollision(dynamicPixel1.getSprite());
             });

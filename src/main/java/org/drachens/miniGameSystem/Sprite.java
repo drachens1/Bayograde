@@ -54,6 +54,10 @@ public class Sprite {
         materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x() + relativePos.getX(), pos.y() + relativePos.getY(), 0), dynamicPixel));
     }
 
+    public Map<RelativePos, DynamicPixel> getMaterialHashMap() {
+        return materialHashMap;
+    }
+
     public void move(Pos to, Long delayInMillis) {
         if (task != null) {
             task.cancel();

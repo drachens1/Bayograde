@@ -577,9 +577,10 @@ public class Main {
                                                 .build())
                                 .build())
                         .build())
+                        .setDefaultInventory(InventoryEnum.defaultInv)
                 .build(), VotingWinner.ww2_clicks);
 
-        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
+        ContinentalManagers .defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
                 .setCountries(90)

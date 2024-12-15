@@ -28,6 +28,7 @@ public class ItemDisplay extends Clientside {
     byte displayType;
     private AnimationType active;
     private EntityTeleportPacket entityTeleportPacket;
+    private boolean glowing = false;
 
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
         super(storeViewers, instance, pos);
@@ -113,10 +114,35 @@ public class ItemDisplay extends Clientside {
         PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
     }
 
+    public void setGlowing(boolean glowing){
+        this.glowing=glowing;
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+        if (glowing){
+            map.put(0,Metadata.Byte((byte) 0x40));
+        }else
+            map.put(0,Metadata.Byte((byte) 0));
+        EntityMetaDataPacket entityMetaDataPacket = new EntityMetaDataPacket(entityId, map);
+        PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket);
+    }
+
     public void setPosWithOffset(Province province) {
         Pos pos = province.getPos();
         pos = pos.add(0.5, 1.5, 0.5);
         setPos(pos);
+    }
+
+    public EntityMetaDataPacket getEntityMetaDataPacket(){
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+
+        if (glowing) map.put(0,Metadata.Byte((byte) 0x40));
+        map.put(8, Metadata.VarInt(-1));
+        map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
+        map.put(23, Metadata.ItemStack(item));
+        map.put(24, Metadata.Byte(displayType));
+        return new EntityMetaDataPacket(
+                this.entityId,
+                map
+        );
     }
 
     @Override
@@ -134,17 +160,8 @@ public class ItemDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
 
-        map.put(8, Metadata.VarInt(-1));
-        map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
-        map.put(23, Metadata.ItemStack(item));
-        map.put(24, Metadata.Byte(displayType));
-
-        PacketUtils.sendGroupedPacket(players1, new EntityMetaDataPacket(
-                this.entityId,
-                map
-        ));
+        PacketUtils.sendGroupedPacket(players1, getEntityMetaDataPacket());
 
         PacketUtils.sendGroupedPacket(players1, entityTeleportPacket);
     }
@@ -174,17 +191,7 @@ public class ItemDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
-
-        map.put(8, Metadata.VarInt(-1));
-        map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
-        map.put(23, Metadata.ItemStack(item));
-        map.put(24, Metadata.Byte(displayType));
-
-        PacketUtils.sendPacket(p, new EntityMetaDataPacket(
-                this.entityId,
-                map
-        ));
+        PacketUtils.sendPacket(p, getEntityMetaDataPacket());
 
         PacketUtils.sendPacket(p, entityTeleportPacket);
 

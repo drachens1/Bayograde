@@ -17,6 +17,7 @@ import org.drachens.miniGameSystem.MiniGameRunnable;
 import org.drachens.miniGameSystem.Monitor;
 import org.drachens.miniGameSystem.Sprite;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -106,8 +107,8 @@ public class FlappyBird extends MiniGame
 
             Sprite.Builder.loadLayout(0,
                     down
-                    ? (" ###\n".repeat(height) + "#####")
-                    : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
+                            ? (" ###\n".repeat(height) + "#####")
+                            : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
         }
     }
 
@@ -128,20 +129,26 @@ public class FlappyBird extends MiniGame
             entity.setInstance(this.getInstance(), p.getPosition());
             entity.addPassenger(p);
 
-            MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
-                flappyBird.pipes.forEach(pipeSprite -> {
-                    var pos = pipeSprite.getPos();
-                    if (pos.x() > flappyBird.xMax) {
-                        pipeSprite.delete();
-                    }
+            MiniGameUtil.startGameLoop(flappyBird, 60, new Runnable() {
+                int i = 0;
+                @Override
+                public void run() {
+                    flappyBird.pipes.forEach(pipeSprite -> {
+                        var pos = pipeSprite.getPos();
+                        if (pos.x() > flappyBird.xMax || i < 2) {
+                            i++;
+                            pipeSprite.delete();
+                        }
 
-                    pipeSprite.realX += 0.1;
-                    pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
-                });
+                        pipeSprite.realX += 0.1;
+                        pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
+                    });
 
-                flappyBird.p -= gravity;
+                    flappyBird.p -= gravity;
 
-                flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
+                    flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
+                }
+
             });
         }
 
