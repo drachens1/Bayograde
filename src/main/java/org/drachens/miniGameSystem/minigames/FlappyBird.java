@@ -17,10 +17,7 @@ import org.drachens.miniGameSystem.MiniGameRunnable;
 import org.drachens.miniGameSystem.Monitor;
 import org.drachens.miniGameSystem.Sprite;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.floor;
@@ -41,9 +38,11 @@ public class FlappyBird extends MiniGame
     private static final String SID_BIRD = "bird";
     private static final String SID_PIPE = "flappyPipe";
 
-    private final Set<PipeSprite> pipes = new HashSet<>();
+    private final List<PipeSprite> pipes = new ArrayList<>();
 
     private final CPlayer player;
+
+    private int score = 0;
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
         super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(), new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
@@ -75,13 +74,13 @@ public class FlappyBird extends MiniGame
                     loseCallback();
                 })
                 .setIdentifier(SID_BIRD)
-                .build(new Pos(this.realX, this.p, 0), getMonitor());
+                .build(new Pos(this.realX, this.p, 1), getMonitor());
 
         gameStarted = true;
     }
 
     private void pipePair() {
-        int pipeHeight = ThreadLocalRandom.current().nextInt(10);
+        int pipeHeight = ThreadLocalRandom.current().nextInt(10) + (score / 20);
 
         pipeSprite(true, pipeHeight, new Pos(realX + 10, yMax, 0));
         pipeSprite(false, pipeHeight, new Pos(realX + 10, yMax / 2d - pipeHeight, 0));
@@ -95,7 +94,7 @@ public class FlappyBird extends MiniGame
         if (gameEnded || !gameStarted) return;
         gameEnded = true;
 
-        player.sendMessage(Component.text("You lose!"));
+        player.sendMessage(Component.text("You lose! Score: %d".formatted(score)));
         player.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
     }
 
@@ -105,7 +104,7 @@ public class FlappyBird extends MiniGame
         public PipeSprite(int height, boolean down, Pos pos) {
             super(pos, FlappyBird.this.getMonitor(), SID_PIPE, null);
 
-            Sprite.Builder.loadLayout(0,
+            Sprite.Builder.loadLayout(1,
                     down
                             ? (" ###\n".repeat(height) + "#####")
                             : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
@@ -140,9 +139,14 @@ public class FlappyBird extends MiniGame
                             pipeSprite.delete();
                         }
 
-                        pipeSprite.realX += 0.1;
+                        pipeSprite.realX += 0.1 + (flappyBird.score / 200d);
                         pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
                     });
+
+                    if (flappyBird.pipes.getLast().realX >= 10) {
+                        flappyBird.pipePair();
+                        flappyBird.score++;
+                    }
 
                     flappyBird.p -= gravity;
 
