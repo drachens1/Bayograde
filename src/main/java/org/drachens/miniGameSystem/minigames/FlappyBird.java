@@ -78,7 +78,7 @@ public class FlappyBird extends MiniGame
                         " Y\n"
                                 + "YYY"
                 ).setIngredient('Y', Material.YELLOW_CONCRETE)
-                .setCollisionFunction((collided) -> {
+                .setCollisionFunction((collided, pos) -> {
                     if (!collided.getIdentifier().equals(SID_PIPE)) return;
 
                     loseCallback();
