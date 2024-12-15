@@ -128,31 +128,21 @@ public class FlappyBird extends MiniGame
             entity.setInstance(this.getInstance(), p.getPosition());
             entity.addPassenger(p);
 
-            MiniGameUtil.startGameLoop(flappyBird, 60, new Runnable() {
-                int i = 0;
-                @Override
-                public void run() {
-                    flappyBird.pipes.forEach(pipeSprite -> {
-                        var pos = pipeSprite.getPos();
-                        if (pos.x() > flappyBird.xMax || i < 2) {
-                            i++;
-                            pipeSprite.delete();
-                        }
+            MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
+                flappyBird.pipes.forEach(pipeSprite -> {
+                    pipeSprite.realX += 0.1 + (flappyBird.score / 200d);
+                    pipeSprite.delete();
+                    pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
+                });
 
-                        pipeSprite.realX += 0.1 + (flappyBird.score / 200d);
-                        pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
-                    });
-
-                    if (flappyBird.pipes.getLast().realX >= 10) {
-                        flappyBird.pipePair();
-                        flappyBird.score++;
-                    }
-
-                    flappyBird.p -= gravity;
-
-                    flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
+                if (flappyBird.pipes.getLast().realX >= 10) {
+                    flappyBird.pipePair();
+                    flappyBird.score++;
                 }
 
+                flappyBird.p -= gravity;
+
+                flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
             });
         }
 
