@@ -14,8 +14,6 @@ import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.research.ResearchCountry;
 
-import static org.drachens.Manager.defaults.ContinentalManagers.defaultsStorer;
-
 public class ResearchCenter extends BuildTypes {
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the research center : 5 Production", NamedTextColor.RED))

@@ -7,7 +7,6 @@ import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.territories.Province;
 
 import java.util.HashSet;
-import java.util.List;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 

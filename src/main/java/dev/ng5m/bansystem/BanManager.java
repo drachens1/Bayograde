@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Function;

@@ -5,10 +5,6 @@ import dev.ng5m.greet.GreetEvents;
 import net.minestom.server.MinecraftServer;
 import org.drachens.miniGameSystem.minigames.FlappyBird;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
-
 public class NG5M {
 
     public static void hook() {

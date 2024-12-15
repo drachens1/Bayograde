@@ -1,6 +1,8 @@
 package org.drachens.miniGameSystem.minigames;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import dev.ng5m.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProvider;
@@ -16,15 +18,14 @@ import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
-import org.drachens.interfaces.HideableBossBar;
 import org.drachens.miniGameSystem.MiniGame;
 import org.drachens.miniGameSystem.Sprite;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.Math.*;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
 
 public class FlappyBird extends MiniGame
         implements EventHandlerProvider {

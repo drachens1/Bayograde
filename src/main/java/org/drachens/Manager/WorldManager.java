@@ -15,7 +15,6 @@ import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.databases.Table;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.function.Function;
 
 public class WorldManager {
