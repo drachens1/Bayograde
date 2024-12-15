@@ -1,6 +1,8 @@
 package org.drachens.miniGameSystem.minigames;
 
+import com.google.gson.*;
 import dev.ng5m.CPlayer;
+import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.util.MiniGameUtil;
 import net.kyori.adventure.text.Component;
@@ -13,10 +15,9 @@ import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;
-import org.drachens.miniGameSystem.MiniGameRunnable;
-import org.drachens.miniGameSystem.Monitor;
 import org.drachens.miniGameSystem.Sprite;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,6 +25,8 @@ import static java.lang.Math.floor;
 
 public class FlappyBird extends MiniGame
         implements EventHandlerProvider {
+    public static final File db = new File("flappy.json");
+
     private final Sprite bird;
     private static final double gravity = 0.5;
     private double p = 0;
@@ -90,11 +93,58 @@ public class FlappyBird extends MiniGame
         pipes.add(new PipeSprite(height, down, pos));
     }
 
+    private JsonObject getDBRoot() {
+        return JsonParser.parseString(Util.readFile(db.toPath())).getAsJsonObject();
+    }
+
+    private String getLeaderboard() {
+        JsonObject root = getDBRoot();
+
+        HashMap<String, Integer> nameToScoreMap = new HashMap<>();
+
+        for (String key : root.keySet()) {
+            int score = root.get(key).getAsInt();
+
+            nameToScoreMap.put(key, score);
+        }
+
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(nameToScoreMap.entrySet());
+        entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        LinkedHashMap<String, Integer> sortedScores = new LinkedHashMap<>();
+
+        for (Map.Entry<String, Integer> entry : entryList) {
+            sortedScores.put(entry.getKey(), entry.getValue());
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : sortedScores.entrySet()) {
+            sb.append(entry.getKey()).append(": ").append(entry.getValue());
+        }
+
+        return sb.toString();
+    }
+
+    private void updateDB(String playerName, int score) {
+        JsonObject root = getDBRoot();
+
+        if (root.has(playerName)) {
+            root.remove(playerName);
+        }
+
+        root.add(playerName, new JsonPrimitive(score));
+
+        Util.writeString(db, root.toString());
+    }
+
     private void loseCallback() {
         if (gameEnded || !gameStarted) return;
         gameEnded = true;
 
+        updateDB(player.getUsername(), score);
+
         player.sendMessage(Component.text("You lose! Score: %d".formatted(score)));
+        player.sendMessage(Component.text(getLeaderboard()));
         player.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
     }
 

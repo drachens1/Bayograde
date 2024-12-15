@@ -2,6 +2,7 @@ package org.drachens;
 
 import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
+import dev.ng5m.NG5M;
 import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProviderManager;
 import dev.ng5m.greet.GreetEvents;
@@ -604,26 +605,7 @@ public class Main {
     }
 
     public static void initHooks() {
-        MinecraftServer.getConnectionManager().setPlayerProvider(CPlayer::new);
-
-        EventHandlerProviderManager.registerProvider(FlappyBird.class);
-
-        new GreetEvents().hook(
-                new GreetEvents.GreetSettings(
-                        event ->
-                                Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
-                                        Util.colored("+", Constants.Colors.LIME).append(
-                                                Util.colored("] " + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
-                                        )
-                                ),
-                        event ->
-                                Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
-                                        Util.colored("-", Constants.Colors.RED).append(
-                                                Util.colored("]" + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
-                                        )
-                                ))
-        );
-
+        NG5M.hook();
     }
 }
 
