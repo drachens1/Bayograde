@@ -1,6 +1,7 @@
 package org.drachens.miniGameSystem;
 
 import dev.ng5m.util.Preconditions;
+import dev.ng5m.util.VoidFunction;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.item.Material;
@@ -25,6 +26,10 @@ public class Sprite {
         this.monitor = monitor;
         this.identifier = identifier;
         this.miniGameRunnable = miniGameRunnable;
+    }
+
+    public Sprite(Pos pos, Monitor monitor, String identifier, VoidFunction<Sprite> miniGameRunnable) {
+        this(pos, monitor, identifier, (collided, pos1) -> miniGameRunnable.apply(collided));
     }
 
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
@@ -113,6 +118,10 @@ public class Sprite {
         public Builder setCollisionFunction(MiniGameRunnable collisionFunction) {
             this.collisionFunction = collisionFunction;
             return this;
+        }
+
+        public Builder setCollisionFunction(VoidFunction<Sprite> function) {
+            return setCollisionFunction((collided, pos) -> function.apply(collided));
         }
 
         public Builder setWeight(int weight) {

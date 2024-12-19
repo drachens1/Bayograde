@@ -55,6 +55,8 @@ import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.example.ExampleCMD;
+import org.drachens.cmd.minigames.FlappyCMD;
+import org.drachens.cmd.minigames.PacmanCMD;
 import org.drachens.cmd.plan.PlanCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
@@ -298,7 +300,10 @@ public class ServerUtil {
         commandManager.register(new MsgCMD());
         commandManager.register(new GamemodeCMD());
         commandManager.register(new FlyCMD());
+
         commandManager.register(new FlappyCMD());
+        commandManager.register(new PacmanCMD());
+
         commandManager.register(new FlyspeedCMD());
         commandManager.register(new CountryCMD());
         commandManager.register(new TeleportCMD());

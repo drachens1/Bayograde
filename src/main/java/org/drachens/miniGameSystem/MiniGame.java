@@ -8,11 +8,11 @@ import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 
-public abstract class MiniGame {
+public abstract class MiniGame<W extends World> {
     private final Monitor monitor;
-    private final World world;
+    private final W world;
 
-    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, World world, Pos playerSpawning) {
+    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, W world, Pos playerSpawning) {
         this.world = world;
         ContinentalManagers.worldManager.registerWorld(world);
         Instance instance = world.getInstance();
@@ -35,7 +35,7 @@ public abstract class MiniGame {
         return world.getInstance();
     }
 
-    public World getWorld() {
+    public W getWorld() {
         return world;
     }
 }

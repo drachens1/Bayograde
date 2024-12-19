@@ -1,8 +1,6 @@
 package org.drachens.miniGameSystem.minigames;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import dev.ng5m.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProvider;
@@ -14,26 +12,28 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;
+import org.drachens.miniGameSystem.MiniGameRunnable;
 import org.drachens.miniGameSystem.Sprite;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static java.lang.Math.floor;
-import static java.lang.Math.max;
+import static java.lang.Math.*;
 
-public class FlappyBird extends MiniGame
+public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
         implements EventHandlerProvider {
     public static final File db = new File("flappy.json");
 
     private final Sprite bird;
     private static final double gravity = 0.5;
-    private double p = 0;
+    private double pos = 0;
     private final double realX;
 
     private final int xMax;
@@ -61,16 +61,16 @@ public class FlappyBird extends MiniGame
 
         flappyBar = new FlappyBar();
 
-        ((FlappyWorld) getWorld()).setInstance(this);
+        getWorld().setInstance(this);
 
         MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerVehiclePacket.class, (clientSteerVehiclePacket, player) -> {
             if (player != this.player) return;
             if ((clientSteerVehiclePacket.flags() & 0x01) == 0) return;
 
-            this.p += gravity * 2d;
+            this.pos += gravity * 2d;
         });
 
-        this.p = yMax / 2d - 1d;
+        this.pos = yMax / 2d - 1d;
         this.realX = xMax / 2d;
 
         pipePair();
@@ -79,13 +79,13 @@ public class FlappyBird extends MiniGame
                         " Y\n"
                                 + "YYY"
                 ).setIngredient('Y', Material.YELLOW_CONCRETE)
-                .setCollisionFunction((collided, pos) -> {
+                .setCollisionFunction((collided) -> {
                     if (!collided.getIdentifier().equals(SID_PIPE)) return;
 
                     loseCallback();
                 })
                 .setIdentifier(SID_BIRD)
-                .build(new Pos(this.realX, this.p, 1), getMonitor());
+                .build(new Pos(this.realX, this.pos, 1), getMonitor());
 
         gameStarted = true;
     }
@@ -108,29 +108,11 @@ public class FlappyBird extends MiniGame
     private String getLeaderboard() {
         JsonObject root = getDBRoot();
 
-        HashMap<String, Integer> nameToScoreMap = new HashMap<>();
-
-        for (String key : root.keySet()) {
-            int score = root.get(key).getAsInt();
-
-            nameToScoreMap.put(key, score);
-        }
-
-        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(nameToScoreMap.entrySet());
-        entryList.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-
-        LinkedHashMap<String, Integer> sortedScores = new LinkedHashMap<>();
-
-        for (Map.Entry<String, Integer> entry : entryList) {
-            sortedScores.put(entry.getKey(), entry.getValue());
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : sortedScores.entrySet()) {
-            sb.append(entry.getKey()).append(": ").append(entry.getValue());
-        }
-
-        return sb.toString();
+        return root.entrySet()
+                .stream()
+                .sorted(Comparator.comparingInt(entry -> entry.getValue().getAsInt()))
+                .map(entry -> entry.getKey() + ": " + entry.getValue().getAsInt())
+                .collect(Collectors.joining("\n"));
     }
 
     private void updateDB(String playerName, int score) {
@@ -145,11 +127,25 @@ public class FlappyBird extends MiniGame
         Util.writeString(db, root.toString());
     }
 
+    private int getDBScore(String player) {
+        JsonObject root = getDBRoot();
+
+        if (root.has(player)) {
+            return root.get(player).getAsInt();
+        } else {
+            return -1;
+        }
+    }
+
     private void loseCallback() {
         if (gameEnded || !gameStarted) return;
         gameEnded = true;
 
-        updateDB(player.getUsername(), score);
+        int dbScore = getDBScore(player.getUsername());
+
+        if (score > dbScore) {
+            updateDB(player.getUsername(), score);
+        }
 
         player.sendMessage(Component.text("You lose! Score: %d".formatted(score)));
         player.sendMessage(Component.text(getLeaderboard()));
@@ -160,13 +156,35 @@ public class FlappyBird extends MiniGame
         public double realX = 0;
 
         public PipeSprite(int height, boolean down, Pos pos) {
-            super(pos, FlappyBird.this.getMonitor(), SID_PIPE, null);
+            super(pos, FlappyBird.this.getMonitor(), SID_PIPE, (MiniGameRunnable) null);
 
             Sprite.Builder.loadLayout(1,
                     down
                             ? (" ###\n".repeat(height) + "#####")
                             : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
         }
+    }
+
+    private void mainLoop() {
+        pipes.forEach(pipeSprite -> {
+            pipeSprite.realX += 0.2 + (score / 100d);
+            pipeSprite.delete();
+            pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
+        });
+
+        double scoreDiv = score / 100d;
+        double gap = 15 - (
+                scoreDiv > 3 ? scoreDiv : 3
+        );
+
+        if (pipes.getLast().realX >= gap) {
+            pipePair();
+            score++;
+            flappyBar.setScore(score);
+        }
+
+        pos -= gravity;
+        bird.setPos(new Pos(floor(realX), floor(pos), 0));
     }
 
     static class FlappyWorld extends World {
@@ -182,36 +200,20 @@ public class FlappyBird extends MiniGame
 
         @Override
         public void addPlayer(CPlayer p) {
-            Entity entity = new Entity(EntityType.BOAT);
-            entity.setInvisible(true);
-            entity.setInstance(this.getInstance(), p.getPosition());
-            entity.addPassenger(p);
-            p.setPose(Entity.Pose.STANDING);
             flappyBird.flappyBar.addPlayer(p);
 
-
-            MiniGameUtil.startGameLoop(flappyBird, 60, () -> {
-                flappyBird.pipes.forEach(pipeSprite -> {
-                    pipeSprite.realX += 0.2 + (flappyBird.score / 100d);
-                    pipeSprite.delete();
-                    pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
-                });
-
-                if (flappyBird.pipes.getLast().realX >= 10 - max(flappyBird.score / 100d, 3)) {
-                    flappyBird.pipePair();
-                    flappyBird.score++;
-                    flappyBird.flappyBar.setScore(flappyBird.score);
-                }
-
-                flappyBird.p -= gravity;
-
-                flappyBird.bird.setPos(new Pos(floor(flappyBird.realX), floor(flappyBird.p), 0));
-            });
+            MiniGameUtil.putPlayerInBoat(p, getInstance());
+            MiniGameUtil.startGameLoop(flappyBird, 60, () -> flappyBird.mainLoop());
         }
 
         @Override
         public void removePlayer(CPlayer p) {
             flappyBird.flappyBar.removePlayer(p);
+        }
+
+        @Override
+        public void playerMove(PlayerMoveEvent e) {
+            e.setCancelled(true);
         }
     }
 

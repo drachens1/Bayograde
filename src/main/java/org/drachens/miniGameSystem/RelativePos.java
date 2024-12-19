@@ -1,6 +1,8 @@
 package org.drachens.miniGameSystem;
 
 public class RelativePos {
+    public static final RelativePos ZERO = new RelativePos(0, 0);
+
     private final int x;
     private final int y;
 

@@ -1,8 +1,8 @@
 package dev.ng5m.util;
 
 @FunctionalInterface
-public interface VoidFunction {
+public interface VoidFunction<T> {
 
-    void apply();
+    void apply(T arg1);
 
 }
