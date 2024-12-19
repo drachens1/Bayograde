@@ -5,7 +5,6 @@ import dev.ng5m.Util;
 import dev.ng5m.util.Direction;
 import dev.ng5m.util.MiniGameUtil;
 import dev.ng5m.util.VehicleMovementHaccUtil;
-import it.unimi.dsi.fastutil.Pair;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -35,9 +34,9 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             "     ■ ■■■■■ ■■ ■■■■■ ■     \n" +
             "     ■ ■■          ■■ ■     \n" +
             "     ■ ■■ ■■■__■■■ ■■ ■     \n" +
-            "■■■■■■ ■■ ■      ■ ■■ ■■■■■■\n" +
-            "          ■      ■          \n" +
-            "■■■■■■ ■■ ■      ■ ■■ ■■■■■■\n" +
+            "■■■■■■ ■■ ■xx x x■ ■■ ■■■■■■\n" +
+            "          ■x  xxx■          \n" +
+            "■■■■■■ ■■ ■xxxxxx■ ■■ ■■■■■■\n" +
             "     ■ ■■ ■■■■■■■■ ■■ ■     \n" +
             "     ■ ■■  READY!  ■■ ■     \n" +
             "     ■ ■■ ■■■■■■■■ ■■ ■     \n" +
@@ -62,14 +61,17 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     private final PacmanSprite pacman;
 
     private final Blinky blinky;
-    private final Sprite pinky;
-    private final Sprite inky;
-    private final Sprite clyde;
+    private final Pinky pinky;
+    private final Inky inky;
+    private final Clyde clyde;
 
     private final CPlayer player;
 
+    private static final int xMax = 28;
+    private static final int yMax = 31;
+
     public Pacman(CPlayer p) {
-        super(p, 28, 31, Material.BLACK_CONCRETE, new PacmanWorld(), new Pos(14, 15, -20));
+        super(p, xMax, yMax, Material.BLACK_CONCRETE, new PacmanWorld(), new Pos(14, 15, -20));
         this.player = p;
 
         getWorld().setInstance(this);
@@ -86,57 +88,69 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         pacman = new PacmanSprite();
         
         blinky = new Blinky();
-        pinky = makeGhostSprite(new Pos(13, 16, 0), "Pinky", Material.PINK_CONCRETE);
-        inky = makeGhostSprite(new Pos(14, 16, 0), "Inky", Material.CYAN_CONCRETE);
-        clyde = makeGhostSprite(new Pos(15, 16, 0), "Clyde", Material.LIME_CONCRETE);
+        pinky = new Pinky();
+        inky = new Inky();
+        clyde = new Clyde();
 
         MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerVehiclePacket.class, (clientSteerVehiclePacket, player) -> {
             if (player != this.player) return;
 
             final byte flags = clientSteerVehiclePacket.flags();
 
-            if (VehicleMovementHaccUtil.jumping(flags) && isDirectionNotObstructed(Direction.NORTH)) {
+            if (VehicleMovementHaccUtil.jumping(flags) && isWalkablePacman(Direction.NORTH)) {
                 pacman.direction = Direction.NORTH;
-            } else if (VehicleMovementHaccUtil.sneaking(flags) && isDirectionNotObstructed(Direction.SOUTH)) {
+            } else if (VehicleMovementHaccUtil.sneaking(flags) && isWalkablePacman(Direction.SOUTH)) {
                 pacman.direction = Direction.SOUTH;
             }
         });
 
         MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerBoatPacket.class, (clientSteerBoatPacket, player) -> {
-            if (clientSteerBoatPacket.rightPaddleTurning() && isDirectionNotObstructed(Direction.WEST)) { // turn left coz inverted
+            if (clientSteerBoatPacket.rightPaddleTurning() && isWalkablePacman(Direction.WEST)) { // turn left coz inverted
                 pacman.direction = Direction.WEST;
-            } else if (clientSteerBoatPacket.leftPaddleTurning() && isDirectionNotObstructed(Direction.EAST)) {
+            } else if (clientSteerBoatPacket.leftPaddleTurning() && isWalkablePacman(Direction.EAST)) {
                 pacman.direction = Direction.EAST;
             }
         });
     }
 
-    public boolean isDirectionNotObstructed(Direction direction) {
-        return isDirectionNotObstructed(direction, new Pos(pacman.realX, pacman.realY, 0));
+    public boolean isWalkablePacman(Direction direction) {
+        return isWalkable(direction, new Pos(pacman.realX, pacman.realY, 0));
     }
 
-    public boolean isDirectionNotObstructed(Direction direction, Pos origin) {
+    public boolean isWalkableGhosts(Direction direction, Pos origin) {
+        return isWalkable(direction, origin, '■', 'x');
+    }
+
+    public boolean isWalkable(Direction direction, Pos origin) {
+        return isWalkable(direction, origin, '■');
+    }
+
+    public boolean isWalkable(Direction direction, Pos origin, char ... chars) {
         int newX = (int) floor(origin.x() + direction.x);
         int newY = (int) floor(origin.y() + direction.y);
 
         char tile = MAP_LAYOUT_LINES.get(newY).charAt(newX);
 
-        return tile != '■';
-    }
+        for (char c : chars) {
+            if (c == tile) return false;
+        }
 
-    private Sprite makeGhostSprite(Pos pos, String id, Material material) {
-        Sprite sprite = new Sprite(pos, getMonitor(), "ghost" + id, arg1 -> Util.noop());
-        sprite.addDynamicPixel(RelativePos.ZERO, new DynamicPixel(0, material));
-
-        return sprite;
+        return true;
     }
 
     private void loseCallback() {
         player.sendMessage(Component.text("Lost"));
     }
 
+    private void moveGhosts() {
+        blinky.move();
+        pinky.move();
+        inky.move();
+        clyde.move();
+    }
+
     private void mainLoop() {
-        if (isDirectionNotObstructed(pacman.direction)) {
+        if (isWalkablePacman(pacman.direction)) {
             int newX = (int) floor(pacman.realX + pacman.direction.x);
             int newY = (int) floor(pacman.realY + pacman.direction.y);
 
@@ -145,7 +159,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             pacman.updatePosition();
         }
 
-        blinky.move();
+        moveGhosts();
     }
 
     public Direction rotate90Deg(boolean cw, Direction direction) {
@@ -162,23 +176,57 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     }
 
     class Blinky extends Ghost {
+
         public Blinky() {
-            super(new Pos(12, 16, 0), "blinky", new Pos(3, 35, 0), Material.RED_CONCRETE);
+            super(new Pos(12, 16, 0), "Blinky", new Pos(3, 35, 0), Material.RED_CONCRETE);
         }
 
         @Override
-        protected void moveChase() {
+        protected Pos moveChase() {
+            return pacman.getPos();
+        }
+    }
 
+    class Pinky extends Ghost {
+        public Pinky() {
+            super(new Pos(13, 16, 0), "Pinky", new Pos(27, 35, 0), Material.PINK_CONCRETE);
+        }
+
+        @Override
+        protected Pos moveChase() {
+            return null;
+        }
+    }
+
+    class Inky extends Ghost {
+        public Inky() {
+            super(new Pos(14, 16, 0), "Inky", new Pos(xMax, -2, 0), Material.CYAN_CONCRETE);
+        }
+
+        @Override
+        protected Pos moveChase() {
+            return null;
+        }
+    }
+
+    class Clyde extends Ghost {
+        public Clyde() {
+            super(new Pos(15, 16, 0), "Clyde", new Pos(0, -2, 0), Material.LIME_CONCRETE);
+        }
+
+        @Override
+        protected Pos moveChase() {
+            return null;
         }
     }
 
     abstract class Ghost extends Sprite {
-        public State state = State.SCATTER;
+        public State state = State.CHASE;
         public final Pos scatterTargetTile;
         public Pos targetTile;
 
         public Direction facing = Direction.NORTH;
-        public Direction previousDirection = Direction.NORTH;
+        public Direction lastDirection = Direction.NONE;
 
         public double realX;
         public double realY;
@@ -195,16 +243,25 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             this.targetTile = scatterTargetTile;
         }
 
-        private void moveScatter() {
-            var directions = pickDirectionsToMove();
-            Direction direction = pickDirectionToMove(directions);
-//            while (direction == rotate90Deg(true, rotate90Deg(true, facing)))
+        protected final void moveTowardsTargetTile() {
+            Direction d = Direction.NONE;
 
-            previousDirection = direction;
-            facing = direction;
+            double minDistance = Double.MAX_VALUE;
+            for (Direction direction : Direction.values()) {
+                if (direction == Direction.NONE) continue;
 
-            realX += direction.x;
-            realY += direction.y;
+                double distance = squaredDistanceToTargetTile(direction);
+
+                if (distance < minDistance && isWalkableGhosts(direction, getPos()) && (
+                        rotate90Deg(true, rotate90Deg(true, direction)) != lastDirection)) {
+                    minDistance = distance;
+                    d = direction;
+                }
+            }
+
+            realX += d.x;
+            realY += d.y;
+            lastDirection = d;
         }
 
         private double squaredDistanceToTargetTile(Direction direction) {
@@ -213,60 +270,26 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             );
         }
 
-        private Direction pickDirectionToMove(List<Direction> validDirections) {
-            List<Direction> closest = new ArrayList<>();
+        protected abstract Pos moveChase();
 
-            double minDistance = Double.MAX_VALUE;
-            for (Direction d : validDirections) {
-                double distance = squaredDistanceToTargetTile(d);
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closest.clear();
-                    closest.add(d);
-                } else if (distance == minDistance) {
-                    closest.add(d);
-                }
+        private Pos inferNewTargetTile() {
+            if (state == State.SCATTER) {
+                return scatterTargetTile;
+            } else if (state == State.CHASE) {
+                return moveChase();
             }
 
-            Direction f = closest.get(new Random().nextInt(closest.size()));
-
-            while (f == rotate90Deg(true, rotate90Deg(true, facing))) {
-                closest.remove(f);
-                f = closest.get(new Random().nextInt(closest.size()));
-            }
-
-            return f;
+            throw new RuntimeException("Invalid state (???)");
         }
-
-        private List<Direction> pickDirectionsToMove() {
-            List<Direction> directions = new ArrayList<>();
-
-            if (isDirectionNotObstructed(facing, getPos())) {
-                directions.add(facing);
-            }
-
-            Direction cw = rotate90Deg(true, facing);
-            if (isDirectionNotObstructed(cw, getPos())) {
-                directions.add(cw);
-            }
-
-            Direction ccw = rotate90Deg(false, facing);
-            if (isDirectionNotObstructed(ccw, getPos())) {
-                directions.add(ccw);
-            }
-
-            return directions;
-        }
-
-        protected abstract void moveChase();
 
         public final void move() {
-            switch (state) {
-                case SCATTER -> moveScatter();
-                case CHASE -> moveChase();
+            Pos newTargetTile = inferNewTargetTile();
+
+            if (newTargetTile != null) {
+                targetTile = newTargetTile;
             }
 
+            moveTowardsTargetTile();
             updatePosition();
         }
 
