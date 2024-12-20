@@ -215,11 +215,11 @@ public class MapGeneratorManager extends MapGen {
         double baseScale = 0.01;
         double detailScale = 0.05;
         double threshold = 0.5;
+        instance.enableAutoChunkLoad(true);
         for (int x = -getSizeX(); x < getSizeX(); x++) {
             for (int z = -getSizeY(); z < getSizeY(); z++) {
                 double baseNoiseValue = baseNoise.evaluateNoise(x * baseScale, z * baseScale);
                 double detailNoiseValue = detailNoise.evaluateNoise(x * detailScale, z * detailScale);
-
                 double combinedValue = baseNoiseValue + detailNoiseValue * 0.5;
                 combinedValue = Math.max(-1, Math.min(1, combinedValue));
                 double normalizedValue = (combinedValue + 1) / 2.0;
@@ -237,6 +237,7 @@ public class MapGeneratorManager extends MapGen {
                 addChunk(province.getChunk());
             }
         }
+        instance.enableAutoChunkLoad(false);
         scheduler.buildTask(() -> {
             setNeighbours();
             createCountries(countries);

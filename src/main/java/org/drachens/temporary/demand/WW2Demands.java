@@ -287,7 +287,6 @@ public class WW2Demands extends Demand {
     }
 
     public void hidePlayer(CPlayer p) {
-        ContinentalManagers.world(p.getInstance()).countryDataManager().getCountries().forEach(country -> country.reloadBlocksForPlayer(p));
         inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
         imaginaryWorld.removePlayer(p);
     }

@@ -30,6 +30,7 @@ public class ImaginaryWorld {
     public void removePlayer(CPlayer p){
         players.remove(p);
         ContinentalManagers.imaginaryWorldManager.removePlayers(p,this);
+        ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos,block)-> PacketUtils.sendPacket(p,new BlockChangePacket(pos,instance.getBlock(pos)))));
     }
 
     public HashSet<Player> getPlayers(){
