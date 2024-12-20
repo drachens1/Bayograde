@@ -70,6 +70,14 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     private static final int xMax = 28;
     private static final int yMax = 31;
 
+    public final int fps = 3;
+    private int frames = 0;
+
+    public int score = 0;
+
+    private Ghost.State state = Ghost.State.SCATTER;
+
+
     public Pacman(CPlayer p) {
         super(p, xMax, yMax, Material.BLACK_CONCRETE, new PacmanWorld(), new Pos(14, 15, -20));
         this.player = p;
@@ -82,8 +90,8 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
                         MAP_LAYOUT
                 )
                 .setIngredient('■', Material.BLUE_CONCRETE)
-//                .setIngredient(' ', Material.HEAVY_CORE)
-                .build(new Pos(27, 30, -1), getMonitor());
+                .setIngredient(' ', Material.HEAVY_CORE)
+                .build(new Pos(27, 30, -2), getMonitor());
 
         pacman = new PacmanSprite();
         
@@ -125,11 +133,15 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         return isWalkable(direction, origin, '■');
     }
 
+    public char getTileAt(int x, int y) {
+        return MAP_LAYOUT_LINES.get(y).charAt(x);
+    }
+
     public boolean isWalkable(Direction direction, Pos origin, char ... chars) {
         int newX = (int) floor(origin.x() + direction.x);
         int newY = (int) floor(origin.y() + direction.y);
 
-        char tile = MAP_LAYOUT_LINES.get(newY).charAt(newX);
+        char tile = getTileAt(newX, newY);
 
         for (char c : chars) {
             if (c == tile) return false;
@@ -149,7 +161,39 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         clyde.move();
     }
 
-    private void mainLoop() {
+    private void updateStateFromTimePassed() {
+        int seconds = frames / fps;
+
+        if (seconds > 7 && seconds <= 27) {
+            state = Ghost.State.CHASE;
+        }
+
+        if (seconds > 27 && seconds <= 34) {
+            state = Ghost.State.SCATTER;
+        }
+
+        if (seconds > 34 && seconds <= 54) {
+            state = Ghost.State.CHASE;
+        }
+
+        if (seconds > 54 && seconds <= 59) {
+            state = Ghost.State.SCATTER;
+        }
+
+        if (seconds > 59 && seconds <= 79) {
+            state = Ghost.State.CHASE;
+        }
+
+        if (seconds > 79 && seconds <= 84) {
+            state = Ghost.State.SCATTER;
+        }
+
+        if (seconds > 84) {
+            state = Ghost.State.CHASE;
+        }
+    }
+
+    private void movePacman() {
         if (isWalkablePacman(pacman.direction)) {
             int newX = (int) floor(pacman.realX + pacman.direction.x);
             int newY = (int) floor(pacman.realY + pacman.direction.y);
@@ -159,6 +203,30 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             pacman.updatePosition();
         }
 
+        if (pacman.realX + pacman.direction.x >= 28) {
+            pacman.realX = 0;
+            pacman.realY = 16;
+        }
+
+        if (pacman.realX + pacman.direction.x < 0) {
+            pacman.realX = xMax - 1;
+            pacman.realY = 16;
+        }
+
+        char tile = getTileAt((int) pacman.realX, (int) pacman.realY);
+        if (tile == ' ') {
+            score++;
+
+            map.getDynamicPixel(pacman.getPos()).setMaterial(Material.BLACK_CONCRETE);
+        }
+    }
+
+    private void mainLoop() {
+        frames++;
+
+        updateStateFromTimePassed();
+
+        movePacman();
         moveGhosts();
     }
 
@@ -194,7 +262,13 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         @Override
         protected Pos moveChase() {
-            return null;
+            int yd = pacman.direction.y == 0 ? 0 : 4;
+            int xd = pacman.direction.x == 0 ? 0 : 4;
+
+            if (pacman.direction == Direction.NORTH)
+                xd = 4;
+
+            return new Pos(pacman.realX + pacman.direction.x + xd, pacman.realY + pacman.direction.y + yd, 0);
         }
     }
 
@@ -203,15 +277,32 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             super(new Pos(14, 16, 0), "Inky", new Pos(xMax, -2, 0), Material.CYAN_CONCRETE);
         }
 
+        private Pos getIntermediateTile() {
+            int yd = pacman.direction.y == 0 ? 0 : 2;
+            int xd = pacman.direction.x == 0 ? 0 : 2;
+            if (pacman.direction == Direction.NORTH)
+                xd = 2;
+
+            return new Pos(pacman.realX + xd, pacman.realY + yd, 0);
+        }
+
         @Override
         protected Pos moveChase() {
-            return null;
+            Pos intermediate = getIntermediateTile();
+
+            int vx = (int) (intermediate.x() - blinky.realX);
+            int vy = (int) (intermediate.y() - blinky.realY);
+
+            int tx = (int) (blinky.realX + 2 * vx);
+            int ty = (int) (blinky.realY + 2 * vy);
+
+            return new Pos(tx, ty, 0);
         }
     }
 
     class Clyde extends Ghost {
         public Clyde() {
-            super(new Pos(15, 16, 0), "Clyde", new Pos(0, -2, 0), Material.LIME_CONCRETE);
+            super(new Pos(15, 16, 0), "Clyde", new Pos(-1, -2, 0), Material.LIME_CONCRETE);
         }
 
         @Override
@@ -221,7 +312,6 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     }
 
     abstract class Ghost extends Sprite {
-        public State state = State.CHASE;
         public final Pos scatterTargetTile;
         public Pos targetTile;
 
@@ -249,6 +339,16 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             double minDistance = Double.MAX_VALUE;
             for (Direction direction : Direction.values()) {
                 if (direction == Direction.NONE) continue;
+
+                if (realX + direction.x >= 28) {
+                    d = Direction.EAST;
+                    break;
+                }
+
+                if (realX + direction.x < 0) {
+                    d = Direction.WEST;
+                    break;
+                }
 
                 double distance = squaredDistanceToTargetTile(direction);
 
