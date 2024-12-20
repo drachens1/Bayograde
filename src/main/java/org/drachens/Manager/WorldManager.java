@@ -14,6 +14,7 @@ import org.drachens.dataClasses.World;
 import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.databases.Table;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -53,6 +54,7 @@ public class WorldManager {
         p.setAllowFlying(true);
         p.refreshCommands();
         ContinentalManagers.advancementManager.addPlayer(p);
+        p.setJoinTime(LocalTime.now());
     }
 
     public void setDefaultWorld(World world) {

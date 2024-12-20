@@ -458,7 +458,6 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
                         block = Block.BLACK_CONCRETE;
                     }
 
-
                     Util.sendGhostBlock(p, block, new Pos(x, y, -1));
                 }
             }

@@ -4,6 +4,7 @@ import dev.ng5m.util.Preconditions;
 import dev.ng5m.util.VoidFunction;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.item.Material;
+import net.minestom.server.utils.PacketUtils;
 
 import java.util.HashMap;
 import java.util.Map;

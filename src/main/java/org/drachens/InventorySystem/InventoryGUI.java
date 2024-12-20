@@ -42,7 +42,7 @@ public abstract class InventoryGUI implements InventoryHandler {
         event.getPlayer().openInventory(Objects.requireNonNull(event.getInventory()));
         int slot = event.getSlot();
         InventoryButton button = this.buttonMap.get(slot);
-        if (button != null) {
+        if (button != null && button.getEventConsumer()!=null) {
             button.getEventConsumer().accept(event);
         }
     }

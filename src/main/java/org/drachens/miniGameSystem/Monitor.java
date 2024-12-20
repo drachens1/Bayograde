@@ -1,8 +1,12 @@
 package org.drachens.miniGameSystem;
 
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
+import net.minestom.server.network.packet.server.play.BlockChangePacket;
+import net.minestom.server.utils.PacketUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +18,10 @@ public class Monitor {
     public Monitor(Instance instance, Material defaultMaterial) {
         this.instance = instance;
         this.defaultMaterial = defaultMaterial;
+    }
+
+    public void sendGhostBlock(Player p, Block block, Pos pos){
+        PacketUtils.sendPacket(p,new BlockChangePacket(pos,block));
     }
 
     public void addPixel(Pos pos, Pixel pixel) {

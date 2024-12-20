@@ -34,7 +34,7 @@ public class DivisionDesign {
         this.speed = 1f;
         this.country = country;
         this.name = name;
-        profile=new Profile(itemBuilder(Material.ORANGE_DYE));
+        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(name)));
     }
 
     public DivisionDesign(DivisionDesign design) {
@@ -45,7 +45,8 @@ public class DivisionDesign {
         this.paymentList = design.paymentList;
         this.country = design.country;
         this.name = design.name;
-        profile=new Profile(itemBuilder(Material.ORANGE_DYE));
+        this.hp=design.hp;
+        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(design.name)));
 
     }
 
@@ -128,7 +129,7 @@ public class DivisionDesign {
     public static class Profile {
         private ItemStack face;
         private final InventoryButton train = new InventoryButton()
-                .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS_PANE)
+                .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS)
                         .customName(Component.text("Train"))
                         .build())
                 .consumer(e -> {});
@@ -138,7 +139,7 @@ public class DivisionDesign {
                         .build())
                 .consumer(e -> {});
         private final InventoryButton delete = new InventoryButton()
-                .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS_PANE)
+                .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
                         .customName(Component.text("Delete"))
                         .build())
                 .consumer(e -> {});

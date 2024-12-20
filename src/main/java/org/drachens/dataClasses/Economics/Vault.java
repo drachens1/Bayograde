@@ -151,7 +151,7 @@ public abstract class Vault {
 
     public boolean canMinus(Payment payment) {
         Currencies currency = amount.get(payment.getCurrencyType());
-        return currency != null && currency.getAmount() > payment.getAmount();
+        return currency != null && currency.getAmount() >= payment.getAmount();
     }
 
     public boolean canMinus(Payments payments) {

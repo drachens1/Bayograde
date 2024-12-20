@@ -335,6 +335,10 @@ public class ServerUtil {
         globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
 
         start();
+
+        globEHandler.addListener(PlayerChunkLoadEvent.class, e->{
+            System.out.println("a");
+        });
     }
 
     public static void addChunk(Chunk chunk) {

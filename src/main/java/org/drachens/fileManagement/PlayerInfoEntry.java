@@ -1,6 +1,7 @@
 package org.drachens.fileManagement;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.permission.Permission;
 import org.drachens.fileManagement.databases.Entry;
 import org.drachens.fileManagement.databases.Table;
 
@@ -12,6 +13,7 @@ import java.util.*;
 import static org.drachens.util.Messages.getTime;
 
 public class PlayerInfoEntry implements Entry {
+    private final CPlayer p;
     private final Table table;
     private final String uuid;
     private final String name;
@@ -22,6 +24,7 @@ public class PlayerInfoEntry implements Entry {
     private final HashMap<String, Integer> eventAchievementTrigger = new HashMap<>();
 
     public PlayerInfoEntry(CPlayer p, Table table) {
+        this.p=p;
         p.setPlayerDataFile(this);
         this.uuid = String.valueOf(p.getUuid());
         this.name = p.getUsername();
@@ -89,7 +92,6 @@ public class PlayerInfoEntry implements Entry {
     public void insert() {
         String checkSql = "SELECT * FROM " + table.getTableName() + " WHERE uuid = \"" + uuid + "\";";
         boolean insertRequired = false;
-        System.out.println(checkSql);
 
         try (PreparedStatement stmt = table.getDatabase().getConnection().prepareStatement(checkSql)) {
             stmt.setString(1, uuid);
@@ -143,13 +145,18 @@ public class PlayerInfoEntry implements Entry {
 
             if (resultSet.next()) {
                 this.playtime = resultSet.getLong("playtime");
+                p.setPlayTime(playtime);
                 this.gold = resultSet.getInt("gold");
+                p.setGold(gold);
 
                 String permissionsString = resultSet.getString("permissions");
                 this.permissions = new ArrayList<>(Arrays.asList(permissionsString.split(",")));
+                permissions.forEach(permission -> p.addPermission(new Permission(permission)));
+
 
                 String cosmeticsString = resultSet.getString("cosmetics");
                 this.cosmetics = new ArrayList<>(Arrays.asList(cosmeticsString.split(",")));
+                cosmetics.forEach(p::addCosmetic);
 
                 String achievementEventString = resultSet.getString("event_count");
                 if (achievementEventString != null) {
@@ -197,7 +204,6 @@ public class PlayerInfoEntry implements Entry {
                 eventCountString = eventCountString.substring(0, eventCountString.length() - 1);
             }
             updateStatement.setString(5, eventCountString);
-            System.out.println(eventCountString);
             updateStatement.setString(6, uuid);
 
             updateStatement.executeUpdate();

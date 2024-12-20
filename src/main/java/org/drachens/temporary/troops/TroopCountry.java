@@ -36,6 +36,8 @@ public class TroopCountry extends ResearchCountry {
         divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
         divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
         divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
+        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
+        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
 
     }
 
