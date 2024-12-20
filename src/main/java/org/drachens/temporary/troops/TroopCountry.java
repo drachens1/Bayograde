@@ -32,6 +32,11 @@ public class TroopCountry extends ResearchCountry {
 
     public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies));
+
+        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
+        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
+        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),this));
+
     }
 
     @Override
@@ -55,6 +60,10 @@ public class TroopCountry extends ResearchCountry {
 
     public void removeDivisionDesign(DivisionDesign divisionDesign){
         this.divisionDesigns.remove(divisionDesign);
+    }
+
+    public List<DivisionDesign> getDivisionDesigns(){
+        return divisionDesigns;
     }
 
     public CountryEnums.Type getType() {

@@ -40,6 +40,10 @@ public abstract class World {
 
     }
 
+    public void playerAnimationEvent(PlayerHandAnimationEvent e){
+
+    }
+
     public Instance getInstance() {
         return instance;
     }

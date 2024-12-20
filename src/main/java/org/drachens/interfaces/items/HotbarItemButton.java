@@ -1,5 +1,6 @@
 package org.drachens.interfaces.items;
 
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -27,4 +28,6 @@ public abstract class HotbarItemButton {
     public abstract void onUse(PlayerUseItemOnBlockEvent e);
 
     public abstract void onUse(PlayerStartDiggingEvent e);
+
+    public abstract void onUse(PlayerHandAnimationEvent e);
 }

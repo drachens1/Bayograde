@@ -1,6 +1,7 @@
 package org.drachens.temporary.troops.inventory;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -61,5 +62,10 @@ public class TroopDeployer extends HotbarItemButton {
         System.out.println("spawn troop");
         TrainedTroop trainedTroop = new TrainedTroop(troopType, new DivisionDesign("design", new HashMap<>(), null, country), 10f);
         new Troop(province, trainedTroop, troopPathing);
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
+
     }
 }

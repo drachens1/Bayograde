@@ -19,6 +19,7 @@ public class Pixel {
     }
 
     public void add(DynamicPixel dynamicPixel) {
+        dynamicPixel.setLocation(this);
         if (!dynamicPixels.isEmpty()) {
             Sprite sprite = dynamicPixel.getSprite();
             dynamicPixels.forEach(dynamicPixel1 -> {

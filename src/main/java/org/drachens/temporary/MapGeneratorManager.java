@@ -126,7 +126,7 @@ public class MapGeneratorManager extends MapGen {
                 "Egypt", "ElSalvador", "EquatorialGuinea", "Eritrea", "Estonia", "Ethiopia", "EuropaIsland", "FalklandIslands", "FaroeIslands",
                 "Fiji", "Finland", "France", "FrenchGuiana", "FrenchPolynesia", "FrenchSouthern_and_Antarctic_Lands", "Gabon", "Gambia,The", "GazaStrip",
                 "Georgia", "Germany", "Ghana", "Gibraltar", "GloriosoIslands", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey",
-                "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "HeardIsland_and_McDonald_Islands", "HolySee_(Vatican_City)", "Honduras", "HongKong", "Hungary",
+                "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "HolySee_(Vatican_City)", "Honduras", "HongKong", "Hungary",
                 "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isleof_Man", "Israel", "Italy", "Jamaica", "JanMayen", "Japan", "Jersey", "Jordan",
                 "Juande_Nova_Island", "Kazakhstan", "Kenya", "Kiribati", "Korea,North", "Korea,South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon",
                 "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives",
@@ -588,20 +588,11 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void assignRegion(List<Country> countries) {
-        List<ElectionTypes> ElectionTypesTemp = new ArrayList<>(electionTypes);
-        List<IdeologyTypes> ideologyTypesTemp = new ArrayList<>(ideologyTypes);
 
-        Region north = new Region("north", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
-        ElectionTypesTemp.remove(north.getLeadingElectionType());
-        ideologyTypesTemp.remove(north.getLeadingIdeology());
-        Region south = new Region("south", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
-        ElectionTypesTemp.remove(south.getLeadingElectionType());
-        ideologyTypesTemp.remove(south.getLeadingIdeology());
-        Region east = new Region("east", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
-        ElectionTypesTemp.remove(east.getLeadingElectionType());
-        ideologyTypesTemp.remove(east.getLeadingIdeology());
-        if (electionTypes.isEmpty()) ElectionTypesTemp = new ArrayList<>(electionTypes);
-        Region west = new Region("west", getRandomIdeology(ideologyTypesTemp), getRandomElection(ElectionTypesTemp));
+        Region north = new Region("north", getRandomIdeology(), getRandomElection());
+        Region south = new Region("south", getRandomIdeology(), getRandomElection());
+        Region east = new Region("east", getRandomIdeology(), getRandomElection());
+        Region west = new Region("west", getRandomIdeology(), getRandomElection());
 
         Pos spawn = new Pos(0, 0, 0);
         for (Country country : countries) {
@@ -626,11 +617,11 @@ public class MapGeneratorManager extends MapGen {
         }
     }
 
-    private IdeologyTypes getRandomIdeology(List<IdeologyTypes> ideologyTypes) {
+    private IdeologyTypes getRandomIdeology() {
         return ideologyTypes.get(new Random().nextInt(ideologyTypes.size()));
     }
 
-    private ElectionTypes getRandomElection(List<ElectionTypes> electionTypes) {
+    private ElectionTypes getRandomElection() {
         return electionTypes.get(new Random().nextInt(electionTypes.size()));
     }
 

@@ -1,6 +1,7 @@
 package org.drachens.interfaces.inventories;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -13,11 +14,11 @@ import org.drachens.dataClasses.territories.Province;
 import org.drachens.interfaces.items.HotbarItemButton;
 
 public class BuildItem extends HotbarItemButton {
-    private final BuildTypes buildTypes;
+    private final BuildingEnum buildingEnum;
 
     public BuildItem(int modelData, ItemStack item, BuildingEnum buildingEnum) {
         super(modelData, item);
-        buildTypes = buildingEnum.getBuildTypes();
+        this.buildingEnum = buildingEnum;
     }
 
     @Override
@@ -31,16 +32,21 @@ public class BuildItem extends HotbarItemButton {
         Country country = ((CPlayer) e.getPlayer()).getCountry();
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
         if (country == null || province == null) return;
-        if (province.getBuilding() != null && province.getBuilding().getBuildTypes() == buildTypes.getIdentifier()) {
+        if (province.getBuilding() != null && province.getBuilding().getBuildTypes() == buildingEnum.getBuildTypes().getIdentifier()) {
             province.getBuilding().upgrade(1, country, e.getPlayer());
         } else {
-            buildTypes.build(country, province, e.getPlayer());
+            buildingEnum.getBuildTypes().build(country, province, e.getPlayer());
         }
 
     }
 
     @Override
     public void onUse(PlayerStartDiggingEvent e) {
+
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
 
     }
 }

@@ -31,6 +31,7 @@ public class WorldManager {
         globEHandler.addListener(PlayerStartDiggingEvent.class, e -> worldHashMap.get(e.getInstance()).playerStartDigging(e));
         globEHandler.addListener(PlayerMoveEvent.class, e -> worldHashMap.get(e.getInstance()).playerMove(e));
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> worldHashMap.get(e.getInstance()).playerDisconnect(e));
+        globEHandler.addListener(PlayerHandAnimationEvent.class, e -> worldHashMap.get(e.getInstance()).playerAnimationEvent(e));
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             CPlayer p = (CPlayer) e.getPlayer();
             if (playerHashSet.containsKey(p)) {

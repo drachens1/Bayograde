@@ -15,7 +15,10 @@ public class SpawnCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            p.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
+            if (p.getInstance()!=ContinentalManagers.worldManager.getDefaultWorld().getInstance()){
+                p.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
+
+            }
             p.teleport(new Pos(0, 1, 0));
             EventDispatcher.call(new AdvancementEvent((CPlayer) p, "factoryBuilt"));
         });

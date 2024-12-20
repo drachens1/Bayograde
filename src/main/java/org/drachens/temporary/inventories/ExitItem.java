@@ -1,5 +1,6 @@
 package org.drachens.temporary.inventories;
 
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -20,16 +21,21 @@ public class ExitItem extends HotbarItemButton {
 
     @Override
     public void onUse(PlayerUseItemEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(), InventoryEnum.defaultInv);
+        inventoryManager.assignInventory(e.getPlayer(), ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getDefaultInventory());
     }
 
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(), InventoryEnum.defaultInv);
+        inventoryManager.assignInventory(e.getPlayer(), ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getDefaultInventory());
     }
 
     @Override
     public void onUse(PlayerStartDiggingEvent e) {
+
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
 
     }
 }

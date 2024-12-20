@@ -3,6 +3,7 @@ package org.drachens.temporary.demand;
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -59,5 +60,10 @@ public class DemandProvince extends HotbarItemButton {
         }
         WW2Demands ww2Demands = (WW2Demands) demand;
         ww2Demands.addProvinceDemand(province);
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
+
     }
 }

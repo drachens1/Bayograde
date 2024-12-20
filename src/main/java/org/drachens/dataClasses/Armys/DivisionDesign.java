@@ -1,13 +1,22 @@
 package org.drachens.dataClasses.Armys;
 
+import net.kyori.adventure.text.Component;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
+import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.interfaces.DivisionStatsCalculator;
 import org.drachens.temporary.troops.TroopCountry;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
+import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class DivisionDesign {
+    private final Profile profile;
     private final TroopCountry country;
     private HashMap<Integer, DivisionType> design;
     private float hp;
@@ -26,6 +35,7 @@ public class DivisionDesign {
         this.speed = 1f;
         this.country = country;
         this.name = name;
+        profile=new Profile(itemBuilder(Material.ORANGE_DYE));
     }
 
     public DivisionDesign(DivisionDesign design) {
@@ -36,6 +46,8 @@ public class DivisionDesign {
         this.paymentList = design.paymentList;
         this.country = design.country;
         this.name = design.name;
+        profile=new Profile(itemBuilder(Material.ORANGE_DYE));
+
     }
 
     public HashMap<Integer, DivisionType> getDesign() {
@@ -103,10 +115,55 @@ public class DivisionDesign {
     }
 
     public float calculateTime() {
-        return design.keySet().size();
+        return design.size();
     }
 
     public TroopCountry getCountry() {
         return country;
+    }
+
+    public Profile getProfile(){
+        return profile;
+    }
+
+    public static class Profile {
+        private ItemStack face;
+        private final InventoryButton train = new InventoryButton()
+                .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS_PANE)
+                        .customName(Component.text("Train"))
+                        .build())
+                .consumer(e -> {});
+        private final InventoryButton edit = new InventoryButton()
+                .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
+                        .customName(Component.text("Edit"))
+                        .build())
+                .consumer(e -> {});
+        private final InventoryButton delete = new InventoryButton()
+                .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS_PANE)
+                        .customName(Component.text("Delete"))
+                        .build())
+                .consumer(e -> {});
+
+        public Profile(ItemStack face){
+            this.face=face;
+        }
+        public void rename(Component newName){
+            face = face.withCustomName(newName);
+        }
+        public void setLore(List<Component> lore){
+            face = face.withLore(lore);
+        }
+        public ItemStack getFace(){
+            return face;
+        }
+        public InventoryButton getTrain(){
+            return train;
+        }
+        public InventoryButton getEdit(){
+            return edit;
+        }
+        public InventoryButton getDelete(){
+            return delete;
+        }
     }
 }

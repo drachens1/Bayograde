@@ -3,8 +3,9 @@ package org.drachens.miniGameSystem;
 import net.minestom.server.item.Material;
 
 public class DynamicPixel {
+    private Pixel location;
     private final int weight;
-    private final Material material;
+    private Material material;
 
     public DynamicPixel(int weight, Material material) {
         this.weight = weight;
@@ -27,5 +28,13 @@ public class DynamicPixel {
 
     public Material material() {
         return material;
+    }
+
+    public void setMaterial(Material material){
+        this.material=material;
+    }
+
+    public void setLocation(Pixel pixel){
+        this.location=pixel;
     }
 }

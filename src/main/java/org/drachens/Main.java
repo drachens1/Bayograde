@@ -195,14 +195,14 @@ public class Main {
                 .addAdvancement(new Advancement("nowarconquer", Material.IRON_SWORD, FrameType.GOAL, 1, 2, Component.text("Not a drop", NamedTextColor.GOLD), Component.text("Conquer the world without starting a war", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1f, "nowarconq"))
                 .addAdvancement(new Advancement("properconquest", Material.IRON_SWORD, FrameType.GOAL, -1, 2, Component.text("Victory in the face of foe", NamedTextColor.GOLD), Component.text("Conquer the world when there is 5 people online", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1f, "conquerwhenothers"))
                 //diplomacy
-                .addAdvancement(new Advancement("diplomacy", Material.BOOK, FrameType.GOAL, -1, -1, Component.text("Diplomacy", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "diplomacy"))
-                .addAdvancement(new Advancement("factioncreation", Material.BOOK, FrameType.GOAL, -2, -2, Component.text("Created a faction", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "factionCreate"))
-                .addAdvancement(new Advancement("merger", Material.BOOK, FrameType.GOAL, -2, -3, Component.text("Merged into a country", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "mergeCountries"))
-                .addAdvancement(new Advancement("coop", Material.BOOK, FrameType.GOAL, -3, -3, Component.text("Win as a co-op", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "coopwin"))
+                .addAdvancement(new Advancement("diplomacy", Material.BOOK, FrameType.GOAL, 1, 3, Component.text("Diplomacy", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "diplomacy"))
+                .addAdvancement(new Advancement("factioncreation", Material.BOOK, FrameType.GOAL, 2, 3, Component.text("Created a faction", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "factionCreate"))
+                .addAdvancement(new Advancement("merger", Material.BOOK, FrameType.GOAL, 2, 3, Component.text("Merged into a country", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "mergeCountries"))
+                .addAdvancement(new Advancement("coop", Material.BOOK, FrameType.GOAL, 3, 2, Component.text("Win as a co-op", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "coopwin"))
                 //research
-                .addAdvancement(new Advancement("research", Material.BROWN_DYE, FrameType.GOAL, -2, 0, Component.text("Research", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "research"))
-                .addAdvancement(new Advancement("allofthem", Material.BROWN_DYE, FrameType.GOAL, -3, 0, Component.text("ALL OF THEM?!", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1f, "allofthem"))
-                .addAdvancement(new Advancement("gunmaster", Material.BROWN_DYE, FrameType.GOAL, -3, 1, Component.text("Research the whole gun tree", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1f, "guntreeall"))
+                .addAdvancement(new Advancement("research", Material.BROWN_DYE, FrameType.GOAL, 2, 5, Component.text("Research", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "research"))
+                .addAdvancement(new Advancement("allofthem", Material.BROWN_DYE, FrameType.GOAL, 3, 5, Component.text("ALL OF THEM?!", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1f, "allofthem"))
+                .addAdvancement(new Advancement("gunmaster", Material.BROWN_DYE, FrameType.GOAL, 0, 5, Component.text("Research the whole gun tree", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1f, "guntreeall"))
                 .build());
     }
 
@@ -596,6 +596,7 @@ public class Main {
                 .setElections(electionTypes)
                 .setDefaultInventory(InventoryEnum.troops_default)
                 .build(), VotingWinner.ww2_troops);
+
     }
 
     private static List<Leader> getLeaders(Modifier modifier, TextColor color) {

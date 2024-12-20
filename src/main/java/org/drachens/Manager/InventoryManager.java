@@ -3,6 +3,7 @@ package org.drachens.Manager;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -21,6 +22,7 @@ public class InventoryManager {
     public InventoryManager() {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
         globEHandler.addListener(PlayerUseItemEvent.class, e -> {
+            System.out.println("1");
             Player p = e.getPlayer();
             if (!e.getItemStack().isAir() && !playersCooldown.contains(p)) {
                 cooldown(p);
@@ -37,6 +39,14 @@ public class InventoryManager {
         });
 
         globEHandler.addListener(PlayerStartDiggingEvent.class, e -> {
+            Player p = e.getPlayer();
+            if (!p.getItemInMainHand().isAir() && !playersCooldown.contains(p)) {
+                cooldown(p);
+                activeHotBar.get(p).getItems().get(p.getHeldSlot()).onUse(e);
+            }
+        });
+
+        globEHandler.addListener(PlayerHandAnimationEvent.class, e -> {
             Player p = e.getPlayer();
             if (!p.getItemInMainHand().isAir() && !playersCooldown.contains(p)) {
                 cooldown(p);

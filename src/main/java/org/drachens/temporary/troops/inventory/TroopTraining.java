@@ -1,5 +1,6 @@
 package org.drachens.temporary.troops.inventory;
 
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -23,6 +24,11 @@ public class TroopTraining extends HotbarItemButton {
 
     @Override
     public void onUse(PlayerStartDiggingEvent e) {
+
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
 
     }
 }

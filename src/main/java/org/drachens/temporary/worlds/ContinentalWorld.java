@@ -56,7 +56,7 @@ public class ContinentalWorld extends World {
 
     @Override
     public void playerMove(PlayerMoveEvent e) {
-
+        
     }
 
     @Override

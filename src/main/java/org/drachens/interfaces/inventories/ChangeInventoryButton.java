@@ -1,5 +1,6 @@
 package org.drachens.interfaces.inventories;
 
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -30,6 +31,11 @@ public class ChangeInventoryButton extends HotbarItemButton {
 
     @Override
     public void onUse(PlayerStartDiggingEvent e) {
+
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
 
     }
 }

@@ -2,6 +2,7 @@ package org.drachens.temporary.troops.inventory;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -48,5 +49,10 @@ public class TroopMover extends HotbarItemButton {
         Troop troop = province.getTroops().getFirst();
         nextProv.put(p, troop);
         troop.getTroop().setGlowing(true);
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
+
     }
 }

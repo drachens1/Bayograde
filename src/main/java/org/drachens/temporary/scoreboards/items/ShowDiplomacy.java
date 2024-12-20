@@ -1,6 +1,7 @@
 package org.drachens.temporary.scoreboards.items;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
@@ -45,6 +46,11 @@ public class ShowDiplomacy extends HotbarItemButton {
 
     @Override
     public void onUse(PlayerStartDiggingEvent e) {
+
+    }
+
+    @Override
+    public void onUse(PlayerHandAnimationEvent e) {
 
     }
 }
