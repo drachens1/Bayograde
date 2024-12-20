@@ -79,7 +79,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
 
     public Pacman(CPlayer p) {
-        super(p, xMax, yMax, Material.BLACK_CONCRETE, new PacmanWorld(), new Pos(14, 15, -20));
+        super(p, xMax, yMax, Material.BLACK_CONCRETE, new PacmanWorld());
         this.player = p;
 
         getWorld().setInstance(this);
@@ -427,7 +427,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         private Pacman instance;
 
         public PacmanWorld() {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer());
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(14, 15, -20));
         }
 
         public void setInstance(Pacman instance) {

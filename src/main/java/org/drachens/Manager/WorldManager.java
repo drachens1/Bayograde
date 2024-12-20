@@ -70,4 +70,8 @@ public class WorldManager {
     public void unregisterWorld(World world) {
         worldHashMap.remove(world.getInstance());
     }
+
+    public World getWorld(Instance instance){
+        return worldHashMap.get(instance);
+    }
 }

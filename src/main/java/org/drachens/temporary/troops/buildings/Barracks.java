@@ -13,13 +13,9 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.territories.Province;
-import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
-
-import java.security.cert.CertPath;
 
 public class Barracks extends BuildTypes {
     private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE,new int[]{23,24,25,26});

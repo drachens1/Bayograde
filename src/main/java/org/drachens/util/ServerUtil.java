@@ -241,23 +241,10 @@ public class ServerUtil {
 
         WhitelistManager whitelistManager = new WhitelistManager();
 
-        Component oob = Component.text()
-                .append(getPrefixes("system"))
-                .append(Component.text("You have went out of bounds! ", NamedTextColor.RED))
-                .append(Component.text()
-                        .append(Component.text("Click here", NamedTextColor.GOLD, TextDecoration.BOLD))
-                        .clickEvent(ClickEvent.runCommand("/tp 0 0"))
-                        .hoverEvent(HoverEvent.showText(Component.text("Click to teleport to spawn", NamedTextColor.GOLD)))
-                )
-                .append(Component.text(" To teleport to spawn", NamedTextColor.RED))
-                .build();
-
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            WorldClasses worldClasses = worldClassesHashMap.get(e.getInstance());
-            if (worldClasses != null && !allowedChunks.contains(p.getChunk()) && !worldClasses.votingManager().getVoteBar().isShown() && worldClasses.dataStorer().votingOption != null) {
-                p.sendMessage(oob);
-                e.setCancelled(true);
+            if (p.getPosition().y()<0){
+                p.teleport(ContinentalManagers.worldManager.getWorld(p.getInstance()).getSpawnPoint());
             }
         });
 

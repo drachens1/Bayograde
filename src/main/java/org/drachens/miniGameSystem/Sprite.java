@@ -17,7 +17,6 @@ public class Sprite {
     private final Map<RelativePos, DynamicPixel> materialHashMap;
     private final String identifier;
     private Pos pos;
-    private Task task;
     private final MiniGameRunnable miniGameRunnable;
 
     public Sprite(Pos pos, Monitor monitor, String identifier, MiniGameRunnable miniGameRunnable) {
@@ -32,10 +31,14 @@ public class Sprite {
         this(pos, monitor, identifier, (collided, pos1) -> miniGameRunnable.apply(collided));
     }
 
+    public DynamicPixel getDynamicPixel(Pos pos){
+        return materialHashMap.get(new RelativePos((int) (pos.x() - this.pos.x()), (int) (pos.y() - this.pos.y())));
+    }
+
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
         materialHashMap.put(relativePos, dynamicPixel);
         dynamicPixel.setSprite(this);
-        monitor.addDynamicPixel(new Pos(pos.x() + relativePos.getX(), pos.y() + relativePos.getY(), 0), dynamicPixel);
+        monitor.addDynamicPixel(new Pos(pos.x() + relativePos.x(), pos.y() + relativePos.y(), 0), dynamicPixel);
     }
 
     public void setPos(Pos newPos) {
@@ -43,10 +46,10 @@ public class Sprite {
             RelativePos relativePos = entry.getKey();
             DynamicPixel dynamicPixel = entry.getValue();
 
-            double prevX = this.pos.x() + relativePos.getX();
-            double prevY = this.pos.y() + relativePos.getY();
-            double newX = newPos.x() + relativePos.getX();
-            double newY = newPos.y() + relativePos.getY();
+            double prevX = this.pos.x() + relativePos.x();
+            double prevY = this.pos.y() + relativePos.y();
+            double newX = newPos.x() + relativePos.x();
+            double newY = newPos.y() + relativePos.y();
 
             monitor.moveDynamicPixel(new Pos(prevX, prevY, 0), new Pos(newX, newY, 0), dynamicPixel);
         }
@@ -54,29 +57,7 @@ public class Sprite {
     }
 
     public void delete() {
-        materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x() + relativePos.getX(), pos.y() + relativePos.getY(), 0), dynamicPixel));
-    }
-
-    public DynamicPixel getDynamicPixel(Pos pos){
-        return materialHashMap.get(new RelativePos((int) (pos.x()-this.pos.x()), (int) (pos.y()-this.pos.y())));
-    }
-
-    public void move(Pos to, Long delayInMillis) {
-        if (task != null) {
-            task.cancel();
-        }
-
-        List<Pos> posList = monitor.getAStarPathfinder().findPath(pos, to, monitor.getInstance());
-        if (posList.isEmpty()) return;
-
-        task = MinecraftServer.getSchedulerManager().buildTask(() -> {
-            if (posList.isEmpty()) {
-                task.cancel();
-                return;
-            }
-            Pos nextPos = posList.removeFirst();
-            setPos(nextPos);
-        }).repeat(delayInMillis, ChronoUnit.MILLIS).schedule();
+        materialHashMap.forEach((relativePos, dynamicPixel) -> monitor.removeDynamicPixel(new Pos(pos.x() + relativePos.x(), pos.y() + relativePos.y(), 0), dynamicPixel));
     }
 
     public Pos getPos() {

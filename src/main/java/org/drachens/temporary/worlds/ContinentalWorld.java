@@ -4,6 +4,7 @@ import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.*;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.InstanceContainer;
@@ -18,9 +19,13 @@ public class ContinentalWorld extends World {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
 
     public ContinentalWorld() {
-        super(MinecraftServer.getInstanceManager().createInstanceContainer());
-        InstanceContainer instCon = getInstanceContainer();
-        instCon.setGenerator(unit -> unit.modifier().fillHeight(-1, 0, Block.LAPIS_BLOCK));
+        super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(0,1,0));
+        for (int x = -50; x < 50; x++){
+            for (int z = -50; z < 50; z++){
+                getInstance().loadChunk(x,z);
+                getInstance().setBlock(x,0,z,Block.LAPIS_BLOCK,false);
+            }
+        }
     }
 
     @Override
@@ -55,11 +60,6 @@ public class ContinentalWorld extends World {
     }
 
     @Override
-    public void playerMove(PlayerMoveEvent e) {
-        
-    }
-
-    @Override
     public void playerBlockInteract(PlayerBlockInteractEvent e) {
         if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
@@ -77,11 +77,6 @@ public class ContinentalWorld extends World {
     public void playerStartDigging(PlayerStartDiggingEvent e) {
         if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
-
-    }
-
-    @Override
-    public void playerDisconnect(PlayerDisconnectEvent e) {
 
     }
 }
