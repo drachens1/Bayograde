@@ -25,6 +25,5 @@ public class BuildItem extends HotbarItemButton {
         } else {
             buildingEnum.getBuildTypes().build(country, province, e.getPlayer());
         }
-
     }
 }

@@ -77,7 +77,10 @@ import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.temporary.worlds.ContinentalWorld;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.function.Function;
 
 import static org.drachens.util.Messages.globalBroadcast;
@@ -314,7 +317,9 @@ public class ServerUtil {
             CountryDataManager countryDataManager = worldClassesHashMap.get(e.getInstance()).countryDataManager();
             countryDataManager.getCountries().forEach((Country::endGame));
             ClientEntsToLoad clientEntsToLoad = worldClassesHashMap.get(e.getInstance()).clientEntsToLoad();
-            new ArrayList<>(clientEntsToLoad.getClientSides(e.getInstance())).forEach((Clientside::dispose));
+            if (clientEntsToLoad.getClientSides(e.getInstance())!=null){
+                new ArrayList<>(clientEntsToLoad.getClientSides(e.getInstance())).forEach((Clientside::dispose));
+            }
             clientEntsToLoad.reset();
             Instance instance = e.getInstance();
             CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());
