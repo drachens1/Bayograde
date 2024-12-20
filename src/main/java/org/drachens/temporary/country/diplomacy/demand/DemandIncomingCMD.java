@@ -130,7 +130,7 @@ public class DemandIncomingCMD extends Command {
                             sentDemand.hidePlayer(p);
                             break;
                         case "on":
-                            sentDemand.showPlayerView(p);
+                            sentDemand.showPlayer(p);
                             break;
                     }
                     break;

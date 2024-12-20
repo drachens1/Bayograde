@@ -15,6 +15,7 @@ import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.territories.Province;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class WW2Demands extends Demand {
     private final HashMap<Province, Block> shownBlocks = new HashMap<>();
-    private final List<Player> activePlayers = new ArrayList<>();
+    private final ImaginaryWorld imaginaryWorld;
     InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
     private List<Country> demandedAnnexation = new ArrayList<>();
     private List<Province> demandedProvinces = new ArrayList<>();
@@ -37,6 +38,14 @@ public class WW2Demands extends Demand {
 
     public WW2Demands(Country from, Country to) {
         super(from, to);
+        imaginaryWorld=new ImaginaryWorld(to.getInstance());
+        List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
+        countries.remove(to);
+        countries.removeAll(to.getPuppets());
+        countries.remove(from);
+        countries.removeAll(from.getPuppets());
+        countries.forEach(country -> country.getOccupies().forEach(province -> imaginaryWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE)));
+        shownBlocks.forEach((province, block) -> imaginaryWorld.addGhostBlock(province.getPos(),block));
         CPlayer p = (CPlayer) from.getPlayerLeader();
         showPlayer(p);
     }
@@ -256,7 +265,7 @@ public class WW2Demands extends Demand {
 
     @Override
     protected void onCompleted() {
-        activePlayers.forEach(player -> hidePlayer((CPlayer) player));
+        imaginaryWorld.getPlayers().forEach(player -> hidePlayer((CPlayer) player));
     }
 
     @Override
@@ -274,41 +283,18 @@ public class WW2Demands extends Demand {
     }
 
     public void showPlayer(CPlayer p) {
-        activePlayers.add(p);
-        Country to = getToCountry();
-        Country from = getFromCountry();
-        List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
-        countries.remove(to);
-        countries.removeAll(to.getPuppets());
-        countries.remove(from);
-        countries.removeAll(from.getPuppets());
-        countries.forEach(country -> country.getOccupies().forEach(province -> PacketUtils.sendPacket(p, new BlockChangePacket(province.getPos(), Block.GRAY_CONCRETE))));
-
-        shownBlocks.forEach((province, block) -> PacketUtils.sendPacket(p, new BlockChangePacket(province.getPos(), block)));
+        imaginaryWorld.addPlayer(p);
     }
 
     public void hidePlayer(CPlayer p) {
-        activePlayers.remove(p);
         ContinentalManagers.world(p.getInstance()).countryDataManager().getCountries().forEach(country -> country.reloadBlocksForPlayer(p));
         inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
-    }
-
-    public void showPlayerView(CPlayer p) {
-        Country to = getToCountry();
-        Country from = getFromCountry();
-        List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
-        countries.remove(to);
-        countries.removeAll(to.getPuppets());
-        countries.remove(from);
-        countries.removeAll(from.getPuppets());
-        countries.forEach(country -> country.getOccupies().forEach(province -> PacketUtils.sendPacket(p, new BlockChangePacket(province.getPos(), Block.GRAY_CONCRETE))));
-
-        shownBlocks.forEach((province, block) -> PacketUtils.sendPacket(p, new BlockChangePacket(province.getPos(), block)));
+        imaginaryWorld.removePlayer(p);
     }
 
     private void updateProvinceBlock(Province province, Block block) {
         shownBlocks.put(province, block);
-        PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), block));
+        imaginaryWorld.addGhostBlock(province.getPos(),block);
     }
 
     private void processCountryDemand(Country country, Block block, boolean addDemand) {
@@ -322,7 +308,7 @@ public class WW2Demands extends Demand {
                     newBlock = Block.RED_CONCRETE;
                 }
                 shownBlocks.put(province, newBlock);
-                PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), newBlock));
+                imaginaryWorld.addGhostBlock(province.getPos(),newBlock);
             }
         });
     }
@@ -359,7 +345,7 @@ public class WW2Demands extends Demand {
         if (!demandedProvinces.contains(province)) return;
         demandedProvinces.remove(province);
         shownBlocks.remove(province);
-        PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), province.getMaterial().block()));
+        imaginaryWorld.addGhostBlock(province.getPos(),province.getMaterial().block());
     }
 
     public void removePuppetsDemand(Country country) {
@@ -400,7 +386,7 @@ public class WW2Demands extends Demand {
         if (!offeredProvinces.contains(province)) return;
         offeredProvinces.remove(province);
         shownBlocks.remove(province);
-        PacketUtils.sendGroupedPacket(activePlayers, new BlockChangePacket(province.getPos(), province.getMaterial().block()));
+        imaginaryWorld.addGhostBlock(province.getPos(),province.getMaterial().block());
     }
 
     public void removePuppetsOffer(Country country) {

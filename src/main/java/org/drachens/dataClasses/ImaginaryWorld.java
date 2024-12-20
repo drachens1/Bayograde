@@ -24,12 +24,16 @@ public class ImaginaryWorld {
     public void addPlayer(CPlayer p){
         players.add(p);
         ContinentalManagers.imaginaryWorldManager.addPlayers(p,this);
+        ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos,block)-> PacketUtils.sendPacket(p,block)));
     }
 
     public void removePlayer(CPlayer p){
         players.remove(p);
         ContinentalManagers.imaginaryWorldManager.removePlayers(p,this);
+    }
 
+    public HashSet<Player> getPlayers(){
+        return players;
     }
 
     public void addGhostBlock(Pos pos, Block block){
@@ -43,8 +47,20 @@ public class ImaginaryWorld {
         ghostBlocksHashMap.put(chunk,ghosty);
     }
 
+    public void removeGhostBlock(Pos pos){
+        Chunk chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(chunk,new HashMap<>());
+        if (ghosty.containsKey(pos)){
+            Block block = instance.getBlock(pos);
+            PacketUtils.sendGroupedPacket(players,new BlockChangePacket(pos,block));
+        }
+        ghosty.remove(pos);
+        ghostBlocksHashMap.put(chunk,ghosty);
+    }
+
     public void loadChunk(Player p, Chunk chunk){
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.get(chunk);
+        if (ghosty==null)return;
         ghosty.forEach((pos,packet)->PacketUtils.sendPacket(p,packet));
     }
 
