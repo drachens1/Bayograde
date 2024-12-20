@@ -55,6 +55,7 @@ public class WorldManager {
         p.refreshCommands();
         ContinentalManagers.advancementManager.addPlayer(p);
         p.setJoinTime(LocalTime.now());
+        p.setHead();
     }
 
     public void setDefaultWorld(World world) {

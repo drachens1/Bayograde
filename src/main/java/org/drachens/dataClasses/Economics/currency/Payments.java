@@ -3,17 +3,19 @@ package org.drachens.dataClasses.Economics.currency;
 import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Payments {
-    private final List<Payment> payments;
+    private final HashSet<Payment> payments;
 
     public Payments(Payments payments) {
         this.payments = payments.getPayments();
     }
 
     public Payments(Payment... payments) {
-        this.payments = new ArrayList<>(List.of(payments));
+        this.payments = new HashSet<>(List.of(payments));
     }
 
     public void addPayment(Payment payment) {
@@ -24,8 +26,16 @@ public class Payments {
         payments.getPayments().forEach(this::addPayment);
     }
 
-    public List<Payment> getPayments() {
-        List<Payment> newList = new ArrayList<>();
+    public void minusPayment(Payment payment){
+        payments.add(new Payment(payment.getCurrencyType(),-payment.getAmount()));
+    }
+
+    public void minusPayments(Payments payments){
+        payments.getPayments().forEach(this::minusPayment);
+    }
+
+    public HashSet<Payment> getPayments() {
+        HashSet<Payment> newList = new HashSet<>();
         payments.forEach(payment -> newList.add(payment.clone()));
         return newList;
     }
@@ -44,5 +54,14 @@ public class Payments {
         return Component.text()
                 .append(comps)
                 .build();
+    }
+
+    public void compress(){
+        HashMap<CurrencyTypes, Float> amountHashMap = new HashMap<>();
+        payments.forEach((payment -> {
+            float current = amountHashMap.getOrDefault(payment.getCurrencyType(),0f);
+            current+=payment.getAmount();
+            amountHashMap.put(payment.getCurrencyType(),current);
+        }));
     }
 }

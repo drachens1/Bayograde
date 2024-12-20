@@ -51,6 +51,7 @@ public class MessageManager {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
 
         globEHandler.addListener(StartGameEvent.class, e -> {
+            if (e.isCancelled())return;
             e.getVotingOption().getMapGenerator().generate(e.getInstance(), e.getVotingOption());
             InventoryEnum hotbarInventory = e.getVotingOption().getDefaultInventory();
             if (hotbarInventory != null)

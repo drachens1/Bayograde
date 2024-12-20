@@ -3,10 +3,7 @@ package org.drachens.Manager.defaults;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.InventorySystem.GUIManager;
-import org.drachens.Manager.DemandManager;
-import org.drachens.Manager.InventoryManager;
-import org.drachens.Manager.WorldManager;
-import org.drachens.Manager.YearManager;
+import org.drachens.Manager.*;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.advancement.AdvancementManager;
@@ -30,6 +27,7 @@ public class ContinentalManagers {
     public static final AdvancementManager advancementManager = new AdvancementManager();
     public static Database database;
     public static final WorldManager worldManager = new WorldManager();
+    public static final ImaginaryWorldManager imaginaryWorldManager = new ImaginaryWorldManager();
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

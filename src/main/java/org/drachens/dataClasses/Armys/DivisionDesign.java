@@ -1,13 +1,15 @@
 package org.drachens.dataClasses.Armys;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.InventorySystem.InventoryButton;
-import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.interfaces.DivisionStatsCalculator;
 import org.drachens.temporary.troops.TroopCountry;
+import org.drachens.temporary.troops.inventory.TroopEditGUI;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +24,12 @@ public class DivisionDesign {
     private float atk;
     private float def;
     private float speed;
-    private HashMap<CurrencyTypes, Payment> paymentList;
+    private final Payments paymentList;
     private String name;
 
     public DivisionDesign(String name, HashMap<Integer, DivisionType> design, DivisionStatsCalculator divisionStatsCalculator, TroopCountry country) {
         this.design = design;
-        this.paymentList = new HashMap<>();
+        this.paymentList = new Payments();
         this.hp = 1f;
         this.atk = 1f;
         this.def = 1f;
@@ -98,12 +100,8 @@ public class DivisionDesign {
         this.hp = hp;
     }
 
-    public HashMap<CurrencyTypes, Payment> getCost() {
+    public Payments getCost(){
         return paymentList;
-    }
-
-    public void setCost(HashMap<CurrencyTypes, Payment> cost) {
-        this.paymentList = cost;
     }
 
     public String getName() {
@@ -132,12 +130,16 @@ public class DivisionDesign {
                 .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS)
                         .customName(Component.text("Train"))
                         .build())
-                .consumer(e -> {});
+                .consumer(e -> {
+
+                });
         private final InventoryButton edit = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
                         .customName(Component.text("Edit"))
                         .build())
-                .consumer(e -> {});
+                .consumer(e -> {
+                    ContinentalManagers.guiManager.openGUI(new TroopEditGUI(),(CPlayer) e.getPlayer());
+                });
         private final InventoryButton delete = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
                         .customName(Component.text("Delete"))

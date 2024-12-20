@@ -24,7 +24,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     @Override
     protected Sidebar createSidebar(CPlayer p) {
         Country country = p.getCountry();
-        return new ScoreboardBuilder.builder(Component.text("Country", NamedTextColor.GOLD, TextDecoration.BOLD))
+        return new ScoreboardBuilder(Component.text("Country", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .addLine("generalInfo", Component.text("0-General-Info--v", TextColor.color(65, 131, 237)), 50)
                 .addLine("generalInfo1", Component.text("Country : " + country.getName(), NamedTextColor.BLUE), 49)
                 .addLine("generalInfo2", Component.text("Stability : " + country.getStability().getStability(), NamedTextColor.BLUE), 50)

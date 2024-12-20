@@ -31,7 +31,6 @@ public class YearBar extends HideableBossBar {
 
     public void run(VotingOption votingOption) {
         show();
-        System.out.println("Showing hopefully");
         if (task != null) task.cancel();
         task = MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             final int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};

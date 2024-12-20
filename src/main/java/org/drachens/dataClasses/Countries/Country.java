@@ -242,6 +242,8 @@ public abstract class Country implements Cloneable {
         broadcast(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text(p.getUsername(), NamedTextColor.GOLD, TextDecoration.BOLD)).append(Component.text(" has joined ", NamedTextColor.BLUE)).append(nameComponent).build()).build(), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         scoreboardManager.openScoreboard(new DefaultCountryScoreboard(), p);
+        DefaultCountryScoreboard defaultCountryScoreboard = (DefaultCountryScoreboard) scoreboardManager.getScoreboard(p);
+        defaultCountryScoreboard.openEconomy();
         clientsides.forEach(clientside -> clientside.addViewer(p));
         if (playerLeader == null)
             setPlayerLeader(p);
@@ -524,6 +526,7 @@ public abstract class Country implements Cloneable {
 
     public void endGame() {
         //aiCompetitor.kill();
+        clientsides.forEach(Clientside::dispose);
     }
 
     public void addMajorCity(Province province, Material material) {

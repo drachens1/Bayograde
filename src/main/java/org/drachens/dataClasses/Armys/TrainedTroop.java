@@ -2,12 +2,10 @@ package org.drachens.dataClasses.Armys;
 
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.temporary.troops.TroopCountry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TrainedTroop {
     private final TroopCountry country;
@@ -30,32 +28,28 @@ public class TrainedTroop {
     }
 
     public void calculateCostDifference(DivisionDesign design1, DivisionDesign design2) {
-        HashMap<CurrencyTypes, Payment> payments2 = design2.getCost();
-        HashMap<CurrencyTypes, Payment> payments1 = design1.getCost();
-        HashMap<CurrencyTypes, Payment> difference = new HashMap<>();
-        for (Map.Entry<CurrencyTypes, Payment> entry : payments1.entrySet()) {
-            float amount = payments2.get(entry.getKey()).getAmount() - entry.getValue().getAmount();
-            difference.put(entry.getKey(), new Payment(entry.getKey(), amount));
-        }
-        List<Float> fulfillment = new ArrayList<>();
-        for (Map.Entry<CurrencyTypes, Payment> entry : difference.entrySet()) {
-            float amount = country.subtractMaximumAmountPossible(entry.getValue());
-            fulfillment.add(amount / payments2.get(entry.getKey()).getAmount());
-        }
-        strength = calculateMean(fulfillment);
+        Payments payments2 = design2.getCost();
+        Payments payments1 = design1.getCost();
+        Payments difference = new Payments();
+        difference.addPayments(payments1);
+        difference.minusPayments(payments2);
+        difference.compress();
+        HashSet<Float> floats = new HashSet<>();
+        difference.getPayments().forEach(payment -> floats.add(payment.getAmount()));
+        strength = calculateMean(floats);
         time = design2.calculateTime();
     }
 
     private void calculateStrength() {
-        List<Float> fulfillment = new ArrayList<>();
-        for (Map.Entry<CurrencyTypes, Payment> entry : design.getCost().entrySet()) {
-            float amount = country.subtractMaximumAmountPossible(entry.getValue());
-            fulfillment.add(amount / design.getCost().get(entry.getKey()).getAmount());
-        }
+        HashSet<Float> fulfillment = new HashSet<>();
+        design.getCost().getPayments().forEach(payment -> {
+            float amount = country.subtractMaximumAmountPossible(payment);
+            fulfillment.add(amount / payment.getAmount());
+        });
         strength = calculateMean(fulfillment);
     }
 
-    private float calculateMean(List<Float> stuff) {
+    private float calculateMean(HashSet<Float> stuff) {
         float total = 0f;
         int num = 0;
         for (Float f : stuff) {

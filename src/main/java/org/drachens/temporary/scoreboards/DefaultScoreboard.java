@@ -9,7 +9,7 @@ import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardBuilder;
 
 public class DefaultScoreboard extends ContinentalScoreboards {
-    private final Sidebar scoreboard = new ScoreboardBuilder.builder(Component.text("Default", NamedTextColor.GOLD, TextDecoration.BOLD))
+    private final Sidebar scoreboard = new ScoreboardBuilder(Component.text("Default", NamedTextColor.GOLD, TextDecoration.BOLD))
             .addLine("vote", Component.text("Do /vote <option>", NamedTextColor.GRAY))
             .addLine("vote2", Component.text("to start the game", NamedTextColor.GRAY))
             .addLine("spectator", Component.text("Do /country join <name>", NamedTextColor.GRAY))

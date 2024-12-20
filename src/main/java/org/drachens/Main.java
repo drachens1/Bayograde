@@ -490,7 +490,6 @@ public class Main {
                 .setElections(electionTypes)
                 .setDefaultInventory(InventoryEnum.troops_default)
                 .build());
-
     }
 
     private static List<Leader> getLeaders(Modifier modifier, TextColor color) {
