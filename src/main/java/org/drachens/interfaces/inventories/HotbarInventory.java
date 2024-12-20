@@ -1,4 +1,4 @@
-package org.drachens.interfaces.items;
+package org.drachens.interfaces.inventories;
 
 import net.minestom.server.entity.Player;
 

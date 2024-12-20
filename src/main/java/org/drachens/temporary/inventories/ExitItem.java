@@ -7,8 +7,7 @@ import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
-import org.drachens.interfaces.items.HotbarItemButton;
+import org.drachens.interfaces.inventories.HotbarItemButton;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 

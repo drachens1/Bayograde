@@ -12,7 +12,7 @@ public abstract class MiniGame<W extends World> {
     private final Monitor monitor;
     private final W world;
 
-    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, W world, Pos playerSpawning) {
+    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, W world) {
         this.world = world;
         ContinentalManagers.worldManager.registerWorld(world);
         Instance instance = world.getInstance();
@@ -22,7 +22,7 @@ public abstract class MiniGame<W extends World> {
                 monitor.addPixel(new Pos(x, y, 0), new Pixel(defaultMaterial, new Pos(x, y, 0), monitor));
             }
         }
-
+        Pos playerSpawning = world.getSpawnPoint();
         instance.setBlock(playerSpawning.add(0, -1, 0), Block.BLACK_CONCRETE);
         p.setInstance(instance, playerSpawning.add(0, 2, 0));
     }

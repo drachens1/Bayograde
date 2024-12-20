@@ -1,4 +1,4 @@
-package org.drachens.interfaces.items;
+package org.drachens.interfaces.inventories;
 
 import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
@@ -23,11 +23,19 @@ public abstract class HotbarItemButton {
         return modelData;
     }
 
-    public abstract void onUse(PlayerUseItemEvent e);
+    public void onUse(PlayerUseItemEvent e){
 
-    public abstract void onUse(PlayerUseItemOnBlockEvent e);
+    }
 
-    public abstract void onUse(PlayerStartDiggingEvent e);
+    public void onUse(PlayerUseItemOnBlockEvent e){
 
-    public abstract void onUse(PlayerHandAnimationEvent e);
+    }
+
+    public void onUse(PlayerStartDiggingEvent e){
+
+    }
+
+    public void onUse(PlayerHandAnimationEvent e){
+
+    }
 }

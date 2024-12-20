@@ -11,8 +11,6 @@ public class Monitor {
     private Material defaultMaterial;
     private final Instance instance;
     private final Map<Pos, Pixel> pixelHashMap = new HashMap<>();
-    private final AStarPathfinderMiniGame aStarPathfinder = new AStarPathfinderMiniGame();
-
     public Monitor(Instance instance, Material defaultMaterial) {
         this.instance = instance;
         this.defaultMaterial = defaultMaterial;
@@ -53,10 +51,6 @@ public class Monitor {
 
     public Instance getInstance() {
         return instance;
-    }
-
-    public AStarPathfinderMiniGame getAStarPathfinder() {
-        return aStarPathfinder;
     }
 
     public void setDefaultMaterial(Material material) {

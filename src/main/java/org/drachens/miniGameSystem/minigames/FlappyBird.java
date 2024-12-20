@@ -1,6 +1,8 @@
 package org.drachens.miniGameSystem.minigames;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import dev.ng5m.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.events.EventHandlerProvider;
@@ -9,8 +11,6 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.item.Material;
@@ -25,7 +25,7 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.*;
+import static java.lang.Math.floor;
 
 public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
         implements EventHandlerProvider {
@@ -54,7 +54,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
     private int score = 0;
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
-        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(), new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
+        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(xMax,yMax));
         this.xMax = xMax;
         this.yMax = yMax;
         this.player = p;
@@ -188,8 +188,8 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
     }
 
     static class FlappyWorld extends World {
-        public FlappyWorld() {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer());
+        public FlappyWorld(double xMax, double yMax) {
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
         }
 
         private FlappyBird flappyBird;

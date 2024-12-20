@@ -9,7 +9,6 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.interfaces.DivisionStatsCalculator;
 import org.drachens.temporary.troops.TroopCountry;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 

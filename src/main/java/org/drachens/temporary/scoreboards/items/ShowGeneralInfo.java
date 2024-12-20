@@ -9,7 +9,7 @@ import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
-import org.drachens.interfaces.items.HotbarItemButton;
+import org.drachens.interfaces.inventories.HotbarItemButton;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 
 import java.util.ArrayList;

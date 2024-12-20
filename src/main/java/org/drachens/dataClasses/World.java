@@ -1,6 +1,7 @@
 package org.drachens.dataClasses;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.*;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.InstanceContainer;
@@ -9,10 +10,12 @@ import net.minestom.server.instance.LightingChunk;
 public abstract class World {
     private final Instance instance;
     private final InstanceContainer instanceContainer;
+    private final Pos spawnPoint;
 
-    public World(InstanceContainer instance) {
+    public World(InstanceContainer instance, Pos spawnPoint) {
         this.instance = instance;
         this.instanceContainer = instance;
+        this.spawnPoint=spawnPoint;
         instance.setChunkSupplier(LightingChunk::new);
     }
 
@@ -50,5 +53,9 @@ public abstract class World {
 
     public InstanceContainer getInstanceContainer() {
         return instanceContainer;
+    }
+
+    public Pos getSpawnPoint(){
+        return spawnPoint;
     }
 }

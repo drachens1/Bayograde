@@ -13,12 +13,15 @@ import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerBoatPacket;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.dataClasses.World;
-import org.drachens.miniGameSystem.*;
+import org.drachens.miniGameSystem.DynamicPixel;
+import org.drachens.miniGameSystem.MiniGame;
+import org.drachens.miniGameSystem.RelativePos;
+import org.drachens.miniGameSystem.Sprite;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.lang.Math.floor;
-import static java.lang.Math.min;
 
 public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     private static final String MAP_LAYOUT = "■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n" +
@@ -79,7 +82,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
 
     public Pacman(CPlayer p) {
-        super(p, xMax, yMax, Material.BLACK_CONCRETE, new PacmanWorld(), new Pos(14, 15, -20));
+        super(p, xMax, yMax, Material.BLACK_CONCRETE, new PacmanWorld());
         this.player = p;
 
         getWorld().setInstance(this);
@@ -427,7 +430,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         private Pacman instance;
 
         public PacmanWorld() {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer());
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(14, 15, -20));
         }
 
         public void setInstance(Pacman instance) {

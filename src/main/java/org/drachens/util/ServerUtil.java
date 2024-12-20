@@ -4,8 +4,6 @@ import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.Rank;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
@@ -83,7 +81,6 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
 
@@ -241,23 +238,10 @@ public class ServerUtil {
 
         WhitelistManager whitelistManager = new WhitelistManager();
 
-        Component oob = Component.text()
-                .append(getPrefixes("system"))
-                .append(Component.text("You have went out of bounds! ", NamedTextColor.RED))
-                .append(Component.text()
-                        .append(Component.text("Click here", NamedTextColor.GOLD, TextDecoration.BOLD))
-                        .clickEvent(ClickEvent.runCommand("/tp 0 0"))
-                        .hoverEvent(HoverEvent.showText(Component.text("Click to teleport to spawn", NamedTextColor.GOLD)))
-                )
-                .append(Component.text(" To teleport to spawn", NamedTextColor.RED))
-                .build();
-
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            WorldClasses worldClasses = worldClassesHashMap.get(e.getInstance());
-            if (worldClasses != null && !allowedChunks.contains(p.getChunk()) && !worldClasses.votingManager().getVoteBar().isShown() && worldClasses.dataStorer().votingOption != null) {
-                p.sendMessage(oob);
-                e.setCancelled(true);
+            if (p.getPosition().y()<0){
+                p.teleport(ContinentalManagers.worldManager.getWorld(p.getInstance()).getSpawnPoint());
             }
         });
 

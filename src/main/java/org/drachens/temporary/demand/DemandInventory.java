@@ -1,8 +1,8 @@
 package org.drachens.temporary.demand;
 
 import net.minestom.server.entity.Player;
-import org.drachens.interfaces.items.HotbarInventory;
-import org.drachens.interfaces.items.HotbarItemButton;
+import org.drachens.interfaces.inventories.HotbarInventory;
+import org.drachens.interfaces.inventories.HotbarItemButton;
 
 public class DemandInventory extends HotbarInventory {
 

@@ -58,4 +58,8 @@ public class Pixel {
     public void clear() {
         dynamicPixels.clear();
     }
+
+    public String toString(){
+        return pos+", "+material;
+    }
 }

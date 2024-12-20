@@ -1,12 +1,6 @@
 package org.drachens.Manager.defaults.defaultsStorer.enums;
 
 import org.drachens.dataClasses.Economics.BuildTypes;
-import org.drachens.dataClasses.Research.ResearchCenter;
-import org.drachens.temporary.Factory;
-import org.drachens.temporary.research.ResearchLab;
-import org.drachens.temporary.research.ResearchLibrary;
-import org.drachens.temporary.research.ResearchUniversity;
-import org.drachens.temporary.troops.buildings.Barracks;
 
 import java.util.HashSet;
 import java.util.List;

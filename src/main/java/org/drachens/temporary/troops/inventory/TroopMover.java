@@ -2,15 +2,13 @@ package org.drachens.temporary.troops.inventory;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.territories.Province;
-import org.drachens.interfaces.items.HotbarItemButton;
+import org.drachens.interfaces.inventories.HotbarItemButton;
 
 import java.util.HashMap;
 
@@ -21,11 +19,6 @@ public class TroopMover extends HotbarItemButton {
 
     public TroopMover() {
         super(0, itemBuilder(Material.CYAN_DYE, "Hi", NamedTextColor.GOLD));
-    }
-
-    @Override
-    public void onUse(PlayerUseItemEvent e) {
-
     }
 
     @Override
@@ -49,10 +42,5 @@ public class TroopMover extends HotbarItemButton {
         Troop troop = province.getTroops().getFirst();
         nextProv.put(p, troop);
         troop.getTroop().setGlowing(true);
-    }
-
-    @Override
-    public void onUse(PlayerHandAnimationEvent e) {
-
     }
 }
