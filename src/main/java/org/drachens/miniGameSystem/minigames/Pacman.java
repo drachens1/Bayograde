@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.PlayerMoveEvent;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerBoatPacket;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
@@ -34,15 +35,15 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             "■ ■■■■ ■■ ■■■■■■■■ ■■ ■■■■ ■\n" +
             "■      ■■    ■■    ■■      ■\n" +
             "■■■■■■ ■■■■■ ■■ ■■■■■ ■■■■■■\n" +
-            "     ■ ■■■■■ ■■ ■■■■■ ■     \n" +
-            "     ■ ■■          ■■ ■     \n" +
-            "     ■ ■■ ■■■__■■■ ■■ ■     \n" +
+            "xxxxx■ ■■■■■ ■■ ■■■■■ ■xxxxx\n" +
+            "xxxxx■ ■■          ■■ ■xxxxx\n" +
+            "xxxxx■ ■■ ■■■__■■■ ■■ ■xxxxx\n" +
             "■■■■■■ ■■ ■xx x x■ ■■ ■■■■■■\n" +
             "          ■x  xxx■          \n" +
             "■■■■■■ ■■ ■xxxxxx■ ■■ ■■■■■■\n" +
-            "     ■ ■■ ■■■■■■■■ ■■ ■     \n" +
-            "     ■ ■■  READY!  ■■ ■     \n" +
-            "     ■ ■■ ■■■■■■■■ ■■ ■     \n" +
+            "xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx\n" +
+            "xxxxx■ ■■  READY!  ■■ ■xxxxx\n" +
+            "xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx\n" +
             "■■■■■■ ■■ ■■■■■■■■ ■■ ■■■■■■\n" +
             "■            ■■            ■\n" +
             "■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■\n" +
@@ -73,7 +74,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     private static final int xMax = 28;
     private static final int yMax = 31;
 
-    public final int fps = 3;
+    public final int fps = 2;
     private int frames = 0;
 
     public int score = 0;
@@ -217,10 +218,11 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         }
 
         char tile = getTileAt((int) pacman.realX, (int) pacman.realY);
-        if (tile == ' ') {
+        DynamicPixel dynamicPixel = map.getDynamicPixel(pacman.getPos());
+        if (tile == ' ' && dynamicPixel.material() == Material.HEAVY_CORE) {
             score++;
 
-            map.getDynamicPixel(pacman.getPos()).setMaterial(Material.BLACK_CONCRETE);
+            dynamicPixel.setMaterial(Material.BLACK_CONCRETE);
         }
     }
 
@@ -440,7 +442,25 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         @Override
         public void addPlayer(CPlayer p) {
             MiniGameUtil.putPlayerInBoat(p, getInstance());
-            MiniGameUtil.startGameLoop(instance, 2, instance::mainLoop);
+            MiniGameUtil.startGameLoop(instance, instance.fps, instance::mainLoop);
+
+            for (int y = 0; y < MAP_LAYOUT_LINES.size(); ++y) {
+                String line = MAP_LAYOUT_LINES.get(y);
+                for (int x = 0; x < line.length(); ++x) {
+                    char tile = line.charAt(x);
+                    Block block = Block.HEAVY_CORE;
+
+                    if (tile == '■') {
+                        block = Block.BLUE_CONCRETE;
+                    }
+
+                    if (tile == 'x') {
+                        block = Block.BLACK_CONCRETE;
+                    }
+
+                    Util.sendGhostBlock(p, block, new Pos(x, y, -1));
+                }
+            }
         }
 
         @Override
