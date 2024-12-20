@@ -21,12 +21,7 @@ public class ContinentalWorld extends World {
 
     public ContinentalWorld() {
         super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(0,1,0));
-        for (int x = -50; x < 50; x++){
-            for (int z = -50; z < 50; z++){
-                getInstance().loadChunk(x,z);
-                getInstance().setBlock(x,0,z,Block.LAPIS_BLOCK,false);
-            }
-        }
+        getInstance().setBlock(0,0,0,Block.LAPIS_BLOCK);
     }
 
     @Override
