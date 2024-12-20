@@ -2,8 +2,8 @@ package org.drachens.temporary.research;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
-import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
-import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
+import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;

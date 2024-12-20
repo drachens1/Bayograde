@@ -1,7 +1,7 @@
 package org.drachens.dataClasses;
 
-import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
-import org.drachens.dataClasses.Countries.ElectionTypes;
+import org.drachens.Manager.defaults.enums.ElectionsEnum;
+import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
@@ -22,7 +22,7 @@ public class VotingOption {
     String name;
     MapGen mapGenerator;
     List<IdeologyTypes> ideologyTypes;
-    List<ElectionTypes> electionTypes;
+    List<ElectionsEnum> electionTypes;
     HashMap<CurrencyTypes, Currencies> defaultCurrencies;
     InventoryEnum defaultInventory;
     TechTree tree;
@@ -78,7 +78,7 @@ public class VotingOption {
         return defaultCurrencies;
     }
 
-    public List<ElectionTypes> getElectionTypes() {
+    public List<ElectionsEnum> getElectionTypes() {
         return electionTypes;
     }
 
@@ -102,7 +102,7 @@ public class VotingOption {
         War war;
         String name;
         MapGen mapGenerator;
-        List<ElectionTypes> electionTypes;
+        List<ElectionsEnum> electionTypes;
         List<IdeologyTypes> ideologyTypes = new ArrayList<>();
         HashMap<CurrencyTypes, Currencies> defaultCurrencies = new HashMap<>();
         TechTree tree;
@@ -145,7 +145,7 @@ public class VotingOption {
             return this;
         }
 
-        public create setElections(List<ElectionTypes> elections) {
+        public create setElections(List<ElectionsEnum> elections) {
             this.electionTypes = elections;
             return this;
         }

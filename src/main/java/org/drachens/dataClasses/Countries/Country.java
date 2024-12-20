@@ -15,7 +15,7 @@ import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
+import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.bossbars.CapitulationBar;
 import org.drachens.dataClasses.BoostEnum;

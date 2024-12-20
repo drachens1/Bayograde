@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.Countries;
 
 import it.unimi.dsi.fastutil.Pair;
+import org.drachens.Manager.defaults.enums.ElectionsEnum;
 import org.drachens.dataClasses.VotingOption;
 
 import java.util.HashMap;
@@ -8,45 +9,45 @@ import java.util.Map;
 
 public class Election {
     private final Country country;
-    private ElectionTypes currentElectionType;
-    private HashMap<ElectionTypes, Float> electionTypesHashMap;
+    private ElectionsEnum currentElectionType;
+    private HashMap<ElectionsEnum, Float> electionTypesHashMap;
 
-    private Election(HashMap<ElectionTypes, Float> electionTypes, Country country) {
+    private Election(HashMap<ElectionsEnum, Float> electionTypes, Country country) {
         this.electionTypesHashMap = new HashMap<>(electionTypes);
         this.country = country;
     }
 
     public Election(VotingOption votingOption) {
         this.electionTypesHashMap = new HashMap<>();
-        for (ElectionTypes electionTypes : votingOption.getElectionTypes()) {
+        for (ElectionsEnum electionTypes : votingOption.getElectionTypes()) {
             electionTypesHashMap.put(electionTypes, 0f);
         }
         this.country = null;
     }
 
-    public ElectionTypes getCurrentElectionType() {
+    public ElectionsEnum getCurrentElectionType() {
         return currentElectionType;
     }
 
-    public void setCurrentElection(ElectionTypes currentElectionType) {
+    public void setCurrentElection(ElectionsEnum currentElectionType) {
         this.currentElectionType = currentElectionType;
     }
 
-    public HashMap<ElectionTypes, Float> getElections() {
+    public HashMap<ElectionsEnum, Float> getElections() {
         return electionTypesHashMap;
     }
 
-    public void setElections(HashMap<ElectionTypes, Float> electionTypes) {
+    public void setElections(HashMap<ElectionsEnum, Float> electionTypes) {
         this.electionTypesHashMap = electionTypes;
     }
 
-    public void addElection(ElectionTypes electionTypes, float percentage) {
+    public void addElection(ElectionsEnum electionTypes, float percentage) {
         if (electionTypesHashMap.containsKey(electionTypes)) percentage += electionTypesHashMap.get(electionTypes);
         if (percentage < 0f) {
             percentage = 0;
         } else if (percentage > 100f) percentage = 100f;
         float timesAmount = percentage / 100f;
-        for (Map.Entry<ElectionTypes, Float> entry : electionTypesHashMap.entrySet()) {
+        for (Map.Entry<ElectionsEnum, Float> entry : electionTypesHashMap.entrySet()) {
             float currentPercentage = entry.getValue();
             electionTypesHashMap.put(entry.getKey(), currentPercentage * timesAmount);
         }
@@ -56,9 +57,9 @@ public class Election {
     }
 
     public void changeLeadingElection() {
-        Pair<ElectionTypes, Float> highest = new Pair<>() {
+        Pair<ElectionsEnum, Float> highest = new Pair<>() {
             @Override
-            public ElectionTypes left() {
+            public ElectionsEnum left() {
                 return currentElectionType;
             }
 
@@ -67,11 +68,11 @@ public class Election {
                 return electionTypesHashMap.get(currentElectionType);
             }
         };
-        for (Map.Entry<ElectionTypes, Float> e : electionTypesHashMap.entrySet()) {
+        for (Map.Entry<ElectionsEnum, Float> e : electionTypesHashMap.entrySet()) {
             if (highest.right() == null || highest.right() < e.getValue()) {
                 highest = new Pair<>() {
                     @Override
-                    public ElectionTypes left() {
+                    public ElectionsEnum left() {
                         return e.getKey();
                     }
 

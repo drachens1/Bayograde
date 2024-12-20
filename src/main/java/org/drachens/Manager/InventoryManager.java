@@ -7,7 +7,7 @@ import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
-import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
+import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.interfaces.inventories.HotbarInventory;
 
 import java.time.temporal.ChronoUnit;

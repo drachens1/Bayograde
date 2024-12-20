@@ -11,8 +11,9 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.Manager.defaults.enums.ElectionsEnum;
+import org.drachens.Manager.defaults.enums.ModifiersEnum;
+import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Countries.*;
@@ -65,14 +66,13 @@ public class MapGeneratorManager extends MapGen {
     private Ideology defIdeology;
     private Election defElection;
     private int countries;
-    private List<ElectionTypes> electionTypes;
+    private List<ElectionsEnum> electionTypes;
     private List<IdeologyTypes> ideologyTypes;
     private VotingOption votingOption;
-    private final Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;
     private IdeologyTypes winnerOfThePrevWar;
     private IdeologyTypes upAndComingIdeology;
-    private ElectionTypes upAndComingElection;
-    private ElectionTypes electionWinnerPrevWar;
+    private ElectionsEnum upAndComingElection;
+    private ElectionsEnum electionWinnerPrevWar;
 
     public MapGeneratorManager() {
         super(111, 111);
@@ -455,20 +455,20 @@ public class MapGeneratorManager extends MapGen {
                     ClicksCountry country = (ClicksCountry) countries.get(b);
                     if (size.get(b) >= medianSize) {
                         country.setType(CountryEnums.Type.major);
-                        country.addModifier(modifiers.getModifier("ww2-major"));
+                        country.addModifier(ModifiersEnum.ww2_major.getModifier());
                     } else {
                         country.setType(CountryEnums.Type.minor);
-                        country.addModifier(modifiers.getModifier("ww2-minor"));
+                        country.addModifier(ModifiersEnum.ww2_minor.getModifier());
                     }
                 }
                 case VotingWinner.ww2_troops -> {
                     TroopCountry country = (TroopCountry) countries.get(b);
                     if (size.get(b) >= medianSize) {
                         country.setType(CountryEnums.Type.major);
-                        country.addModifier(modifiers.getModifier("ww2-major"));
+                        country.addModifier(ModifiersEnum.ww2_major.getModifier());
                     } else {
                         country.setType(CountryEnums.Type.minor);
-                        country.addModifier(modifiers.getModifier("ww2-minor"));
+                        country.addModifier(ModifiersEnum.ww2_minor.getModifier());
                     }
                 }
             }
@@ -504,15 +504,15 @@ public class MapGeneratorManager extends MapGen {
         temp.remove(winnerOfThePrevWar);
         upAndComingIdeology = temp.get(new Random().nextInt(0, temp.size()));
 
-        List<ElectionTypes> temp2 = votingOption.getElectionTypes();
+        List<ElectionsEnum> temp2 = votingOption.getElectionTypes();
         electionWinnerPrevWar = temp2.get(new Random().nextInt(0, temp2.size()));
         temp2.remove(electionWinnerPrevWar);
         upAndComingElection = temp2.get(new Random().nextInt(0, temp2.size()));
     }
 
     private void createContinent(List<Country> countries, Country superPower) {
-        superPower.removeModifier(modifiers.getModifier("ww2-major"));
-        superPower.addModifier(modifiers.getModifier("ww2-superpower"));
+        superPower.removeModifier(ModifiersEnum.ww2_major.getModifier());
+        superPower.addModifier(ModifiersEnum.ww2_super.getModifier());
         Continent mainContinent = new Continent();
         continents.add(mainContinent);
         Queue<Pos> continentQueue = new LinkedList<>();
@@ -554,7 +554,7 @@ public class MapGeneratorManager extends MapGen {
             }
         } while (anyQueueHadExpansion);
 
-        Modifier modifier = modifiers.getModifier("ww2-example");
+        Modifier modifier = ModifiersEnum.example.getModifier();
         for (Country c : countries) {
             switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
                 case VotingWinner.ww2_clicks -> {
@@ -621,7 +621,7 @@ public class MapGeneratorManager extends MapGen {
         return ideologyTypes.get(new Random().nextInt(ideologyTypes.size()));
     }
 
-    private ElectionTypes getRandomElection() {
+    private ElectionsEnum getRandomElection() {
         return electionTypes.get(new Random().nextInt(electionTypes.size()));
     }
 

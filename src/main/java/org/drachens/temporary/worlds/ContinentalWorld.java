@@ -11,7 +11,7 @@ import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
+import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.World;
 import org.drachens.temporary.scoreboards.DefaultScoreboard;

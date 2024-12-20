@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Economics.currency;
 
 import net.kyori.adventure.text.Component;
-import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
+import org.drachens.Manager.defaults.enums.CurrencyEnum;
 
 public class Payment implements Cloneable {
     private final CurrencyTypes currencyType;

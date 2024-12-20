@@ -1,6 +1,6 @@
 package org.drachens.dataClasses;
 
-import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.Manager.defaults.VotingWinner;
 
 public class DataStorer {
     public VotingWinner votingWinner = VotingWinner.none;

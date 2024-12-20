@@ -8,20 +8,13 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
-import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.Elections;
-import org.drachens.Manager.defaults.defaultsStorer.Ideologies;
-import org.drachens.Manager.defaults.defaultsStorer.Modifiers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
-import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
-import org.drachens.Manager.defaults.defaultsStorer.enums.InventoryEnum;
-import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.Manager.defaults.*;
+import org.drachens.Manager.defaults.enums.*;
 import org.drachens.advancement.Advancement;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.advancement.AdvancementSection;
 import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.ComponentListBuilder;
-import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
@@ -207,140 +200,33 @@ public class Main {
     }
 
     private static void createWW2VotingOption() {
-        Modifier exampleModifier = new Modifier.create(Component.text("Example", NamedTextColor.GOLD))
-                .setDescription(Component.text("description", NamedTextColor.BLUE))
-                .addBoost(BoostEnum.production, 0.1f)
-                .addBoost(BoostEnum.capitulation, 2f)
-                .addBoost(BoostEnum.stabilityBase, 3f)
-                .addBoost(BoostEnum.stabilityGain, 4f)
-                .addBoost(BoostEnum.relations, 6f)
-                .addBoost(BoostEnum.buildingSlotBoost, 2f)
-                .build();
+        Modifier fascistModifier = ModifiersEnum.ww2_fascist.getModifier();
+        Modifier centristModifier = ModifiersEnum.ww2_centrist.getModifier();
+        Modifier anarchistModifier = ModifiersEnum.ww2_anarchist.getModifier();
+        Modifier conservatistModifer = ModifiersEnum.ww2_conservatist.getModifier();
+        Modifier socialistModifier = ModifiersEnum.ww2_socialist.getModifier();
+        Modifier liberalModifier = ModifiersEnum.ww2_liberalist.getModifier();
+        Modifier capitalistModifier = ModifiersEnum.ww2_capitalist.getModifier();
 
-        Modifier fascistModifier = new Modifier.create(Component.text("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
-                .addBoost(BoostEnum.production, 0.1f)
-                .addBoost(BoostEnum.stabilityBase, 10f)
-                .addBoost(BoostEnum.stabilityGain, -0.1f)
-                .addBoost(BoostEnum.capitulation, 5f)
-                .build();
 
-        Modifier centristModifier = new Modifier.create(Component.text("Centrist", TextColor.color(96, 96, 96), TextDecoration.BOLD))
-                .addBoost(BoostEnum.stabilityBase, 50f)
-                .addBoost(BoostEnum.capitulation, -5f)
-                .addBoost(BoostEnum.production, 0.2f)
-                .build();
-
-        Modifier anarchistModifier = new Modifier.create(Component.text("Anarchist", TextColor.color(7, 154, 12)))
-                .addBoost(BoostEnum.stabilityBase, -100f)
-                .addBoost(BoostEnum.stabilityGain, -5f)
-                .addBoost(BoostEnum.capitulation, 0.5f)
-                .addBoost(BoostEnum.production, 5f)
-                .build();
-
-        Modifier conservatistModifer = new Modifier.create(Component.text("Conservatism", TextColor.color(204, 0, 0)))
-                .addBoost(BoostEnum.stabilityBase, 1f)
-                .build();
-
-        Modifier socialistModifier = new Modifier.create(Component.text("Socialist", TextColor.color(255, 0, 0)))
-                .addBoost(BoostEnum.stabilityBase, 40f)
-                .addBoost(BoostEnum.stabilityGain, 0.2f)
-                .addBoost(BoostEnum.production, 0.2f)
-                .build();
-
-        Modifier liberalModifier = new Modifier.create(Component.text("Liberalist", TextColor.color(51, 253, 255)))
-                .build();
-
-        Modifier capitalistModifier = new Modifier.create(Component.text("Capitalist", TextColor.color(0, 153, 0)))
-                .addBoost(BoostEnum.stabilityBase, -10f)
-                .addBoost(BoostEnum.production, 0.5f)
-                .build();
-
-        String votingName = "ww2-";
-        Modifiers modifiers = ContinentalManagers.defaultsStorer.modifier;//Name system = votingName-modifier
-
-        modifiers.register(fascistModifier, votingName + "fascistModifier");
-        modifiers.register(centristModifier, votingName + "centristModifier");
-        modifiers.register(anarchistModifier, votingName + "anarchistModifier");
-        modifiers.register(conservatistModifer, votingName + "conservatistModifier");
-        modifiers.register(socialistModifier, votingName + "socialistModifier");
-        modifiers.register(liberalModifier, votingName + "liberalModifier");
-        modifiers.register(capitalistModifier, votingName + "capitalistModifier");
-        modifiers.register(exampleModifier, votingName + "example");
-
-        IdeologyTypes fascist = new IdeologyTypes(TextColor.color(0, 0, 0), "F", "Fascist", getLeaders(fascistModifier, TextColor.color(0, 0, 0)), fascistModifier);
-        IdeologyTypes neutral = new IdeologyTypes(TextColor.color(165, 157, 157), "N", "Centrist", getLeaders(centristModifier, TextColor.color(165, 157, 157)), centristModifier);
-        IdeologyTypes anarchist = new IdeologyTypes(TextColor.color(7, 154, 12), "A", "Anarchism", getLeaders(anarchistModifier, TextColor.color(7, 154, 12)), anarchistModifier);
-        IdeologyTypes conservatism = new IdeologyTypes(TextColor.color(204, 0, 0), "C", "Conservative", getLeaders(conservatistModifer, TextColor.color(204, 0, 0)), conservatistModifer);
-        IdeologyTypes socialist = new IdeologyTypes(TextColor.color(255, 0, 0), "S", "Socialist", getLeaders(socialistModifier, TextColor.color(255, 0, 0)), socialistModifier);
-        IdeologyTypes liberalist = new IdeologyTypes(TextColor.color(51, 253, 255), "L", "Liberalist", getLeaders(liberalModifier, TextColor.color(51, 253, 255)), liberalModifier);
-        IdeologyTypes capitalist = new IdeologyTypes(TextColor.color(0, 153, 0), "C", "Capitalist", getLeaders(capitalistModifier, TextColor.color(0, 153, 0)), capitalistModifier);
-
-        Ideologies ideologies = ContinentalManagers.defaultsStorer.ideologies;
-
-        ideologies.register(fascist);
-        ideologies.register(neutral);
-        ideologies.register(anarchist);
-        ideologies.register(conservatism);
-        ideologies.register(socialist);
-        ideologies.register(liberalist);
-        ideologies.register(capitalist);
-
+        IdeologiesEnum.ww2_fascist.setIdeologyTypes(new IdeologyTypes(TextColor.color(0, 0, 0), "F", "Fascist", getLeaders(fascistModifier, TextColor.color(0, 0, 0)), fascistModifier));
+        IdeologiesEnum.ww2_neutral.setIdeologyTypes(new IdeologyTypes(TextColor.color(165, 157, 157), "N", "Centrist", getLeaders(centristModifier, TextColor.color(165, 157, 157)), centristModifier));
+        IdeologiesEnum.ww2_anarchist.setIdeologyTypes(new IdeologyTypes(TextColor.color(7, 154, 12), "A", "Anarchism", getLeaders(anarchistModifier, TextColor.color(7, 154, 12)), anarchistModifier));
+        IdeologiesEnum.ww2_conservatist.setIdeologyTypes(new IdeologyTypes(TextColor.color(204, 0, 0), "C", "Conservative", getLeaders(conservatistModifer, TextColor.color(204, 0, 0)), conservatistModifer));
+        IdeologiesEnum.ww2_socialist.setIdeologyTypes(new IdeologyTypes(TextColor.color(255, 0, 0), "S", "Socialist", getLeaders(socialistModifier, TextColor.color(255, 0, 0)), socialistModifier));
+        IdeologiesEnum.ww2_liberalist.setIdeologyTypes(new IdeologyTypes(TextColor.color(51, 253, 255), "L", "Liberalist", getLeaders(liberalModifier, TextColor.color(51, 253, 255)), liberalModifier));
+        IdeologiesEnum.ww2_capitalist.setIdeologyTypes(new IdeologyTypes(TextColor.color(0, 153, 0), "C", "Capitalist", getLeaders(capitalistModifier, TextColor.color(0, 153, 0)), capitalistModifier));
         List<IdeologyTypes> ideologyTypesList = new ArrayList<>();
 
-        ideologyTypesList.add(fascist);
-        ideologyTypesList.add(anarchist);
-        ideologyTypesList.add(conservatism);
-        ideologyTypesList.add(liberalist);
-        ideologyTypesList.add(capitalist);
-
-        ElectionTypes democratic = new ElectionTypes(TextColor.color(0, 0, 255), "Democratic");
-        ElectionTypes authorotarian = new ElectionTypes(TextColor.color(64, 64, 64), "Authoritarian");
-        ElectionTypes totalitarian = new ElectionTypes(TextColor.color(0, 0, 0), "Totalitarian");
-        ElectionTypes republic = new ElectionTypes(TextColor.color(0, 102, 204), "Republic");
-
-        Elections elections = ContinentalManagers.defaultsStorer.elections;
-
-        elections.register(democratic);
-        elections.register(authorotarian);
-        elections.register(totalitarian);
-        elections.register(republic);
-
-        List<ElectionTypes> electionTypes = new ArrayList<>();
-
-        electionTypes.add(democratic);
-        electionTypes.add(authorotarian);
-        electionTypes.add(totalitarian);
-        electionTypes.add(republic);
+        ideologyTypesList.add(IdeologiesEnum.ww2_fascist.getIdeologyTypes());
+        ideologyTypesList.add(IdeologiesEnum.ww2_anarchist.getIdeologyTypes());
+        ideologyTypesList.add(IdeologiesEnum.ww2_conservatist.getIdeologyTypes());
+        ideologyTypesList.add(IdeologiesEnum.ww2_liberalist.getIdeologyTypes());
+        ideologyTypesList.add(IdeologiesEnum.ww2_capitalist.getIdeologyTypes());
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
         c.put(production, new Currencies(production, 10f));
-
-        Modifier superPower = new Modifier.create(Component.text("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .addBoost(BoostEnum.stabilityBase, 10f)
-                .addBoost(BoostEnum.production, 0.3f)
-                .setDescription(Component.text()
-                        .append(Component.text("The nation is the only super power meaning they are by far the strongest at the start.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-                        .build())
-                .build();
-
-        Modifier major = new Modifier.create(Component.text("Major", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .addBoost(BoostEnum.stabilityBase, 5f)
-                .addBoost(BoostEnum.production, 0.1f)
-                .setDescription(Component.text()
-                        .append(Component.text("This nation is a major power its below super power but above minor.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-                        .build())
-                .build();
-
-        Modifier minor = new Modifier.create(Component.text("Minor", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .setDescription(Component.text()
-                        .append(Component.text("Just a wee lil nation.", TextColor.color(128, 128, 128), TextDecoration.ITALIC))
-                        .build())
-                .build();
-
-        modifiers.register(superPower, votingName + "superpower");
-        modifiers.register(major, votingName + "major");
-        modifiers.register(minor, votingName + "minor");
 
         Material capMaterial = Material.CYAN_DYE;
         Material effMaterial = Material.CYAN_DYE;
@@ -349,7 +235,14 @@ public class Main {
         Material radMaterial = Material.SADDLE;
         Material planMaterial = Material.BROWN_DYE;
 
-        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_clicks")
+        List<ElectionsEnum> electionTypes = new ArrayList<>();
+        electionTypes.add(ElectionsEnum.democratic);
+        electionTypes.add(ElectionsEnum.authoritarian);
+        electionTypes.add(ElectionsEnum.republic);
+        electionTypes.add(ElectionsEnum.totalitarian);
+
+
+        VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1937, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
                 .setCountries(90)
@@ -585,9 +478,9 @@ public class Main {
                                 .build())
                         .build())
                 .setDefaultInventory(InventoryEnum.defaultInv)
-                .build(), VotingWinner.ww2_clicks);
+                .build());
 
-        ContinentalManagers.defaultsStorer.voting.register(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
+        VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
                 .setCountries(90)
@@ -595,7 +488,7 @@ public class Main {
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
                 .setDefaultInventory(InventoryEnum.troops_default)
-                .build(), VotingWinner.ww2_troops);
+                .build());
 
     }
 

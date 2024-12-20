@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.temporary.clicks.ClicksCountry;
 import org.drachens.temporary.troops.TroopCountry;

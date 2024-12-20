@@ -1,7 +1,7 @@
 package org.drachens.temporary.research;
 
-import org.drachens.Manager.defaults.defaultsStorer.enums.BuildingEnum;
-import org.drachens.Manager.defaults.defaultsStorer.enums.CurrencyEnum;
+import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.Vault;

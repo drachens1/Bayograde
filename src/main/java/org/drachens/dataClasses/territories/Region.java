@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.territories;
 
+import org.drachens.Manager.defaults.enums.ElectionsEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Countries.ElectionTypes;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 
 import java.util.ArrayList;
@@ -9,12 +9,12 @@ import java.util.List;
 
 public class Region {
     private final IdeologyTypes leadingIdeology;
-    private final ElectionTypes leadingElectionType;
+    private final ElectionsEnum leadingElectionType;
     private List<Country> countries = new ArrayList<>();
     private List<Province> provinces = new ArrayList<>();
-    private String name;
+    private final String name;
 
-    public Region(String name, IdeologyTypes leadingIdeology, ElectionTypes leadingElectionType) {
+    public Region(String name, IdeologyTypes leadingIdeology, ElectionsEnum leadingElectionType) {
         this.leadingIdeology = leadingIdeology;
         this.leadingElectionType = leadingElectionType;
         this.name = name;
@@ -48,7 +48,7 @@ public class Region {
         return leadingIdeology;
     }
 
-    public ElectionTypes getLeadingElectionType() {
+    public ElectionsEnum getLeadingElectionType() {
         return leadingElectionType;
     }
 

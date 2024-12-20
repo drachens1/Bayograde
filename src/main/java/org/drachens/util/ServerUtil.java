@@ -29,7 +29,7 @@ import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.MessageManager;
-import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.per_instance.CountryDataManager;
@@ -136,9 +136,8 @@ public class ServerUtil {
 
 
         List<VotingOption> votingOptions = new ArrayList<>();
-        for (Map.Entry<VotingWinner, VotingOption> entry : ContinentalManagers.defaultsStorer.voting.getVotingOptionHashMap().entrySet()) {
-            votingOptions.add(entry.getValue());
-        }
+        votingOptions.add(VotingWinner.ww2_troops.getVotingOption());
+        votingOptions.add(VotingWinner.ww2_clicks.getVotingOption());
 
         for (Instance instance : MinecraftServer.getInstanceManager().getInstances()) {
             instance.createInitializeWorldBorderPacket();
@@ -330,9 +329,7 @@ public class ServerUtil {
             ));
         });
 
-        globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> {
-            e.setCancelled(true);
-        });
+        globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
 
         start();
     }

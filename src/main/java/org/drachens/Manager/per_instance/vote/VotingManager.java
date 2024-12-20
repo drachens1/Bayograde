@@ -9,7 +9,7 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.defaultsStorer.enums.VotingWinner;
+import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.dataClasses.DataStorer;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.System.ResetEvent;
