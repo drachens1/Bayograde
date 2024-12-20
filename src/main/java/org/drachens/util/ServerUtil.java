@@ -40,7 +40,6 @@ import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.*;
 import org.drachens.cmd.Dev.Kill.killCMD;
-import org.drachens.cmd.Dev.Permissions.PermissionsCMD;
 import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
 import org.drachens.cmd.Dev.help.HelpCMD;
@@ -278,7 +277,6 @@ public class ServerUtil {
         commandManager.register(new ListCMD());
         commandManager.register(new WhitelistCMD(whitelistManager));
         commandManager.register(new killCMD());
-        commandManager.register(new PermissionsCMD());
         commandManager.register(new ReplyCMD());
         commandManager.register(new MsgCMD());
         commandManager.register(new GamemodeCMD());
