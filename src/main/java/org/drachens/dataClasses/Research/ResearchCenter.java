@@ -45,37 +45,12 @@ public class ResearchCenter extends BuildTypes {
     }
 
     @Override
-    public boolean requirementsToUpgrade(Building building, Country country, int add, Player p) {
-        return false;
-    }
-
-    @Override
-    public boolean requirementsToDestroy(Country country) {
-        return false;
-    }
-
-    @Override
     protected void onCaptured(Country capturer, Building building) {
         ResearchCountry c = (ResearchCountry) building.getCountry();
         ResearchCountry s = (ResearchCountry) capturer;
         c.removeResearchCenter(building);
         s.addResearchCenter(building);
         building.setCountry(capturer);
-    }
-
-    @Override
-    protected void bombed(float dmg) {
-
-    }
-
-    @Override
-    protected void onDestroyed(Building building) {
-
-    }
-
-    @Override
-    protected void onUpgrade(int amount, Building building) {
-
     }
 
     public Payment generate(Building building) {

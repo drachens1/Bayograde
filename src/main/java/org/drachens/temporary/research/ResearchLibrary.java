@@ -34,34 +34,4 @@ public class ResearchLibrary extends ResearchBuilding {
     public Payment generate(Building building) {
         return new Payment(CurrencyEnum.research, 5f);
     }
-
-    @Override
-    public boolean requirementsToUpgrade(Building building, Country country, int add, Player p) {
-        return false;
-    }
-
-    @Override
-    public boolean requirementsToDestroy(Country country) {
-        return false;
-    }
-
-    @Override
-    protected void onCaptured(Country capturer, Building building) {
-
-    }
-
-    @Override
-    protected void bombed(float dmg) {
-
-    }
-
-    @Override
-    protected void onDestroyed(Building building) {
-
-    }
-
-    @Override
-    protected void onUpgrade(int amount, Building building) {
-
-    }
 }

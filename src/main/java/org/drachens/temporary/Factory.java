@@ -99,19 +99,10 @@ public class Factory extends BuildTypes {
     }
 
     @Override
-    public boolean requirementsToDestroy(Country country) {
-        return false;
-    }
-
-    @Override
     protected void onCaptured(Country capturer, Building building) {
         building.getCountry().removeBuilding(building);
         capturer.addBuilding(building);
         building.setCountry(capturer);
-    }
-
-    @Override
-    protected void bombed(float dmg) {
     }
 
     @Override

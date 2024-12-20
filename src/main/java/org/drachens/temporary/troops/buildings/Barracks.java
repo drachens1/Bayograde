@@ -46,36 +46,6 @@ public class Barracks extends BuildTypes {
         return true;
     }
 
-    @Override
-    public boolean requirementsToUpgrade(Building building, Country country, int add, Player p) {
-        return false;
-    }
-
-    @Override
-    public boolean requirementsToDestroy(Country country) {
-        return false;
-    }
-
-    @Override
-    protected void onCaptured(Country capturer, Building building) {
-
-    }
-
-    @Override
-    protected void bombed(float dmg) {
-
-    }
-
-    @Override
-    protected void onDestroyed(Building building) {
-
-    }
-
-    @Override
-    protected void onUpgrade(int amount, Building building) {
-
-    }
-
     public void openGui(CPlayer p, Building building){
         ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(),p);
     }

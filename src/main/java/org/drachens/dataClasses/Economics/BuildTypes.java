@@ -23,31 +23,45 @@ public abstract class BuildTypes {
         if (canBuild(country, province, p)) onBuild(country, province, p);
     }
 
-    public abstract void onBuild(Country country, Province province, Player p);
+    public void onBuild(Country country, Province province, Player p){
 
-    public abstract boolean canBuild(Country country, Province province, Player p);
+    }
 
-    public abstract boolean requirementsToUpgrade(Building building, Country country, int add, Player p);
+    public boolean canBuild(Country country, Province province, Player p){
+        return false;
+    }
 
-    public abstract boolean requirementsToDestroy(Country country);
+    public boolean requirementsToUpgrade(Building building, Country country, int add, Player p){
+        return false;
+    }
+
+    public boolean requirementsToDestroy(Country country){
+        return false;
+    }
 
     public void capture(Country capturer, Building building) {
         onCaptured(capturer, building);
     }
 
-    protected abstract void onCaptured(Country capturer, Building building);
+    protected void onCaptured(Country capturer, Building building){
+
+    }
 
     public void bomb(float dmg) {
         bombed(dmg);
     }
 
-    protected abstract void bombed(float dmg);
+    protected void bombed(float dmg){
+
+    }
 
     public void destroy(Building building) {
         onDestroyed(building);
     }
 
-    protected abstract void onDestroyed(Building building);
+    protected void onDestroyed(Building building){
+
+    }
 
     public void upgrade(int amount, Building building, Country country, Player p) {
         if (requirementsToUpgrade(building, country, amount, p)) {
@@ -55,7 +69,9 @@ public abstract class BuildTypes {
         }
     }
 
-    protected abstract void onUpgrade(int amount, Building building);
+    protected void onUpgrade(int amount, Building building){
+
+    }
 
     public int getLvl(int current) {
         return lvlsModelData[current];
