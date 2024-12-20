@@ -22,7 +22,6 @@ public class InventoryManager {
     public InventoryManager() {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
         globEHandler.addListener(PlayerUseItemEvent.class, e -> {
-            System.out.println("1");
             Player p = e.getPlayer();
             if (!e.getItemStack().isAir() && !playersCooldown.contains(p)) {
                 cooldown(p);

@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;
-import static org.drachens.util.KyoriUtil.replaceString;
 import static org.drachens.util.Messages.broadcast;
 
 public abstract class Country implements Cloneable {
@@ -235,28 +234,12 @@ public abstract class Country implements Cloneable {
         this.capital = capital;
     }
 
-    Component countryJoin = Component.text()
-            .append(Component.text("You have joined ", NamedTextColor.BLUE))
-            .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
-            .build();
-
-    Component getCountryJoin2 = Component.text()
-            .append(Component.text("You have left ", NamedTextColor.BLUE))
-            .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
-            .build();
-
-    Component getCountryLeave = Component.text()
-            .append(Component.text("%player%", NamedTextColor.GOLD, TextDecoration.BOLD))
-            .append(Component.text(" has joined ", NamedTextColor.BLUE))
-            .append(Component.text("%country%", NamedTextColor.GOLD, TextDecoration.BOLD))
-            .build();
-
     public void addPlayer(CPlayer p) {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         capitulationBar.addPlayer(p);
         this.players.add(p);
-        p.sendMessage(Component.text().append(getPrefixes("country"), replaceString(countryJoin, "%country%", this.name)).build());
-        broadcast(Component.text().append(getPrefixes("country"), replaceString(replaceString(getCountryJoin2, "%country%", this.name), "%player%", p.getUsername())).build(), p.getInstance());
+        p.sendMessage(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text("You have joined ", NamedTextColor.BLUE).append(nameComponent)).build()).build());
+        broadcast(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text(p.getUsername(), NamedTextColor.GOLD, TextDecoration.BOLD)).append(Component.text(" has joined ", NamedTextColor.BLUE)).append(nameComponent).build()).build(), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         scoreboardManager.openScoreboard(new DefaultCountryScoreboard(), p);
         clientsides.forEach(clientside -> clientside.addViewer(p));
@@ -271,7 +254,7 @@ public abstract class Country implements Cloneable {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
         capitulationBar.removePlayer(p);
         this.players.remove(p);
-        p.sendMessage(Component.text().append(getPrefixes("country"), replaceString(getCountryLeave, "%country%", this.name)).build());
+        p.sendMessage(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(nameComponent).build()).build());
         clientsides.forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
             if (players.isEmpty()) {
@@ -324,10 +307,6 @@ public abstract class Country implements Cloneable {
         if (d > 1) return 1;
         if (d < 0) return 0;
         return d;
-    }
-
-    public void calculateIncrease() {
-        vault.calculateIncrease();
     }
 
     public void capitulate(Country attacker) {
