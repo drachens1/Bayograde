@@ -14,11 +14,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class ImaginaryWorld {
+    private final boolean blockUpdatesFromPlayers;
     private final Instance instance;
     private final HashMap<Chunk, HashMap<Pos, BlockChangePacket>> ghostBlocksHashMap = new HashMap<>();
     private final HashSet<Player> players = new HashSet<>();
-    public ImaginaryWorld(Instance instance){
+    public ImaginaryWorld(Instance instance, boolean blockUpdatesFromPlayers){
         this.instance=instance;
+        this.blockUpdatesFromPlayers=blockUpdatesFromPlayers;
     }
 
     public void addPlayer(CPlayer p){
@@ -37,13 +39,17 @@ public class ImaginaryWorld {
         return players;
     }
 
+    public boolean isThereAGhostBlock(Pos pos){
+        Chunk chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        if (!ghostBlocksHashMap.containsKey(chunk))return false;
+        return ghostBlocksHashMap.get(chunk).containsKey(pos);
+    }
+
     public void addGhostBlock(Pos pos, Block block){
         Chunk chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(chunk,new HashMap<>());
         BlockChangePacket blockChangePacket = new BlockChangePacket(pos,block);
-        if (ghosty.containsKey(pos)){
-            PacketUtils.sendGroupedPacket(players,blockChangePacket);
-        }
+        PacketUtils.sendGroupedPacket(players,blockChangePacket);
         ghosty.put(pos,blockChangePacket);
         ghostBlocksHashMap.put(chunk,ghosty);
     }
@@ -59,6 +65,15 @@ public class ImaginaryWorld {
         ghostBlocksHashMap.put(chunk,ghosty);
     }
 
+    public void resend(Pos pos){
+        if (players.isEmpty())return;
+        Chunk chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
+        HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(chunk,new HashMap<>());
+        if (ghosty.containsKey(pos)){
+            PacketUtils.sendGroupedPacket(players,ghosty.get(pos));
+        }
+    }
+
     public void loadChunk(Player p, Chunk chunk){
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.get(chunk);
         if (ghosty==null)return;
@@ -67,5 +82,14 @@ public class ImaginaryWorld {
 
     public Instance getInstance(){
         return instance;
+    }
+
+    public boolean isBlockUpdatesFromPlayers(){
+        return blockUpdatesFromPlayers;
+    }
+
+    public BlockChangePacket getGhostBlockPacket(Pos pos){
+        HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(instance.getChunk(pos.chunkX(),pos.chunkZ()),new HashMap<>());
+        return ghosty.get(pos);
     }
 }
