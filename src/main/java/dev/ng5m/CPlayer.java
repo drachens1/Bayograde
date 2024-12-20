@@ -2,17 +2,13 @@ package dev.ng5m;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.PlayerSkin;
-import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.PlayerConnection;
-import net.minestom.server.particle.Particle;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.fileManagement.PlayerInfoEntry;

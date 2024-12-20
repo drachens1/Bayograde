@@ -248,7 +248,7 @@ public class Province implements Serializable {
             building.capture(attacker);
         }
         this.occupier = attacker;
-        occupier.addOccupied(this);
+        occupier.captureProvince(this);
         if (isCity()) {
             if (attacker.isMajorCity(this))
                 this.setCity(attacker.getMajorCity(this));
@@ -305,13 +305,11 @@ public class Province implements Serializable {
     }
 
     public void setBlock() {
-        material = occupier.getBlock();
-        instance.setBlock(pos, occupier.getBlock().block());
+        setBlock(occupier.getBlock());
     }
 
     public void setBorder() {
-        material = occupier.getBorder();
-        instance.setBlock(pos, occupier.getBorder().block());
+        setBlock(occupier.getBorder());
     }
 
     public Material getMaterial() {
@@ -339,7 +337,6 @@ public class Province implements Serializable {
     }
 
     private void updateBorders() {
-
         for (Pos direction : directions) {
             Pos newLoc = this.getPos().add(direction);
             change(newLoc);
@@ -351,8 +348,6 @@ public class Province implements Serializable {
         if (province == null || province.isCity()) return;
         Country country = province.getOccupier();
         if (country != null) {
-
-
             for (int[] direction2 : directions2) {
                 int offsetX2 = direction2[0];
                 int offsetY2 = direction2[1];

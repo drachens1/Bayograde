@@ -74,6 +74,7 @@ import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
+import org.drachens.temporary.view_modes.ViewModesCMD;
 import org.drachens.temporary.worlds.ContinentalWorld;
 
 import java.time.LocalTime;
@@ -306,6 +307,7 @@ public class ServerUtil {
         commandManager.register(new DemandCMD());
         commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
+        commandManager.register(new ViewModesCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -320,6 +322,12 @@ public class ServerUtil {
             if (clientEntsToLoad.getClientSides(e.getInstance())!=null){
                 new ArrayList<>(clientEntsToLoad.getClientSides(e.getInstance())).forEach((Clientside::dispose));
             }
+            e.getInstance().getPlayers().forEach(player -> {
+                CPlayer p = (CPlayer) player;
+                if (p.getCountry()!=null){
+                    p.getCountry().removePlayer(p,true);
+                }
+            });
             clientEntsToLoad.reset();
             Instance instance = e.getInstance();
             CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());

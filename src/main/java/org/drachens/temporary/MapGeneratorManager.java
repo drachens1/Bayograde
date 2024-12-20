@@ -586,10 +586,10 @@ public class MapGeneratorManager extends MapGen {
 
         }
         superPower.getIdeology().changeLeadingIdeology();
+        finalLoop(countries);
     }
 
     private void assignRegion(List<Country> countries) {
-
         Region north = new Region("north", getRandomIdeology(), getRandomElection());
         Region south = new Region("south", getRandomIdeology(), getRandomElection());
         Region east = new Region("east", getRandomIdeology(), getRandomElection());
@@ -859,5 +859,9 @@ public class MapGeneratorManager extends MapGen {
             Province province = entry.getValue();
             province.setNeighbours(getNeighbours(province));
         }
+    }
+
+    private void finalLoop(List<Country> countries){
+        countries.forEach(Country::init);
     }
 }

@@ -1,11 +1,9 @@
 package org.drachens.dataClasses.Armys;
 
-import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.temporary.troops.TroopCountry;
 
-import java.util.*;
+import java.util.HashSet;
 
 public class TrainedTroop {
     private final TroopCountry country;

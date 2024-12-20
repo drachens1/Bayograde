@@ -11,8 +11,6 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
-import net.minestom.server.network.packet.server.play.BlockChangePacket;
-import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -30,6 +28,7 @@ import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;
@@ -97,6 +96,8 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, Loan> loanRequests = new HashMap<>();
     private final CapitulationBar capitulationBar = new CapitulationBar();
     private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
+    private final ImaginaryWorld warsWorld;
+    private final ImaginaryWorld allyWorld;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
@@ -117,6 +118,25 @@ public abstract class Country implements Cloneable {
         this.instance = instance;
         aStarPathfinder = new AStarPathfinderXZ(ContinentalManagers.world(instance).provinceManager());
         this.mapGen = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
+        warsWorld=new ImaginaryWorld(instance,true);
+        allyWorld=new ImaginaryWorld(instance,true);
+    }
+
+    public void init(){
+        List<Country> countries = new ArrayList<>(ContinentalManagers.world(instance).countryDataManager().getCountries());
+        countries.remove(this);
+        countries.forEach(country -> country.getOccupies().forEach(province -> {
+            warsWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE);
+            allyWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE);
+        }));
+    }
+
+    public ImaginaryWorld getWarsWorld(){
+        return warsWorld;
+    }
+
+    public ImaginaryWorld getAllyWorld(){
+        return allyWorld;
     }
 
     public void addModifier(Modifier modifier) {
@@ -188,6 +208,12 @@ public abstract class Country implements Cloneable {
 
     public void addOccupied(Province province) {
         occupies.add(province);
+    }
+
+    public void captureProvince(Province province){
+        warsWorld.removeGhostBlock(province.getPos());
+        allyWorld.removeGhostBlock(province.getPos());
+        addOccupied(province);
     }
 
     public void removeOccupied(Province province) {
@@ -266,6 +292,8 @@ public abstract class Country implements Cloneable {
         }
         demandManager.removeActive(p);
         onRemovePlayer(p);
+        warsWorld.removePlayer(p);
+        allyWorld.removePlayer(p);
     }
 
     protected abstract void onRemovePlayer(CPlayer p);
@@ -314,7 +342,7 @@ public abstract class Country implements Cloneable {
     public void capitulate(Country attacker) {
         broadcast(Component.text().append(getPrefixes("country"), Component.text(this.name + " has capitulated to " + attacker.name, NamedTextColor.RED)).build(), capital.getInstance());
         for (Province p : new ArrayList<>(this.occupies)) {
-            p.setOccupier(attacker);
+            p.capture(attacker);
         }
         wars.forEach(aggressor -> EventDispatcher.call(new EndWarEvent(aggressor, this)));
     }
@@ -383,10 +411,13 @@ public abstract class Country implements Cloneable {
 
     public void addWar(Country country) {
         wars.add(country);
+        country.getOccupies().forEach(province -> warsWorld.removeGhostBlock(province.getPos()));
+
     }
 
     public void removeWar(Country country) {
         wars.remove(country);
+        country.getOccupies().forEach(province -> warsWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE));
     }
 
     public Boolean atWar(Country country) {
@@ -547,6 +578,7 @@ public abstract class Country implements Cloneable {
 
     public void joinMilitaryFaction(MilitaryFactionType militaryFactionType) {
         if (!canJoinFaction(militaryFactionType)) return;
+        militaryFactionType.getMembers().forEach(country -> country.getOccupies().forEach(province -> allyWorld.removeGhostBlock(province.getPos())));
         setMilitaryFactionType(militaryFactionType);
         EventDispatcher.call(new FactionJoinEvent(militaryFactionType, this));
         createInfo();
@@ -731,10 +763,6 @@ public abstract class Country implements Cloneable {
 
     public void setPlayerLeader(Player player) {
         this.playerLeader = player;
-    }
-
-    public void reloadBlocksForPlayer(Player p) {
-        occupies.forEach(province -> PacketUtils.sendPacket(p, new BlockChangePacket(province.getPos(), province.getMaterial().block())));
     }
 
     public Block getBlockForProvince(Province province) {

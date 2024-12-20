@@ -5,10 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Player;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.network.packet.server.play.BlockChangePacket;
-import net.minestom.server.utils.PacketUtils;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
@@ -38,7 +35,7 @@ public class WW2Demands extends Demand {
 
     public WW2Demands(Country from, Country to) {
         super(from, to);
-        imaginaryWorld=new ImaginaryWorld(to.getInstance());
+        imaginaryWorld=new ImaginaryWorld(to.getInstance(),true);
         List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
         countries.remove(to);
         countries.removeAll(to.getPuppets());
