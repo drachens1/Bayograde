@@ -16,6 +16,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
 import org.drachens.events.StartWarEvent;
+import org.drachens.temporary.troops.Combat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Province implements Serializable {
+    private Combat combat;
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
@@ -378,5 +380,17 @@ public class Province implements Serializable {
 
     public void removeBuilding() {
         building = null;
+    }
+
+    public void setCombat(Combat combat){
+        this.combat=combat;
+    }
+
+    public boolean isThereCombat(){
+        return combat!=null;
+    }
+
+    public Combat getCombat(){
+        return combat;
     }
 }

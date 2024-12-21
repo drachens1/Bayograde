@@ -7,7 +7,6 @@ import net.minestom.server.item.Material;
 import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Economics.currency.Payments;
-import org.drachens.interfaces.DivisionStatsCalculator;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopEditGUI;
 
@@ -24,10 +23,11 @@ public class DivisionDesign {
     private float atk;
     private float def;
     private float speed;
+    private float org;
     private final Payments paymentList;
     private String name;
     
-    public DivisionDesign(String name, HashMap<Integer, DivisionType> design, DivisionStatsCalculator divisionStatsCalculator, TroopCountry country) {
+    public DivisionDesign(String name, HashMap<Integer, DivisionType> design, TroopCountry country) {
         this.design = design;
         this.paymentList = new Payments();
         this.hp = 1f;
@@ -122,6 +122,10 @@ public class DivisionDesign {
 
     public Profile getProfile(){
         return profile;
+    }
+
+    public float getOrg(){
+        return org;
     }
 
     public static class Profile {

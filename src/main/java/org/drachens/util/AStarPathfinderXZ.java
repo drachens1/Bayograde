@@ -82,7 +82,6 @@ public class AStarPathfinderXZ {
     private List<Province> getNeighbors(Province province, Country country, AStarPathfinderVoids pathfinderVoids) {
         List<Province> neighbors = new ArrayList<>();
         int[] deltas = {-1, 0, 1};
-        int y = province.getPos().blockY();
 
         for (int dx : deltas) {
             for (int dz : deltas) {

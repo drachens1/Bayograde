@@ -4,10 +4,13 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
+
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue.TrainedTroop;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.territories.Province;
+import org.drachens.temporary.troops.Combat;
 import org.drachens.temporary.troops.TroopCountry;
 
 import java.time.temporal.ChronoUnit;
@@ -23,12 +26,13 @@ public class Troop {
     private ItemDisplay enemy;
     private Province province;
     private Task task;
-    private Battle battle;
+    private Combat battle;
     private float strength;
     private float health;
     private float damage;
     private float defence;
     private float speed;
+    private float organisation;
     private DivisionDesign design;
 
     public Troop(Province province, TrainedTroop trainedTroop, AStarPathfinderVoids troopPathing) {
@@ -47,8 +51,13 @@ public class Troop {
         this.defence = design.getDef();
         this.speed = design.getSpeed();
         this.country.addTroop(this);
+        this.organisation=trainedTroop.getDesign().getOrg();
         province.addTroop(this);
         //MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
+    }
+
+    public float getOrg(){
+        return organisation;
     }
 
     public Province getProvince() {
@@ -65,6 +74,10 @@ public class Troop {
 
     public ItemDisplay getTroop() {
         return troop;
+    }
+
+    public void setStrength(float s){
+        strength=s;
     }
 
     public void move(Province to) {
@@ -123,20 +136,37 @@ public class Troop {
         to.addTroop(this);
     }
 
-    public void attack(Province to) {
-        new Battle(to, this);
+    public void attack(Province province){
+        if (province.isThereCombat()){
+            joinBattle(province.getCombat());
+        }else{
+            new Combat(province).addAttacker(this);
+        }
     }
 
-    public void joinBattle(Battle battle) {
-        troopType.getShootingAnimation().stop(troop);
-        setBattle(battle);
+    public void joinBattle(Combat battle) {
+        battle.addAttacker(this);
+    }
+    
+    public void leaveBattle() {
+        if (battle != null) {
+            battle.removeAttacker(this);
+        }
     }
 
-    public Battle getBattle() {
+    public void retreat(){
+
+    }
+
+    public void setHealth(float amount){
+        this.health=amount;
+    }
+
+    public Combat getBattle() {
         return battle;
     }
 
-    public void setBattle(Battle battle) {
+    public void setBattle(Combat battle) {
         this.battle = battle;
     }
 
@@ -160,5 +190,13 @@ public class Troop {
         troop.delete();
         ally.delete();
         enemy.delete();
+    }
+
+    public TroopCountry getCountry(){
+        return country;
+    }
+
+    public void setOrg(float org){
+        this.organisation=org;
     }
 }

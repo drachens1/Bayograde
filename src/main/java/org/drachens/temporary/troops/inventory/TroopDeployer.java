@@ -47,7 +47,7 @@ public class TroopDeployer extends HotbarItemButton {
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
         if (province == null || !(province.getOccupier() == country)) return;
         System.out.println("spawn troop");
-        TrainedTroop trainedTroop = new TrainedTroop(troopType, new DivisionDesign("design", new HashMap<>(), null, country), 10f);
+        TrainedTroop trainedTroop = new TrainedTroop(troopType, new DivisionDesign("design", new HashMap<>(), country), 10f);
         new Troop(province, trainedTroop, troopPathing);
     }
 }

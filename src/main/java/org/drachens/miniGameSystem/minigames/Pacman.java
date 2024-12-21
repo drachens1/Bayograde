@@ -470,7 +470,6 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         @Override
         public void playerMove(PlayerMoveEvent e) {
-            CPlayer p = (CPlayer) e.getPlayer();
         }
     }
 

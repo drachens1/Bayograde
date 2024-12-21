@@ -12,7 +12,6 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.temporary.troops.TroopCountry;
-import org.drachens.temporary.troops.TroopStatsCalculator;
 import org.drachens.temporary.troops.buildings.Barracks;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +75,7 @@ public class TroopTrainerGUI extends InventoryGUI{
                 .consumer(inventoryPreClickEvent -> {
                     CPlayer p = (CPlayer) inventoryPreClickEvent.getPlayer();
                     TroopCountry troopCountry = (TroopCountry) p.getCountry();
-                    troopCountry.addDivisionDesign(new DivisionDesign("Womp",new HashMap<>(),new TroopStatsCalculator(),troopCountry));
+                    troopCountry.addDivisionDesign(new DivisionDesign("Womp",new HashMap<>(),troopCountry));
                     p.closeInventory();
                     ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building),p);
                 });

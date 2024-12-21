@@ -95,7 +95,7 @@ public class AllInformationCMD extends Command {
                                 p.sendMessage(Component.text()
                                         .append(Component.text("_______/", NamedTextColor.BLUE))
                                         .append(Component.text(getName(), NamedTextColor.GOLD))
-                                        .append(Component.text("\_______", NamedTextColor.BLUE))
+                                        .append(Component.text("\\_______", NamedTextColor.BLUE))
                                         .appendNewline()
                                         .append(Component.text("Country: "))
                                         .append(country.getNameComponent())
