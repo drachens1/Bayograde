@@ -282,14 +282,14 @@ public class MapGeneratorManager extends MapGen {
             newCurrencies.put(e.getKey(), e.getValue().clone());
         }
         switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-            case VotingWinner.ww2_clicks -> {
-                return new ClicksCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
-            }
-            case VotingWinner.ww2_troops -> {
-                return new TroopCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
-            }
+                    case VotingWinner.ww2_clicks -> {
+                        return new ClicksCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+                    }
+                    case VotingWinner.ww2_troops -> {
+                        return new TroopCountry(newCurrencies, countryName, Component.text(countryName, NamedTextColor.BLUE), block, border, defIdeology, defElection, instance);
+                    }
+                    default -> throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
         }
-        return null;
     }
 
     public void floodFill(List<Country> countries) {
@@ -403,28 +403,29 @@ public class MapGeneratorManager extends MapGen {
 
     private void generateCities(List<Country> countries) {
         switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-            case VotingWinner.ww2_clicks -> {
-                for (Country c : countries) {
-                    ClicksCountry country = (ClicksCountry) c;
-                    cityTypeGen(160, 5, gMax.get(country.getType()), country);
-                    cityTypeGen(180, 4, rgMax.get(country.getType()), country);
-                    cityTypeGen(200, 3, yMax.get(country.getType()), country);
-                    cityTypeGen(220, 2, lMax.get(country.getType()), country);
-                    cityTypeGen(240, 1, grMax.get(country.getType()), country);
-                    country.calculateCapitulationPercentage();
-                }
-            }
-            case VotingWinner.ww2_troops -> {
-                for (Country c : countries) {
-                    TroopCountry country = (TroopCountry) c;
-                    cityTypeGen(160, 5, gMax.get(country.getType()), country);
-                    cityTypeGen(180, 4, rgMax.get(country.getType()), country);
-                    cityTypeGen(200, 3, yMax.get(country.getType()), country);
-                    cityTypeGen(220, 2, lMax.get(country.getType()), country);
-                    cityTypeGen(240, 1, grMax.get(country.getType()), country);
-                    country.calculateCapitulationPercentage();
-                }
-            }
+                    case VotingWinner.ww2_clicks -> {
+                        for (Country c : countries) {
+                            ClicksCountry country = (ClicksCountry) c;
+                            cityTypeGen(160, 5, gMax.get(country.getType()), country);
+                            cityTypeGen(180, 4, rgMax.get(country.getType()), country);
+                            cityTypeGen(200, 3, yMax.get(country.getType()), country);
+                            cityTypeGen(220, 2, lMax.get(country.getType()), country);
+                            cityTypeGen(240, 1, grMax.get(country.getType()), country);
+                            country.calculateCapitulationPercentage();
+                        }
+                    }
+                    case VotingWinner.ww2_troops -> {
+                        for (Country c : countries) {
+                            TroopCountry country = (TroopCountry) c;
+                            cityTypeGen(160, 5, gMax.get(country.getType()), country);
+                            cityTypeGen(180, 4, rgMax.get(country.getType()), country);
+                            cityTypeGen(200, 3, yMax.get(country.getType()), country);
+                            cityTypeGen(220, 2, lMax.get(country.getType()), country);
+                            cityTypeGen(240, 1, grMax.get(country.getType()), country);
+                            country.calculateCapitulationPercentage();
+                        }
+                    }
+                    default -> throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
         }
 
     }
@@ -452,26 +453,27 @@ public class MapGeneratorManager extends MapGen {
         float medianSize = calculateTopPercent(size, 0.2f);
         for (int b = 0; b < size.size(); b++) {
             switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-                case VotingWinner.ww2_clicks -> {
-                    ClicksCountry country = (ClicksCountry) countries.get(b);
-                    if (size.get(b) >= medianSize) {
-                        country.setType(CountryEnums.Type.major);
-                        country.addModifier(ModifiersEnum.ww2_major.getModifier());
-                    } else {
-                        country.setType(CountryEnums.Type.minor);
-                        country.addModifier(ModifiersEnum.ww2_minor.getModifier());
-                    }
-                }
-                case VotingWinner.ww2_troops -> {
-                    TroopCountry country = (TroopCountry) countries.get(b);
-                    if (size.get(b) >= medianSize) {
-                        country.setType(CountryEnums.Type.major);
-                        country.addModifier(ModifiersEnum.ww2_major.getModifier());
-                    } else {
-                        country.setType(CountryEnums.Type.minor);
-                        country.addModifier(ModifiersEnum.ww2_minor.getModifier());
-                    }
-                }
+                            case VotingWinner.ww2_clicks -> {
+                                ClicksCountry country = (ClicksCountry) countries.get(b);
+                                if (size.get(b) >= medianSize) {
+                                    country.setType(CountryEnums.Type.major);
+                                    country.addModifier(ModifiersEnum.ww2_major.getModifier());
+                                } else {
+                                    country.setType(CountryEnums.Type.minor);
+                                    country.addModifier(ModifiersEnum.ww2_minor.getModifier());
+                                }
+                            }
+                            case VotingWinner.ww2_troops -> {
+                                TroopCountry country = (TroopCountry) countries.get(b);
+                                if (size.get(b) >= medianSize) {
+                                    country.setType(CountryEnums.Type.major);
+                                    country.addModifier(ModifiersEnum.ww2_major.getModifier());
+                                } else {
+                                    country.setType(CountryEnums.Type.minor);
+                                    country.addModifier(ModifiersEnum.ww2_minor.getModifier());
+                                }
+                            }
+                            default -> throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
             }
 
         }
@@ -486,14 +488,15 @@ public class MapGeneratorManager extends MapGen {
             if (country.getOccupies().size() > biggest.getOccupies().size()) biggest = country;
         }
         switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-            case VotingWinner.ww2_clicks -> {
-                ClicksCountry country = (ClicksCountry) biggest;
-                country.setType(CountryEnums.Type.superPower);
-            }
-            case VotingWinner.ww2_troops -> {
-                TroopCountry country = (TroopCountry) biggest;
-                country.setType(CountryEnums.Type.superPower);
-            }
+                    case VotingWinner.ww2_clicks -> {
+                        ClicksCountry country = (ClicksCountry) biggest;
+                        country.setType(CountryEnums.Type.superPower);
+                    }
+                    case VotingWinner.ww2_troops -> {
+                        TroopCountry country = (TroopCountry) biggest;
+                        country.setType(CountryEnums.Type.superPower);
+                    }
+                    default -> throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
         }
 
         return biggest;
@@ -558,30 +561,31 @@ public class MapGeneratorManager extends MapGen {
         Modifier modifier = ModifiersEnum.example.getModifier();
         for (Country c : countries) {
             switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-                case VotingWinner.ww2_clicks -> {
-                    ClicksCountry country = (ClicksCountry) c;
-                    country.getIdeology().changeLeadingIdeology();
-                    if (country.getType().equals(CountryEnums.Type.major)) {
-                        historyAssignMajor(country);
-                    } else if (country.getType().equals(CountryEnums.Type.minor)) {
-                        historyAssignMinors(country);
-                    }
-                    ideologyBoost(country);
-                    country.addModifier(modifier);
-                    historyAssignSuperPowers(country);
-                }
-                case VotingWinner.ww2_troops -> {
-                    TroopCountry country = (TroopCountry) c;
-                    country.getIdeology().changeLeadingIdeology();
-                    if (country.getType().equals(CountryEnums.Type.major)) {
-                        historyAssignMajor(country);
-                    } else if (country.getType().equals(CountryEnums.Type.minor)) {
-                        historyAssignMinors(country);
-                    }
-                    ideologyBoost(country);
-                    country.addModifier(modifier);
-                    historyAssignSuperPowers(country);
-                }
+                            case VotingWinner.ww2_clicks -> {
+                                ClicksCountry country = (ClicksCountry) c;
+                                country.getIdeology().changeLeadingIdeology();
+                                if (country.getType().equals(CountryEnums.Type.major)) {
+                                    historyAssignMajor(country);
+                                } else if (country.getType().equals(CountryEnums.Type.minor)) {
+                                    historyAssignMinors(country);
+                                }
+                                ideologyBoost(country);
+                                country.addModifier(modifier);
+                                historyAssignSuperPowers(country);
+                            }
+                            case VotingWinner.ww2_troops -> {
+                                TroopCountry country = (TroopCountry) c;
+                                country.getIdeology().changeLeadingIdeology();
+                                if (country.getType().equals(CountryEnums.Type.major)) {
+                                    historyAssignMajor(country);
+                                } else if (country.getType().equals(CountryEnums.Type.minor)) {
+                                    historyAssignMinors(country);
+                                }
+                                ideologyBoost(country);
+                                country.addModifier(modifier);
+                                historyAssignSuperPowers(country);
+                            }
+                            default -> throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
             }
 
         }

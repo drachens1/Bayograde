@@ -11,14 +11,13 @@ import org.drachens.temporary.Factory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class Vault {
     private Country country;
-    private final Map<CurrencyTypes, Currencies> amount;
+    private final HashMap<CurrencyTypes, Currencies> amount;
     private final List<Loan> loans;
 
-    public Vault(Map<CurrencyTypes, Currencies> startingCurrencies) {
+    public Vault(HashMap<CurrencyTypes, Currencies> startingCurrencies) {
         this.amount = new HashMap<>(startingCurrencies);
         this.loans = new ArrayList<>();
     }

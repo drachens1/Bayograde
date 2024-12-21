@@ -5,6 +5,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.AStarPathfinderVoids;
+import org.drachens.dataClasses.Armys.DivisionTrainingQueue.TrainedTroop;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.troops.TroopCountry;

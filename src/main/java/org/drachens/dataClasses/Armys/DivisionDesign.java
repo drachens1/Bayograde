@@ -26,7 +26,7 @@ public class DivisionDesign {
     private float speed;
     private final Payments paymentList;
     private String name;
-
+    
     public DivisionDesign(String name, HashMap<Integer, DivisionType> design, DivisionStatsCalculator divisionStatsCalculator, TroopCountry country) {
         this.design = design;
         this.paymentList = new Payments();
@@ -36,7 +36,7 @@ public class DivisionDesign {
         this.speed = 1f;
         this.country = country;
         this.name = name;
-        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(name)));
+        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(name)),this);
     }
 
     public DivisionDesign(DivisionDesign design) {
@@ -48,7 +48,7 @@ public class DivisionDesign {
         this.country = design.country;
         this.name = design.name;
         this.hp=design.hp;
-        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(design.name)));
+        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(design.name)),this);
 
     }
 
@@ -126,6 +126,7 @@ public class DivisionDesign {
 
     public static class Profile {
         private ItemStack face;
+        private final DivisionDesign design;
         private final InventoryButton train = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS)
                         .customName(Component.text("Train"))
@@ -133,21 +134,23 @@ public class DivisionDesign {
                 .consumer(e -> {
 
                 });
-        private final InventoryButton edit = new InventoryButton()
-                .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
-                        .customName(Component.text("Edit"))
-                        .build())
-                .consumer(e -> {
-                    ContinentalManagers.guiManager.openGUI(new TroopEditGUI(),(CPlayer) e.getPlayer());
-                });
+        private final InventoryButton edit;
         private final InventoryButton delete = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
                         .customName(Component.text("Delete"))
                         .build())
                 .consumer(e -> {});
 
-        public Profile(ItemStack face){
+        public Profile(ItemStack face, DivisionDesign design){
             this.face=face;
+            this.design=design;
+            this.edit=new InventoryButton()
+            .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
+                    .customName(Component.text("Edit"))
+                    .build())
+            .consumer(e -> {
+                ContinentalManagers.guiManager.openGUI(new TroopEditGUI(new HashMap<>(design.getDesign()),design),(CPlayer) e.getPlayer());
+            });
         }
         public void rename(Component newName){
             face = face.withCustomName(newName);

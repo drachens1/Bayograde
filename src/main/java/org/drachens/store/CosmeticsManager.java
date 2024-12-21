@@ -1,15 +1,12 @@
 package org.drachens.store;
 
 import dev.ng5m.CPlayer;
-import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.fileManagement.ConfigFileManager;
 
 import java.util.HashMap;
 
 public class CosmeticsManager {
     private final HashMap<String, StoreCategory> storeCategoryHashMap = new HashMap<>();
     private final HashMap<String, StoreItem> storeItemHashMap = new HashMap<>();
-    private final ConfigFileManager configFileManager = ContinentalManagers.configFileManager;
 
     public void register(StoreCategory storeCategory) {
         storeCategoryHashMap.put(storeCategory.getIdentifier(), storeCategory);

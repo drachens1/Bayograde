@@ -10,6 +10,7 @@ import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Armys.DivisionDesign;
+import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
@@ -21,12 +22,12 @@ import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
 import java.util.HashMap;
 
 public class Barracks extends BuildTypes {
+    private final HashMap<Building, DivisionTrainingQueue> trainingHashMap = new HashMap<>();
     private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE,new int[]{23,24,25,26});
     private final Payment payment = new Payment(CurrencyEnum.production, 10f);
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the barracks : 5 Production", NamedTextColor.RED))
             .build();
-    private final HashMap<Building, HashMap<DivisionDesign, Integer>> trainingHashMap = new HashMap<>();
     public Barracks() {
         super(new int[]{22}, Material.ORANGE_DYE, BuildingEnum.barracks);
     }
@@ -56,8 +57,8 @@ public class Barracks extends BuildTypes {
             return;
         }
         System.out.println("Start training");
-        int current = trainingHashMap.getOrDefault(building,new HashMap<>()).getOrDefault(divisionDesign,0);
-        current++;
+        DivisionTrainingQueue divisionTrainingQueue = trainingHashMap.getOrDefault(building, new DivisionTrainingQueue(building));
+        divisionTrainingQueue.addToQueue(divisionDesign);
     }
 
     public void openGui(CPlayer p, Building building){
