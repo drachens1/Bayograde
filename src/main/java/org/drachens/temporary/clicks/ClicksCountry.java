@@ -9,6 +9,7 @@ import org.drachens.dataClasses.Countries.Election;
 import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.events.NewDay;
 import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.HashMap;
@@ -31,6 +32,11 @@ public class ClicksCountry extends ResearchCountry {
 
     @Override
     protected void onRemovePlayer(CPlayer p) {
+
+    }
+
+    @Override
+    public void newDay(NewDay newDay) {
 
     }
 

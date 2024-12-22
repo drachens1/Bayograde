@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.Economics;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -41,7 +41,7 @@ public class Building {
         buildType.getBuildTypes().capture(capturer, this);
     }
 
-    public void upgrade(int amount, Country country, Player p) {
+    public void upgrade(int amount, Country country, CPlayer p) {
         buildType.getBuildTypes().upgrade(amount, this, country, p);
     }
 

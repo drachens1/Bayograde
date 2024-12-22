@@ -28,7 +28,6 @@ import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
-import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.other.Clientside;
@@ -40,7 +39,6 @@ import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
 import org.drachens.events.EndWarEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
-import org.drachens.events.research.ResearchStartEvent;
 import org.drachens.events.NewDay;
 import org.drachens.interfaces.MapGen;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
@@ -292,7 +290,7 @@ public abstract class Country implements Cloneable {
             } else
                 setPlayerLeader(players.getFirst());
         }
-        demandManager.removeActive(p);
+        demandManager.removeActive(p.getCountry());
         onRemovePlayer(p);
         warsWorld.removePlayer(p);
         allyWorld.removePlayer(p);
@@ -806,6 +804,8 @@ public abstract class Country implements Cloneable {
     }
 
     protected abstract void newWeek(NewDay newDay);
+
+    public abstract void newDay(NewDay newDay);
 
     public List<Province> getCities(){
         return cities;

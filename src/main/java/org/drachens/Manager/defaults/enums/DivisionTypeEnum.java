@@ -1,11 +1,10 @@
 package org.drachens.Manager.defaults.enums;
 
-import static org.drachens.util.ItemStackUtil.itemBuilder;
-
+import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Armys.DivisionType;
 import org.drachens.dataClasses.Economics.currency.Payment;
 
-import net.minestom.server.item.Material;
+import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public enum DivisionTypeEnum {
     ww2_cavalry(new DivisionType("Cavalry",2f,1f,3f,2f,1f,new Payment(CurrencyEnum.production,3f),itemBuilder(Material.ORANGE_BANNER))),

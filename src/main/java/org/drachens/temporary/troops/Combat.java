@@ -1,10 +1,10 @@
 package org.drachens.temporary.troops;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.territories.Province;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Combat {
     private final Province province;

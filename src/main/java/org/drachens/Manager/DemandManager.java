@@ -1,27 +1,26 @@
 package org.drachens.Manager;
 
-import net.minestom.server.entity.Player;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class DemandManager {
-    private final HashMap<UUID, Demand> active = new HashMap<>();
+    private final HashMap<Country, Demand> active = new HashMap<>();
 
-    public boolean isPlayerActive(Player p) {
-        return active.containsKey(p.getUuid());
+    public boolean isPlayerActive(Country country) {
+        return active.containsKey(country);
     }
 
-    public void addActive(Player player, Demand demand) {
-        active.put(player.getUuid(), demand);
+    public void addActive(Country country, Demand demand) {
+        active.put(country, demand);
     }
 
-    public void removeActive(Player player) {
-        active.remove(player.getUuid());
+    public void removeActive(Country country) {
+        active.remove(country);
     }
 
-    public Demand getDemand(Player player) {
-        return active.get(player.getUuid());
+    public Demand getDemand(Country country) {
+        return active.get(country);
     }
 }

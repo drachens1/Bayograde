@@ -1,8 +1,7 @@
 package org.drachens.interfaces;
 
-import org.drachens.dataClasses.Countries.Country;
-
 import net.minestom.server.instance.Instance;
+import org.drachens.dataClasses.Countries.Country;
 
 public interface AIManager {
     AI createAIForCountry(Country country);

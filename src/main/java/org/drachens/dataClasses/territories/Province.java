@@ -333,6 +333,7 @@ public class Province implements Serializable {
 
     //6 = capital
     public void setCity(int lvl) {
+        if (!city) if (occupier!=null)occupier.addCity(this);
         this.city = true;
         this.setBlock(cities[lvl]);
         material = cities[lvl];

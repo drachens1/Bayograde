@@ -1,14 +1,12 @@
 package org.drachens.Manager;
 
-import java.util.HashMap;
-
-import org.drachens.cmd.Dev.Kill.player;
+import net.minestom.server.MinecraftServer;
+import net.minestom.server.instance.Instance;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.NewDay;
 import org.drachens.temporary.troops.Combat;
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.instance.Instance;
+import java.util.HashMap;
 
 public class CombatManager {
     private HashMap<Instance,HashMap<Province, Combat>> combatHash = new HashMap<>();
@@ -16,6 +14,7 @@ public class CombatManager {
     public CombatManager(){
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e->{
             HashMap<Province, Combat> a = combatHash.get(e.getInstance());
+            if (a==null)return;
             a.forEach((province,combat)->{
                 combat.newDay();
             });

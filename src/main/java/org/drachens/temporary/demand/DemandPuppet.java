@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.DemandManager;
@@ -25,16 +24,11 @@ public class DemandPuppet extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerUseItemEvent e) {
-
-    }
-
-    @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getPosition());
         if (province == null) return;
-        Demand demand = demandManager.getDemand(p);
+        Demand demand = demandManager.getDemand(p.getCountry());
         Country to = demand.getToCountry();
         Country provinceCountry = province.getOccupier();
         if (!(to == provinceCountry || to.getPuppets().contains(provinceCountry))) {
@@ -50,7 +44,7 @@ public class DemandPuppet extends HotbarItemButton {
         CPlayer p = (CPlayer) e.getPlayer();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getBlockPosition());
         if (province == null) return;
-        Demand demand = demandManager.getDemand(p);
+        Demand demand = demandManager.getDemand(p.getCountry());
         Country to = demand.getToCountry();
         Country provinceCountry = province.getOccupier();
         if (!(to == provinceCountry || to.getPuppets().contains(provinceCountry))) {

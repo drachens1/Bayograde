@@ -3,7 +3,6 @@ package org.drachens.dataClasses.Research;
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.item.ItemStack;
@@ -13,7 +12,6 @@ import org.drachens.InventorySystem.InventoryGUI;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
-import org.drachens.events.research.ResearchStartEvent;
 import org.drachens.temporary.research.ResearchCountry;
 import org.jetbrains.annotations.NotNull;
 

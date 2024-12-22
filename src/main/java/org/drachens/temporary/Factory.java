@@ -1,10 +1,10 @@
 package org.drachens.temporary;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -19,8 +19,6 @@ import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.dataClasses.territories.Province;
-
-import dev.ng5m.CPlayer;
 
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -94,6 +92,7 @@ public class Factory extends BuildTypes {
         }
         int maxLvl = materialLvls.get(province.getMaterial());
         maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
+        if (lvlsModelData.length<maxLvl)return false;
         if (!(building.getCurrentLvl() + add <= maxLvl)) {
             sendMessage(p,maxCapacityReached);
             return false;

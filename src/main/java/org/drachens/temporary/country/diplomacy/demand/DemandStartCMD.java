@@ -34,7 +34,7 @@ public class DemandStartCMD extends Command {
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
-            if (demandManager.isPlayerActive(p)) {
+            if (demandManager.isPlayerActive(p.getCountry())) {
                 p.refreshCommands();
                 return;
             }
@@ -66,7 +66,7 @@ public class DemandStartCMD extends Command {
                     .append(Component.text("You have started creating a demand against "))
                     .append(to.getNameComponent())
                     .build());
-            demandManager.addActive(p, demand);
+            demandManager.addActive(from, demand);
             inventoryManager.assignInventory(p, InventoryEnum.demand);
         }, countries);
     }
@@ -81,6 +81,7 @@ public class DemandStartCMD extends Command {
     }
 
     private boolean valid(CommandSender sender) {
-        return isLeaderOfCountry(sender) && !demandManager.isPlayerActive((CPlayer) sender);
+        CPlayer p = (CPlayer) sender;
+        return isLeaderOfCountry(sender) && !demandManager.isPlayerActive(p.getCountry());
     }
 }

@@ -130,7 +130,6 @@ public class DivisionDesign {
 
     public static class Profile {
         private ItemStack face;
-        private final DivisionDesign design;
         private final InventoryButton train = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS)
                         .customName(Component.text("Train"))
@@ -139,15 +138,10 @@ public class DivisionDesign {
 
                 });
         private final InventoryButton edit;
-        private final InventoryButton delete = new InventoryButton()
-                .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
-                        .customName(Component.text("Delete"))
-                        .build())
-                .consumer(e -> {});
+        private final InventoryButton delete;
 
         public Profile(ItemStack face, DivisionDesign design){
             this.face=face;
-            this.design=design;
             this.edit=new InventoryButton()
             .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
                     .customName(Component.text("Edit"))
@@ -155,6 +149,15 @@ public class DivisionDesign {
             .consumer(e -> {
                 ContinentalManagers.guiManager.openGUI(new TroopEditGUI(new HashMap<>(design.getDesign()),design),(CPlayer) e.getPlayer());
             });
+            delete= new InventoryButton()
+                    .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
+                            .customName(Component.text("Delete"))
+                            .build())
+                    .consumer(e -> {
+                        CPlayer p = (CPlayer) e.getPlayer();
+                        TroopCountry country1 = (TroopCountry) p.getCountry();
+                        country1.removeDivisionDesign(design);
+                    });
         }
         public void rename(Component newName){
             face = face.withCustomName(newName);

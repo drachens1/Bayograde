@@ -5,13 +5,16 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Armys.DivisionDesign;
+import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.CountryEnums;
 import org.drachens.dataClasses.Countries.Election;
 import org.drachens.dataClasses.Countries.Ideology;
+import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.other.Clientside;
+import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.NewDay;
 import org.drachens.temporary.clicks.ClicksVault;
 import org.drachens.temporary.research.ResearchCountry;
@@ -29,6 +32,7 @@ public class TroopCountry extends ResearchCountry {
     private final List<Clientside> allyTroopClientsides = new ArrayList<>();
     private final List<Troop> troops = new ArrayList<>();
     private final List<DivisionDesign> divisionDesigns = new ArrayList<>();
+    private final HashMap<Building, DivisionTrainingQueue> divisionTrainingQueueHashMap = new HashMap<>();
 
     public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies));
@@ -54,6 +58,29 @@ public class TroopCountry extends ResearchCountry {
     @Override
     public void newWeek(NewDay newDay) {
 
+    }
+
+    @Override
+    public void newDay(NewDay newDay){
+        divisionTrainingQueueHashMap.forEach(((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay()));
+    }
+
+    @Override
+    public void removeOccupied(Province province){
+        super.removeOccupied(province);
+        if (province.getBuilding()!=null){
+            divisionTrainingQueueHashMap.remove(province.getBuilding());
+        }
+    }
+
+    public DivisionTrainingQueue getBuildingsTraining(Building building){
+        DivisionTrainingQueue divisionTrainingQueue = divisionTrainingQueueHashMap.getOrDefault(building,new DivisionTrainingQueue(building));
+        divisionTrainingQueueHashMap.putIfAbsent(building,divisionTrainingQueue);
+        return divisionTrainingQueue;
+    }
+
+    public void finishBuildingTraining(Building building){
+        divisionTrainingQueueHashMap.remove(building);
     }
 
     public void addDivisionDesign(DivisionDesign divisionDesign){

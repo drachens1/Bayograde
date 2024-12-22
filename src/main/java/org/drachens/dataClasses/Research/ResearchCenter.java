@@ -1,8 +1,8 @@
 package org.drachens.dataClasses.Research;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
@@ -13,8 +13,6 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.research.ResearchCountry;
-
-import dev.ng5m.CPlayer;
 
 import static org.drachens.util.Messages.sendMessage;
 

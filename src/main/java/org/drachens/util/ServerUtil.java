@@ -70,6 +70,7 @@ import org.drachens.events.RankAddEvent;
 import org.drachens.events.RankRemoveEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.temporary.clicks.TmpCMD;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
@@ -257,15 +258,16 @@ public class ServerUtil {
             ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(newDay));
         }).setDelay(2).repeat().schedule());
 
-        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
-            if (!(e instanceof NewDay newDay)) return;
-            newDay.getInstance().getPlayers().forEach(player -> {
+
+        globEHandler.addListener(NewDay.class, e -> {
+            e.getInstance().getPlayers().forEach(player -> {
                 ContinentalScoreboards continentalScoreboards = scoreboardManager.getScoreboard(player);
                 if (continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard) {
                     defaultCountryScoreboard.updateAll();
                 }
             });
-        }).setDelay(1).repeat().schedule());
+            ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.newDay(e));
+        });
 
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
         for (VotingOption votingOption : votingOptions)
@@ -308,6 +310,8 @@ public class ServerUtil {
         commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
+
+        commandManager.register(new TmpCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

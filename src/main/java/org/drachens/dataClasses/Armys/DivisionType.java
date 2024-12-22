@@ -1,8 +1,7 @@
 package org.drachens.dataClasses.Armys;
 
-import org.drachens.dataClasses.Economics.currency.Payment;
-
 import net.minestom.server.item.ItemStack;
+import org.drachens.dataClasses.Economics.currency.Payment;
 
 public class DivisionType {
     private String name;

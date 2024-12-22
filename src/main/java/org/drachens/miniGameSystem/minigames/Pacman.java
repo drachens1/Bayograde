@@ -13,6 +13,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerBoatPacket;
 import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.DynamicPixel;
 import org.drachens.miniGameSystem.MiniGame;
@@ -465,11 +466,12 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         @Override
         public void removePlayer(CPlayer p) {
-
+            ContinentalManagers.worldManager.unregisterWorld(this);
         }
 
         @Override
         public void playerMove(PlayerMoveEvent e) {
+
         }
     }
 

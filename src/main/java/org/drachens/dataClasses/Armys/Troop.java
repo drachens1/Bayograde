@@ -4,8 +4,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
-
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue.TrainedTroop;
 import org.drachens.dataClasses.other.ItemDisplay;

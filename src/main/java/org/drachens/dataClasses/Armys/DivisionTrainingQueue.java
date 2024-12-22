@@ -1,46 +1,76 @@
 package org.drachens.dataClasses.Armys;
 
-import java.util.HashSet;
-import java.util.Map;
-
+import net.kyori.adventure.text.format.TextColor;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.TroopPathing;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 public class DivisionTrainingQueue {
-    private final HashSet<TrainedTroop> divisionDesign = new HashSet<>();
+    private final CompletionBarTextDisplay completionBarTextDisplay;
+    private final List<TrainedTroop> divisionDesign = new ArrayList<>();
     private final Building building;
+    private TrainedTroop trainedTroop;
+    private float time;
     
     public DivisionTrainingQueue(Building building){
         this.building=building;
+        completionBarTextDisplay=new CompletionBarTextDisplay(building.getProvince().getPos().add(0,2,0), building.getCountry().getInstance(), TextColor.color(0,100,0));
     }
 
     public void addToQueue(DivisionDesign design){
+        System.out.println("2");
         float total = 0f;
         for (Map.Entry<Integer, DivisionType> e : design.getDesign().entrySet()){
             total+=e.getValue().getTrainingTime();
         }
-        divisionDesign.add(new TrainedTroop(null, design, total));
+        TrainedTroop troop = new TrainedTroop(null, design, total);
+        if (divisionDesign.isEmpty()){
+            trainedTroop=troop;
+            time=troop.time;
+            building.getCountry().addTextDisplay(completionBarTextDisplay.getTextDisplay());
+        }
+        divisionDesign.add(troop);
     }
 
-    public void removeFromQueue(DivisionDesign design){
+    public void removeFromQueue(TrainedTroop design){
         divisionDesign.remove(design);
     }
 
     public void newDay(){
         if (divisionDesign.isEmpty())return;
-        TrainedTroop design = divisionDesign.iterator().next();
-        design.subtractTime(1f);
-        if (design.getTrainingTime()<=0f){
-            finishTrainedTroop(design);
+        System.out.println("1 : "+trainedTroop.time);
+        trainedTroop.subtractTime(1f);
+        if (trainedTroop.getTrainingTime()<=0f){
+            finishTrainedTroop(trainedTroop);
+        }else {
+            completionBarTextDisplay.setProgress(trainedTroop.getTrainingTime()/time);
         }
     }
 
     private void finishTrainedTroop(TrainedTroop trainedTroop){
+        System.out.println("3");
         Province province = building.getProvince();
         Troop troop = new Troop(province, trainedTroop, new TroopPathing());
+        removeFromQueue(trainedTroop);
+        TroopCountry troopCountry = (TroopCountry) building.getCountry();
+        troopCountry.addTroop(troop);
+        if (divisionDesign.isEmpty()){
+            completionBarTextDisplay.getTextDisplay().dispose();
+            troopCountry.finishBuildingTraining(building);
+        }else {
+            completionBarTextDisplay.setProgress(1f);
+            TrainedTroop next = divisionDesign.getFirst();
+            this.trainedTroop=next;
+            time=next.time;
+        }
     }
 
     public static class TrainedTroop {

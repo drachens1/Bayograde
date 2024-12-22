@@ -3,7 +3,6 @@ package org.drachens.temporary.troops.buildings;
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -17,9 +16,12 @@ import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.territories.Province;
+import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
 
 import java.util.HashMap;
+
+import static org.drachens.util.Messages.sendMessage;
 
 public class Barracks extends BuildTypes {
     private final HashMap<Building, DivisionTrainingQueue> trainingHashMap = new HashMap<>();
@@ -33,14 +35,14 @@ public class Barracks extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, Player p) {
+    public void onBuild(Country country, Province province, CPlayer p) {
         Building building = new Building(this,province);
         ItemDisplay itemDisplay = building.getItemDisplay();
         trainingAnimation.start(itemDisplay,true);
     }
 
     @Override
-    public boolean canBuild(Country country, Province province, Player p) {
+    public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
         if (province.getBuilding() != null) return false;
         if (!province.isCity()) return false;
@@ -53,12 +55,11 @@ public class Barracks extends BuildTypes {
 
     public void startTraining(Building building, DivisionDesign divisionDesign, CPlayer p){
         if (!building.getProvince().getOccupier().canMinusCosts(divisionDesign.getCost())){
-            p.sendMessage("You cannot afford this");
+            sendMessage(p,Component.text("You cannot afford this"));
             return;
         }
-        System.out.println("Start training");
-        DivisionTrainingQueue divisionTrainingQueue = trainingHashMap.getOrDefault(building, new DivisionTrainingQueue(building));
-        divisionTrainingQueue.addToQueue(divisionDesign);
+        TroopCountry troopCountry = (TroopCountry) building.getCountry();
+        troopCountry.getBuildingsTraining(building).addToQueue(divisionDesign);
     }
 
     public void openGui(CPlayer p, Building building){

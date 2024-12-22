@@ -7,7 +7,6 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
-import net.minestom.server.entity.Player;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
@@ -58,7 +57,7 @@ public class DemandAddPaymentCMD extends Command {
             String choice = context.get(types);
             if (!(choice.equalsIgnoreCase("offer") || choice.equalsIgnoreCase("demand"))) return;
             CPlayer p = (CPlayer) sender;
-            WW2Demands demand = (WW2Demands) demandManager.getDemand(p);
+            WW2Demands demand = (WW2Demands) demandManager.getDemand(p.getCountry());
             CurrencyTypes currencyTypes = CurrencyEnum.valueOf(context.get(payments)).getCurrencyType();
             if (currencyTypes == null) {
                 p.sendMessage(currencyDoesntExist);
@@ -92,6 +91,7 @@ public class DemandAddPaymentCMD extends Command {
     }
 
     private boolean hasDemand(CommandSender sender) {
-        return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
+        CPlayer p = (CPlayer) sender;
+        return isLeaderOfCountry(sender) && demandManager.isPlayerActive(p.getCountry());
     }
 }

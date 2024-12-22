@@ -21,9 +21,9 @@ public class BuildItem extends HotbarItemButton {
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
         if (country == null || province == null) return;
         if (province.getBuilding() != null && province.getBuilding().getBuildTypes() == buildingEnum.getBuildTypes().getIdentifier()) {
-            province.getBuilding().upgrade(1, country, e.getPlayer());
+            province.getBuilding().upgrade(1, country, (CPlayer) e.getPlayer());
         } else {
-            buildingEnum.getBuildTypes().build(country, province, e.getPlayer());
+            buildingEnum.getBuildTypes().build(country, province, (CPlayer) e.getPlayer());
         }
     }
 }

@@ -209,6 +209,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
         @Override
         public void removePlayer(CPlayer p) {
             flappyBird.flappyBar.removePlayer(p);
+            ContinentalManagers.worldManager.unregisterWorld(this);
         }
 
         @Override

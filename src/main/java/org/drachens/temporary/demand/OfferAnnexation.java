@@ -3,9 +3,7 @@ package org.drachens.temporary.demand;
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.DemandManager;
@@ -23,18 +21,12 @@ public class OfferAnnexation extends HotbarItemButton {
     public OfferAnnexation() {
         super(3, itemBuilder(Material.IRON_SWORD, Component.text("Offer Annexation", NamedTextColor.AQUA)));
     }
-
-    @Override
-    public void onUse(PlayerUseItemEvent e) {
-
-    }
-
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getPosition());
         if (province == null) return;
-        Demand demand = demandManager.getDemand(p);
+        Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
         if (!(from == provinceCountry || from.getPuppets().contains(provinceCountry))) {
@@ -50,7 +42,7 @@ public class OfferAnnexation extends HotbarItemButton {
         CPlayer p = (CPlayer) e.getPlayer();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getBlockPosition());
         if (province == null) return;
-        Demand demand = demandManager.getDemand(p);
+        Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
         if (!(from == provinceCountry || from.getPuppets().contains(provinceCountry))) {
@@ -59,10 +51,5 @@ public class OfferAnnexation extends HotbarItemButton {
         }
         WW2Demands ww2Demands = (WW2Demands) demand;
         ww2Demands.addAnnexationOffer(provinceCountry);
-    }
-
-    @Override
-    public void onUse(PlayerHandAnimationEvent e) {
-
     }
 }

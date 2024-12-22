@@ -118,7 +118,7 @@ public class MapGeneratorManager extends MapGen {
                 "Afghanistan", "Akrotiri", "Albania", "Algeria", "AmericanSamoa", "Andorra", "Angola", "Anguilla", "Antarctica",
                 "Antiguaand_Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
                 "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Bassasda_India", "Belarus", "Belgium", "Belize", "Benin", "Bermuda",
-                "Bhutan", "Bolivia", "Bosniaand_Herzegovina", "Botswana", "BouvetIsland", "Brazil", "BritishIndian_Ocean_Territory",
+                "Bhutan", "Bolivia", "Bosniaand_Herzegovina", "Botswana", "BouvetIsland", "Brazil",
                 "BritishVirgin_Islands", "Brunei", "Bulgaria", "BurkinaFaso", "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "CapeVerde",
                 "CaymanIslands", "CentralAfrican_Republic", "Chad", "Chile", "China", "ChristmasIsland", "ClippertonIsland", "Cocos(Keeling)_Islands",
                 "Colombia", "Comoros", "Democratic_Republic_of_the_Congo", "Republic_of_the_Congo", "CookIslands", "CoralSea_Islands", "CostaRica",
@@ -439,7 +439,6 @@ public class MapGeneratorManager extends MapGen {
                 i--;
             } else {
                 p.setCity(index);
-                country.addCity(p);
                 country.addMajorCity(p, p.getMaterial());
             }
         }

@@ -6,7 +6,7 @@ import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.inventories.HotbarInventory;
 import org.drachens.interfaces.inventories.HotbarItemButton;
-import org.drachens.temporary.demand.DemandInventory;
+import org.drachens.temporary.demand.*;
 import org.drachens.temporary.inventories.ExitItem;
 import org.drachens.temporary.scoreboards.items.ShowDiplomacy;
 import org.drachens.temporary.scoreboards.items.ShowEconomy;
@@ -20,7 +20,7 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 public enum InventoryEnum {
     scoreboardInv(new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(), new ShowEconomy(), new ShowIdeology(), new ShowGeneralInfo(), new ExitItem()})),
 
-    demand(new DemandInventory()),
+    demand(new NoneCustomisableInventory(new HotbarItemButton[]{new DemandProvince(), new DemandPuppet(), new DemandAnnexation(), new OfferProvince(), new OfferPuppet(), new OfferAnnexation()})),
 
     research(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1, itemBuilder(Material.BROWN_DYE, 1), BuildingEnum.library),
             new BuildItem(2, itemBuilder(Material.BROWN_DYE, 2), BuildingEnum.university), new BuildItem(3, itemBuilder(Material.BROWN_DYE, 3), BuildingEnum.researchCenter),

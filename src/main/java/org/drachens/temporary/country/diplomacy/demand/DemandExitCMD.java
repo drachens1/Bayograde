@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import net.minestom.server.entity.Player;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
@@ -27,7 +26,7 @@ public class DemandExitCMD extends Command {
         addSyntax((sender, context) -> {
             if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
-            demandManager.removeActive(p);
+            demandManager.removeActive(p.getCountry());
             p.sendMessage(exited);
         });
     }
@@ -42,6 +41,7 @@ public class DemandExitCMD extends Command {
     }
 
     private boolean hasDemand(CommandSender sender) {
-        return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
+        CPlayer p = (CPlayer) sender;
+        return isLeaderOfCountry(sender) && demandManager.isPlayerActive(p.getCountry());
     }
 }

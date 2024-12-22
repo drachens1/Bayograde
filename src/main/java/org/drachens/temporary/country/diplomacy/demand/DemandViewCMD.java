@@ -5,7 +5,6 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
-import net.minestom.server.entity.Player;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -32,7 +31,7 @@ public class DemandViewCMD extends Command {
         addSyntax((sender, context) -> {
             if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
-            WW2Demands demand = (WW2Demands) demandManager.getDemand(p);
+            WW2Demands demand = (WW2Demands) demandManager.getDemand(p.getCountry());
             if (demand == null) return;
             switch (context.get(on)) {
                 case "on":
@@ -58,6 +57,7 @@ public class DemandViewCMD extends Command {
     }
 
     private boolean hasDemand(CommandSender sender) {
-        return isLeaderOfCountry(sender) && demandManager.isPlayerActive((Player) sender);
+        CPlayer p = (CPlayer) sender;
+        return isLeaderOfCountry(sender) && demandManager.isPlayerActive(p.getCountry());
     }
 }

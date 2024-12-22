@@ -1,17 +1,15 @@
 package org.drachens.dataClasses.Economics;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
 
-import dev.ng5m.CPlayer;
-
 import java.util.HashSet;
 
 public abstract class BuildTypes {
-    private final int[] lvlsModelData;
+    protected final int[] lvlsModelData;
     private final Material material;
     private final BuildingEnum identifier;
 

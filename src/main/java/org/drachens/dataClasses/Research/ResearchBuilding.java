@@ -1,7 +1,6 @@
 package org.drachens.dataClasses.Research;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
@@ -18,7 +17,7 @@ public abstract class ResearchBuilding extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, Player p) {
+    public void onBuild(Country country, Province province, CPlayer p) {
         if (!canBuild(country, province, p)) return;
         new Building(this, province);
         province.getBuilding().getItemDisplay().addViewer((CPlayer) p);

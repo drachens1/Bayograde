@@ -22,6 +22,7 @@ import java.util.Objects;
 import static org.drachens.Manager.defaults.ContinentalManagers.inventoryManager;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 import static org.drachens.util.KyoriUtil.getPrefixes;
+import static org.drachens.util.Messages.sendMessage;
 
 public class DemandIncomingCMD extends Command {
     public DemandIncomingCMD() {
@@ -46,7 +47,7 @@ public class DemandIncomingCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("view"));
                 });
 
-        var third = ArgumentType.String("")
+        var third = ArgumentType.String("view")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (Objects.equals(context.get(choice), "view")) {
                         suggestion.addEntry(new SuggestionEntry("off"));
@@ -60,21 +61,20 @@ public class DemandIncomingCMD extends Command {
 
         Component notSent = Component.text()
                 .append(getPrefixes("country"))
-                .append(Component.text("That country hasn't sent you a demand and/or they no longer have a player controlling them"))
+                .append(Component.text("That country hasn't sent you a demand"))
                 .build();
 
         addSyntax((sender, context) -> {
             if (!hasDemandSent(sender)) return;
             CPlayer p = (CPlayer) sender;
-            CPlayer player = (CPlayer) ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options)).getPlayerLeader();
-            if (player == null) {
-                p.sendMessage(notSent);
+            Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
+            if (from == null) {
+                sendMessage(p,notSent);
                 return;
             }
 
-            Demand sentDemand = demandManager.getDemand(player);
+            Demand sentDemand = demandManager.getDemand(from);
 
-            Country from = player.getCountry();
             Country to = p.getCountry();
             switch (context.get(choice)) {
                 case "accept":
@@ -88,25 +88,25 @@ public class DemandIncomingCMD extends Command {
                 case "counter-offer":
                     Demand demand = new WW2Demands(sentDemand.getToCountry(), sentDemand.getFromCountry());
                     demand.copyButOpposite(sentDemand);
-                    demandManager.addActive(p, demand);
+                    demandManager.addActive(to, demand);
                     inventoryManager.assignInventory(p, InventoryEnum.demand);
                     EventDispatcher.call(new DemandCounterOfferEvent(to, from));
                     break;
             }
 
         }, options, choice);
+
         addSyntax((sender, context) -> {
             if (!hasDemandSent(sender)) return;
             CPlayer p = (CPlayer) sender;
-            CPlayer player = (CPlayer) ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options)).getPlayerLeader();
-            if (player == null) {
-                p.sendMessage(notSent);
+            Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
+            if (from == null) {
+                sendMessage(p,notSent);
                 return;
             }
 
-            WW2Demands sentDemand = (WW2Demands) demandManager.getDemand(player);
+            WW2Demands sentDemand = (WW2Demands) demandManager.getDemand(from);
 
-            Country from = player.getCountry();
             Country to = p.getCountry();
             switch (context.get(choice)) {
                 case "accept":
@@ -120,7 +120,7 @@ public class DemandIncomingCMD extends Command {
                 case "counter-offer":
                     Demand demand = new WW2Demands(sentDemand.getToCountry(), sentDemand.getFromCountry());
                     demand.copyButOpposite(sentDemand);
-                    demandManager.addActive(p, demand);
+                    demandManager.addActive(to, demand);
                     inventoryManager.assignInventory(p, InventoryEnum.demand);
                     EventDispatcher.call(new DemandCounterOfferEvent(to, from));
                     break;

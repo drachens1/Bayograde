@@ -1,6 +1,6 @@
 package org.drachens.temporary.research;
 
-import net.minestom.server.entity.Player;
+import dev.ng5m.CPlayer;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
@@ -18,7 +18,7 @@ public class ResearchLibrary extends ResearchBuilding {
     }
 
     @Override
-    public boolean canBuild(Country country, Province province, Player p) {
+    public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country || province.getBuilding() != null) return false;
         if (!country.canMinusCost(cost)) return false;
         for (Province neighbour : province.getNeighbours()) {

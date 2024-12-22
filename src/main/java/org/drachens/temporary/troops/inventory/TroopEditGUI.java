@@ -14,16 +14,16 @@ import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.DivisionType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 import static org.drachens.util.InventoryUtil.addExitButton;
 import static org.drachens.util.InventoryUtil.outlineInventory;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class TroopEditGUI extends InventoryGUI {
     private final DivisionDesign design;
-    private HashMap<Integer, DivisionType> divTypeHash = new HashMap<>();
+    private final HashMap<Integer, DivisionType> divTypeHash;
+    private final int[] coords = new int[]{10,19,28,37,12,13,14,15,16,21,22,23,24,25,30,31,32,33,34,39,40,41,42,43};
 
     public TroopEditGUI(HashMap<Integer, DivisionType> dHashMap, DivisionDesign design) {
         this.divTypeHash=dHashMap;
@@ -38,14 +38,15 @@ public class TroopEditGUI extends InventoryGUI {
     @Override
     public void decorate(@NotNull CPlayer player) {
         outlineInventory(this,sideButtons());
-        for (Map.Entry<Integer, DivisionType> e : divTypeHash.entrySet()){
-            if (e.getValue()==null){
-                addButton(e.getKey(), selectDivisionTypeEmpty());
-            }else{
-                addButton(e.getKey(), selectDivisionType(e.getValue()));
+        for (int i : coords){
+            if (divTypeHash.containsKey(i)){
+                addButton(i, selectDivisionType(divTypeHash.get(i)));
+            }else {
+                addButton(i, selectDivisionTypeEmpty());
+
             }
         }
-        for (int i = 11; i < 38; i += 9){
+        for (int i = 11; i < 39; i += 9){
             addButton(i, sideButtons());
         }
         addButton(44, saveChanges());
