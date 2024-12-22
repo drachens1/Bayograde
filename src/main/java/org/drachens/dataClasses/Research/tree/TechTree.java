@@ -9,6 +9,7 @@ import java.util.List;
 
 public class TechTree {
     private final HashMap<ResearchCategoryEnum, ResearchCategory> researchCategoriesHashMaps;
+    private final HashMap<String,List<ResearchOption>> researchAfterHashMap = new HashMap<>();
     private final List<ResearchCategory> researchCategories;
     private final Component name;
     private final HashMap<String, ResearchOption> identifierHashMap = new HashMap<>();
@@ -35,6 +36,7 @@ public class TechTree {
             }
             i += 3;
         }
+        researchOptionMap.
     }
 
     public Component getName() {
@@ -59,6 +61,11 @@ public class TechTree {
 
     public HashMap<Integer[], ResearchOption> getResearchOptionMap() {
         return researchOptionMap;
+    }
+
+    public void getAfter(String identifier){
+        List<ResearchOption> e = researchAfterHashMap.get(identifier);
+        
     }
 
     public static class Create {

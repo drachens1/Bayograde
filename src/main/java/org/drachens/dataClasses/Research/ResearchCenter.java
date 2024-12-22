@@ -14,6 +14,10 @@ import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.research.ResearchCountry;
 
+import dev.ng5m.CPlayer;
+
+import static org.drachens.util.Messages.sendMessage;
+
 public class ResearchCenter extends BuildTypes {
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the research center : 5 Production", NamedTextColor.RED))
@@ -26,7 +30,7 @@ public class ResearchCenter extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, Player p) {
+    public void onBuild(Country country, Province province, CPlayer p) {
         country.removePayments(payments);
         new Building(this, province);
         ResearchCountry c = (ResearchCountry) country;
@@ -34,11 +38,11 @@ public class ResearchCenter extends BuildTypes {
     }
 
     @Override
-    public boolean canBuild(Country country, Province province, Player p) {
+    public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
         if (province.getBuilding() != null) return false;
         if (!country.canMinusCosts(payments)) {
-            p.sendMessage(cantAffordMsg);
+            sendMessage(p,cantAffordMsg);
             return false;
         }
         return true;

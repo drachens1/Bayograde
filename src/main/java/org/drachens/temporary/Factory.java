@@ -20,11 +20,15 @@ import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.dataClasses.territories.Province;
 
+import dev.ng5m.CPlayer;
+
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Random;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
+import static org.drachens.util.Messages.sendMessage;
+
 
 public class Factory extends BuildTypes {
     private final Payments produces;
@@ -58,7 +62,7 @@ public class Factory extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, Player p) {
+    public void onBuild(Country country, Province province, CPlayer p) {
         country.removePayments(payments);
         Building factory = new Building(this, province);
         ItemDisplay itemDisplay = factory.getItemDisplay();
@@ -66,33 +70,32 @@ public class Factory extends BuildTypes {
     }
 
     @Override
-    public boolean canBuild(Country country, Province province, Player p) {
+    public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
         if (province.getBuilding() != null) return false;
         if (!province.isCity()) return false;
         if (!country.canMinusCosts(payments)) {
-            p.sendMessage(cantAffordMsg);
+            sendMessage(p,cantAffordMsg);
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean requirementsToUpgrade(Building building, Country country, int add, Player p) {
+    public boolean requirementsToUpgrade(Building building, Country country, int add, CPlayer p) {
         if (building.getCountry() != country) return false;
         Province province = building.getProvince();
         if (!materialLvls.containsKey(province.getMaterial())) return false;
         Payments temp = new Payments(payments);
         temp.multiply(add);
         if (!country.canMinusCosts(temp)) {
-            p.sendMessage(cantAffordToUpgrade);
+            sendMessage(p,cantAffordMsg);
             return false;
         }
         int maxLvl = materialLvls.get(province.getMaterial());
         maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
-        System.out.println(maxLvl + " = " + materialLvls.get(province.getMaterial()) + " * " + country.getBoost(BoostEnum.buildingSlotBoost));
         if (!(building.getCurrentLvl() + add <= maxLvl)) {
-            p.sendMessage(maxCapacityReached);
+            sendMessage(p,maxCapacityReached);
             return false;
         } else
             return true;

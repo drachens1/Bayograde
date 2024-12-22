@@ -6,6 +6,8 @@ import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
 
+import dev.ng5m.CPlayer;
+
 import java.util.HashSet;
 
 public abstract class BuildTypes {
@@ -19,19 +21,23 @@ public abstract class BuildTypes {
         this.identifier = identifier;
     }
 
-    public void build(Country country, Province province, Player p) {
+    public void forceBuild(Country country, Province province, CPlayer p){
+        onBuild(country, province, p);
+    }
+
+    public void build(Country country, Province province, CPlayer p) {
         if (canBuild(country, province, p)) onBuild(country, province, p);
     }
 
-    public void onBuild(Country country, Province province, Player p){
+    public void onBuild(Country country, Province province, CPlayer p){
 
     }
 
-    public boolean canBuild(Country country, Province province, Player p){
+    public boolean canBuild(Country country, Province province, CPlayer p){
         return false;
     }
 
-    public boolean requirementsToUpgrade(Building building, Country country, int add, Player p){
+    public boolean requirementsToUpgrade(Building building, Country country, int add, CPlayer p){
         return false;
     }
 
@@ -63,7 +69,7 @@ public abstract class BuildTypes {
 
     }
 
-    public void upgrade(int amount, Building building, Country country, Player p) {
+    public void upgrade(int amount, Building building, Country country, CPlayer p) {
         if (requirementsToUpgrade(building, country, amount, p)) {
             onUpgrade(amount, building);
         }

@@ -16,6 +16,7 @@ import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.events.NewDay;
 import org.drachens.events.research.ResearchCompletionEvent;
+import org.drachens.events.research.ResearchStartEvent;
 import org.drachens.temporary.clicks.ClicksVault;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public abstract class ResearchCountry extends Country {
     private Payment researchCurrent;
     private final List<Building> researchCentersBuildings = new ArrayList<>();
     private final Modifier researchModifier;
+    private Runnable onFinishResearch;
 
     public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault);
@@ -44,6 +46,10 @@ public abstract class ResearchCountry extends Country {
             researchCurrent.remove(vault.getResearch());
             if (researchCurrent.getAmount() <= 0) {
                 completeActiveResearch();
+                if (onFinishResearch!=null){
+                    onFinishResearch.run();
+                    onFinishResearch=null;
+                }
             }
         }
     }
@@ -104,4 +110,14 @@ public abstract class ResearchCountry extends Country {
         return true;
     }
 
+    
+    public void startResearching(ResearchOption researchOption){
+        setCurrentResearch(researchOption);
+        EventDispatcher.call(new ResearchStartEvent(getInstance(), this, researchOption));
+    }
+
+    public void startResearching(ResearchOption researchOption, Runnable onFinish){
+        startResearching(researchOption);
+        onFinishResearch=onFinish;
+    }
 }

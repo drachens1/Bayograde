@@ -127,8 +127,7 @@ public class ResearchGUI extends InventoryGUI {
                     ResearchCountry country = (ResearchCountry) player.getCountry();
                     if (country.isResearching() || !country.hasResearchedAll(prev) || country.hasResearchedAny(or) || country.hasResearched(identifier))
                         return;
-                    country.setCurrentResearch(researchOption);
-                    EventDispatcher.call(new ResearchStartEvent(player.getInstance(), country, researchOption));
+                    country.startResearching(researchOption);
                 });
     }
 }

@@ -7,12 +7,17 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 
+import dev.ng5m.CPlayer;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Messages {
+    public static void sendMessage(CPlayer p, Component msg){
+        if (p!=null)p.sendMessage(msg);
+    }
 
     public static void globalBroadcast(String msg) {
         logMsg("server", msg, null);
