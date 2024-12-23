@@ -124,7 +124,7 @@ public class MapGeneratorManager extends MapGen {
                 "Colombia", "Comoros", "Democratic_Republic_of_the_Congo", "Republic_of_the_Congo", "CookIslands", "CoralSea_Islands", "CostaRica",
                 "CotedIvoire", "Croatia", "Cuba", "Cyprus", "CzechRepublic", "Denmark", "Dhekelia", "Djibouti", "Dominica", "DominicanRepublic", "Ecuador",
                 "Egypt", "ElSalvador", "EquatorialGuinea", "Eritrea", "Estonia", "Ethiopia", "EuropaIsland", "FalklandIslands", "FaroeIslands",
-                "Fiji", "Finland", "France", "FrenchGuiana", "FrenchPolynesia", "FrenchSouthern_and_Antarctic_Lands", "Gabon", "Gambia,The", "GazaStrip",
+                "Fiji", "Finland", "France", "FrenchGuiana", "FrenchPolynesia", "FrenchSouthern_and_Antarctic_Lands", "Gabon", "Gambia", "GazaStrip",
                 "Georgia", "Germany", "Ghana", "Gibraltar", "GloriosoIslands", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey",
                 "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "HolySee_(Vatican_City)", "Honduras", "HongKong", "Hungary",
                 "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isleof_Man", "Israel", "Italy", "Jamaica", "JanMayen", "Japan", "Jersey", "Jordan",

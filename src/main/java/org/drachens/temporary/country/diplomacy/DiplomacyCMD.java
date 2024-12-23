@@ -5,11 +5,15 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
+import org.drachens.temporary.country.diplomacy.justifywar.DeclareWarCMD;
+import org.drachens.temporary.country.diplomacy.justifywar.JustifyWarCMD;
 
 public class DiplomacyCMD extends Command {
     public DiplomacyCMD() {
         super("diplomacy");
         addSubcommand(new DemandCMD());
+        addSubcommand(new JustifyWarCMD());
+        addSubcommand(new DeclareWarCMD());
         setCondition((sender, s) -> isLeaderOfCountry(sender));
     }
 

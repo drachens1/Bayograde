@@ -13,8 +13,8 @@ public class GeneralCMD extends Command {
     public GeneralCMD() {
         super("general");
 
-        var countries = ArgumentType.String("Countries");
-        countries.setSuggestionCallback((sender, context, suggestion) -> {
+        var countries = ArgumentType.String("Countries")
+                .setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {
                 return;
             }

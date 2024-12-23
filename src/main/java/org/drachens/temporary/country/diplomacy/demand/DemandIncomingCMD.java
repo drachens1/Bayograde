@@ -17,6 +17,8 @@ import org.drachens.events.demands.DemandCounterOfferEvent;
 import org.drachens.events.demands.DemandDeniedEvent;
 import org.drachens.temporary.demand.WW2Demands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.inventoryManager;
@@ -73,7 +75,11 @@ public class DemandIncomingCMD extends Command {
                 return;
             }
 
-            Demand sentDemand = demandManager.getDemand(from);
+            Demand sentDemand = p.getCountry().getDemand(from);
+            if (sentDemand==null){
+                sendMessage(p,notSent);
+                return;
+            }
 
             Country to = p.getCountry();
             switch (context.get(choice)) {
@@ -136,6 +142,15 @@ public class DemandIncomingCMD extends Command {
                     break;
             }
         }, options, choice, third);
+
+        setDefaultExecutor((sender,context)->{
+            if (!hasDemandSent(sender)) return;
+            CPlayer p = (CPlayer) sender;
+            Country country = p.getCountry();
+            List<Component> comps = new ArrayList<>();
+            country.getDemandCountryNames().forEach(name-> comps.add(Component.text("- "+name)));
+            p.sendMessage(Component.text().append(comps).build());
+        });
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

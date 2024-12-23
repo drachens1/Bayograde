@@ -5,6 +5,7 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 
 public class DivisionType {
     private String name;
+    private float hp;
     private float atk;
     private float def;
     private float org;
@@ -13,8 +14,9 @@ public class DivisionType {
     private Payment payment;
     private ItemStack icon;
 
-    public DivisionType(String name, float atk, float def, float org, float speed, float trainingTime, Payment payment, ItemStack icon) {
+    public DivisionType(String name, float atk, float def, float org, float hp, float speed, float trainingTime, Payment payment, ItemStack icon) {
         this.name = name;
+        this.hp=hp;
         this.atk = atk;
         this.def = def;
         this.org = org;
@@ -22,6 +24,14 @@ public class DivisionType {
         this.payment = payment;
         this.icon=icon;
         this.trainingTime = trainingTime;
+    }
+
+    public float getHp(){
+        return hp;
+    }
+
+    public void setHp(float hp){
+        this.hp=hp;
     }
 
     public float getAtk() {

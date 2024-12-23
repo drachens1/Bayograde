@@ -8,6 +8,7 @@ public class Info extends Command {
 
         addSubcommand(new GeneralCMD());
         addSubcommand(new LoanInfoCMD());
+        addSubcommand(new WarsInfoCMD());
 
     }
 }

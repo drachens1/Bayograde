@@ -4,8 +4,11 @@ import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import org.drachens.Manager.defaults.enums.DivisionTypeEnum;
+import org.drachens.Manager.defaults.enums.TroopTypeEnum;
 import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
+import org.drachens.dataClasses.Armys.DivisionType;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.CountryEnums;
 import org.drachens.dataClasses.Countries.Election;
@@ -37,11 +40,16 @@ public class TroopCountry extends ResearchCountry {
     public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies));
 
-        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),this));
-        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),this));
-        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),this));
-        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),this));
-        divisionDesigns.add(new DivisionDesign("Womp",new HashMap<>(),this));
+        HashMap<Integer, DivisionType> norm = new HashMap<>();
+        int[] slots = new int[]{12,13,14,21,22,23,30,31,32};
+        for (int i : slots){
+            norm.put(i, DivisionTypeEnum.ww2_infantry.getDivisionType());
+        }
+        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
+        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
+        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
+        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
+        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
 
     }
 
@@ -62,7 +70,7 @@ public class TroopCountry extends ResearchCountry {
 
     @Override
     public void newDay(NewDay newDay){
-        divisionTrainingQueueHashMap.forEach(((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay()));
+        new HashMap<>(divisionTrainingQueueHashMap).forEach(((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay()));
     }
 
     @Override

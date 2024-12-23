@@ -41,7 +41,11 @@ public class TroopTrainerGUI extends InventoryGUI{
             }
             DivisionDesign.Profile profile = divisionDesign.getProfile();
             addButton(y+x,head(profile));
-            addButton(y+x+1,profile.getDelete());
+            addButton(y+x+1,profile.getDelete().consumer(e -> {
+                TroopCountry country1 = (TroopCountry) p.getCountry();
+                country1.removeDivisionDesign(divisionDesign);
+                ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building),p);
+            }));
             addButton(y+x+9,profile.getTrain().consumer(inventoryPreClickEvent -> {
                 Barracks barracks = (Barracks) building.getBuildTypes().getBuildTypes();
                 barracks.startTraining(building,divisionDesign,p);

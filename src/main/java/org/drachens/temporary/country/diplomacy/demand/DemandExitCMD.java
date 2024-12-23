@@ -8,6 +8,8 @@ import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Diplomacy.Demand;
+import org.drachens.temporary.demand.WW2Demands;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;
 
@@ -26,6 +28,8 @@ public class DemandExitCMD extends Command {
         addSyntax((sender, context) -> {
             if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
+            WW2Demands demand = (WW2Demands) demandManager.getDemand(p.getCountry());
+            demand.hidePlayer(p);
             demandManager.removeActive(p.getCountry());
             p.sendMessage(exited);
         });

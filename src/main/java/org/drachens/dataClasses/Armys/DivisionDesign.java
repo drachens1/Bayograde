@@ -9,9 +9,11 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopEditGUI;
+import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
@@ -24,19 +26,40 @@ public class DivisionDesign {
     private float def;
     private float speed;
     private float org;
-    private final Payments paymentList;
+    private Payments paymentList;
     private String name;
     
     public DivisionDesign(String name, HashMap<Integer, DivisionType> design, TroopCountry country) {
         this.design = design;
         this.paymentList = new Payments();
-        this.hp = 1f;
-        this.atk = 1f;
-        this.def = 1f;
-        this.speed = 1f;
+        this.hp = 0f;
+        this.atk = 0f;
+        this.def = 0f;
+        this.speed = 0f;
+        this.org = 0f;
         this.country = country;
         this.name = name;
         profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(name)),this);
+        calculate();
+    }
+
+    public void calculate(){
+        this.hp = 0f;
+        this.atk = 0f;
+        this.def = 0f;
+        this.speed = 0f;
+        this.org = 0f;
+        paymentList=new Payments();
+        for (Map.Entry<Integer,DivisionType> e : design.entrySet()){
+            DivisionType d = e.getValue();
+            hp+=d.getHp();
+            atk+=d.getAtk();
+            def+=d.getDef();
+            speed+=d.getSpeed();
+            org+=d.getOrg();
+            paymentList.addPayment(d.getCost());
+        }
+        paymentList.compress();
     }
 
     public DivisionDesign(DivisionDesign design) {
@@ -48,6 +71,7 @@ public class DivisionDesign {
         this.country = design.country;
         this.name = design.name;
         this.hp=design.hp;
+        this.org=design.org;
         profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(design.name)),this);
 
     }
@@ -58,6 +82,7 @@ public class DivisionDesign {
 
     public void setDesign(HashMap<Integer, DivisionType> design) {
         this.design = design;
+        calculate();
     }
 
     public void addDesign(int slot, DivisionType divisionType) {
@@ -152,12 +177,7 @@ public class DivisionDesign {
             delete= new InventoryButton()
                     .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
                             .customName(Component.text("Delete"))
-                            .build())
-                    .consumer(e -> {
-                        CPlayer p = (CPlayer) e.getPlayer();
-                        TroopCountry country1 = (TroopCountry) p.getCountry();
-                        country1.removeDivisionDesign(design);
-                    });
+                            .build());
         }
         public void rename(Component newName){
             face = face.withCustomName(newName);

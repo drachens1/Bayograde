@@ -98,6 +98,7 @@ public abstract class Country implements Cloneable {
     private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
     private final ImaginaryWorld warsWorld;
     private final ImaginaryWorld allyWorld;
+    private final HashMap<String, Demand> outgoingDemands = new HashMap<>();
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
@@ -745,12 +746,47 @@ public abstract class Country implements Cloneable {
         demandCountryNames.add(demand.getFromCountry().name);
     }
 
+    public void addOutgoingDemand(Demand demand){
+        outgoingDemands.put(demand.getToCountry().name,demand);
+    }
+
+    public void removeOutgoingDemand(Demand demand){
+        outgoingDemands.remove(demand.getToCountry().name);
+    }
+
+    public Demand getOutgoingDemand(String countryName){
+        return outgoingDemands.get(countryName);
+    }
+
+    public List<String> getOutgoingDemands(){
+        return outgoingDemands.keySet().stream().toList();
+    }
+
+    public boolean hasOutgoingDemands(){
+        return !outgoingDemands.isEmpty();
+    }
+
     public boolean hasAnyDemands() {
         return !demandHashMap.isEmpty();
     }
 
     public boolean hasDemand(Country country) {
         return demandHashMap.containsKey(country);
+    }
+
+    public Demand getDemand(Country country){
+        return demandHashMap.get(country);
+    }
+
+    public void removeDemand(Demand demand){
+        demandCountryNames.remove(demand.getFromCountry().name);
+        demandHashMap.remove(demand.getFromCountry());
+        sendMessage(Component.text()
+                .append(getPrefixes("country"))
+                .append(Component.text("The demand from "))
+                .append(demand.getFromCountry().nameComponent)
+                .append(Component.text(" has been cancelled"))
+                .build());
     }
 
     public List<String> getDemandCountryNames() {

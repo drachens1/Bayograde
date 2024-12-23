@@ -20,6 +20,7 @@ public class DemandCMD extends Command {
         addSubcommand(new DemandIncomingCMD());
         addSubcommand(new DemandViewCMD());
         addSubcommand(new DemandSetPeaceCMD());
+        addSubcommand(new DemandOutgoingCMD());
 
         var reloader = ArgumentType.String("Type to Reload")
                 .setSuggestionCallback((sender, context, suggestion) -> {

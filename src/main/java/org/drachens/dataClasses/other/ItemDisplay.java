@@ -66,7 +66,6 @@ public class ItemDisplay extends Clientside {
         this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(this.entityId, this.pos, false);
         PacketUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
-
     }
 
     public void setActive(AnimationType active) {

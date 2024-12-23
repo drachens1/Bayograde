@@ -20,8 +20,8 @@ public class Troop {
     private final TroopCountry country;
     private final AStarPathfinderVoids troopPathing;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
-    private ItemDisplay ally;
-    private ItemDisplay enemy;
+    private final ItemDisplay ally;
+    private final ItemDisplay enemy;
     private Province province;
     private Task task;
     private Combat battle;
@@ -76,6 +76,10 @@ public class Troop {
 
     public void setStrength(float s){
         strength=s;
+    }
+
+    public float getSpeed(){
+        return speed;
     }
 
     public void move(Province to) {

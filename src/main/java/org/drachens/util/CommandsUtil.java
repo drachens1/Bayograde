@@ -34,7 +34,7 @@ public class CommandsUtil {
 
     public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, List<String> list) {
         String input = cutInput(suggestion.getInput());
-        if (input.isEmpty()) return suggestions(list, suggestion);
+        if (input.endsWith("\0")) return suggestions(list, suggestion);
         return suggestions(list.stream()
                 .filter(suggestions -> suggestions.toLowerCase().startsWith(input))
                 .collect(Collectors.toList()), suggestion);

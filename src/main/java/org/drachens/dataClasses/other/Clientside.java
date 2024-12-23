@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.other;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Player;
@@ -16,8 +17,8 @@ import java.util.UUID;
 public abstract class Clientside {
     public static final List<Clientside> INSTANCES = new ArrayList<>();
     private final List<CPlayer> VIEWERS = new ArrayList<>();
-    private final List<CPlayer> visible = new ArrayList<>();
     public final int entityId;
+    public final BoundingBox boundingBox;
     public final UUID uuid;
     public final Instance instance;
     public boolean storeViewers;
@@ -29,6 +30,9 @@ public abstract class Clientside {
         this.uuid = UUID.randomUUID();
         this.instance = instance;
         this.pos = pos;
+        this.boundingBox = new BoundingBox(
+                pos.x() - 0.5, pos.y(), pos.z() - 0.5
+        );
     }
 
     public abstract void addCountry(Country country);
@@ -51,27 +55,19 @@ public abstract class Clientside {
     public abstract DestroyEntitiesPacket getDestroyPacket();
 
     public void addPlayer(CPlayer p) {
-        p.addClientside(this);
         VIEWERS.add(p);
-        visible.add(p);
     }
 
     public void removePlayer(CPlayer p) {
-        p.removeClientside(this);
         VIEWERS.remove(p);
-        visible.remove(p);
     }
 
     public void addPlayers(List<CPlayer> p) {
-        p.forEach(cPlayer -> cPlayer.addClientside(this));
         VIEWERS.addAll(p);
-        visible.addAll(p);
     }
 
     public void removePlayers(List<CPlayer> p) {
-        p.forEach(cPlayer -> cPlayer.removeClientside(this));
         VIEWERS.removeAll(p);
-        visible.removeAll(p);
     }
 
     public List<CPlayer> getViewers() {
@@ -82,15 +78,4 @@ public abstract class Clientside {
         return new ArrayList<>(VIEWERS);
     }
 
-    public boolean isVisible(CPlayer p) {
-        return visible.contains(p);
-    }
-
-    public void addVisible(CPlayer p) {
-        visible.add(p);
-    }
-
-    public void removeVisible(CPlayer p) {
-        visible.remove(p);
-    }
 }

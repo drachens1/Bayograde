@@ -25,7 +25,6 @@ import static org.drachens.util.Messages.sendMessage;
 
 public class Barracks extends BuildTypes {
     private final HashMap<Building, DivisionTrainingQueue> trainingHashMap = new HashMap<>();
-    private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE,new int[]{23,24,25,26});
     private final Payment payment = new Payment(CurrencyEnum.production, 10f);
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the barracks : 5 Production", NamedTextColor.RED))
@@ -36,16 +35,12 @@ public class Barracks extends BuildTypes {
 
     @Override
     public void onBuild(Country country, Province province, CPlayer p) {
-        Building building = new Building(this,province);
-        ItemDisplay itemDisplay = building.getItemDisplay();
-        trainingAnimation.start(itemDisplay,true);
+        new Building(this,province);
     }
 
     @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
-        if (province.getBuilding() != null) return false;
-        if (!province.isCity()) return false;
         if (!country.canMinusCost(payment)) {
             p.sendMessage(cantAffordMsg);
             return false;

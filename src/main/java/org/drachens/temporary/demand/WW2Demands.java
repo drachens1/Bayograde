@@ -239,14 +239,14 @@ public class WW2Demands extends Demand {
         Country to = getToCountry();
         Country from = getFromCountry();
 
-        demandedAnnexation.forEach(country -> country.getOccupies().forEach(province -> province.setOccupier(from)));
+        demandedAnnexation.forEach(country -> new ArrayList<>(country.getOccupies()).forEach(province -> province.setOccupier(from)));
         demandedPuppets.forEach(country -> {
             country.setOverlord(from);
             from.addPuppet(country);
         });
         demandedProvinces.forEach(province -> province.setOccupier(from));
         demandedPayments.forEach(payment -> to.minusThenLoan(payment, from));
-        offeredAnnexation.forEach(country -> country.getOccupies().forEach(province -> province.setOccupier(to)));
+        offeredAnnexation.forEach(country -> new ArrayList<>(country.getOccupies()).forEach(province -> province.setOccupier(to)));
         offeredPuppets.forEach(country -> {
             country.setOverlord(to);
             to.addPuppet(country);
@@ -263,6 +263,7 @@ public class WW2Demands extends Demand {
     @Override
     protected void onCompleted() {
         imaginaryWorld.getPlayers().forEach(player -> hidePlayer((CPlayer) player));
+        getFromCountry().addOutgoingDemand(this);
     }
 
     @Override
@@ -284,7 +285,7 @@ public class WW2Demands extends Demand {
     }
 
     public void hidePlayer(CPlayer p) {
-        inventoryManager.assignInventory(p, InventoryEnum.defaultInv);
+        inventoryManager.assignInventory(p, ContinentalManagers.world(p.getInstance()).dataStorer().votingOption.getDefaultInventory());
         imaginaryWorld.removePlayer(p);
     }
 
