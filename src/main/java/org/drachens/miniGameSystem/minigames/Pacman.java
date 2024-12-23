@@ -23,7 +23,7 @@ import org.drachens.miniGameSystem.Sprite;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.Math.floor;
+import static java.lang.Math.*;
 
 public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
     private static final String MAP_LAYOUT = "■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n" +
@@ -38,9 +38,9 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             "■■■■■■ ■■■■■ ■■ ■■■■■ ■■■■■■\n" +
             "xxxxx■ ■■■■■ ■■ ■■■■■ ■xxxxx\n" +
             "xxxxx■ ■■          ■■ ■xxxxx\n" +
-            "xxxxx■ ■■ ■■■__■■■ ■■ ■xxxxx\n" +
-            "■■■■■■ ■■ ■xx x x■ ■■ ■■■■■■\n" +
-            "          ■x  xxx■          \n" +
+            "xxxxx■ ■■ ■■■.x■■■ ■■ ■xxxxx\n" +
+            "■■■■■■ ■■ ■xx.xxx■ ■■ ■■■■■■\n" +
+            "          ■xx..xx■          \n" +
             "■■■■■■ ■■ ■xxxxxx■ ■■ ■■■■■■\n" +
             "xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx\n" +
             "xxxxx■ ■■  READY!  ■■ ■xxxxx\n" +
@@ -94,12 +94,12 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
                 .setLayout(
                         MAP_LAYOUT
                 )
-                .setIngredient('■', Material.BLUE_CONCRETE)
-                .setIngredient(' ', Material.HEAVY_CORE)
+                .setIngredient('■', Material.BLACK_CONCRETE)
+                .setIngredient(' ', Material.BLACK_CONCRETE)
                 .build(new Pos(27, 30, -2), getMonitor());
 
         pacman = new PacmanSprite();
-        
+
         blinky = new Blinky();
         pinky = new Pinky();
         inky = new Inky();
@@ -142,7 +142,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         return MAP_LAYOUT_LINES.get(y).charAt(x);
     }
 
-    public boolean isWalkable(Direction direction, Pos origin, char ... chars) {
+    public boolean isWalkable(Direction direction, Pos origin, char... chars) {
         int newX = (int) floor(origin.x() + direction.x);
         int newY = (int) floor(origin.y() + direction.y);
 
@@ -219,11 +219,10 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         }
 
         char tile = getTileAt((int) pacman.realX, (int) pacman.realY);
-        DynamicPixel dynamicPixel = map.getDynamicPixel(pacman.getPos());
-        if (tile == ' ' && dynamicPixel.material() == Material.HEAVY_CORE) {
+        Material material = getWorld().getInstance().getBlock((int) pacman.realX, (int) pacman.realY, -1).registry().material();
+        if (tile == ' ' && material == Material.HEAVY_CORE) {
             score++;
-
-            dynamicPixel.setMaterial(Material.BLACK_CONCRETE);
+            getWorld().getInstance().setBlock((int) pacman.realX, (int) pacman.realY, -1, Block.AIR);
         }
     }
 
@@ -313,7 +312,13 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         @Override
         protected Pos moveChase() {
-            return null;
+            int distance = (int) (sqrt(pow(realX - pacman.realX, 2)) + pow(realY - pacman.realY, 2));
+
+            if (distance > 8) {
+                return scatterTargetTile;
+            } else {
+                return pacman.getPos();
+            }
         }
     }
 
@@ -433,7 +438,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         private Pacman instance;
 
         public PacmanWorld() {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(14, 15, -20));
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(14, 15, -20));
         }
 
         public void setInstance(Pacman instance) {
@@ -455,11 +460,10 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
                         block = Block.BLUE_CONCRETE;
                     }
 
-                    if (tile == 'x') {
+                    if (tile == 'x' || tile == '.') {
                         block = Block.BLACK_CONCRETE;
                     }
-
-                    Util.sendGhostBlock(p, block, new Pos(x, y, -1));
+                    getInstance().setBlock(x, y, -1, block);
                 }
             }
         }
