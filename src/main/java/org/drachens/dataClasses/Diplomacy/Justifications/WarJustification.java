@@ -1,24 +1,18 @@
 package org.drachens.dataClasses.Diplomacy.Justifications;
 
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Modifier;
 
 public class WarJustification {
-    private final float timeLeft;
+    private float timeLeft;
     private final Country againstCountry;
-    private final float stabilityEffect;
-    private final float expires;
-
-    public WarJustification(float timeLeft, Country againstCountry, float stabilityEffect, float expires) {
-        this.timeLeft = timeLeft;
-        this.againstCountry = againstCountry;
-        this.stabilityEffect = stabilityEffect;
-        this.expires = expires;
-    }
+    private final Modifier modifier;
+    private float expires;
 
     public WarJustification(WarGoalType warGoalType, Country againstCountry) {
-        this.timeLeft = warGoalType.getDuration();
+        this.timeLeft = warGoalType.getTimeToMake();
         this.againstCountry = againstCountry;
-        this.stabilityEffect = warGoalType.getStabilityEffect();
+        this.modifier=warGoalType.getModifier();
         this.expires = warGoalType.getExpires();
     }
 
@@ -26,15 +20,23 @@ public class WarJustification {
         return timeLeft;
     }
 
+    public void minusTimeLeft(float amount){
+        timeLeft-=amount;
+    }
+
     public Country getAgainstCountry() {
         return againstCountry;
     }
 
-    public float getStabilityEffect() {
-        return stabilityEffect;
+    public Modifier getModifier() {
+        return modifier;
     }
 
     public float getExpires() {
         return expires;
+    }
+
+    public void minusExpires(float amount){
+        expires-=amount;
     }
 }

@@ -20,10 +20,7 @@ public class CommandsUtil {
     }
 
     public static Suggestion suggestions(List<String> suggestion, Suggestion suggestions) {
-        for (String s : suggestion) {
-            s = s.substring(0, 1).toUpperCase() + s.substring(1);
-            suggestions.addEntry(new SuggestionEntry(s));
-        }
+        suggestion.forEach(s-> suggestions.addEntry(new SuggestionEntry(s)));
         return suggestions;
     }
 

@@ -12,9 +12,9 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
-import org.drachens.events.demands.DemandAcceptedEvent;
-import org.drachens.events.demands.DemandCounterOfferEvent;
-import org.drachens.events.demands.DemandDeniedEvent;
+import org.drachens.events.Countries.demands.DemandAcceptedEvent;
+import org.drachens.events.Countries.demands.DemandCounterOfferEvent;
+import org.drachens.events.Countries.demands.DemandDeniedEvent;
 import org.drachens.temporary.demand.WW2Demands;
 
 import java.util.ArrayList;

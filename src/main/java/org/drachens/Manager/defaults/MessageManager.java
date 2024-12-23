@@ -18,14 +18,18 @@ import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.Countries.CountryCoopPlayerEvent;
 import org.drachens.events.Countries.CountrySetLeaderEvent;
+import org.drachens.events.Countries.demands.DemandAcceptedEvent;
+import org.drachens.events.Countries.demands.DemandCompletionEvent;
+import org.drachens.events.Countries.demands.DemandCounterOfferEvent;
+import org.drachens.events.Countries.demands.DemandDeniedEvent;
+import org.drachens.events.Countries.warjustification.WarJustificationCancelEvent;
+import org.drachens.events.Countries.warjustification.WarJustificationCompletionEvent;
+import org.drachens.events.Countries.warjustification.WarJustificationExpiresEvent;
+import org.drachens.events.Countries.warjustification.WarJustificationStartEvent;
 import org.drachens.events.Factions.*;
 import org.drachens.events.StartWarEvent;
 import org.drachens.events.System.ResetEvent;
 import org.drachens.events.System.StartGameEvent;
-import org.drachens.events.demands.DemandAcceptedEvent;
-import org.drachens.events.demands.DemandCompletionEvent;
-import org.drachens.events.demands.DemandCounterOfferEvent;
-import org.drachens.events.demands.DemandDeniedEvent;
 import org.drachens.events.research.ResearchCompletionEvent;
 import org.drachens.events.research.ResearchStartEvent;
 
@@ -66,6 +70,7 @@ public class MessageManager {
         Delay provinceDelay = new Delay(100L);
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
+            if (e.isCancelled())return;
             Player player = e.getPlayer();
             if (!player.isSneaking()) return;
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
@@ -78,13 +83,15 @@ public class MessageManager {
             player.sendMessage(p.getDescription((CPlayer) player));
         });
 
-        globEHandler.addListener(ResetEvent.class, e -> broadcast(gameOver, e.getInstance()));
+        globEHandler.addListener(ResetEvent.class, e -> {
+            if (e.isCancelled())return;
+            broadcast(gameOver, e.getInstance());
+        });
 
         globEHandler.addListener(StartWarEvent.class, e -> {
+            if (e.isCancelled())return;
             Country defender = e.getDefender();
             Country attacker = e.getAggressor();
-            defender.addWar(attacker);
-            attacker.addWar(defender);
             broadcast(Component.text()
                             .append(country)
                             .append(attacker.getNameComponent())
@@ -95,6 +102,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionCreateEvent.class, e -> {
+            if (e.isCancelled())return;
             Country creator = e.getCreator();
             Factions factions = e.getNewFaction();
             broadcast(Component.text()
@@ -107,6 +115,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionDeleteEvent.class, e -> {
+            if (e.isCancelled())return;
             Country deleter = e.getDeleter();
             Factions factions = e.getDeletedFaction();
             broadcast(Component.text()
@@ -119,6 +128,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionJoinEvent.class, e -> {
+            if (e.isCancelled())return;
             Country creator = e.getCountry();
             broadcast(Component.text()
                             .append(factionPref)
@@ -130,6 +140,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionInviteEvent.class, e -> {
+            if (e.isCancelled())return;
             Factions factions = e.getFaction();
             Country invited = e.getInvited();
             factions.sendMessage(Component.text()
@@ -150,6 +161,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionKickEvent.class, e -> {
+            if (e.isCancelled())return;
             Factions factions = e.getFaction();
             Country country = e.getCountry();
             factions.sendMessage(Component.text()
@@ -165,6 +177,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(FactionSetLeaderEvent.class, e -> {
+            if (e.isCancelled())return;
             Factions factions = e.getFactions();
             Country country = e.getCountry();
             factions.sendMessage(Component.text()
@@ -179,13 +192,17 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(CountrySetLeaderEvent.class, e -> e.getCountry().sendMessage(Component.text()
-                .append(country)
-                .append(Component.text("The leader is now ", NamedTextColor.GREEN))
-                .append(Component.text(e.getNewLeader().getUsername()))
-                .build()));
+        globEHandler.addListener(CountrySetLeaderEvent.class, e -> {
+            if (e.isCancelled())return;
+            e.getCountry().sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("The leader is now ", NamedTextColor.GREEN))
+                    .append(Component.text(e.getNewLeader().getUsername()))
+                    .build());
+        });
 
         globEHandler.addListener(CountryCoopPlayerEvent.class, e -> {
+            if (e.isCancelled())return;
             CPlayer cPlayer = e.getPlayer();
             Country country = e.getInviter();
             cPlayer.sendMessage(Component.text()
@@ -201,6 +218,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(DemandCounterOfferEvent.class, e -> {
+            if (e.isCancelled())return;
             Country from = e.getFrom();
             Country to = e.getTo();
             to.sendMessage(Component.text()
@@ -211,6 +229,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(DemandAcceptedEvent.class, e -> {
+            if (e.isCancelled())return;
             Country from = e.getFrom();
             Country to = e.getTo();
             Component description = e.getDemand().description();
@@ -228,6 +247,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(DemandDeniedEvent.class, e -> {
+            if (e.isCancelled())return;
             Country from = e.getFrom();
             Country to = e.getTo();
             Component description = e.getDemand().description();
@@ -245,6 +265,7 @@ public class MessageManager {
         });
 
         globEHandler.addListener(DemandCompletionEvent.class, e -> {
+            if (e.isCancelled())return;
             Country from = e.getFrom();
             Country to = e.getTo();
             to.sendMessage(Component.text()
@@ -276,16 +297,88 @@ public class MessageManager {
                     .build());
         });
 
-        globEHandler.addListener(ResearchStartEvent.class, e -> e.getCountry().sendMessage(Component.text()
-                .append(country)
-                .append(Component.text("You have started researching "))
-                .append(Component.text(e.getResearchOption().getIdentifier()))
-                .build()));
+        globEHandler.addListener(ResearchStartEvent.class, e -> {
+            if (e.isCancelled())return;
+            e.getCountry().sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("You have started researching "))
+                    .append(Component.text(e.getResearchOption().getIdentifier()))
+                    .build());
+        });
 
-        globEHandler.addListener(ResearchCompletionEvent.class, e -> e.getCountry().sendMessage(Component.text()
-                .append(country)
-                .append(Component.text("You have finished researching "))
-                .append(Component.text(e.getResearchOption().getIdentifier()))
-                .build()));
+        globEHandler.addListener(ResearchCompletionEvent.class, e -> {
+            if (e.isCancelled())return;
+            e.getCountry().sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("You have finished researching "))
+                    .append(Component.text(e.getResearchOption().getIdentifier()))
+                    .build());
+        });
+
+        globEHandler.addListener(WarJustificationStartEvent.class,e->{
+            if (e.isCancelled())return;
+            Country against = e.getAgainst();
+            Country from = e.getFrom();
+            against.sendMessage(Component.text()
+                    .append(country)
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has started justifying against you",NamedTextColor.GREEN))
+                    .build());
+            from.sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("You have started justifying against ",NamedTextColor.GREEN))
+                    .append(against.getNameComponent())
+                    .build());
+        });
+
+        globEHandler.addListener(WarJustificationCancelEvent.class,e->{
+            if (e.isCancelled())return;
+            Country against = e.getAgainst();
+            Country from = e.getFrom();
+            against.sendMessage(Component.text()
+                    .append(country)
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has cancelled the justification against you",NamedTextColor.GREEN))
+                    .build());
+            from.sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("You have cancelled the justification against ",NamedTextColor.GREEN))
+                    .append(against.getNameComponent())
+                    .build());
+        });
+
+        globEHandler.addListener(WarJustificationCompletionEvent.class,e->{
+            if (e.isCancelled())return;
+            Country against = e.getAgainst();
+            Country from = e.getFrom();
+            against.sendMessage(Component.text()
+                    .append(country)
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has completed the justification against you",NamedTextColor.GREEN))
+                    .build());
+            from.sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("Your justification against ",NamedTextColor.GREEN))
+                    .append(against.getNameComponent())
+                    .append(Component.text(" has finished",NamedTextColor.GREEN))
+                    .build());
+        });
+
+        globEHandler.addListener(WarJustificationExpiresEvent.class,e->{
+            if (e.isCancelled())return;
+            Country against = e.getAgainst();
+            Country from = e.getFrom();
+            against.sendMessage(Component.text()
+                    .append(country)
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has let the justification expire",NamedTextColor.GREEN))
+                    .build());
+            from.sendMessage(Component.text()
+                    .append(country)
+                    .append(Component.text("Your justification against ",NamedTextColor.GREEN))
+                    .append(against.getNameComponent())
+                    .append(Component.text(" has expired",NamedTextColor.GREEN))
+                    .build());
+        });
     }
 }

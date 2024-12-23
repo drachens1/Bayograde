@@ -9,7 +9,6 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopEditGUI;
-import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
 
 import java.util.HashMap;
 import java.util.List;

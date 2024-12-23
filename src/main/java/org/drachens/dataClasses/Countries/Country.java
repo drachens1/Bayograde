@@ -18,6 +18,7 @@ import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.bossbars.CapitulationBar;
 import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Diplomacy.Demand;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
@@ -37,6 +38,8 @@ import org.drachens.dataClasses.territories.Region;
 import org.drachens.events.Countries.CountryChangeEvent;
 import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.Countries.CountryLeaveEvent;
+import org.drachens.events.Countries.warjustification.WarJustificationCompletionEvent;
+import org.drachens.events.Countries.warjustification.WarJustificationExpiresEvent;
 import org.drachens.events.EndWarEvent;
 import org.drachens.events.Factions.FactionJoinEvent;
 import org.drachens.events.NewDay;
@@ -71,8 +74,7 @@ public abstract class Country implements Cloneable {
     private final List<Clientside> clientsides = new ArrayList<>();
     private final List<Player> playerInvites = new ArrayList<>();
     private final List<String> factionInvites = new ArrayList<>();
-    private final HashMap<Country, Demand> demandHashMap = new HashMap<>();
-    private final List<String> demandCountryNames = new ArrayList<>();
+    private final HashMap<String, Demand> demandHashMap = new HashMap<>();
     private final DemandManager demandManager = ContinentalManagers.demandManager;
     private Player playerLeader;
     private Leader leader;
@@ -99,6 +101,8 @@ public abstract class Country implements Cloneable {
     private final ImaginaryWorld warsWorld;
     private final ImaginaryWorld allyWorld;
     private final HashMap<String, Demand> outgoingDemands = new HashMap<>();
+    private final HashMap<String, WarJustification> warJustificationHashMap = new HashMap<>();
+    private final HashMap<String, WarJustification> completedWarJustifications = new HashMap<>();
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
@@ -742,8 +746,7 @@ public abstract class Country implements Cloneable {
     }
 
     public void sendDemand(Demand demand) {
-        demandHashMap.put(demand.getFromCountry(), demand);
-        demandCountryNames.add(demand.getFromCountry().name);
+        demandHashMap.put(demand.getFromCountry().name, demand);
     }
 
     public void addOutgoingDemand(Demand demand){
@@ -771,16 +774,15 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean hasDemand(Country country) {
-        return demandHashMap.containsKey(country);
+        return demandHashMap.containsKey(country.name);
     }
 
     public Demand getDemand(Country country){
-        return demandHashMap.get(country);
+        return demandHashMap.get(country.name);
     }
 
     public void removeDemand(Demand demand){
-        demandCountryNames.remove(demand.getFromCountry().name);
-        demandHashMap.remove(demand.getFromCountry());
+        demandHashMap.remove(demand.getFromCountry().name);
         sendMessage(Component.text()
                 .append(getPrefixes("country"))
                 .append(Component.text("The demand from "))
@@ -790,7 +792,7 @@ public abstract class Country implements Cloneable {
     }
 
     public List<String> getDemandCountryNames() {
-        return demandCountryNames;
+        return demandHashMap.keySet().stream().toList();
     }
 
     public Player getPlayerLeader() {
@@ -841,9 +843,62 @@ public abstract class Country implements Cloneable {
 
     protected abstract void newWeek(NewDay newDay);
 
+    public void nextDay(NewDay newDay){
+        List<String> toRemove = new ArrayList<>();
+         completedWarJustifications.forEach((name,warJust)->{
+            warJust.minusExpires(1f);
+            if (warJust.getExpires()<=0f){
+                toRemove.add(warJust.getAgainstCountry().name);
+                EventDispatcher.call(new WarJustificationExpiresEvent(warJust,this));
+            }
+        });
+         toRemove.forEach(completedWarJustifications::remove);
+
+         toRemove.clear();
+         warJustificationHashMap.forEach((name,warJust)->{
+            warJust.minusTimeLeft(1f);
+            if (warJust.getTimeLeft()<=0f){
+                toRemove.add(warJust.getAgainstCountry().name);
+                completedWarJustifications.put(warJust.getAgainstCountry().name,warJust);
+                EventDispatcher.call(new WarJustificationCompletionEvent(warJust,this));
+            }
+         });
+         toRemove.forEach(warJustificationHashMap::remove);
+        newDay(newDay);
+    }
+
     public abstract void newDay(NewDay newDay);
 
     public List<Province> getCities(){
         return cities;
+    }
+
+    public void addWarJustification(WarJustification warJustification){
+        warJustificationHashMap.put(warJustification.getAgainstCountry().name,warJustification);
+    }
+
+    public void removeWarJustification(WarJustification warJustification){
+        warJustificationHashMap.remove(warJustification.getAgainstCountry().name);
+    }
+
+    public void removeCompletedWarJustification(WarJustification warJustification){
+        completedWarJustifications.remove(warJustification.getAgainstCountry().name);
+    }
+
+    public List<String> getWarJustifications(){
+        return warJustificationHashMap.keySet().stream().toList();
+    }
+
+    public List<String> getCompletedWarJustifications(){
+        return completedWarJustifications.keySet().stream().toList();
+    }
+
+
+    public WarJustification getCreatingWarJustificationAgainst(String name){
+        return warJustificationHashMap.get(name);
+    }
+
+    public WarJustification getCompletedWarJustificationAgainst(Country country){
+        return completedWarJustifications.get(country.name);
     }
 }

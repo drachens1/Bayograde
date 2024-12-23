@@ -8,8 +8,6 @@ public class CountryEnums {
 
     }
 
-    ; //So super power, major or a minor
-
     public enum History {
         previousColonies,
         colony,

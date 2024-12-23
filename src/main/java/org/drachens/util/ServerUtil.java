@@ -10,7 +10,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.BlockVec;
-import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
@@ -267,7 +266,7 @@ public class ServerUtil {
                     defaultCountryScoreboard.updateAll();
                 }
             });
-            ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.newDay(e));
+            ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
         });
 
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();

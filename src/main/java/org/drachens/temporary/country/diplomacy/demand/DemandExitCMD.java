@@ -8,7 +8,6 @@ import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.temporary.demand.WW2Demands;
 
 import static org.drachens.util.KyoriUtil.getPrefixes;

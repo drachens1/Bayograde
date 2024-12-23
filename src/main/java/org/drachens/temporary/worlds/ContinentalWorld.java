@@ -20,7 +20,6 @@ import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.World;
 import org.drachens.dataClasses.territories.Province;
-
 import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
 import java.util.List;

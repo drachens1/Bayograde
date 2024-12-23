@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.DivisionTypeEnum;
-import org.drachens.Manager.defaults.enums.TroopTypeEnum;
 import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
 import org.drachens.dataClasses.Armys.DivisionType;

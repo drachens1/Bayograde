@@ -4,10 +4,12 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
-import net.minestom.server.entity.Player;
+import net.minestom.server.event.EventDispatcher;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
+import org.drachens.events.StartWarEvent;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 
@@ -16,13 +18,25 @@ public class DeclareWarCMD extends Command {
         super("declare_war");
         var countries = ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!(sender instanceof Player p)) {
+                    if (!(sender instanceof CPlayer p)) {
                         return;
                     }
-                    getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getCompletedWarJustifications());
                 });
 
-        addSyntax((sender,context)->{},countries);
+        addSyntax((sender,context)->{
+            if (!isLeaderOfCountry(sender))return;
+            CPlayer p = (CPlayer) sender;
+            Country country = p.getCountry();
+            Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
+            if (against==null)return;
+            WarJustification warJustification = country.getCompletedWarJustificationAgainst(against);
+            if (warJustification==null)return;
+            country.removeCompletedWarJustification(warJustification);
+            country.addWar(against);
+            against.addWar(country);
+            EventDispatcher.call(new StartWarEvent(country,against));
+        },countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

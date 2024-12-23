@@ -3,9 +3,9 @@ package org.drachens.dataClasses.Diplomacy;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.events.demands.DemandAcceptedEvent;
-import org.drachens.events.demands.DemandCompletionEvent;
-import org.drachens.events.demands.DemandDeniedEvent;
+import org.drachens.events.Countries.demands.DemandAcceptedEvent;
+import org.drachens.events.Countries.demands.DemandCompletionEvent;
+import org.drachens.events.Countries.demands.DemandDeniedEvent;
 
 public abstract class Demand {
     private final Country fromCountry;
