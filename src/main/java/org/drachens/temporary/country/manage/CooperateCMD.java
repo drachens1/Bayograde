@@ -6,7 +6,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.events.Countries.CountryCoopPlayerEvent;
+import org.drachens.events.countries.CountryCoopPlayerEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,6 @@ public class CooperateCMD extends Command {
             Country country = p.getCountry();
             if (!country.isPlayerLeader(p)) return;
             EventDispatcher.call(new CountryCoopPlayerEvent(country, p));
-            country.invitePlayer(p);
         }, players);
     }
 

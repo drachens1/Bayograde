@@ -9,7 +9,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.events.Factions.FactionJoinEvent;
+import org.drachens.events.factions.FactionJoinEvent;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;

@@ -27,8 +27,8 @@ import org.drachens.Main;
 import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.WorldManager;
+import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.MessageManager;
 import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
@@ -62,13 +62,11 @@ import org.drachens.dataClasses.DataStorer;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
-import org.drachens.dataClasses.other.Clientside;
-import org.drachens.events.Countries.CountryChangeEvent;
-import org.drachens.events.Countries.CountryJoinEvent;
 import org.drachens.events.NewDay;
-import org.drachens.events.RankAddEvent;
-import org.drachens.events.RankRemoveEvent;
-import org.drachens.events.System.ResetEvent;
+import org.drachens.events.countries.CountryChangeEvent;
+import org.drachens.events.countries.CountryJoinEvent;
+import org.drachens.events.ranks.RankAddEvent;
+import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.temporary.clicks.TmpCMD;
 import org.drachens.temporary.country.CountryCMD;
@@ -157,8 +155,6 @@ public class ServerUtil {
                     )
             );
         }
-        new MessageManager();
-
         GlobalEventHandler globEHandler = getEventHandler();
 
         //VELOCITAY
@@ -319,32 +315,8 @@ public class ServerUtil {
 
         new PermissionsManager();
 
-        globEHandler.addListener(ResetEvent.class, e -> {
-            CountryDataManager countryDataManager = worldClassesHashMap.get(e.getInstance()).countryDataManager();
-            countryDataManager.getCountries().forEach((Country::endGame));
-            ClientEntsToLoad clientEntsToLoad = worldClassesHashMap.get(e.getInstance()).clientEntsToLoad();
-            if (clientEntsToLoad.getClientSides(e.getInstance())!=null){
-                new ArrayList<>(clientEntsToLoad.getClientSides(e.getInstance())).forEach((Clientside::dispose));
-            }
-            e.getInstance().getPlayers().forEach(player -> {
-                CPlayer p = (CPlayer) player;
-                if (p.getCountry()!=null){
-                    p.getCountry().removePlayer(p,true);
-                }
-            });
-            clientEntsToLoad.reset();
-            Instance instance = e.getInstance();
-            CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());
-            worldClassesHashMap.put(instance, new WorldClasses(
-                    c,
-                    clientEntsToLoad,
-                    worldClassesHashMap.get(instance).votingManager(),
-                    worldClassesHashMap.get(instance).provinceManager(),
-                    new DataStorer()
-            ));
-        });
-
         globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
+        new CentralEventManager();
         start();
     }
 
@@ -363,6 +335,10 @@ public class ServerUtil {
 
     public static WorldClasses getWorldClasses(Instance instance) {
         return worldClassesHashMap.get(instance);
+    }
+
+    public static void putWorldClass(Instance instance,WorldClasses worldClasses){
+        worldClassesHashMap.put(instance,worldClasses);
     }
 
     public static Pos blockVecToPos(BlockVec blockVec) {

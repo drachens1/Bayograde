@@ -9,7 +9,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.NewDay;
-import org.drachens.events.System.ResetEvent;
+import org.drachens.events.system.ResetEvent;
 import org.drachens.interfaces.HideableBossBar;
 
 import java.time.temporal.ChronoUnit;
@@ -53,7 +53,6 @@ public class YearBar extends HideableBossBar {
                 }
                 EventDispatcher.call(new NewDay(day, month, year, instance));
                 if (year >= endYear) {
-                    System.out.println("Reset!");
                     EventDispatcher.call(new ResetEvent(instance));
                 }
             }

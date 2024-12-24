@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Random;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.setupPrefixes;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;
 
@@ -136,7 +135,6 @@ public class Main {
     }
 
     public static void completeStartup() {
-        setupPrefixes();
         initSrv();
         createWW2VotingOption();
 

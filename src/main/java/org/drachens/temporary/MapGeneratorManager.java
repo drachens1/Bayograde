@@ -12,6 +12,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.VotingWinner;
+import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.ElectionsEnum;
 import org.drachens.Manager.defaults.enums.ModifiersEnum;
 import org.drachens.Manager.per_instance.CountryDataManager;
@@ -307,6 +308,7 @@ public class MapGeneratorManager extends MapGen {
                 visited.add(seedPos);
                 landHashmap.remove(seedPos);
                 countries.get(i).setCapital(seedProvince);
+                BuildingEnum.factory.getBuildTypes().forceBuild(countries.get(i),seedProvince,null);
             }
         }
 

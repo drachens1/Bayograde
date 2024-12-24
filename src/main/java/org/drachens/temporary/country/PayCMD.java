@@ -10,12 +10,12 @@ import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.util.MessageEnum;
 
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class PayCMD extends Command {
     public PayCMD() {
@@ -32,8 +32,6 @@ public class PayCMD extends Command {
                 });
 
         var amount = ArgumentType.Float("amount");
-        Component prefix = getPrefixes("country");
-
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
 
         addSyntax((sender, context) -> {
@@ -49,14 +47,14 @@ public class PayCMD extends Command {
             Payment payment = new Payment(production, value);
             if (from.canMinusCost(payment)) {
                 to.addPayment(payment, Component.text()
-                        .append(prefix)
+                        .append(MessageEnum.country.getComponent())
                         .append(from.getNameComponent())
                         .append(Component.text(" has sent you "))
                         .append(Component.text(value))
                         .append(production.getSymbol())
                         .build());
                 from.sendMessage(Component.text()
-                        .append(prefix)
+                        .append(MessageEnum.country.getComponent())
                         .append(Component.text("You have sent"))
                         .append(to.getNameComponent())
                         .append(Component.text(" "))

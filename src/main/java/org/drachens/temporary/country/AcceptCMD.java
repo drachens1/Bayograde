@@ -9,11 +9,11 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.events.Countries.CountryJoinEvent;
+import org.drachens.events.countries.CountryJoinEvent;
+import org.drachens.util.MessageEnum;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class AcceptCMD extends Command {
     public AcceptCMD() {
@@ -27,10 +27,8 @@ public class AcceptCMD extends Command {
             getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
         });
 
-        Component countryComp = getPrefixes("country");
-        if (countryComp == null) return;
         Component notInvited = Component.text()
-                .append(countryComp)
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("this country has not invited you", NamedTextColor.RED))
                 .build();
         addSyntax((sender, context) -> {

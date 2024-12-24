@@ -9,7 +9,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.events.Factions.FactionLeaveEvent;
+import org.drachens.events.factions.FactionLeaveEvent;
 
 
 public class LeaveCMD extends Command {

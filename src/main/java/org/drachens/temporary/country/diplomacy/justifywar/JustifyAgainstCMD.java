@@ -10,7 +10,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalTypeEnum;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
-import org.drachens.events.Countries.warjustification.WarJustificationStartEvent;
+import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -49,7 +49,6 @@ public class JustifyAgainstCMD extends Command {
             if (!stuff.contains(choice))return;
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);
             WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(),against);
-            country.addWarJustification(warJustification);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification,country));
         },countries,option);
     }

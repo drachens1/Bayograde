@@ -19,6 +19,7 @@ import org.drachens.bossbars.CapitulationBar;
 import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
+import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
@@ -35,24 +36,24 @@ import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.dataClasses.territories.Region;
-import org.drachens.events.Countries.CountryChangeEvent;
-import org.drachens.events.Countries.CountryJoinEvent;
-import org.drachens.events.Countries.CountryLeaveEvent;
-import org.drachens.events.Countries.warjustification.WarJustificationCompletionEvent;
-import org.drachens.events.Countries.warjustification.WarJustificationExpiresEvent;
-import org.drachens.events.EndWarEvent;
-import org.drachens.events.Factions.FactionJoinEvent;
 import org.drachens.events.NewDay;
+import org.drachens.events.countries.CountryChangeEvent;
+import org.drachens.events.countries.CountryJoinEvent;
+import org.drachens.events.countries.CountryLeaveEvent;
+import org.drachens.events.countries.war.EndWarEvent;
+import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
+import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
+import org.drachens.events.factions.FactionJoinEvent;
 import org.drachens.interfaces.MapGen;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.util.AStarPathfinderXZ;
+import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.broadcast;
 
 public abstract class Country implements Cloneable {
@@ -103,6 +104,7 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, Demand> outgoingDemands = new HashMap<>();
     private final HashMap<String, WarJustification> warJustificationHashMap = new HashMap<>();
     private final HashMap<String, WarJustification> completedWarJustifications = new HashMap<>();
+    private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
@@ -269,8 +271,8 @@ public abstract class Country implements Cloneable {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         capitulationBar.addPlayer(p);
         this.players.add(p);
-        p.sendMessage(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text("You have joined ", NamedTextColor.BLUE).append(nameComponent)).build()).build());
-        broadcast(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text(p.getUsername(), NamedTextColor.GOLD, TextDecoration.BOLD)).append(Component.text(" has joined ", NamedTextColor.BLUE)).append(nameComponent).build()).build(), p.getInstance());
+        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have joined ", NamedTextColor.BLUE).append(nameComponent)).build()).build());
+        broadcast(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text(p.getUsername(), NamedTextColor.GOLD, TextDecoration.BOLD)).append(Component.text(" has joined ", NamedTextColor.BLUE)).append(nameComponent).build()).build(), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         scoreboardManager.openScoreboard(new DefaultCountryScoreboard(), p);
         DefaultCountryScoreboard defaultCountryScoreboard = (DefaultCountryScoreboard) scoreboardManager.getScoreboard(p);
@@ -287,7 +289,7 @@ public abstract class Country implements Cloneable {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
         capitulationBar.removePlayer(p);
         this.players.remove(p);
-        p.sendMessage(Component.text().append(getPrefixes("country")).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(nameComponent).build()).build());
+        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(nameComponent).build()).build());
         clientsides.forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
             if (players.isEmpty()) {
@@ -326,7 +328,7 @@ public abstract class Country implements Cloneable {
         removeCity(capturedCity);
         if (!capitulated) {
             if (capital == capturedCity) {
-                broadcast(Component.text().append(getPrefixes("country"), Component.text(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)).build(), capital.getInstance());
+                broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)).build(), capital.getInstance());
             }
         }
         float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
@@ -345,7 +347,7 @@ public abstract class Country implements Cloneable {
     }
 
     public void capitulate(Country attacker) {
-        broadcast(Component.text().append(getPrefixes("country"), Component.text(this.name + " has capitulated to " + attacker.name, NamedTextColor.RED)).build(), capital.getInstance());
+        broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(this.name + " has capitulated to " + attacker.name, NamedTextColor.RED)).build(), capital.getInstance());
         for (Province p : new ArrayList<>(this.occupies)) {
             p.capture(attacker);
         }
@@ -581,27 +583,9 @@ public abstract class Country implements Cloneable {
         return (factions instanceof MilitaryFactionType && getMilitaryFactionType() == null) || (factions instanceof EconomyFactionType && getEconomyFactionType() == null);
     }
 
-    public void joinMilitaryFaction(MilitaryFactionType militaryFactionType) {
-        if (!canJoinFaction(militaryFactionType)) return;
-        militaryFactionType.getMembers().forEach(country -> country.getOccupies().forEach(province -> allyWorld.removeGhostBlock(province.getPos())));
-        setMilitaryFactionType(militaryFactionType);
-        EventDispatcher.call(new FactionJoinEvent(militaryFactionType, this));
-        createInfo();
-    }
-
-    public void joinEconomyFaction(EconomyFactionType economyFactionType) {
-        if (!canJoinFaction(economyFactionType)) return;
-        setEconomyFactionType(economyFactionType);
-        economyFactionType.addCountry(this);
-        EventDispatcher.call(new FactionJoinEvent(economyFactionType, this));
-        createInfo();
-    }
 
     public void joinFaction(Factions factions) {
-        if (factions instanceof EconomyFactionType) {
-            joinEconomyFaction((EconomyFactionType) factions);
-        } else
-            joinMilitaryFaction((MilitaryFactionType) factions);
+        EventDispatcher.call(new FactionJoinEvent(militaryFactionType, this));
     }
 
     public EconomyFactionType getEconomyFactionType() {
@@ -784,7 +768,7 @@ public abstract class Country implements Cloneable {
     public void removeDemand(Demand demand){
         demandHashMap.remove(demand.getFromCountry().name);
         sendMessage(Component.text()
-                .append(getPrefixes("country"))
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("The demand from "))
                 .append(demand.getFromCountry().nameComponent)
                 .append(Component.text(" has been cancelled"))
@@ -877,12 +861,12 @@ public abstract class Country implements Cloneable {
         warJustificationHashMap.put(warJustification.getAgainstCountry().name,warJustification);
     }
 
-    public void removeWarJustification(WarJustification warJustification){
-        warJustificationHashMap.remove(warJustification.getAgainstCountry().name);
+    public void removeWarJustification(String country){
+        warJustificationHashMap.remove(country);
     }
 
-    public void removeCompletedWarJustification(WarJustification warJustification){
-        completedWarJustifications.remove(warJustification.getAgainstCountry().name);
+    public void removeCompletedWarJustification(String country){
+        completedWarJustifications.remove(country);
     }
 
     public List<String> getWarJustifications(){
@@ -893,7 +877,6 @@ public abstract class Country implements Cloneable {
         return completedWarJustifications.keySet().stream().toList();
     }
 
-
     public WarJustification getCreatingWarJustificationAgainst(String name){
         return warJustificationHashMap.get(name);
     }
@@ -901,4 +884,17 @@ public abstract class Country implements Cloneable {
     public WarJustification getCompletedWarJustificationAgainst(Country country){
         return completedWarJustifications.get(country.name);
     }
+
+    public void addNonAggressionPact(NonAggressionPact nonAggressionPact, Country other){
+        nonAggressionPactHashMap.put(other.name,nonAggressionPact);
+    }
+
+    public void removeNonAggressionPact(Country other){
+        nonAggressionPactHashMap.remove(other.name);
+    }
+
+    public List<String> getNonAggressionPacts(){
+        return nonAggressionPactHashMap.keySet().stream().toList();
+    }
+
 }

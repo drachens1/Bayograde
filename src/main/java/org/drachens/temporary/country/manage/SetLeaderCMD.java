@@ -6,7 +6,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.events.Countries.CountrySetLeaderEvent;
+import org.drachens.events.countries.CountrySetLeaderEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,6 @@ public class SetLeaderCMD extends Command {
             if (p.getCountry() == null || p.getCountry() != senders.getCountry()) return;
             Country country = p.getCountry();
             EventDispatcher.call(new CountrySetLeaderEvent(country, p));
-            country.setPlayerLeader(p);
         }, players);
     }
 

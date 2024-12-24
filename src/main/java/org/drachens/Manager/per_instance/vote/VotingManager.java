@@ -9,12 +9,10 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.VotingWinner;
-import org.drachens.dataClasses.DataStorer;
 import org.drachens.dataClasses.VotingOption;
-import org.drachens.events.System.ResetEvent;
-import org.drachens.events.System.StartGameEvent;
 import org.drachens.events.VoteEvent;
+import org.drachens.events.system.StartGameEvent;
+import org.drachens.util.MessageEnum;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.broadcast;
 
 public class VotingManager {
@@ -41,7 +38,6 @@ public class VotingManager {
         voteEventListener();
         voteBar = new VoteBar(instance);
         reset();
-        MinecraftServer.getGlobalEventHandler().addListener(ResetEvent.class, e -> reset());
     }
 
     public void vote(VotingOption votingOption, Player p) {
@@ -61,7 +57,7 @@ public class VotingManager {
     public void voteEventListener() {
         MinecraftServer.getGlobalEventHandler().addListener(VoteEvent.class, e -> {
             broadcast(Component.text()
-                            .append(getPrefixes("vote"))
+                            .append(MessageEnum.vote.getComponent())
                             .append(e.getPlayer().getName())
                             .append(Component.text(" has voted for ", NamedTextColor.GREEN))
                             .append(Component.text(e.getVoted().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
@@ -84,15 +80,12 @@ public class VotingManager {
         task = MinecraftServer.getSchedulerManager().buildTask(() -> {
             if (!voted) {
                 broadcast(Component.text()
-                        .append(getPrefixes("vote"))
+                        .append(MessageEnum.vote.getComponent())
                         .append(Component.text("restarted due to no votes", NamedTextColor.GREEN))
                         .build(), instance);
                 reset();
             } else {
                 setWinner();
-                DataStorer dataStorer = ContinentalManagers.world(instance).dataStorer();
-                dataStorer.votingWinner = VotingWinner.valueOf(winner.getName());
-                dataStorer.votingOption = winner;
                 EventDispatcher.call(new StartGameEvent(instance, winner));
                 task.cancel();
             }

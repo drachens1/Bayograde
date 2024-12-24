@@ -15,7 +15,6 @@ import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
-import org.drachens.events.StartWarEvent;
 import org.drachens.temporary.troops.Combat;
 
 import java.io.Serializable;
@@ -284,12 +283,12 @@ public class Province implements Serializable {
     }
 
     public void capture(Country attacker) {
-        if (!attacker.atWar(occupier))
-            EventDispatcher.call(new StartWarEvent(attacker, occupier));
-        occupier.sendActionBar(Component.text("You have been attacked at " + pos, NamedTextColor.RED));
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
-        if (building != null) this.building.capture(attacker);
-        setOccupier(attacker);
+    }
+
+    public void changeOccupier(Country to){
+        if (building != null) this.building.capture(to);
+        setOccupier(to);
         updateBorders();
     }
 

@@ -3,7 +3,7 @@ package org.drachens.cmd.Dev;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
-import org.drachens.events.System.ResetEvent;
+import org.drachens.events.system.ResetEvent;
 
 public class ResetCMD extends Command {
     public ResetCMD() {

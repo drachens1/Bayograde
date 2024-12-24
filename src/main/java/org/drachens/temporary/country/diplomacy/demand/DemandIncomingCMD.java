@@ -9,21 +9,19 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
-import org.drachens.events.Countries.demands.DemandAcceptedEvent;
-import org.drachens.events.Countries.demands.DemandCounterOfferEvent;
-import org.drachens.events.Countries.demands.DemandDeniedEvent;
+import org.drachens.events.countries.demands.DemandAcceptedEvent;
+import org.drachens.events.countries.demands.DemandCounterOfferEvent;
+import org.drachens.events.countries.demands.DemandDeniedEvent;
 import org.drachens.temporary.demand.WW2Demands;
+import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static org.drachens.Manager.defaults.ContinentalManagers.inventoryManager;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.KyoriUtil.getPrefixes;
 import static org.drachens.util.Messages.sendMessage;
 
 public class DemandIncomingCMD extends Command {
@@ -62,7 +60,7 @@ public class DemandIncomingCMD extends Command {
         }, options);
 
         Component notSent = Component.text()
-                .append(getPrefixes("country"))
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("That country hasn't sent you a demand"))
                 .build();
 
@@ -85,18 +83,13 @@ public class DemandIncomingCMD extends Command {
             switch (context.get(choice)) {
                 case "accept":
                     EventDispatcher.call(new DemandAcceptedEvent(sentDemand, from, to));
-                    sentDemand.accepted();
                     break;
                 case "deny":
                     EventDispatcher.call(new DemandDeniedEvent(sentDemand, from, to));
                     sentDemand.denied();
                     break;
                 case "counter-offer":
-                    Demand demand = new WW2Demands(sentDemand.getToCountry(), sentDemand.getFromCountry());
-                    demand.copyButOpposite(sentDemand);
-                    demandManager.addActive(to, demand);
-                    inventoryManager.assignInventory(p, InventoryEnum.demand);
-                    EventDispatcher.call(new DemandCounterOfferEvent(to, from));
+                    EventDispatcher.call(new DemandCounterOfferEvent(to, from,sentDemand));
                     break;
             }
 
@@ -124,11 +117,7 @@ public class DemandIncomingCMD extends Command {
                     sentDemand.denied();
                     break;
                 case "counter-offer":
-                    Demand demand = new WW2Demands(sentDemand.getToCountry(), sentDemand.getFromCountry());
-                    demand.copyButOpposite(sentDemand);
-                    demandManager.addActive(to, demand);
-                    inventoryManager.assignInventory(p, InventoryEnum.demand);
-                    EventDispatcher.call(new DemandCounterOfferEvent(to, from));
+                    EventDispatcher.call(new DemandCounterOfferEvent(to, from,sentDemand));
                     break;
                 case "view":
                     switch (context.get(third)) {

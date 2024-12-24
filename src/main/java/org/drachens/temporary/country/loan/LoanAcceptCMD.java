@@ -6,18 +6,18 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class LoanAcceptCMD extends Command {
     public LoanAcceptCMD() {
         super("accept");
         Component noLoanFound = Component.text()
-                .append(getPrefixes("country"))
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("You don't have a loan request from that country"))
                 .build();
         setCondition((sender, s) -> isLeaderOfCountry(sender));

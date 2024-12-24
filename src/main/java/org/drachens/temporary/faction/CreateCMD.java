@@ -11,7 +11,7 @@ import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
-import org.drachens.events.Factions.FactionCreateEvent;
+import org.drachens.events.factions.FactionCreateEvent;
 
 public class CreateCMD extends Command {
 

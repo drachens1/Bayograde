@@ -45,7 +45,7 @@ public abstract class ResearchCountry extends Country {
             ClicksVault vault = (ClicksVault) getVault();
             researchCurrent.remove(vault.getResearch());
             if (researchCurrent.getAmount() <= 0) {
-                completeActiveResearch();
+                EventDispatcher.call(new ResearchCompletionEvent(getInstance(), this, current));
                 if (onFinishResearch!=null){
                     onFinishResearch.run();
                     onFinishResearch=null;
@@ -78,7 +78,6 @@ public abstract class ResearchCountry extends Country {
     }
 
     public void completeActiveResearch() {
-        EventDispatcher.call(new ResearchCompletionEvent(getInstance(), this, current));
         completedResearch.add(current.getIdentifier());
         if (current.getModifier() != null) {
             researchModifier.addModifier(current.getModifier());
@@ -112,12 +111,11 @@ public abstract class ResearchCountry extends Country {
 
     
     public void startResearching(ResearchOption researchOption){
-        setCurrentResearch(researchOption);
         EventDispatcher.call(new ResearchStartEvent(getInstance(), this, researchOption));
     }
 
     public void startResearching(ResearchOption researchOption, Runnable onFinish){
-        startResearching(researchOption);
+        EventDispatcher.call(new ResearchStartEvent(getInstance(), this, researchOption));
         onFinishResearch=onFinish;
     }
 }

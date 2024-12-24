@@ -14,8 +14,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.temporary.demand.WW2Demands;
-
-import static org.drachens.util.KyoriUtil.getPrefixes;
+import org.drachens.util.MessageEnum;
 
 public class DemandAddPaymentCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
@@ -39,15 +38,13 @@ public class DemandAddPaymentCMD extends Command {
 
         var amount = ArgumentType.Float("Amount");
 
-        Component prefix = getPrefixes("country");
-        if (prefix == null) return;
         Component currencyDoesntExist = Component.text()
-                .append(prefix)
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("That currency doesnt exist", NamedTextColor.RED))
                 .build();
 
         Component currencyDoesExist = Component.text()
-                .append(prefix)
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("You have added this to demands successfully", NamedTextColor.GREEN))
                 .build();
 

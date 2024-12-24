@@ -9,18 +9,15 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.temporary.demand.WW2Demands;
-
-import static org.drachens.util.KyoriUtil.getPrefixes;
+import org.drachens.util.MessageEnum;
 
 public class DemandExitCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
 
     public DemandExitCMD() {
         super("cancel");
-        Component prefix = getPrefixes("country");
-        if (prefix == null) return;
         Component exited = Component.text()
-                .append(prefix)
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("Exited demand mode", NamedTextColor.RED))
                 .build();
         setCondition((sender, s) -> hasDemand(sender));

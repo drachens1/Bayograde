@@ -13,12 +13,12 @@ import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.temporary.demand.WW2Demands;
+import org.drachens.util.MessageEnum;
 
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public class DemandStartCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
@@ -43,10 +43,8 @@ public class DemandStartCMD extends Command {
             getSuggestionBasedOnInput(suggestion, country);
         });
 
-        Component countryPrefix = getPrefixes("country");
-        if (countryPrefix == null) return;
         Component doesntExist = Component.text()
-                .append(countryPrefix)
+                .append(MessageEnum.country.getComponent())
                 .append(Component.text("This country does not exist", NamedTextColor.RED))
                 .build();
         InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
@@ -62,7 +60,7 @@ public class DemandStartCMD extends Command {
             }
             Demand demand = new WW2Demands(from, to);
             p.sendMessage(Component.text()
-                    .append(countryPrefix)
+                    .append(MessageEnum.country.getComponent())
                     .append(Component.text("You have started creating a demand against "))
                     .append(to.getNameComponent())
                     .build());

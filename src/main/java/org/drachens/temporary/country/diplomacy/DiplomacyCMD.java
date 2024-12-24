@@ -7,6 +7,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.country.diplomacy.justifywar.DeclareWarCMD;
 import org.drachens.temporary.country.diplomacy.justifywar.JustifyWarCMD;
+import org.drachens.temporary.country.diplomacy.nonaggression.NonAggressionCMD;
 
 public class DiplomacyCMD extends Command {
     public DiplomacyCMD() {
@@ -14,6 +15,7 @@ public class DiplomacyCMD extends Command {
         addSubcommand(new DemandCMD());
         addSubcommand(new JustifyWarCMD());
         addSubcommand(new DeclareWarCMD());
+        addSubcommand(new NonAggressionCMD());
         setCondition((sender, s) -> isLeaderOfCountry(sender));
     }
 

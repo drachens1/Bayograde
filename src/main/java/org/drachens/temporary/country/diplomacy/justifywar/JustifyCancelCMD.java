@@ -7,7 +7,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
-import org.drachens.events.Countries.warjustification.WarJustificationCancelEvent;
+import org.drachens.events.countries.warjustification.WarJustificationCancelEvent;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
@@ -30,7 +30,6 @@ public class JustifyCancelCMD extends Command {
             Country country = p.getCountry();
             WarJustification warJustification = country.getCreatingWarJustificationAgainst(context.get(countries));
             if (warJustification==null)return;
-            country.removeWarJustification(warJustification);
             EventDispatcher.call(new WarJustificationCancelEvent(warJustification,country));
         },countries);
     }

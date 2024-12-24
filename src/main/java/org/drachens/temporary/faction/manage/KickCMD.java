@@ -9,7 +9,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.events.Factions.FactionKickEvent;
+import org.drachens.events.factions.FactionKickEvent;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
@@ -49,7 +49,6 @@ public class KickCMD extends Command {
             Factions factions1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
             if (country == null || factions1 == null) return;
             if (!factions1.getMembers().contains(country)) return;
-            factions1.removeCountry(country);
             EventDispatcher.call(new FactionKickEvent(factions1, country));
 
         }, factionsArg, countryArg);

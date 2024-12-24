@@ -4,14 +4,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Modifier;
-import org.drachens.events.Factions.FactionInviteEvent;
-import org.drachens.events.Factions.FactionSetLeaderEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +66,6 @@ public abstract class Factions {
 
     public void setLeader(Country country) {
         this.leader = country;
-        EventDispatcher.call(new FactionSetLeaderEvent(this, country));
     }
 
     public List<Country> getMembers() {
@@ -118,10 +114,8 @@ public abstract class Factions {
         countryDataManager.removeFaction(this);
     }
 
-    public void invite(Country country) {
+    public void addToInvites(Country country){
         invites.add(country);
-        country.inviteToFaction(this);
-        EventDispatcher.call(new FactionInviteEvent(country, this));
     }
 
     public boolean hasInvited(Country country) {

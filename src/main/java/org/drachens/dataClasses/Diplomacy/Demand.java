@@ -3,9 +3,7 @@ package org.drachens.dataClasses.Diplomacy;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.events.Countries.demands.DemandAcceptedEvent;
-import org.drachens.events.Countries.demands.DemandCompletionEvent;
-import org.drachens.events.Countries.demands.DemandDeniedEvent;
+import org.drachens.events.countries.demands.DemandCompletionEvent;
 
 public abstract class Demand {
     private final Country fromCountry;
@@ -27,12 +25,10 @@ public abstract class Demand {
     public abstract Component description();
 
     public void denied() {
-        EventDispatcher.call(new DemandDeniedEvent(this, fromCountry, toCountry));
         ifDenied();
     }
 
     public void accepted() {
-        EventDispatcher.call(new DemandAcceptedEvent(this, fromCountry, toCountry));
         ifAccepted();
     }
 
@@ -40,8 +36,11 @@ public abstract class Demand {
 
     protected abstract void ifDenied();
 
-    public void complete() {
+    public void runCompleteEvent(){
         EventDispatcher.call(new DemandCompletionEvent(this, fromCountry, toCountry));
+    }
+
+    public void complete() {
         toCountry.sendDemand(this);
         onCompleted();
     }

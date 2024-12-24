@@ -7,12 +7,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
-import static org.drachens.util.KyoriUtil.getPrefixes;
 
 public abstract class StoreItem {
     private final Component boughtMessage;
@@ -34,7 +34,7 @@ public abstract class StoreItem {
         this.modelData = modelData;
         this.description = null;
         boughtMessage = Component.text()
-                .append(getPrefixes("system"))
+                .append(MessageEnum.system.getComponent())
                 .append(Component.text("You have successfully bought "))
                 .append(name)
                 .append(Component.text(" for "))
@@ -89,7 +89,7 @@ public abstract class StoreItem {
 
     public void clickAfterBought(CPlayer p) {
         p.sendMessage(Component.text()
-                .append(getPrefixes("system"))
+                .append(MessageEnum.system.getComponent())
                 .append(Component.text("Equipped ", NamedTextColor.GREEN))
                 .append(name)
                 .build());

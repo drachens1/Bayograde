@@ -1,0 +1,51 @@
+package org.drachens.util;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+
+public enum MessageEnum {
+    faction(Component.text()
+            .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
+            .append(Component.text("FACTION", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
+            .build()),
+    country(Component.text()
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .append(Component.text("COUNTRY", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .build()),
+    vote(Component.text()
+            .append(Component.text(" | ", NamedTextColor.GREEN, TextDecoration.BOLD))
+            .append(Component.text("VOTE", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.GREEN, TextDecoration.BOLD))
+            .build()),
+    system(Component.text()
+            .append(Component.text(" | ", NamedTextColor.DARK_BLUE, TextDecoration.BOLD))
+            .append(Component.text("SYSTEM", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.DARK_BLUE, TextDecoration.BOLD))
+            .build()),
+    ally(Component.text()
+                .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
+            .append(Component.text("ALLY", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
+            .build()),
+    coop(Component.text()
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .append(Component.text("CO-OP", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .build()),
+    research(Component.text()
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .append(Component.text("RESEARCH", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .build());
+
+    private final Component component;
+    MessageEnum(Component component){
+        this.component=component;
+    }
+    public Component getComponent(){
+        return component;
+    }
+}

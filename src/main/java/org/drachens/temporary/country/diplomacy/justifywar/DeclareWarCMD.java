@@ -7,8 +7,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
-import org.drachens.events.StartWarEvent;
+import org.drachens.events.countries.war.StartWarEvent;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
@@ -29,12 +28,7 @@ public class DeclareWarCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (against==null)return;
-            WarJustification warJustification = country.getCompletedWarJustificationAgainst(against);
-            if (warJustification==null)return;
-            country.removeCompletedWarJustification(warJustification);
-            country.addWar(against);
-            against.addWar(country);
+            if (against==null || country.getCompletedWarJustificationAgainst(against)==null)return;
             EventDispatcher.call(new StartWarEvent(country,against));
         },countries);
     }

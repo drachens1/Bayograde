@@ -5,9 +5,11 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
+import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.events.factions.FactionSetLeaderEvent;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
@@ -46,10 +48,8 @@ public class SetLeaderCMD extends Command {
             Factions factions1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
             if (country == null || factions1 == null) return;
             if (!factions1.getMembers().contains(country)) return;
-            factions1.setLeader(country);
-
-        }, factionsArg, countryArg);
-
+            EventDispatcher.call(new FactionSetLeaderEvent(factions1, country));
+            }, factionsArg, countryArg);
     }
 
     private boolean leaderOfAFaction(CommandSender sender) {

@@ -10,8 +10,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-
-import static org.drachens.util.KyoriUtil.getPrefixes;
+import org.drachens.util.MessageEnum;
 
 public class RenameCMD extends Command {
     public RenameCMD() {
@@ -35,15 +34,13 @@ public class RenameCMD extends Command {
 
         var newName = ArgumentType.String("name");
 
-        Component factionPrefix = getPrefixes("faction");
-        if (factionPrefix == null) return;
         Component notLeader = Component.text()
-                .append(factionPrefix)
+                .append(MessageEnum.faction.getComponent())
                 .append(Component.text("You are not leader of this faction", NamedTextColor.RED))
                 .build();
 
         Component nameTaken = Component.text()
-                .append(factionPrefix)
+                .append(MessageEnum.faction.getComponent())
                 .append(Component.text("That name is taken"))
                 .build();
 

@@ -66,10 +66,6 @@ public class VotingOption {
         return mapGenerator;
     }
 
-    public void setMapGenerator(MapGen mapGenerator) {
-        this.mapGenerator = mapGenerator;
-    }
-
     public int getCountries() {
         return countries;
     }

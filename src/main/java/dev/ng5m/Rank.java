@@ -5,8 +5,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.network.packet.server.play.TeamsPacket;
-import org.drachens.events.RankAddEvent;
-import org.drachens.events.RankRemoveEvent;
+import org.drachens.events.ranks.RankAddEvent;
+import org.drachens.events.ranks.RankRemoveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
