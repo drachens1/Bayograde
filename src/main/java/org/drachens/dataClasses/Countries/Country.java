@@ -40,6 +40,7 @@ import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
+import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.events.countries.war.EndWarEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
@@ -332,11 +333,11 @@ public abstract class Country implements Cloneable {
             }
         }
         float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
+        if (capPercentage==1f)capPercentage=0.9f;
         float capPoints = maxCapitulationPoints * capPercentage;
         capitulationBar.setProgress(capitulationPoints / capPoints);
         if (capitulationPoints >= capPoints && !capitulated) {
-            capitulated = true;
-            capitulate(attacker);
+            EventDispatcher.call(new CapitulationEvent(this,attacker));
         }
     }
 
@@ -347,11 +348,11 @@ public abstract class Country implements Cloneable {
     }
 
     public void capitulate(Country attacker) {
-        broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(this.name + " has capitulated to " + attacker.name, NamedTextColor.RED)).build(), capital.getInstance());
+        capitulated = true;
         for (Province p : new ArrayList<>(this.occupies)) {
             p.capture(attacker);
         }
-        wars.forEach(aggressor -> EventDispatcher.call(new EndWarEvent(aggressor, this)));
+        new ArrayList<>(wars).forEach(aggressor -> EventDispatcher.call(new EndWarEvent(aggressor, this)));
     }
 
     public void addPayment(Payment payment, Component msg) {
@@ -414,6 +415,12 @@ public abstract class Country implements Cloneable {
 
     public List<Country> getWars() {
         return wars;
+    }
+
+    public List<String> getWarsString(){
+        List<String> s = new ArrayList<>();
+        wars.forEach(country -> s.add(country.name));
+        return s;
     }
 
     public void addWar(Country country) {
@@ -897,4 +904,19 @@ public abstract class Country implements Cloneable {
         return nonAggressionPactHashMap.keySet().stream().toList();
     }
 
+    public boolean hasNonAggressionPact(String country){
+        return nonAggressionPactHashMap.containsKey(country);
+    }
+
+    public boolean isPuppet(Country country){
+        return puppets.contains(country);
+    }
+
+    public boolean canFight(Country country){
+        return !(isPuppet(country)||isAlly(country)||hasNonAggressionPact(country.getName())||country==this);
+    }
+
+    public boolean isInAWar(){
+        return !wars.isEmpty();
+    }
 }

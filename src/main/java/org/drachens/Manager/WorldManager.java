@@ -2,6 +2,8 @@ package org.drachens.Manager;
 
 import dev.ng5m.CPlayer;
 import dev.ng5m.Rank;
+import net.kyori.adventure.resource.ResourcePackInfo;
+import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -14,6 +16,8 @@ import org.drachens.dataClasses.World;
 import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.databases.Table;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -56,6 +60,11 @@ public class WorldManager {
         ContinentalManagers.advancementManager.addPlayer(p);
         p.setJoinTime(LocalTime.now());
         p.setHead();
+        try {
+            p.sendResourcePacks(ResourcePackRequest.addingRequest(ResourcePackInfo.resourcePackInfo(p.getUuid(),new URI("https://download.mc-packs.net/pack/e12c2a17430747a9bb58cce2af34aef1aebac149.zip"),"e12c2a17430747a9bb58cce2af34aef1aebac149")));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setDefaultWorld(World world) {

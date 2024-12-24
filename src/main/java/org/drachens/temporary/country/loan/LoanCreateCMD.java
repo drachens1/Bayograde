@@ -12,10 +12,7 @@ import org.drachens.dataClasses.Economics.Loan;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.events.loan.LoanSendEvent;
 
-import java.util.List;
-
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 
 public class LoanCreateCMD extends Command {
     public LoanCreateCMD() {
@@ -24,16 +21,8 @@ public class LoanCreateCMD extends Command {
         var amount = ArgumentType.Float("amount");
         var interest = ArgumentType.Float("interest 1-100");
         var termLength = ArgumentType.Integer("time-to-repay-days");
-        var countries = ArgumentType.String("Countries")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!isLeaderOfCountry(sender)) {
-                        return;
-                    }
-                    CPlayer p = (CPlayer) sender;
-                    List<String> countries1 = getCountryNames(p.getInstance());
-                    countries1.remove(p.getCountry().getName());
-                    getSuggestionBasedOnInput(suggestion, countries1);
-                });
+
+        var countries = getCountriesArgExcludingPlayersCountry();
 
         setCondition((sender, s) -> isLeaderOfCountry(sender));
 
@@ -45,7 +34,10 @@ public class LoanCreateCMD extends Command {
         }, countries, interest);
 
         addSyntax(((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
+            if (!isLeaderOfCountry(sender)){
+                sender.sendMessage("You are not the leader of a country");
+                return;
+            }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));

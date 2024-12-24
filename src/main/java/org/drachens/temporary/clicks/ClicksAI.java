@@ -51,6 +51,7 @@ public class ClicksAI implements AIManager {
         }
 
         private void buildFactory(List<Province> cities){
+            if (cities.isEmpty())return;
             Province province = cities.get(r.nextInt(cities.size()));
             if (province.getBuilding()!=null){
                 if (factory.requirementsToUpgrade(province.getBuilding(),country,1,null)){

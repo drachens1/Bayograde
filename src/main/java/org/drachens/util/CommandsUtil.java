@@ -1,5 +1,8 @@
 package org.drachens.util;
 
+import dev.ng5m.CPlayer;
+import net.minestom.server.command.builder.arguments.Argument;
+import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.Suggestion;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.instance.Instance;
@@ -10,6 +13,28 @@ import java.util.stream.Collectors;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CommandsUtil {
+
+    public static Argument<String> getCountriesArg(){
+        return ArgumentType.String("Countries")
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!(sender instanceof CPlayer p)) {
+                        return;
+                    }
+                    getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
+                });
+    }
+
+    public static Argument<String> getCountriesArgExcludingPlayersCountry(){
+        return ArgumentType.String("Countries")
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!(sender instanceof CPlayer p)) {
+                        return;
+                    }
+                    List<String> s = getCountryNames(p.getInstance());
+                    s.remove(p.getCountry().getName());
+                    getSuggestionBasedOnInput(suggestion, s);
+                });
+    }
 
     public static List<String> getCountryNames(Instance instance) {
         return getWorldClasses(instance).countryDataManager().getNamesList();

@@ -13,6 +13,7 @@ public class JustifyWarCMD extends Command {
 
         addSubcommand(new JustifyAgainstCMD());
         addSubcommand(new JustifyCancelCMD());
+        addSubcommand(new JustifyOptionsCMD());
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

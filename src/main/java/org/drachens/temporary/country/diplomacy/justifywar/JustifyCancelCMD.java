@@ -24,6 +24,11 @@ public class JustifyCancelCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getWarJustifications());
                 });
 
+        setDefaultExecutor((sender,context)->{
+            if (isLeaderOfCountry(sender))return;
+            sender.sendMessage("Proper usage /country diplomacy justify_war <country> ");
+        });;
+
         addSyntax((sender,context)->{
             if (!isLeaderOfCountry(sender))return;
             CPlayer p = (CPlayer) sender;

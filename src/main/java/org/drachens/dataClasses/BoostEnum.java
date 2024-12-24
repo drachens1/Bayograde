@@ -9,8 +9,8 @@ public enum BoostEnum {//todo make the symbols match up
     stabilityGain(Component.text("gain", NamedTextColor.BLUE), false),
     stabilityBase(Component.text("base", NamedTextColor.BLUE), false),
     relations(Component.text("relations", NamedTextColor.BLUE), true),
-    buildingSlotBoost(Component.text("\\uD83D\\uDC30", NamedTextColor.WHITE), true),
-    capitulation(Component.text("\\uD83D\\uDC3B", NamedTextColor.WHITE), true),
+    buildingSlotBoost(Component.text("\uD83D\uDC30", NamedTextColor.WHITE), true),
+    capitulation(Component.text("\uD83D\uDC3B", NamedTextColor.WHITE), true),
     production(Component.text("production", NamedTextColor.BLUE), true),
     gunCost(Component.text("gun_cost", NamedTextColor.BLUE), true),
     gunAccuracy(Component.text("gun_acc", NamedTextColor.BLUE), true);

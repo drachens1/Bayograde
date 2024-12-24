@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -15,10 +14,7 @@ import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 
-import java.util.List;
-
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 
 public class DemandStartCMD extends Command {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
@@ -29,19 +25,7 @@ public class DemandStartCMD extends Command {
 
         DemandManager demandManager = ContinentalManagers.demandManager;
 
-        var countries = ArgumentType.String("Countries");
-
-        countries.setSuggestionCallback((sender, context, suggestion) -> {
-            if (!isLeaderOfCountry(sender)) return;
-            CPlayer p = (CPlayer) sender;
-            if (demandManager.isPlayerActive(p.getCountry())) {
-                p.refreshCommands();
-                return;
-            }
-            List<String> country = getCountryNames(p.getInstance());
-            country.remove(p.getCountry().getName());
-            getSuggestionBasedOnInput(suggestion, country);
-        });
+        var countries = getCountriesArgExcludingPlayersCountry();
 
         Component doesntExist = Component.text()
                 .append(MessageEnum.country.getComponent())

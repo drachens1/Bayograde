@@ -29,7 +29,6 @@ public class TroopMover extends HotbarItemButton {
         if (nextProv.containsKey(p)) {
             Troop troop = nextProv.get(p);
             troop.move(province);
-            p.sendMessage("Moving");
         }
 
     }
@@ -40,6 +39,9 @@ public class TroopMover extends HotbarItemButton {
         Player p = e.getPlayer();
         if (province.getTroops().isEmpty()) return;
         Troop troop = province.getTroops().getFirst();
+        if (nextProv.containsKey(p)){
+            nextProv.get(p).getTroop().setGlowing(false);
+        }
         nextProv.put(p, troop);
         troop.getTroop().setGlowing(true);
     }

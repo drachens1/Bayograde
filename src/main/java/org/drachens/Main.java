@@ -240,8 +240,7 @@ public class Main {
         electionTypes.add(ElectionsEnum.republic);
         electionTypes.add(ElectionsEnum.totalitarian);
 
-
-        VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1937, 1000L, "ww2_clicks")
+        VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
                 .setCountries(90)
@@ -479,7 +478,7 @@ public class Main {
                 .setDefaultInventory(InventoryEnum.defaultInv)
                 .build());
 
-        VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1937, 1000L, "ww2_troops")
+        VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
                 .setCountries(90)

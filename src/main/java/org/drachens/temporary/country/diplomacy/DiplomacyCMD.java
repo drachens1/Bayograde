@@ -16,6 +16,8 @@ public class DiplomacyCMD extends Command {
         addSubcommand(new JustifyWarCMD());
         addSubcommand(new DeclareWarCMD());
         addSubcommand(new NonAggressionCMD());
+        addSubcommand(new DiplomacyViewOptionsCMD());
+        addSubcommand(new UnconditionalSurrenderCMD());
         setCondition((sender, s) -> isLeaderOfCountry(sender));
     }
 

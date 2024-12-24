@@ -35,8 +35,10 @@ import org.drachens.events.countries.demands.DemandAcceptedEvent;
 import org.drachens.events.countries.demands.DemandCompletionEvent;
 import org.drachens.events.countries.demands.DemandCounterOfferEvent;
 import org.drachens.events.countries.demands.DemandDeniedEvent;
+import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.events.countries.war.EndWarEvent;
 import org.drachens.events.countries.war.StartWarEvent;
+import org.drachens.events.countries.war.UnconditionalSurrenderEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCancelEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
@@ -151,6 +153,7 @@ public class CentralEventManager {
             if (e.isCancelled())return;
             Country defender = e.getDefender();
             Country attacker = e.getAggressor();
+            attacker.addModifier(e.getWarJustification().getModifier());
             attacker.removeCompletedWarJustification(defender.getName());
             attacker.addWar(defender);
             defender.addWar(attacker);
@@ -167,6 +170,29 @@ public class CentralEventManager {
             Country attacker = e.getAggressor();
             attacker.removeWar(defender);
             defender.removeWar(attacker);
+        });
+
+        globEHandler.addListener(CapitulationEvent.class, e->{
+            Country defender = e.getFrom();
+            Country attacker = e.getTo();
+            attacker.removeWar(defender);
+            defender.removeWar(attacker);
+            defender.capitulate(attacker);
+            broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(defender.getNameComponent() + " has capitulated to " + attacker.getNameComponent(), NamedTextColor.RED)).build(), defender.getInstance());
+        });
+
+        globEHandler.addListener(UnconditionalSurrenderEvent.class, e->{
+            Country defender = e.getFrom();
+            Country attacker = e.getTo();
+            attacker.removeWar(defender);
+            defender.removeWar(attacker);
+            defender.capitulate(attacker);
+            broadcast(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(Component.text(defender.getPlayerLeader().getUsername()))
+                    .append(Component.text(" has decided to unconditionally surrender to "))
+                    .append(attacker.getNameComponent())
+                    .build(),defender.getInstance());
         });
 
         globEHandler.addListener(FactionCreateEvent.class, e -> {
@@ -370,23 +396,23 @@ public class CentralEventManager {
                     .append(Component.text()
                             .append(Component.text("[Accept]", NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to accept the demands", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand accept")))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand "+ from.getName() +" accept")))
                     .append(Component.text()
                             .append(Component.text(" [Refuse]", NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand refuse")))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand "+ from.getName() +" refuse")))
                     .appendNewline()
                     .append(Component.text("View: ", NamedTextColor.GREEN, TextDecoration.UNDERLINED, TextDecoration.BOLD))
                     .appendNewline()
                     .append(Component.text()
                             .append(Component.text(" [On]", NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming view "+ from.getName() +" off"))
                             .build())
                     .append(Component.text()
                             .append(Component.text(" [Off]", NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming view off"))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming view "+ from.getName() +"off"))
                             .build())
                     .build());
         });

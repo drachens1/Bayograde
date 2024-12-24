@@ -4,7 +4,6 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
@@ -16,19 +15,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
+import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class JustifyAgainstCMD extends Command {
     public JustifyAgainstCMD() {
         super("against");
-        var countries = ArgumentType.String("Countries")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!(sender instanceof Player p)) {
-                        return;
-                    }
-                    getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
-                });
+        var countries = getCountriesArgExcludingPlayersCountry();
 
         List<String> opts = Arrays.stream(new String[]{WarGoalTypeEnum.justified.name(),WarGoalTypeEnum.partially_justified.name(),WarGoalTypeEnum.surprise.name()}).toList();
 
@@ -37,20 +30,23 @@ public class JustifyAgainstCMD extends Command {
 
         HashSet<String> stuff = new HashSet<>(opts);
 
-        addSyntax((sender,context)-> sender.sendMessage("Proper usage /country diplomacy justify_war against <country> <type>"),countries);
+        addSyntax((sender,context)-> sender.sendMessage("Proper usage /country diplomacy justify_war against <country> <type>"),option);
 
         addSyntax((sender,context)->{
             if (!isLeaderOfCountry(sender))return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (against==null || against==country || against.isAlly(country))return;
+            if (country.canFight(against)){
+                p.sendMessage("You cant justify on yourself/ally/puppet/non-aggression pact");
+                return;
+            }
             String choice = context.get(option);
             if (!stuff.contains(choice))return;
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);
             WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(),against);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification,country));
-        },countries,option);
+        },option,countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

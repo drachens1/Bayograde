@@ -49,7 +49,7 @@ public class Factory extends BuildTypes {
 
     public Factory() {
         super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory);
-        produces = new Payments(new Payment(CurrencyEnum.production, 2f));
+        produces = new Payments(new Payment(CurrencyEnum.production, 20000f));
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);
         materialLvls.put(Material.LIME_GLAZED_TERRACOTTA, 3);

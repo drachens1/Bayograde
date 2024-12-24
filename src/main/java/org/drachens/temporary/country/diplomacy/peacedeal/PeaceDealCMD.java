@@ -3,22 +3,15 @@ package org.drachens.temporary.country.diplomacy.peacedeal;
 import dev.ng5m.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.Country;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 
 public class PeaceDealCMD extends Command {
     public PeaceDealCMD() {
         super("peace-deal");
-        var countries = ArgumentType.String("Countries")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!(sender instanceof CPlayer p)) {
-                        return;
-                    }
-                    getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
-                });
+
+        var countries = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender,context)->{
             if (!isLeaderOfCountry(sender))return;

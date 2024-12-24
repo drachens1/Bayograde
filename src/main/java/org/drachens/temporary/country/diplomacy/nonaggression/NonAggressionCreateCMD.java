@@ -10,19 +10,12 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.events.countries.nonaggression.NonAggressionAcceptedEvent;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 
 public class NonAggressionCreateCMD extends Command {
     public NonAggressionCreateCMD() {
         super("create");
-        var countries = ArgumentType.String("Countries")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!(sender instanceof CPlayer p)) {
-                        return;
-                    }
-                    getSuggestionBasedOnInput(suggestion, getCountryNames(p.getInstance()));
-                });
+        var countries = getCountriesArgExcludingPlayersCountry();
 
         var length = ArgumentType.Float("length");
 

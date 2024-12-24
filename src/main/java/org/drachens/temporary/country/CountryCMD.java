@@ -4,6 +4,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.temporary.country.diplomacy.DiplomacyCMD;
+import org.drachens.temporary.country.info.AllInformationCMD;
 import org.drachens.temporary.country.info.Info;
 import org.drachens.temporary.country.loan.LoanCMD;
 import org.drachens.temporary.country.manage.ManageCMD;
