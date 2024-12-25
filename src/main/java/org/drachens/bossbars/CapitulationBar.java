@@ -18,7 +18,6 @@ public class CapitulationBar extends HideableBossBar {
         if (progress == 1) {
             hide();
         } else show();
-        System.out.println(progress);
     }
 
     public float bound(double d) {

@@ -2,8 +2,11 @@ package org.drachens.dataClasses.territories;
 
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Chunk;
@@ -94,9 +97,24 @@ public class Province implements Serializable {
             secretDescription = createSecretDescription();
         }
         if (country != null && (country == occupier || country.isAlly(occupier))) {
-            return secretDescription;
-        }
+            if (country.isPlayerLeader(p)){
+                return secretDescription.append(Component.text()
+                        .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
+                        .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
+                        .build());
+            }
 
+        }
+        if (country != null){
+            if (country.isPlayerLeader(p)){
+                return secretDescription.append(Component.text()
+                        .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
+                        .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
+                        .build());
+            }
+        }
         return description;
     }
 

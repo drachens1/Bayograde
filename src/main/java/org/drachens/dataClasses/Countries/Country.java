@@ -332,8 +332,8 @@ public abstract class Country implements Cloneable {
                 broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)).build(), capital.getInstance());
             }
         }
-        float capPercentage = bound(0.8f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
-        if (capPercentage==1f)capPercentage=0.9f;
+        float capPercentage = bound(0.5f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
+        if (capPercentage>=1f)capPercentage=0.85f;
         float capPoints = maxCapitulationPoints * capPercentage;
         capitulationBar.setProgress(capitulationPoints / capPoints);
         if (capitulationPoints >= capPoints && !capitulated) {
@@ -913,7 +913,12 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean canFight(Country country){
-        return !(isPuppet(country)||isAlly(country)||hasNonAggressionPact(country.getName())||country==this);
+        return !isFriend(country);
+    }
+
+    public boolean isFriend(Country country){
+        return isPuppet(country)||isAlly(country)||hasNonAggressionPact(country.getName())||country==this;
+
     }
 
     public boolean isInAWar(){

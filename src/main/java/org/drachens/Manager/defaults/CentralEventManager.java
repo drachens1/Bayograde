@@ -12,6 +12,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.instance.Instance;
+import org.checkerframework.checker.units.qual.N;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.Manager.per_instance.CountryDataManager;
@@ -178,7 +179,12 @@ public class CentralEventManager {
             attacker.removeWar(defender);
             defender.removeWar(attacker);
             defender.capitulate(attacker);
-            broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(defender.getNameComponent() + " has capitulated to " + attacker.getNameComponent(), NamedTextColor.RED)).build(), defender.getInstance());
+            broadcast(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(defender.getNameComponent())
+                    .append(Component.text(" has capitulated to ",NamedTextColor.RED))
+                    .append(attacker.getNameComponent())
+                    .build(),defender.getInstance());
         });
 
         globEHandler.addListener(UnconditionalSurrenderEvent.class, e->{
@@ -471,6 +477,9 @@ public class CentralEventManager {
                     .build());
         });
 
+        //todo add a option when a country capitulates and a naval invasion system and a textbar at the capitals to show capitulation percentage
+        //todo fix the stability modifier
+
         globEHandler.addListener(WarJustificationCompletionEvent.class, e->{ //Not cancelable
             Country against = e.getAgainst();
             Country from = e.getFrom();
@@ -484,6 +493,12 @@ public class CentralEventManager {
                     .append(Component.text("Your justification against ",NamedTextColor.GREEN))
                     .append(against.getNameComponent())
                     .append(Component.text(" has finished",NamedTextColor.GREEN))
+                    .appendNewline()
+                    .append(Component.text()
+                            .append(Component.text("[DECLARE WAR]", NamedTextColor.GOLD,TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war on "+against.getName(), NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy declare_war " + against.getName()))
+                    )
                     .build());
         });
 

@@ -1,6 +1,8 @@
 package org.drachens.temporary.country.diplomacy.justifywar;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.chat.SignedMessage;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -37,12 +39,15 @@ public class JustifyAgainstCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country.canFight(against)){
+            if (country.isFriend(against)){
                 p.sendMessage("You cant justify on yourself/ally/puppet/non-aggression pact");
                 return;
             }
             String choice = context.get(option);
-            if (!stuff.contains(choice))return;
+            if (!stuff.contains(choice)){
+                p.sendMessage("That is not a valid option");
+                return;
+            }
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);
             WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(),against);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification,country));

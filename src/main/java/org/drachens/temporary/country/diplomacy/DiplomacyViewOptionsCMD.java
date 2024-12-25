@@ -43,14 +43,17 @@ public class DiplomacyViewOptionsCMD extends Command {
                     .append(Component.text("Country: "))
                     .append(against.getNameComponent())
                     .appendNewline()
+                    .appendNewline()
                     .build());
             if (country.canFight(against)){
                 if (country.getCompletedWarJustificationAgainst(against)!=null){
                     WarJustification warJustification = country.getCompletedWarJustificationAgainst(against);
-                    comps.add(Component.text(" [DECLARE WAR] ",NamedTextColor.GOLD, TextDecoration.BOLD));
-                    comps.add(Component.text("expires "+warJustification.getExpires(),NamedTextColor.GRAY,TextDecoration.ITALIC));
-                    comps.add(Component.newline());
-
+                    comps.add(Component.text()
+                            .append(Component.text(" [DECLARE WAR] ",NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .append(Component.text("expires "+warJustification.getExpires(),NamedTextColor.GRAY,TextDecoration.ITALIC))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy declare_war " + against.getName()))
+                            .build());
                 }else if (country.getCreatingWarJustificationAgainst(against.getName())!=null){
                     WarJustification warJustification = country.getCreatingWarJustificationAgainst(against.getName());
                     comps.add(Component.text()
@@ -83,7 +86,7 @@ public class DiplomacyViewOptionsCMD extends Command {
             }else if (ContinentalManagers.demandManager.getDemand(country).getToCountry()==against){
                 comps.add(Component.text()
                         .append(Component.text(" [COMPLETE DEMAND] ",NamedTextColor.GOLD,TextDecoration.BOLD))
-                        .clickEvent(ClickEvent.runCommand("/country diplomacy demand complete " + against.getName()))
+                        .clickEvent(ClickEvent.runCommand("/country diplomacy demand complete "))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to prompt you to the loan creation command", NamedTextColor.GRAY)))
                         .build());
             }
