@@ -493,8 +493,7 @@ public class CentralEventManager {
                     .build());
         });
 
-        //todo  a naval invasion system and a textbar at the capitals to show capitulation percentage
-        //todo fix the stability modifier
+        //todo a naval invasion system
 
         globEHandler.addListener(WarJustificationCompletionEvent.class, e->{ //Not cancelable
             Country against = e.getAgainst();

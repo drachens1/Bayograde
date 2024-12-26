@@ -77,7 +77,6 @@ public class Modifier implements Cloneable {
 
         }
 
-
         if (startDescription == null) {
             description = Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
@@ -150,8 +149,10 @@ public class Modifier implements Cloneable {
     }
 
     public void update() {
+        createDescription();
         for (Country country : appliedCountries) {
             country.updateModifier(this, oldModifier);
+            country.createInfo();
         }
         oldModifier = this.clone();
     }

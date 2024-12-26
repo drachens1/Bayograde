@@ -20,7 +20,10 @@ public class Stability {
         stabilityTotal = startingStability;
         this.country = country;
         stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD))
+                .addBoost(BoostEnum.production,(startingStability - 50f)/100)
                 .build();
+
+        country.addModifier(stabilityModifier);
     }
 
     public void newWeek() {

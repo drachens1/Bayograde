@@ -92,7 +92,7 @@ public abstract class Country implements Cloneable {
     private Component prefix;
     private Component description;
     private Country overlord = null;
-    private final Stability stability = new Stability(50f, this);
+    private final Stability stability;
     private final Relations relations = new Relations(this);
     private final HashMap<String, Loan> loanRequests = new HashMap<>();
     private final CapitulationBar capitulationBar = new CapitulationBar();
@@ -127,6 +127,7 @@ public abstract class Country implements Cloneable {
         this.mapGen = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
         warsWorld=new ImaginaryWorld(instance,true);
         allyWorld=new ImaginaryWorld(instance,true);
+        stability=new Stability(50f, this);
 
     }
 
@@ -189,18 +190,22 @@ public abstract class Country implements Cloneable {
     }
 
     public void updateModifier(Modifier modifier, Modifier old) {
-        removeModifier(old);
+        removeModifier(old,true);
         addModifier(modifier, true);
     }
 
-    public void removeModifier(Modifier modifier) {
+    public void removeModifier(Modifier m){
+        removeModifier(m,false);
+    }
+
+    public void removeModifier(Modifier modifier, boolean update) {
         if (!modifiers.contains(modifier))
             return;
 
         modifiers.remove(modifier);
         modifier.removeCountry(this);
         modifier.getBoostHashMap().forEach(this::minusBoost);
-        createInfo();
+        if (!update && modifier.shouldDisplay())createInfo();
     }
 
     public List<Modifier> getModifiers() {
@@ -500,7 +505,7 @@ public abstract class Country implements Cloneable {
     }
 
     public void createInfo() {
-        if (mapGen.isGenerating(instance)) return;
+        if (mapGen==null || mapGen.isGenerating(instance)) return;
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : modifiers) {
             if (modifier.getName() == null) continue;
