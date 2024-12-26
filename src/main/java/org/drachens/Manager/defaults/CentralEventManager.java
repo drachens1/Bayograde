@@ -12,7 +12,6 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.instance.Instance;
-import org.checkerframework.checker.units.qual.N;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.Manager.per_instance.CountryDataManager;
@@ -32,6 +31,7 @@ import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.CaptureBlockEvent;
 import org.drachens.events.countries.CountryCoopPlayerEvent;
 import org.drachens.events.countries.CountrySetLeaderEvent;
+import org.drachens.events.countries.LiberationEvent;
 import org.drachens.events.countries.demands.DemandAcceptedEvent;
 import org.drachens.events.countries.demands.DemandCompletionEvent;
 import org.drachens.events.countries.demands.DemandCounterOfferEvent;
@@ -53,6 +53,7 @@ import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.inventoryManager;
 import static org.drachens.util.Messages.broadcast;
@@ -101,11 +102,6 @@ public class CentralEventManager {
             if (p == null || provinceDelay.hasCooldown(player)) return;
             provinceDelay.startCooldown(player);
             if (p.getOccupier() == null) {
-                player.sendMessage(Component.text()
-                        .append(Component.text("_______/", NamedTextColor.BLUE))
-                        .append(Component.text("UNOCCUPIED", NamedTextColor.GOLD))
-                        .append(Component.text("\\_______", NamedTextColor.BLUE))
-                        .build());
                 return;
             }
             player.sendMessage(p.getDescription((CPlayer) player));
@@ -185,6 +181,26 @@ public class CentralEventManager {
                     .append(Component.text(" has capitulated to ",NamedTextColor.RED))
                     .append(attacker.getNameComponent())
                     .build(),defender.getInstance());
+
+            attacker.sendMessage(Component.text()
+                            .append(MessageEnum.country.getComponent())
+                            .append(Component.text("Capitulation event options: "))
+                            .appendNewline()
+                            .append(Component.text()
+                                    .append(Component.text("[ANNEX]", NamedTextColor.GOLD,TextDecoration.BOLD))
+                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to annex "+defender.getName(), NamedTextColor.GRAY)))
+                            )
+                            .append(Component.text()
+                                    .append(Component.text(" [LIBERATE] ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to liberate all there occupied cores", NamedTextColor.GRAY)))
+                                    .clickEvent(ClickEvent.runCommand("/country diplomacy liberate " + defender.getName() + " free "))
+                            )
+                            .append(Component.text()
+                                .append(Component.text("[PUPPET]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to release all of there occupied cores as a puppet", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country diplomacy liberate " + defender.getName() + " puppet "))
+                            )
+                    .build());
         });
 
         globEHandler.addListener(UnconditionalSurrenderEvent.class, e->{
@@ -477,7 +493,7 @@ public class CentralEventManager {
                     .build());
         });
 
-        //todo add a option when a country capitulates and a naval invasion system and a textbar at the capitals to show capitulation percentage
+        //todo  a naval invasion system and a textbar at the capitals to show capitulation percentage
         //todo fix the stability modifier
 
         globEHandler.addListener(WarJustificationCompletionEvent.class, e->{ //Not cancelable
@@ -517,5 +533,35 @@ public class CentralEventManager {
                     .append(Component.text(" has expired",NamedTextColor.GREEN))
                     .build());
         });
+
+        globEHandler.addListener(LiberationEvent.class, e->{
+            if (e.isCancelled())return;
+            Country target = e.getLiberated();
+            Country country = e.getLiberator();
+
+            new ArrayList<>(country.getOthersCores(target)).forEach(province -> province.liberate(target));
+            if (target.hasCapitulated()){
+                target.setCapitulated(false);
+                target.calculateCapitulationPercentage();
+                broadcast(Component.text()
+                        .append(MessageEnum.country.getComponent())
+                        .append(target.getNameComponent())
+                        .append(Component.text(" has been liberated by "))
+                        .append(country.getNameComponent())
+                        .build(),country.getInstance());
+                if (Objects.equals(e.getType(), "puppet")) {
+                    target.setOverlord(country);
+                    country.addPuppet(target);
+                }
+                return;
+            }
+            target.sendMessage(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(country.getNameComponent())
+                    .append(Component.text(" has returned occupied land to you"))
+                    .build());
+
+        });
+
     }
 }

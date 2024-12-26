@@ -61,7 +61,7 @@ public class ClickWarSystem implements War {
         if (country == null) return;
         Instance instance = e.getInstance();
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
-        if (province == null || province.getOccupier() == country || !province.isCapturable() || province.getOccupier().isAlly(country) || !province.getOccupier().isAtWar(country)) return;
+        if (province == null || province.getOccupier()==null || !province.getOccupier().isAtWar(country)) return;
         if (!country.canMinusCost(payment)) {
             p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;

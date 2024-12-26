@@ -608,17 +608,17 @@ public class MapGeneratorManager extends MapGen {
             Election election = country.getElections();
             if (x > 0) {
                 ideology.addIdeology(north.getLeadingIdeology(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
-                country.addRegion(north);
+                north.addCountry(country);
             } else {
                 ideology.addIdeology(south.getLeadingIdeology(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
-                country.addRegion(south);
+                south.addCountry(country);
             }
             if (z > 0) {
                 election.addElection(east.getLeadingElectionType(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
-                country.addRegion(east);
+                east.addCountry(country);
             } else {
                 election.addElection(west.getLeadingElectionType(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
-                country.addRegion(west);
+                west.addCountry(country);
             }
         }
     }
@@ -867,6 +867,12 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void finalLoop(List<Country> countries){
-        countries.forEach(Country::init);
+        countries.forEach(country -> {
+            country.getOccupies().forEach(province -> {
+                country.addCore(province);
+                province.setCore(country);
+            });
+            country.init();
+        });
     }
 }

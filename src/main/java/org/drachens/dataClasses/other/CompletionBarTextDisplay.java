@@ -24,6 +24,7 @@ public class CompletionBarTextDisplay  {
     }
 
     public void setProgress(float progress){
+        if (progress>1f)progress=1f;
         this.progress=progress;
         int end = Math.round(fullBar.length()*progress);
         String bar = fullBar.substring(0,end);

@@ -39,7 +39,6 @@ public class JoinCMD extends Command {
             }
 
             Country country = player.getCountry();
-            country.joinFaction(faction);
             EventDispatcher.call(new FactionJoinEvent(faction, country));
         }, factions);
     }

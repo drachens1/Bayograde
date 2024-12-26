@@ -1,8 +1,6 @@
 package org.drachens.temporary.country.diplomacy.justifywar;
 
 import dev.ng5m.CPlayer;
-import net.kyori.adventure.chat.SignedMessage;
-import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;

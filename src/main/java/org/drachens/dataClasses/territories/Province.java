@@ -23,6 +23,7 @@ import org.drachens.temporary.troops.Combat;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class Province implements Serializable {
@@ -53,6 +54,7 @@ public class Province implements Serializable {
     private Component description;
     private Component secretDescription; //Higher lvls can see this like allys and the ppl in the occupiers country
     private boolean outdatedDescriptions = true;
+    private final HashSet<Country> corers = new HashSet<>();
 
     public Province(Pos pos, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = pos;
@@ -266,6 +268,37 @@ public class Province implements Serializable {
         if (building != null) {
             building.capture(attacker);
         }
+        if (!corers.isEmpty()){
+            corers.forEach(country -> {
+                if (country==attacker)return;
+                attacker.addOthersCores(country,this);
+                if (country!=occupier){
+                    occupier.removeOthersCores(country,this);
+                }
+            });
+        }
+        this.occupier = attacker;
+        occupier.captureProvince(this);
+        if (isCity()) {
+            if (attacker.isMajorCity(this))
+                this.setCity(attacker.getMajorCity(this));
+            else
+                setCity(1);
+            occupier.addCity(this);
+        }
+        updateBorders();
+    }
+
+    public void liberate(Country attacker){
+        outdatedDescriptions = true;
+        if (occupier != null) {
+            occupier.removeOccupied(this);
+            if (isCity())
+                this.occupier.removeCity(this);
+        }
+        if (building != null) {
+            building.capture(attacker);
+        }
         this.occupier = attacker;
         occupier.captureProvince(this);
         if (isCity()) {
@@ -410,5 +443,21 @@ public class Province implements Serializable {
 
     public Combat getCombat(){
         return combat;
+    }
+
+    public void setCore(Country country){
+        corers.add(country);
+    }
+
+    public void removeCore(Country country){
+        corers.remove(country);
+    }
+
+    public boolean hasCorer(Country country){
+        return corers.contains(country);
+    }
+
+    public HashSet<Country> getCorers(){
+        return corers;
     }
 }
