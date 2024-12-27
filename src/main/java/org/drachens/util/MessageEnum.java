@@ -10,9 +10,19 @@ public enum MessageEnum {
             .append(Component.text("FACTION", NamedTextColor.GOLD, TextDecoration.BOLD))
             .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
             .build()),
+    factionChat(Component.text()
+            .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
+            .append(Component.text("FACTION-CHAT", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
+            .build()),
     country(Component.text()
             .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
             .append(Component.text("COUNTRY", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .build()),
+    countryChat(Component.text()
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .append(Component.text("COUNTRY-CHAT", NamedTextColor.GOLD, TextDecoration.BOLD))
             .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
             .build()),
     vote(Component.text()
@@ -24,16 +34,6 @@ public enum MessageEnum {
             .append(Component.text(" | ", NamedTextColor.DARK_BLUE, TextDecoration.BOLD))
             .append(Component.text("SYSTEM", NamedTextColor.GOLD, TextDecoration.BOLD))
             .append(Component.text(" | ", NamedTextColor.DARK_BLUE, TextDecoration.BOLD))
-            .build()),
-    ally(Component.text()
-                .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
-            .append(Component.text("ALLY", NamedTextColor.GOLD, TextDecoration.BOLD))
-            .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
-            .build()),
-    coop(Component.text()
-            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
-            .append(Component.text("CO-OP", NamedTextColor.GOLD, TextDecoration.BOLD))
-            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
             .build()),
     research(Component.text()
             .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))

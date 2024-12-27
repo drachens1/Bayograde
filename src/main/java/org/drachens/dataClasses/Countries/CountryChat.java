@@ -1,0 +1,35 @@
+package org.drachens.dataClasses.Countries;
+
+import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.minestom.server.event.player.PlayerChatEvent;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.interfaces.Channel;
+import org.drachens.util.MessageEnum;
+
+public class CountryChat implements Channel {
+    private final Country country;
+    public CountryChat(Country country){
+        this.country=country;
+    }
+    @Override
+    public void onChat(PlayerChatEvent e) {
+        CPlayer p = (CPlayer) e.getPlayer();
+        if (country.containsPlayer(p)){
+            country.sendMessage(Component.text()
+                    .append(MessageEnum.countryChat.getComponent())
+                    .append(Component.text(p.getUsername()))
+                    .append(Component.text(": "))
+                    .append(Component.text(e.getMessage()))
+                    .build());
+        }
+    }
+
+    public void addPlayer(CPlayer p){
+        ContinentalManagers.channelManager.putPlayer(p,this);
+    }
+
+    public void removePlayer(CPlayer p){
+        ContinentalManagers.channelManager.removePlayer(p);
+    }
+}

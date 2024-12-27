@@ -1,0 +1,35 @@
+package org.drachens.dataClasses.Diplomacy.faction;
+
+import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.minestom.server.event.player.PlayerChatEvent;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.interfaces.Channel;
+import org.drachens.util.MessageEnum;
+
+public class FactionChat implements Channel {
+    private final Factions factions;
+    public FactionChat(Factions factions){
+        this.factions=factions;
+    }
+    @Override
+    public void onChat(PlayerChatEvent e) {
+        CPlayer p = (CPlayer) e.getPlayer();
+        if (factions.containsCountry(p.getCountry())){
+            factions.sendMessage(Component.text()
+                    .append(MessageEnum.factionChat.getComponent())
+                    .append(Component.text(p.getUsername()))
+                    .append(Component.text(": "))
+                    .append(Component.text(e.getMessage()))
+                    .build());
+        }
+    }
+
+    public void addPlayer(CPlayer p){
+        ContinentalManagers.channelManager.putPlayer(p,this);
+    }
+
+    public void removePlayer(CPlayer p){
+        ContinentalManagers.channelManager.removePlayer(p);
+    }
+}

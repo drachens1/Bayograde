@@ -22,6 +22,7 @@ public abstract class Factions {
     private String name;
     private Component description;
     private Component nameComponent;
+    private final FactionChat factionChat;
 
     public Factions(Country leader, String name, Modifier modifier) {
         this.leader = leader;
@@ -32,6 +33,7 @@ public abstract class Factions {
         countryDataManager = ContinentalManagers.world(leader.getInstance()).countryDataManager();
         countryDataManager.addFaction(this);
         addCountry(leader);
+        factionChat = new FactionChat(this);
     }
 
     public void createDescription() {
@@ -145,5 +147,13 @@ public abstract class Factions {
 
     public Component getDescription() {
         return description;
+    }
+
+    public boolean containsCountry(Country country){
+        return members.contains(country);
+    }
+
+    public FactionChat getFactionChat(){
+        return factionChat;
     }
 }

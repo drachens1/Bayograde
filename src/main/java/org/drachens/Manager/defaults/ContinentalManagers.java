@@ -28,6 +28,7 @@ public class ContinentalManagers {
     public static final WorldManager worldManager = new WorldManager();
     public static final ImaginaryWorldManager imaginaryWorldManager = new ImaginaryWorldManager();
     public static final CombatManager combatManager = new CombatManager();
+    public static final ChannelManager channelManager = new ChannelManager();
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

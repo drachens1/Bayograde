@@ -316,7 +316,7 @@ public class CentralEventManager {
                             .append(MessageEnum.faction.getComponent())
                             .append(country.getNameComponent())
                             .append(Component.text(" has joined ", NamedTextColor.GREEN))
-                            .append(e.getCountry().getNameComponent())
+                            .append(factions.getNameComponent())
                             .build(),
                     country.getCapital().getInstance());
         });
@@ -334,12 +334,12 @@ public class CentralEventManager {
                     .build());
             invited.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
-                    .append(Component.text()
-                            .append(Component.text(" you have been invited to join", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("faction accept " + factions.getStringName()))
-                            .hoverEvent(HoverEvent.showText(Component.text("Click to join the faction", NamedTextColor.GOLD)))
-                            .build())
-                    .append(factions.getName())
+                    .append(Component.text(" you have been invited to join ", NamedTextColor.GREEN))
+                    .append(factions.getNameComponent())
+                            .append(Component.text()
+                                    .append(Component.text(" [CLICK]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                    .hoverEvent(Component.text("Click to join the faction", NamedTextColor.GRAY))
+                                    .clickEvent(ClickEvent.runCommand("/faction join "+ factions.getStringName())))
                     .build());
         });
 

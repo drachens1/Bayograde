@@ -21,6 +21,7 @@ public class CountryCMD extends Command {
         addSubcommand(new DiplomacyCMD());
         addSubcommand(new PayCMD());
         addSubcommand(new LoanCMD());
+        addSubcommand(new CountryChatCMD());
 
         var smth = ArgumentType.String("type...")
 

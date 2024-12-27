@@ -19,17 +19,15 @@ public class InviteCMD extends Command {
         setCondition((sender, s) -> leaderOfAFaction(sender));
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /faction invite <country_name> "));
 
-        var factionsArg = ArgumentType.String("factionName")
+        var factionsArg = ArgumentType.String("faction name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
                         Country country = player.getCountry();
-                        if (country != null) {
-                            if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
-                                suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
-                            }
-                            if (country.getMilitaryFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
-                                suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
-                            }
+                        if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
+                            suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
+                        }
+                        if (country.getMilitaryFactionType() != null && country.getMilitaryFactionType().isLeader(country)) {
+                            suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
                         }
                     }
                 });
@@ -37,6 +35,9 @@ public class InviteCMD extends Command {
         var countryArg = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
+            if (leaderOfAFaction(sender)){
+                 sender.sendMessage("Proper usage /faction manage invite <faction name> <country name>");
+            }
         }, factionsArg);
 
         addSyntax((sender, context) -> {

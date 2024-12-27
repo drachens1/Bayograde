@@ -17,6 +17,7 @@ public class FactionCMD extends Command {
         addSubcommand(new InfoCMD());
         addSubcommand(new AcceptCMD());
         addSubcommand(new ManageCMD());
+        addSubcommand(new FactionChatCMD());
 
         var smth = ArgumentType.String("type...")
                 .setSuggestionCallback((sender, context, suggestion) -> {

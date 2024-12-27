@@ -158,7 +158,6 @@ public class ServerUtil {
         GlobalEventHandler globEHandler = getEventHandler();
 
         //VELOCITAY
-
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
 
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {

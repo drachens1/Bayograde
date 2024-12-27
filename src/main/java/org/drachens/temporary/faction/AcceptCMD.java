@@ -20,10 +20,17 @@ public class AcceptCMD extends Command {
 
         var factionNames = ArgumentType.String("faction_name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!hasInvites(sender) && sender instanceof CPlayer player) {
+                    if (hasInvites(sender) && sender instanceof CPlayer player) {
                         getSuggestionBasedOnInput(suggestion, player.getCountry().getInvitedToFactions());
                     }
                 });
+
+        setDefaultExecutor((sender,context)->{
+            if (hasInvites(sender)){
+                sender.sendMessage("Proper usage /faction accept <faction>");
+            }
+        });
+
         addSyntax((sender, context) -> {
             if (!hasInvites(sender)) return;
             CPlayer cPlayer = (CPlayer) sender;
@@ -45,7 +52,7 @@ public class AcceptCMD extends Command {
         if (sender instanceof CPlayer cPlayer) {
             Country country = cPlayer.getCountry();
             if (country == null) return false;
-            return !country.getInvitedToFactions().isEmpty();
+            return country.getInvitedToFactions().isEmpty();
         }
         return false;
     }

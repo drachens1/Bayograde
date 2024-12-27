@@ -104,6 +104,7 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
     private final HashSet<Province> cores = new HashSet<>();
     private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
+    private final CountryChat countryChat;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
@@ -127,6 +128,7 @@ public abstract class Country implements Cloneable {
         warsWorld=new ImaginaryWorld(instance,true);
         allyWorld=new ImaginaryWorld(instance,true);
         stability=new Stability(50f, this);
+        countryChat=new CountryChat(this);
     }
 
     public void init(){
@@ -524,16 +526,14 @@ public abstract class Country implements Cloneable {
         EconomyFactionType economyFactionType1 = getEconomyFactionType();
         if (isInAnEconomicFaction()) {
             factionsComps.add(Component.text()
-                    .append(economyFactionType1.getName())
-                    .append(Component.text(" : ", NamedTextColor.WHITE))
+                    .append(Component.text("Economical faction:  "))
                     .append(economyFactionType1.getNameComponent())
                     .build());
         }
         MilitaryFactionType militaryFactionType1 = getMilitaryFactionType();
         if (isInAMilitaryFaction()) {
             factionsComps.add(Component.text()
-                    .append(militaryFactionType1.getName())
-                    .append(Component.text(" : ", NamedTextColor.WHITE))
+                    .append(Component.text("Military faction: "))
                     .append(militaryFactionType1.getNameComponent())
                     .build());
         }
@@ -1034,5 +1034,13 @@ public abstract class Country implements Cloneable {
             c.addAll(getPuppets());
         }
         return c;
+    }
+
+    public boolean containsPlayer(CPlayer player){
+        return players.contains(player);
+    }
+
+    public CountryChat getCountryChat(){
+        return countryChat;
     }
 }
