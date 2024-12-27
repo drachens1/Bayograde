@@ -53,6 +53,7 @@ import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.inventoryManager;
@@ -152,19 +153,59 @@ public class CentralEventManager {
             Country attacker = e.getAggressor();
             attacker.addModifier(e.getWarJustification().getModifier());
             attacker.removeCompletedWarJustification(defender.getName());
-            attacker.addWar(defender);
-            defender.addWar(attacker);
+            List<Component> warsWith = new ArrayList<>();
+            if (attacker.hasPuppets()){
+                attacker.getPuppets().forEach(country -> {
+                    warsWith.add(country.getNameComponent());
+                    warsWith.add(Component.text(","));
+                    country.addCountryWar(defender);
+                });
+                warsWith.removeLast();
+            }else if (attacker.hasOverlord()){
+                attacker.getOverlord().getPuppets().forEach(country -> {
+                    warsWith.add(country.getNameComponent());
+                    warsWith.add(Component.text(","));
+                    country.addCountryWar(defender);
+                });
+                attacker.getOverlord().addCountryWar(defender);
+                warsWith.add(attacker.getOverlord().getNameComponent());
+            }else {
+                attacker.addCountryWar(defender);
+                warsWith.add(attacker.getNameComponent());
+            }
+
+            List<Component> warsAgainst = new ArrayList<>();
+            if (defender.hasPuppets()){
+                defender.getPuppets().forEach(country -> {
+                    warsAgainst.add(country.getNameComponent());
+                    warsAgainst.add(Component.text(","));
+                    country.addCountryWar(attacker);
+                });
+                warsAgainst.removeLast();
+            }else if (defender.hasOverlord()){
+                defender.getOverlord().getPuppets().forEach(country -> {
+                    warsAgainst.add(country.getNameComponent());
+                    warsAgainst.add(Component.text(","));
+                    country.addCountryWar(attacker);
+                });
+                defender.getOverlord().addCountryWar(attacker);
+                warsAgainst.add(defender.getOverlord().getNameComponent());
+            }else {
+                defender.addCountryWar(attacker);
+                warsAgainst.add(defender.getNameComponent());
+            }
+
             broadcast(Component.text()
                     .append(MessageEnum.system.getComponent())
-                    .append(attacker.getNameComponent())
+                    .append(warsAgainst)
                     .append(Component.text(" started a war with ", NamedTextColor.RED))
-                    .append(defender.getNameComponent())
+                    .append(warsWith)
                     .build(),e.getInstance());
         });
 
         globEHandler.addListener(EndWarEvent.class, e -> {
-            Country defender = e.getDefender();
-            Country attacker = e.getAggressor();
+            Country defender = e.getFrom();
+            Country attacker = e.getTo();
             attacker.removeWar(defender);
             defender.removeWar(attacker);
         });
@@ -174,6 +215,17 @@ public class CentralEventManager {
             Country attacker = e.getTo();
             attacker.removeWar(defender);
             defender.removeWar(attacker);
+            if (attacker.hasOverlord()){
+                attacker=attacker.getOverlord();
+            }
+            if (attacker.hasPuppets()){
+                Country finalAttacker1 = attacker;
+                attacker.getPuppets().forEach(country -> {
+                    if (country.occupiesCoresFrom(defender)){
+                        new ArrayList<>(country.getOthersCores(defender)).forEach(province -> province.liberate(finalAttacker1));
+                    }
+                });
+            }
             defender.capitulate(attacker);
             broadcast(Component.text()
                     .append(MessageEnum.country.getComponent())
@@ -212,7 +264,7 @@ public class CentralEventManager {
             broadcast(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(Component.text(defender.getPlayerLeader().getUsername()))
-                    .append(Component.text(" has decided to unconditionally surrender to "))
+                    .append(Component.text(" has decided to unconditionally surrender to ", NamedTextColor.RED))
                     .append(attacker.getNameComponent())
                     .build(),defender.getInstance());
         });
@@ -418,23 +470,23 @@ public class CentralEventManager {
                     .append(Component.text()
                             .append(Component.text("[Accept]", NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to accept the demands", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand "+ from.getName() +" accept")))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" accept")))
                     .append(Component.text()
                             .append(Component.text(" [Refuse]", NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy demand "+ from.getName() +" refuse")))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" refuse")))
                     .appendNewline()
                     .append(Component.text("View: ", NamedTextColor.GREEN, TextDecoration.UNDERLINED, TextDecoration.BOLD))
                     .appendNewline()
                     .append(Component.text()
                             .append(Component.text(" [On]", NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming view "+ from.getName() +" off"))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" view on"))
                             .build())
                     .append(Component.text()
                             .append(Component.text(" [Off]", NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming view "+ from.getName() +"off"))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" view off"))
                             .build())
                     .build());
         });
@@ -495,6 +547,8 @@ public class CentralEventManager {
 
         //todo a naval invasion system
 
+        //todo factions overhaul: redo the cmds so they all work
+
         globEHandler.addListener(WarJustificationCompletionEvent.class, e->{ //Not cancelable
             Country against = e.getAgainst();
             Country from = e.getFrom();
@@ -549,7 +603,7 @@ public class CentralEventManager {
                         .append(country.getNameComponent())
                         .build(),country.getInstance());
                 if (Objects.equals(e.getType(), "puppet")) {
-                    target.setOverlord(country);
+                    target.puppet(country);
                     country.addPuppet(target);
                 }
                 return;

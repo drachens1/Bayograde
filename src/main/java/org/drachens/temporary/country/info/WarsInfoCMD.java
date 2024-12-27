@@ -50,9 +50,9 @@ public class WarsInfoCMD extends Command {
                 .append(country.getNameComponent())
                 .append(Component.text("\\______",NamedTextColor.BLUE))
                 .build());
-        country.getWars().forEach(country1 -> {
+        country.getCountryWars().forEach(war -> {
             comps.add(Component.newline());
-            comps.add(country1.getNameComponent());
+            comps.add(ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(war).getNameComponent());
         });
         if (!country.getWarJustifications().isEmpty()){
             comps.add(Component.newline());

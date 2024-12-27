@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.Economics;
 
 import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
@@ -127,6 +128,7 @@ public abstract class Vault {
 
         buildings.forEach(building -> {
             Payments payments = factory.generate(building);
+            payments.multiply(country.getBoost(BoostEnum.production));
             if (overlord) {
                 Payments toCountry2 = new Payments(payments);
                 toCountry2.multiply(0.8f);
@@ -180,6 +182,10 @@ public abstract class Vault {
         currencies.addAll(amount.values());
         currencies.addAll(getCustomCurrencies());
         return currencies;
+    }
+
+    public float getAmount(CurrencyTypes currencyTypes){
+        return amount.get(currencyTypes).getAmount();
     }
 
     protected abstract List<Currencies> getCustomCurrencies();

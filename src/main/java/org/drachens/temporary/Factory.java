@@ -49,7 +49,7 @@ public class Factory extends BuildTypes {
 
     public Factory() {
         super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory);
-        produces = new Payments(new Payment(CurrencyEnum.production, 20000f));
+        produces = new Payments(new Payment(CurrencyEnum.production, 1000f));
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);
         materialLvls.put(Material.LIME_GLAZED_TERRACOTTA, 3);
@@ -69,7 +69,7 @@ public class Factory extends BuildTypes {
 
     @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
-        if (province.getOccupier() != country) return false;
+        if (province.getOccupier() != country&&country.isPuppet(province.getOccupier())) return false;
         if (province.getBuilding() != null) return false;
         if (!province.isCity()) return false;
         if (!country.canMinusCosts(payments)) {
@@ -87,7 +87,7 @@ public class Factory extends BuildTypes {
         Payments temp = new Payments(payments);
         temp.multiply(add);
         if (!country.canMinusCosts(temp)) {
-            sendMessage(p,cantAffordMsg);
+            sendMessage(p,cantAffordToUpgrade);
             return false;
         }
         int maxLvl = materialLvls.get(province.getMaterial());
@@ -140,7 +140,7 @@ public class Factory extends BuildTypes {
                     .setLineWidth(40)
                     .withOffset()
                     .build();
-            building.getCountry().addTextDisplay(textDisplay);
+            building.getCountry().addANotSavedTextDisplay(textDisplay);
             scheduler.buildTask(() -> {
                 textDisplay.moveNoRotation(new Pos(0, 4, 0), 40, true);
                 textDisplay.destroy(3995L);

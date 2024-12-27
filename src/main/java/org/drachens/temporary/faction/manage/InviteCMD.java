@@ -11,8 +11,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.events.factions.FactionInviteEvent;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 
 public class InviteCMD extends Command {
     public InviteCMD() {
@@ -35,12 +34,7 @@ public class InviteCMD extends Command {
                     }
                 });
 
-        var countryArg = ArgumentType.String("countryName")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
-                        getSuggestionBasedOnInput(suggestion, getCountryNames(player.getInstance()));
-                    }
-                });
+        var countryArg = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
         }, factionsArg);

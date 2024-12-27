@@ -37,7 +37,7 @@ public class JustifyAgainstCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country.isFriend(against)){
+            if (country.cantStartAWarWith(against)){
                 p.sendMessage("You cant justify on yourself/ally/puppet/non-aggression pact");
                 return;
             }

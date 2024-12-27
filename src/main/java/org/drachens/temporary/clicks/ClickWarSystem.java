@@ -28,22 +28,22 @@ public class ClickWarSystem implements War {
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
     };
 
-    private boolean AdjacentBlocks(@NotNull Pos position, Country country, Instance instance) {
+    private Province AdjacentBlocks(@NotNull Pos position, Country country, Instance instance) {
         int adjacentCount = 0;
 
         for (int[] direction : directions) {
             int offsetX = direction[0];
             int offsetY = direction[1];
 
-            Pos neighborLocation = position.add(offsetX, 0, offsetY);
-            if (ContinentalManagers.world(instance).provinceManager().getProvince(neighborLocation).getOccupier() == country) {
+            Province province = ContinentalManagers.world(instance).provinceManager().getProvince(position.add(offsetX, 0, offsetY));
+            if (province.getOccupier()!=null && country.isMilitaryFriend(province.getOccupier())) {
                 adjacentCount++;
                 if (adjacentCount >= 3) {
-                    return true;
+                    return province;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -66,8 +66,9 @@ public class ClickWarSystem implements War {
             p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;
         }
-        if (!AdjacentBlocks(province.getPos(), country, instance)) return;
+        Province atkFrom = AdjacentBlocks(province.getPos(), country, instance);
+        if (atkFrom==null) return;
         country.removePayment(payment);
-        province.capture(country);
+        province.capture(atkFrom.getOccupier());
     }
 }

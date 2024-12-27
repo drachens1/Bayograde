@@ -308,6 +308,7 @@ public class MapGeneratorManager extends MapGen {
                 visited.add(seedPos);
                 landHashmap.remove(seedPos);
                 countries.get(i).setCapital(seedProvince);
+                countries.get(i).addMajorCity(seedProvince,Material.EMERALD_BLOCK);
                 BuildingEnum.factory.getBuildTypes().forceBuild(countries.get(i),seedProvince,null);
             }
         }
@@ -485,6 +486,8 @@ public class MapGeneratorManager extends MapGen {
 
     private Country setSuperPower(List<Country> countries) {
         Country biggest = countries.getFirst();
+        biggest.removeModifier(ModifiersEnum.ww2_minor.getModifier());
+        biggest.removeModifier(ModifiersEnum.ww2_major.getModifier());
         for (Country country : countries) {
             if (country.getOccupies().size() > biggest.getOccupies().size()) biggest = country;
         }
@@ -606,18 +609,20 @@ public class MapGeneratorManager extends MapGen {
             int z = country.getCapital().getPos().blockZ();
             Ideology ideology = country.getIdeology();
             Election election = country.getElections();
+            float distance = (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2);
+            if (distance<=0)distance=1f;
             if (x > 0) {
-                ideology.addIdeology(north.getLeadingIdeology(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
+                ideology.addIdeology(north.getLeadingIdeology(), new Random().nextFloat(0f, distance));
                 north.addCountry(country);
             } else {
-                ideology.addIdeology(south.getLeadingIdeology(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
+                ideology.addIdeology(south.getLeadingIdeology(), new Random().nextFloat(0f, distance));
                 south.addCountry(country);
             }
             if (z > 0) {
-                election.addElection(east.getLeadingElectionType(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
+                election.addElection(east.getLeadingElectionType(), new Random().nextFloat(0f, distance));
                 east.addCountry(country);
             } else {
-                election.addElection(west.getLeadingElectionType(), new Random().nextFloat(0f, (float) Math.abs(country.getCapital().getPos().distance(spawn) * 2)));
+                election.addElection(west.getLeadingElectionType(), new Random().nextFloat(0f, distance));
                 west.addCountry(country);
             }
         }

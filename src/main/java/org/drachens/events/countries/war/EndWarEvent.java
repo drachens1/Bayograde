@@ -4,20 +4,20 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.interfaces.Event;
 
 public class EndWarEvent extends Event {
-    private final Country aggressor;
-    private final Country defender;
+    private final Country from;
+    private final Country to;
 
-    public EndWarEvent(Country aggressor, Country occupier) {
-        super(occupier.getInstance());
-        this.aggressor = aggressor;
-        this.defender = occupier;
+    public EndWarEvent(Country from, Country to) {
+        super(from.getInstance());
+        this.from=from;
+        this.to=to;
     }
 
-    public Country getAggressor() {
-        return aggressor;
+    public Country getFrom(){
+        return from;
     }
 
-    public Country getDefender() {
-        return defender;
+    public Country getTo(){
+        return to;
     }
 }

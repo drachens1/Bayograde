@@ -42,7 +42,6 @@ import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
-import org.drachens.events.countries.war.EndWarEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
 import org.drachens.interfaces.MapGen;
@@ -62,7 +61,7 @@ public abstract class Country implements Cloneable {
     private final Vault vault;
     private final List<Material> city = new ArrayList<>();
     private final HashMap<BuildingEnum, List<Building>> buildTypesListHashMap = new HashMap<>();
-    private final List<Country> wars = new ArrayList<>();
+    private final HashSet<String> countryWars = new HashSet<>();
     private final Ideology ideology;
     private final Election elections;
     private final List<Modifier> modifiers = new ArrayList<>();
@@ -128,7 +127,6 @@ public abstract class Country implements Cloneable {
         warsWorld=new ImaginaryWorld(instance,true);
         allyWorld=new ImaginaryWorld(instance,true);
         stability=new Stability(50f, this);
-
     }
 
     public void init(){
@@ -231,9 +229,9 @@ public abstract class Country implements Cloneable {
         this.cities.remove(city);
     }
 
-    public void dontRemovePoints(Province city){
-        this.maxCapitulationPoints-=this.city.indexOf(city.getMaterial());
-        this.cities.remove(city);
+    public void removeCityWithoutHarm(Province province){
+        this.maxCapitulationPoints-=city.indexOf(province.getMaterial());
+        this.cities.remove(province);
     }
 
     public List<Province> getOccupies() {
@@ -359,7 +357,13 @@ public abstract class Country implements Cloneable {
         removeCity(capturedCity);
         if (!capitulated) {
             if (capital == capturedCity) {
-                broadcast(Component.text().append(MessageEnum.country.getComponent(), Component.text(attacker.name + " has seized the " + name + " capital", NamedTextColor.RED)).build(), capital.getInstance());
+                broadcast(Component.text()
+                        .append(MessageEnum.country.getComponent())
+                        .append(attacker.getNameComponent())
+                        .append(Component.text(" has seized the ", NamedTextColor.RED))
+                        .append(nameComponent)
+                        .append(Component.text(" capital",NamedTextColor.RED))
+                        .build(), capital.getInstance());
             }
         }
         float capPercentage = bound(0.5f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
@@ -384,7 +388,9 @@ public abstract class Country implements Cloneable {
         for (Province p : new ArrayList<>(this.occupies)) {
             p.capture(attacker);
         }
-        new ArrayList<>(wars).forEach(aggressor -> EventDispatcher.call(new EndWarEvent(aggressor, this)));
+        if (hasPuppets()){
+            puppets.forEach(puppet -> EventDispatcher.call(new CapitulationEvent(puppet, attacker)));
+        }
     }
 
     public void addPayment(Payment payment, Component msg) {
@@ -426,6 +432,10 @@ public abstract class Country implements Cloneable {
         this.clientsides.add(textDisplay);
     }
 
+    public void addANotSavedTextDisplay(TextDisplay textDisplay) {
+        players.forEach(textDisplay::addViewer);
+    }
+
     public void removeTextDisplay(TextDisplay textDisplay) {
         players.forEach(textDisplay::removeViewer);
         this.clientsides.remove(textDisplay);
@@ -437,7 +447,7 @@ public abstract class Country implements Cloneable {
     }
 
     @Override
-    protected Object clone() {
+    protected Object clone() throws CloneNotSupportedException {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
@@ -445,30 +455,20 @@ public abstract class Country implements Cloneable {
         }
     }
 
-    public List<Country> getWars() {
-        return wars;
+    public List<String> getCountryWars() {
+        return countryWars.stream().toList();
     }
 
-    public List<String> getWarsString(){
-        List<String> s = new ArrayList<>();
-        wars.forEach(country -> s.add(country.name));
-        return s;
-    }
-
-    public void addWar(Country country) {
-        wars.add(country);
+    public void addCountryWar(Country country){
+        countryWars.add(country.getName());
         country.getOccupies().forEach(province -> warsWorld.removeGhostBlock(province.getPos()));
         addTextDisplay(country.getCapitulationTextBar().getTextDisplay());
     }
 
     public void removeWar(Country country) {
-        wars.remove(country);
+        countryWars.remove(country.getName());
         country.getOccupies().forEach(province -> warsWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE));
         removeTextDisplay(country.getCapitulationTextBar().getTextDisplay());
-    }
-
-    public Boolean atWar(Country country) {
-        return wars.contains(country);
     }
 
     public Component getPrefix() {
@@ -582,8 +582,23 @@ public abstract class Country implements Cloneable {
         return puppets;
     }
 
+    public boolean hasOverlord(){
+        return overlord!=null;
+    }
+
     public void addPuppet(Country country) {
-        puppets.add(country);
+        if (hasOverlord()){
+            country.setOverlord(overlord);
+            overlord.addPuppet(country);
+        }else {
+            puppets.add(country);
+            countryWars.forEach(country1->{
+                Country country2 = ContinentalManagers.world(instance).countryDataManager().getCountryFromName(country1);
+                country.addCountryWar(country2);
+                country2.addCountryWar(country);
+
+            });
+        }
     }
 
     public Country getOverlord() {
@@ -819,7 +834,7 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean isAtWar(Country country) {
-        return wars.contains(country);
+        return countryWars.contains(country.getName());
     }
 
     public Stability getStability() {
@@ -929,16 +944,19 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean canFight(Country country){
-        return !isFriend(country);
+        return !cantStartAWarWith(country);
     }
 
-    public boolean isFriend(Country country){
-        return isPuppet(country)||isAlly(country)||hasNonAggressionPact(country.getName())||country==this;
+    public boolean isMilitaryFriend(Country country){
+        return isPuppet(country)||isMilitaryAlly(country)||country==this||overlord==country;
+    }
 
+    public boolean cantStartAWarWith(Country country){
+        return isMilitaryFriend(country)||hasNonAggressionPact(country.getName())||isEconomicAlly(country);
     }
 
     public boolean isInAWar(){
-        return !wars.isEmpty();
+        return !countryWars.isEmpty();
     }
 
     public void addOthersCores(Country country, Province province){
@@ -983,5 +1001,38 @@ public abstract class Country implements Cloneable {
 
     public CompletionBarTextDisplay getCapitulationTextBar(){
         return capitulationTextBar;
+    }
+
+    public void puppet(Country overlord){
+        setOverlord(overlord);
+        setBlock(overlord.getBlock());
+        setBorder(overlord.getBorder());
+        occupies.forEach(province -> {
+            if (province.isBorder()){
+                province.setBorder();
+            }else if (!province.isCity()) {
+                province.setBlock();
+            }
+        });
+    }
+
+    public boolean hasPuppets(){
+        return !puppets.isEmpty();
+    }
+
+    public List<Country> getAllies(){//Does contain this class
+        List<Country> c = new ArrayList<>();
+        c.add(this);
+        if (isInAMilitaryFaction()){
+            c.addAll(militaryFactionType.getMembers());
+        }
+        if (overlord!=null){
+            c.addAll(overlord.getPuppets());
+            c.add(overlord);
+        }
+        if (hasPuppets()){
+            c.addAll(getPuppets());
+        }
+        return c;
     }
 }

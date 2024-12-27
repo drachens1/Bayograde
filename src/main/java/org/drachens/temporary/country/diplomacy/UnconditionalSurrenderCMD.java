@@ -20,7 +20,7 @@ public class UnconditionalSurrenderCMD extends Command {
                     if (!(sender instanceof CPlayer p)) {
                         return;
                     }
-                    getSuggestionBasedOnInput(suggestion, p.getCountry().getWarsString());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getCountryWars());
                 });
 
         setCondition((sender,s)->isLeaderOfCountry(sender));

@@ -55,6 +55,7 @@ public class Province implements Serializable {
     private Component secretDescription; //Higher lvls can see this like allys and the ppl in the occupiers country
     private boolean outdatedDescriptions = true;
     private final HashSet<Country> corers = new HashSet<>();
+    private boolean isBorder = false;
 
     public Province(Pos pos, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = pos;
@@ -294,7 +295,7 @@ public class Province implements Serializable {
         if (occupier != null) {
             occupier.removeOccupied(this);
             if (isCity())
-                this.occupier.removeCity(this);
+                this.occupier.removeCityWithoutHarm(this);
         }
         if (building != null) {
             building.capture(attacker);
@@ -357,10 +358,12 @@ public class Province implements Serializable {
     }
 
     public void setBlock() {
+        isBorder=false;
         setBlock(occupier.getBlock());
     }
 
     public void setBorder() {
+        isBorder=true;
         setBlock(occupier.getBorder());
     }
 
@@ -449,15 +452,11 @@ public class Province implements Serializable {
         corers.add(country);
     }
 
-    public void removeCore(Country country){
-        corers.remove(country);
-    }
-
-    public boolean hasCorer(Country country){
-        return corers.contains(country);
-    }
-
     public HashSet<Country> getCorers(){
         return corers;
+    }
+
+    public boolean isBorder(){
+        return isBorder&&!isCity();
     }
 }

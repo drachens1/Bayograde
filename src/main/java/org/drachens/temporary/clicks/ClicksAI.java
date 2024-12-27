@@ -4,6 +4,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.territories.Province;
@@ -41,17 +42,25 @@ public class ClicksAI implements AIManager {
         private final Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
         private final Country country;
         private final Random r = new Random();
+        private boolean canBuild;
 
         public FactorySpammer(Country country){
             this.country=country;
         }
 
         public void tick(){
-            buildFactory(new ArrayList<>(country.getCities()));
+            if (canBuild)return;
+            int count = (int) (country.getVault().getAmount(CurrencyEnum.production.getCurrencyType())/5f);
+            buildFactory(new ArrayList<>(country.getCities()),count);
         }
 
-        private void buildFactory(List<Province> cities){
-            if (cities.isEmpty())return;
+        private void buildFactory(List<Province> cities,int count){
+            if (cities.isEmpty()){
+                if (country.getVault().getAmount(CurrencyEnum.production.getCurrencyType())>10f){
+                    canBuild=true;
+                }
+                return;
+            }
             Province province = cities.get(r.nextInt(cities.size()));
             if (province.getBuilding()!=null){
                 if (factory.requirementsToUpgrade(province.getBuilding(),country,1,null)){
@@ -62,10 +71,13 @@ public class ClicksAI implements AIManager {
                     factory.forceBuild(country, province, null);
                 }else{
                     cities.remove(province);
-                    buildFactory(cities);
+                    buildFactory(cities,count);
                 }
             }
-
+            count--;
+            if (count>1){
+                buildFactory(cities,count);
+            }
         }
     }
 
