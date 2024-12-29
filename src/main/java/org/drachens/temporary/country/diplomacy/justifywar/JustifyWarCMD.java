@@ -7,7 +7,7 @@ import org.drachens.dataClasses.Countries.Country;
 
 public class JustifyWarCMD extends Command {
     public JustifyWarCMD() {
-        super("justify_war");
+        super("justify-war");
 
         setCondition((sender,s)->isLeaderOfCountry(sender));
 

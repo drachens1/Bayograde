@@ -7,7 +7,7 @@ import org.drachens.dataClasses.Countries.Country;
 
 public class NonAggressionCMD extends Command {
     public NonAggressionCMD() {
-        super("non_aggression_pact");
+        super("non-aggression-pact");
 
         setCondition((sender,s)->isLeaderOfCountry(sender));
         addSubcommand(new NonAggressionCreateCMD());

@@ -118,4 +118,5 @@ public abstract class YamlFileType {
     protected abstract void initialLoad();
 
     protected abstract void setDefaults();
+
 }

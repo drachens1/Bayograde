@@ -3,10 +3,12 @@ package org.drachens.dataClasses;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -19,12 +21,14 @@ public class Modifier implements Cloneable {
     private Modifier oldModifier;
     private final boolean display;
     private final HashMap<BoostEnum, Float> boostHashMap;
+    private final HashSet<ConditionEnum> conditionEnums;
 
     protected Modifier(create c) {
         this.justCompName = c.name;
         this.boostHashMap = c.boostHashMap;
         if (c.description != null) this.startDescription = c.description;
         display = c.display;
+        conditionEnums=c.conditionEnums;
         createDescription();
         oldModifier = this.clone();
     }
@@ -122,6 +126,18 @@ public class Modifier implements Cloneable {
         boostHashMap.put(boostEnum, current + amount);
     }
 
+    public HashSet<ConditionEnum> getConditionEnums(){
+        return conditionEnums;
+    }
+
+    public void addCondition(ConditionEnum conditionEnum){
+        conditionEnums.add(conditionEnum);
+    }
+
+    public void removeCondition(ConditionEnum conditionEnum){
+        conditionEnums.remove(conditionEnum);
+    }
+
     public Component getName() {
         return name;
     }
@@ -169,6 +185,7 @@ public class Modifier implements Cloneable {
     public static class create {
         private final Component name;
         private Component description;
+        private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
         private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
         private boolean display = true;
 
@@ -183,6 +200,11 @@ public class Modifier implements Cloneable {
 
         public create addBoost(BoostEnum boostEnum, float amount) {
             boostHashMap.put(boostEnum, amount);
+            return this;
+        }
+
+        public create addCondition(ConditionEnum conditionEnum){
+            conditionEnums.add(conditionEnum);
             return this;
         }
 

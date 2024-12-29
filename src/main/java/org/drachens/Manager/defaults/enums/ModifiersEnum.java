@@ -65,9 +65,18 @@ public enum ModifiersEnum {
             .build()),
     ww2_liberalist(new Modifier.create(Component.text("Liberalist", TextColor.color(51, 253, 255)))
             .build()),
+
     ww2_capitalist(new Modifier.create(Component.text("Capitalist", TextColor.color(0, 153, 0)))
             .addBoost(BoostEnum.stabilityBase, -10f)
             .addBoost(BoostEnum.production, 0.5f)
+            .build()),
+
+    ww2_neutral(new Modifier.create(Component.text("Nuetrality",NamedTextColor.GRAY))
+            .addBoost(BoostEnum.capitulation,0.3f)
+            .addBoost(BoostEnum.stabilityBase,10f)
+            .addBoost(BoostEnum.production,0.2f)
+            .addCondition(ConditionEnum.cant_join_faction)
+            .addCondition(ConditionEnum.cant_start_a_war)
             .build());
 
     private final Modifier modifier;

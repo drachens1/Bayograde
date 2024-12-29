@@ -7,6 +7,7 @@ import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.inventories.HotbarInventory;
 import org.drachens.interfaces.inventories.HotbarItemButton;
 import org.drachens.temporary.demand.*;
+import org.drachens.temporary.invasions.NavalInvasionClicksItem;
 import org.drachens.temporary.inventories.ExitItem;
 import org.drachens.temporary.scoreboards.items.ShowDiplomacy;
 import org.drachens.temporary.scoreboards.items.ShowEconomy;
@@ -27,7 +28,8 @@ public enum InventoryEnum {
 
     defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10), BuildingEnum.factory),
             new ChangeInventoryButton(0, itemBuilder(Material.BOOK),
-                    InventoryEnum.scoreboardInv), new ChangeInventoryButton(1, itemBuilder(Material.BROWN_DYE), InventoryEnum.research)})),
+                    InventoryEnum.scoreboardInv), new ChangeInventoryButton(1, itemBuilder(Material.BROWN_DYE), InventoryEnum.research),
+            new NavalInvasionClicksItem()})),
 
     troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10), BuildingEnum.factory),
             new TroopMover(), new ChangeInventoryButton(0, itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),

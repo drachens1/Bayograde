@@ -2,6 +2,7 @@ package org.drachens.dataClasses.Diplomacy.faction;
 
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.interfaces.Channel;
@@ -22,6 +23,9 @@ public class FactionChat implements Channel {
                     .append(Component.text(": "))
                     .append(Component.text(e.getMessage()))
                     .build());
+        }else {
+            p.sendMessage(Component.text("You no longer have access to this chat", NamedTextColor.RED));
+            removePlayer(p);
         }
     }
 

@@ -14,7 +14,7 @@ import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCoun
 
 public class DeclareWarCMD extends Command {
     public DeclareWarCMD() {
-        super("declare_war");
+        super("declare-war");
         var countries = getCountriesArgExcludingPlayersCountry();
         setDefaultExecutor((sender,context)->{
             if (!isLeaderOfCountry(sender))return;

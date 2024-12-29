@@ -21,6 +21,7 @@ import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
+import org.drachens.dataClasses.Diplomacy.PuppetChat;
 import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
@@ -105,11 +106,15 @@ public abstract class Country implements Cloneable {
     private final HashSet<Province> cores = new HashSet<>();
     private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
     private final CountryChat countryChat;
+    private final Component originalName;
+    private PuppetChat puppetChat;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
         this.occupies = new ArrayList<>();
+        this.ideology = defaultIdeologies.clone(this);
         this.vault = vault;
         vault.setCountry(this);
+        this.originalName=nameComponent;
         this.nameComponent = nameComponent;
         this.name = name;
         this.setPrefix(Component.text(name, NamedTextColor.BLUE));
@@ -117,7 +122,6 @@ public abstract class Country implements Cloneable {
         this.border = border;
         this.players = new ArrayList<>();
         this.cities = new ArrayList<>();
-        this.ideology = defaultIdeologies.clone(this);
         this.elections = election;
         Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
                 Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
@@ -428,21 +432,25 @@ public abstract class Country implements Cloneable {
         getVault().minusThenLoan(payment, from);
     }
 
+    public void addClientside(Clientside clientside){
+        clientsides.add(clientside);
+        players.forEach(clientside::addViewer);
+        if (hasOverlord()){
+            getOverlord().addClientside(clientside);
+        }
+    }
 
-    public void addTextDisplay(TextDisplay textDisplay) {
-        players.forEach(textDisplay::addViewer);
-        this.clientsides.add(textDisplay);
+    public void removeClientside(Clientside clientside){
+        clientsides.remove(clientside);
+        players.forEach(clientside::removeViewer);
+        if (hasOverlord()){
+            getOverlord().removeClientside(clientside);
+        }
     }
 
     public void addANotSavedTextDisplay(TextDisplay textDisplay) {
         players.forEach(textDisplay::addViewer);
     }
-
-    public void removeTextDisplay(TextDisplay textDisplay) {
-        players.forEach(textDisplay::removeViewer);
-        this.clientsides.remove(textDisplay);
-    }
-
 
     public Ideology getIdeology() {
         return ideology;
@@ -464,13 +472,14 @@ public abstract class Country implements Cloneable {
     public void addCountryWar(Country country){
         countryWars.add(country.getName());
         country.getOccupies().forEach(province -> warsWorld.removeGhostBlock(province.getPos()));
-        addTextDisplay(country.getCapitulationTextBar().getTextDisplay());
+        addClientside(country.getCapitulationTextBar().getTextDisplay());
     }
 
     public void removeWar(Country country) {
         countryWars.remove(country.getName());
         country.getOccupies().forEach(province -> warsWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE));
-        removeTextDisplay(country.getCapitulationTextBar().getTextDisplay());
+        removeClientside(country.getCapitulationTextBar().getTextDisplay());
+        if (!isInAWar())removeClientside(capitulationTextBar.getTextDisplay());
     }
 
     public Component getPrefix() {
@@ -538,6 +547,36 @@ public abstract class Country implements Cloneable {
                     .build());
         }
 
+        List<Component> extraInfo = new ArrayList<>();
+        if (hasPuppets()){
+            extraInfo.add(Component.text("Puppets: "));
+            int i = 0;
+            boolean c = true;
+            for (Country country : getPuppets()){
+                if (i>2){
+                    c=false;
+                    extraInfo.removeLast();
+                    extraInfo.add(Component.text()
+                            .append(Component.text(" [CLICK]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click show the list of all the puppets", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country info puppets"))
+                            .build());
+                    break;
+                }
+                extraInfo.add(country.getNameComponent());
+                extraInfo.add(Component.text(", "));
+                i++;
+            }
+            if (c)
+                extraInfo.removeLast();
+        }else if (hasOverlord()){
+            extraInfo.add(Component.text()
+                    .append(Component.text("Overlord: "))
+                    .append(getOverlord().getNameComponent())
+                    .build());
+        }
+
+        if (getLeader()==null)return;
         this.description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text(getName(), NamedTextColor.GOLD))
@@ -556,6 +595,8 @@ public abstract class Country implements Cloneable {
                 .append(leaderComp)
                 .append(factionsComps)
                 .appendNewline()
+                .append(extraInfo)
+                .appendNewline()
                 .append(Component.text()
                         .append(Component.text("[JOIN]", NamedTextColor.GOLD))
                         .clickEvent(ClickEvent.runCommand("/country join " + getName()))
@@ -564,7 +605,7 @@ public abstract class Country implements Cloneable {
                 .build();
 
         this.nameComponent = Component.text()
-                .append(Component.text(name, NamedTextColor.GOLD, TextDecoration.BOLD))
+                .append(originalName)
                 .clickEvent(ClickEvent.runCommand("/country info general " + getName()))
                 .hoverEvent(description)
                 .build();
@@ -591,14 +632,31 @@ public abstract class Country implements Cloneable {
             country.setOverlord(overlord);
             overlord.addPuppet(country);
         }else {
+            if (puppets.isEmpty()){
+                puppetChat = new PuppetChat(this);
+            }
+            createInfo();
             puppets.add(country);
             countryWars.forEach(country1->{
                 Country country2 = ContinentalManagers.world(instance).countryDataManager().getCountryFromName(country1);
                 country.addCountryWar(country2);
                 country2.addCountryWar(country);
-
             });
+            country.getClientsides().forEach(this::addClientside);
         }
+    }
+
+    public void removePuppet(Country country){
+        puppets.remove(country);
+        country.getClientsides().forEach(clientside -> players.forEach(clientside::removeViewer));
+        if (puppets.isEmpty()){
+            puppetChat = null;
+        }
+        createInfo();
+    }
+
+    public List<Clientside> getClientsides(){
+        return clientsides;
     }
 
     public Country getOverlord() {
@@ -1004,6 +1062,11 @@ public abstract class Country implements Cloneable {
     }
 
     public void puppet(Country overlord){
+        if (hasOverlord()){
+            getOverlord().removePuppet(this);
+        }else {
+            createInfo();
+        }
         setOverlord(overlord);
         setBlock(overlord.getBlock());
         setBorder(overlord.getBorder());
@@ -1020,27 +1083,15 @@ public abstract class Country implements Cloneable {
         return !puppets.isEmpty();
     }
 
-    public List<Country> getAllies(){//Does contain this class
-        List<Country> c = new ArrayList<>();
-        c.add(this);
-        if (isInAMilitaryFaction()){
-            c.addAll(militaryFactionType.getMembers());
-        }
-        if (overlord!=null){
-            c.addAll(overlord.getPuppets());
-            c.add(overlord);
-        }
-        if (hasPuppets()){
-            c.addAll(getPuppets());
-        }
-        return c;
-    }
-
     public boolean containsPlayer(CPlayer player){
         return players.contains(player);
     }
 
     public CountryChat getCountryChat(){
         return countryChat;
+    }
+
+    public PuppetChat getPuppetChat(){
+        return puppetChat;
     }
 }

@@ -14,7 +14,7 @@ import static org.drachens.util.CommandsUtil.getCountriesArg;
 
 public class PuppetsCMD extends Command {
     public PuppetsCMD() {
-        super("puppet");
+        super("puppets");
 
         var countries = getCountriesArg();
 
@@ -30,7 +30,7 @@ public class PuppetsCMD extends Command {
             target.getPuppets().forEach(country -> comps.add(Component.text().append(Component.text(" - ")).append(country.getNameComponent()).appendNewline().build()));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(Component.text(getName(), NamedTextColor.GOLD))
+                    .append(Component.text("Puppets", NamedTextColor.GOLD))
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
                     .append(comps)
@@ -49,7 +49,7 @@ public class PuppetsCMD extends Command {
             target.getPuppets().forEach(country -> comps.add(Component.text().append(Component.text(" - ")).append(country.getNameComponent()).appendNewline().build()));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(Component.text(getName(), NamedTextColor.GOLD))
+                    .append(Component.text("Puppets", NamedTextColor.GOLD))
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
                             .append(comps)

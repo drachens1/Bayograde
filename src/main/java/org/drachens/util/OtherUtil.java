@@ -1,6 +1,12 @@
 package org.drachens.util;
 
+import net.minestom.server.coordinate.Pos;
+
 public class OtherUtil {
+    public static String posToString(Pos pos){
+        return pos.x()+", "+pos.y();
+    }
+
     public static float[] yawToQuat(double yaw) {
         float rad = (float) Math.toRadians(yaw);
         float half = rad / 2;

@@ -30,7 +30,7 @@ public class JustifyAgainstCMD extends Command {
 
         HashSet<String> stuff = new HashSet<>(opts);
 
-        addSyntax((sender,context)-> sender.sendMessage("Proper usage /country diplomacy justify_war against <country> <type>"),option);
+        addSyntax((sender,context)-> sender.sendMessage("Proper usage /country diplomacy justify-war against <country> <type>"),option);
 
         addSyntax((sender,context)->{
             if (!isLeaderOfCountry(sender))return;

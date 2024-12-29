@@ -197,9 +197,9 @@ public class CentralEventManager {
 
             broadcast(Component.text()
                     .append(MessageEnum.system.getComponent())
-                    .append(warsAgainst)
-                    .append(Component.text(" started a war with ", NamedTextColor.RED))
                     .append(warsWith)
+                    .append(Component.text(" started a war with ", NamedTextColor.RED))
+                    .append(warsAgainst)
                     .build(),e.getInstance());
         });
 
@@ -566,7 +566,7 @@ public class CentralEventManager {
                     .append(Component.text()
                             .append(Component.text("[DECLARE WAR]", NamedTextColor.GOLD,TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war on "+against.getName(), NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy declare_war " + against.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy declare-war " + against.getName()))
                     )
                     .build());
         });

@@ -56,7 +56,7 @@ public class JustifyOptionsCMD extends Command {
                                                     .appendNewline()
                                                     .append(Component.text("Click to start justifying",NamedTextColor.GRAY, TextDecoration.ITALIC)))
                                             .build()))
-                                    .clickEvent(ClickEvent.runCommand("/country diplomacy justify_war against surprise " + country.getName()))
+                                    .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against surprise " + country.getName()))
                                     .build())
                     .append(Component.text()
                             .append(Component.text("Partially Justified ", TextColor.color(255,125,0)))
@@ -69,7 +69,7 @@ public class JustifyOptionsCMD extends Command {
                                             .appendNewline()
                                             .append(Component.text("Click to start justifying",NamedTextColor.GRAY, TextDecoration.ITALIC)))
                                     .build()))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify_war against partially_justified " + country.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against partially_justified " + country.getName()))
                             .build())
                     .append(Component.text()
                             .append(Component.text("Justified ", TextColor.color(0,255,0)))
@@ -82,7 +82,7 @@ public class JustifyOptionsCMD extends Command {
                                             .appendNewline()
                                             .append(Component.text("Click to start justifying",NamedTextColor.GRAY, TextDecoration.ITALIC)))
                                     .build()))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify_war against justified " + country.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against justified " + country.getName()))
                             .build())
                     .build());
         },countries);

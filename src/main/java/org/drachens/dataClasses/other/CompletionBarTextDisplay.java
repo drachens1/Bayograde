@@ -5,6 +5,8 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 
+import java.util.ArrayList;
+
 public class CompletionBarTextDisplay  {
     private final TextDisplay textDisplay;
     private float progress = 1f;
@@ -25,7 +27,9 @@ public class CompletionBarTextDisplay  {
 
     public void setProgress(float progress){
         if (progress>1f)progress=1f;
-        if (progress<0f)progress=0f;
+        if (progress<0f) {
+            return;
+        }
         this.progress=progress;
         int end = Math.round(fullBar.length()*progress);
         String bar = fullBar.substring(0,end);
@@ -34,6 +38,10 @@ public class CompletionBarTextDisplay  {
                 .append(Component.text(bar,colour))
                         .append(Component.text(second,TextColor.color(0,0,0)))
                 .build());
+    }
+
+    public void hide(){
+        new ArrayList<>(textDisplay.getViewers()).forEach(textDisplay::removeViewer);
     }
 
     public void addProgress(float amount){

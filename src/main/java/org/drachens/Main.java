@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -14,6 +15,7 @@ import org.drachens.Manager.defaults.enums.*;
 import org.drachens.advancement.Advancement;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.advancement.AdvancementSection;
+import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.ComponentListBuilder;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
@@ -136,6 +138,8 @@ public class Main {
 
     public static void completeStartup() {
         initSrv();
+        MinecraftServer.getCommandManager().register(new ConfirmCMD());
+
         createWW2VotingOption();
 
         BuildingEnum.university.setBuildType(new ResearchUniversity());
@@ -243,7 +247,7 @@ public class Main {
         VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
-                .setCountries(90)
+                .setCountries(31)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
@@ -481,7 +485,7 @@ public class Main {
         VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
-                .setCountries(90)
+                .setCountries(31)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
@@ -504,4 +508,5 @@ public class Main {
     public static void initHooks() {
         NG5M.hook();
     }
+
 }

@@ -52,7 +52,7 @@ public class DiplomacyViewOptionsCMD extends Command {
                             .append(Component.text(" [DECLARE WAR] ",NamedTextColor.GOLD, TextDecoration.BOLD))
                             .append(Component.text("expires "+warJustification.getExpires(),NamedTextColor.GRAY,TextDecoration.ITALIC))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy declare_war " + against.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy declare-war " + against.getName()))
                             .build());
                 }else if (country.getCreatingWarJustificationAgainst(against.getName())!=null){
                     WarJustification warJustification = country.getCreatingWarJustificationAgainst(against.getName());
@@ -61,20 +61,20 @@ public class DiplomacyViewOptionsCMD extends Command {
                             .append(Component.text(warJustification.getTimeLeft()))
                             .append(Component.text("] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to cancel the justification", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify_war cancel " + against.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war cancel " + against.getName()))
                             .build());
                 }else {
                     comps.add(Component.text()
                             .append(Component.text(" [JUSTIFY WAR] ",NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the justification options", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify_war options " + against.getName()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war options " + against.getName()))
                             .build());
                 }
                 comps.add(Component.newline());
                 comps.add(Component.text()
                         .append(Component.text(" [NON-AGGRESSION-PACT] ",NamedTextColor.GOLD,TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to send this player a non aggression pact offer", NamedTextColor.GRAY)))
-                        .clickEvent(ClickEvent.runCommand("/country diplomacy non_aggression_pact create " + against.getName()))
+                        .clickEvent(ClickEvent.runCommand("/country diplomacy non-aggression-pact create " + against.getName()))
                         .build());
                 comps.add(Component.newline());
             }

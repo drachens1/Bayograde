@@ -12,7 +12,7 @@ public class Leader {
     private Component description;
     private IdeologyTypes ideologyTypes;
 
-    private Leader(create leaderBuilder) {
+    public Leader(create leaderBuilder) {
         name = leaderBuilder.name;
         if (leaderBuilder.description != null) description = leaderBuilder.description;
         modifiers = leaderBuilder.modifier;

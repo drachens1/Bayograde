@@ -51,9 +51,6 @@ public class Province implements Serializable {
     private Material material;
     private boolean city;
     private List<Province> neighbours;
-    private Component description;
-    private Component secretDescription; //Higher lvls can see this like allys and the ppl in the occupiers country
-    private boolean outdatedDescriptions = true;
     private final HashSet<Country> corers = new HashSet<>();
     private boolean isBorder = false;
 
@@ -95,13 +92,9 @@ public class Province implements Serializable {
 
     public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
-        if (outdatedDescriptions) {
-            description = createPublicDescription();
-            secretDescription = createSecretDescription();
-        }
         if (country != null && (country == occupier || country.isAlly(occupier))) {
             if (country.isPlayerLeader(p)){
-                return secretDescription.append(Component.text()
+                return createSecretDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
@@ -109,16 +102,16 @@ public class Province implements Serializable {
             }
 
         }
-        if (country != null){
+        else if (country != null){
             if (country.isPlayerLeader(p)){
-                return secretDescription.append(Component.text()
+                return createPublicDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
                         .build());
             }
         }
-        return description;
+        return createPublicDescription();
     }
 
     private Component createPublicDescription() {
@@ -260,38 +253,35 @@ public class Province implements Serializable {
     }
 
     public void setOccupier(Country attacker) {
-        outdatedDescriptions = true;
         if (occupier != null) {
             occupier.removeOccupied(this);
             if (isCity())
                 this.occupier.cityCaptured(attacker, this);
         }
-        if (building != null) {
-            building.capture(attacker);
-        }
         if (!corers.isEmpty()){
             corers.forEach(country -> {
-                if (country==attacker)return;
                 attacker.addOthersCores(country,this);
                 if (country!=occupier){
                     occupier.removeOthersCores(country,this);
                 }
             });
         }
-        this.occupier = attacker;
-        occupier.captureProvince(this);
+        attacker.captureProvince(this);
         if (isCity()) {
             if (attacker.isMajorCity(this))
                 this.setCity(attacker.getMajorCity(this));
             else
                 setCity(1);
-            occupier.addCity(this);
+            attacker.addCity(this);
         }
+        if (building != null) {
+            building.capture(attacker);
+        }
+        this.occupier = attacker;
         updateBorders();
     }
 
     public void liberate(Country attacker){
-        outdatedDescriptions = true;
         if (occupier != null) {
             occupier.removeOccupied(this);
             if (isCity())
@@ -458,5 +448,9 @@ public class Province implements Serializable {
 
     public boolean isBorder(){
         return isBorder&&!isCity();
+    }
+
+    public Province add(int x, int z){
+        return ContinentalManagers.world(instance).provinceManager().getProvince((int) (pos.x()+x), (int) (pos.z()+z));
     }
 }

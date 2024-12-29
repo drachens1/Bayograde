@@ -25,6 +25,11 @@ public enum MessageEnum {
             .append(Component.text("COUNTRY-CHAT", NamedTextColor.GOLD, TextDecoration.BOLD))
             .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
             .build()),
+    puppetChat(Component.text()
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .append(Component.text("PUPPET-CHAT", NamedTextColor.GOLD, TextDecoration.BOLD))
+            .append(Component.text(" | ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+            .build()),
     vote(Component.text()
             .append(Component.text(" | ", NamedTextColor.GREEN, TextDecoration.BOLD))
             .append(Component.text("VOTE", NamedTextColor.GOLD, TextDecoration.BOLD))

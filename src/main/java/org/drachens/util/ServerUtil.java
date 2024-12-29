@@ -52,9 +52,7 @@ import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.example.ExampleCMD;
-import org.drachens.cmd.minigames.FlappyCMD;
-import org.drachens.cmd.minigames.PacmanCMD;
-import org.drachens.cmd.plan.PlanCMD;
+import org.drachens.cmd.minigames.MinigamesCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
@@ -264,6 +262,8 @@ public class ServerUtil {
             ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
         });
 
+        globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(true));
+
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
         for (VotingOption votingOption : votingOptions)
             votingOptionsCMD.add(new VotingOptionCMD(votingOption));
@@ -283,8 +283,7 @@ public class ServerUtil {
         commandManager.register(new GamemodeCMD());
         commandManager.register(new FlyCMD());
 
-        commandManager.register(new FlappyCMD());
-        commandManager.register(new PacmanCMD());
+        commandManager.register(new MinigamesCMD());
 
         commandManager.register(new FlyspeedCMD());
         commandManager.register(new CountryCMD());
@@ -296,7 +295,6 @@ public class ServerUtil {
         commandManager.register(new debugCMD());
         commandManager.register(new FactionCMD());
         commandManager.register(new SummonCMD());
-        commandManager.register(new PlanCMD());
         commandManager.register(new StoreCMD());
         commandManager.register(new CosmeticsCMD());
         commandManager.register(new GoldCMD());
@@ -307,6 +305,11 @@ public class ServerUtil {
         commandManager.register(new ViewModesCMD());
 
         commandManager.register(new TmpCMD());
+        commandManager.register(new PingCMD());
+        commandManager.register(new TpsCMD());
+
+        commandManager.register(new WhoisCMD());
+        commandManager.register(new RegenCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

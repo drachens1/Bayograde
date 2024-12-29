@@ -40,7 +40,7 @@ public class DivisionTrainingQueue {
         if (divisionDesign.isEmpty()){
             trainedTroop=troop;
             time=troop.time;
-            building.getCountry().addTextDisplay(completionBarTextDisplay.getTextDisplay());
+            building.getCountry().addClientside(completionBarTextDisplay.getTextDisplay());
             trainingAnimation.start(building.getItemDisplay(),true);
         }
         divisionDesign.add(troop);
