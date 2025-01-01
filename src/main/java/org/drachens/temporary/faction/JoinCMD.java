@@ -1,12 +1,15 @@
 package org.drachens.temporary.faction;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.events.factions.FactionJoinEvent;
@@ -31,6 +34,12 @@ public class JoinCMD extends Command {
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
             if (!notInAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
+            Country country = player.getCountry();
+
+            if (country.hasCondition(ConditionEnum.cant_join_faction)){
+                player.sendMessage(Component.text("You have the cant join a faction condition.", NamedTextColor.RED));
+                return;
+            }
 
             Factions faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
             if (faction == null) {
@@ -38,7 +47,6 @@ public class JoinCMD extends Command {
                 return;
             }
 
-            Country country = player.getCountry();
             EventDispatcher.call(new FactionJoinEvent(faction, country));
         }, factions);
     }

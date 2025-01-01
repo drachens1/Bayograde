@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;

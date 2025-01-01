@@ -1,12 +1,12 @@
 package org.drachens.dataClasses.Economics;
 
 import org.drachens.Manager.defaults.enums.BuildingEnum;
-import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.temporary.Factory;
 
 import java.util.ArrayList;

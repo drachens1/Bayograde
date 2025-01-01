@@ -4,7 +4,7 @@ import net.minestom.server.command.builder.Command;
 
 public class ViewModesCMD extends Command {
     public ViewModesCMD() {
-        super("view_modes");
+        super("view-modes");
         addSubcommand(new AllyViewModeCMD());
         addSubcommand(new WarsViewModeCMD());
     }

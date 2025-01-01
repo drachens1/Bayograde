@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.Diplomacy.Justifications;
 
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.Modifier;
 
 public class WarGoalType {
     private final Modifier modifier;

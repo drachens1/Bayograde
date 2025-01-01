@@ -12,14 +12,16 @@ import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
+import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.events.NewDay;
 import org.drachens.events.research.ResearchCompletionEvent;
 import org.drachens.events.research.ResearchStartEvent;
 import org.drachens.temporary.clicks.ClicksVault;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,8 +33,8 @@ public abstract class ResearchCountry extends Country {
     private final Modifier researchModifier;
     private Runnable onFinishResearch;
 
-    public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
-        super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault);
+    public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
+        super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault, laws);
         researchModifier = new Modifier.create(Component.text("Research", NamedTextColor.BLUE))
                 .setDisplay(false)
                 .build();

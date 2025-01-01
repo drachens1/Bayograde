@@ -4,20 +4,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.drachens.dataClasses.BoostEnum;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.Modifier;
 
 public enum ModifiersEnum {
-    example(new Modifier.create(Component.text("Example", NamedTextColor.GOLD))
-            .setDescription(Component.text("description", NamedTextColor.BLUE))
-            .addBoost(BoostEnum.production, 0.1f)
-            .addBoost(BoostEnum.capitulation, 2f)
-            .addBoost(BoostEnum.stabilityBase, 3f)
-            .addBoost(BoostEnum.stabilityGain, 4f)
-            .addBoost(BoostEnum.relations, 6f)
-            .addBoost(BoostEnum.buildingSlotBoost, 2f)
-            .build()),
-
     ww2_super(new Modifier.create(Component.text("Super Power", NamedTextColor.GOLD, TextDecoration.BOLD))
             .addBoost(BoostEnum.stabilityBase, 10f)
             .addBoost(BoostEnum.production, 0.3f)
@@ -38,22 +28,24 @@ public enum ModifiersEnum {
                     .build())
             .build()),
 
-    ww2_fascist(new Modifier.create(Component.text("War", TextColor.color(204, 0, 0), TextDecoration.BOLD))
+    ww2_fascist(new Modifier.create(Component.text("Fascist", TextColor.color(204, 0, 0), TextDecoration.BOLD))
             .addBoost(BoostEnum.production, 0.1f)
             .addBoost(BoostEnum.stabilityBase, 10f)
             .addBoost(BoostEnum.stabilityGain, -0.1f)
             .addBoost(BoostEnum.capitulation, 5f)
+            .addBoost(BoostEnum.justification, 0.2f)
             .build()),
     ww2_centrist(new Modifier.create(Component.text("Centrist", TextColor.color(96, 96, 96), TextDecoration.BOLD))
             .addBoost(BoostEnum.stabilityBase, 50f)
             .addBoost(BoostEnum.capitulation, -5f)
-            .addBoost(BoostEnum.production, 0.2f)
+            .addBoost(BoostEnum.production, 0.1f)
             .build()),
     ww2_anarchist(new Modifier.create(Component.text("Anarchist", TextColor.color(7, 154, 12)))
             .addBoost(BoostEnum.stabilityBase, -100f)
             .addBoost(BoostEnum.stabilityGain, -5f)
-            .addBoost(BoostEnum.capitulation, 0.5f)
-            .addBoost(BoostEnum.production, 5f)
+            .addBoost(BoostEnum.capitulation, -0.5f)
+            .addBoost(BoostEnum.production, 1f)
+            .addBoost(BoostEnum.justification, 0.7f)
             .build()),
     ww2_conservatist(new Modifier.create(Component.text("Conservatism", TextColor.color(204, 0, 0)))
             .addBoost(BoostEnum.stabilityBase, 1f)
@@ -62,8 +54,10 @@ public enum ModifiersEnum {
             .addBoost(BoostEnum.stabilityBase, 40f)
             .addBoost(BoostEnum.stabilityGain, 0.2f)
             .addBoost(BoostEnum.production, 0.2f)
+            .addBoost(BoostEnum.justification, -0.1f)
             .build()),
     ww2_liberalist(new Modifier.create(Component.text("Liberalist", TextColor.color(51, 253, 255)))
+            .addBoost(BoostEnum.production, 0.15f)
             .build()),
 
     ww2_capitalist(new Modifier.create(Component.text("Capitalist", TextColor.color(0, 153, 0)))
@@ -71,7 +65,7 @@ public enum ModifiersEnum {
             .addBoost(BoostEnum.production, 0.5f)
             .build()),
 
-    ww2_neutral(new Modifier.create(Component.text("Nuetrality",NamedTextColor.GRAY))
+    ww2_neutral(new Modifier.create(Component.text("Neutrality",NamedTextColor.GRAY))
             .addBoost(BoostEnum.capitulation,0.3f)
             .addBoost(BoostEnum.stabilityBase,10f)
             .addBoost(BoostEnum.production,0.2f)

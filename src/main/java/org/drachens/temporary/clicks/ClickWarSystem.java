@@ -36,7 +36,7 @@ public class ClickWarSystem implements War {
             int offsetY = direction[1];
 
             Province province = ContinentalManagers.world(instance).provinceManager().getProvince(position.add(offsetX, 0, offsetY));
-            if (province.getOccupier()!=null && country.isMilitaryFriend(province.getOccupier())) {
+            if (province != null && province.getOccupier()!=null && country.isMilitaryFriend(province.getOccupier())) {
                 adjacentCount++;
                 if (adjacentCount >= 3) {
                     return province;

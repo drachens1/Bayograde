@@ -1,11 +1,14 @@
 package org.drachens.temporary.country.diplomacy.justifywar;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalTypeEnum;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
@@ -38,12 +41,16 @@ public class JustifyAgainstCMD extends Command {
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (country.cantStartAWarWith(against)){
-                p.sendMessage("You cant justify on yourself/ally/puppet/non-aggression pact");
+                p.sendMessage(Component.text("You cant justify on yourself/ally/puppet/non-aggression pact", NamedTextColor.RED));
+                return;
+            }
+            if (country.hasCondition(ConditionEnum.cant_start_a_war)){
+                p.sendMessage(Component.text("You have the cant start a war condition. Therefore you cant start a war.", NamedTextColor.RED));
                 return;
             }
             String choice = context.get(option);
             if (!stuff.contains(choice)){
-                p.sendMessage("That is not a valid option");
+                p.sendMessage(Component.text("That is not a valid option", NamedTextColor.RED));
                 return;
             }
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);

@@ -3,9 +3,9 @@ package org.drachens.dataClasses.Economics;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.Modifier;
 
 import static org.drachens.util.OtherUtil.bound;
 

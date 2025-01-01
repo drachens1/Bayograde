@@ -8,7 +8,7 @@ import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.Modifier;
 
 import java.util.ArrayList;
 import java.util.List;

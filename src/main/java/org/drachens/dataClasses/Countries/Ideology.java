@@ -17,15 +17,6 @@ public class Ideology {
         normalizeIdeologies();
     }
 
-    public Ideology(VotingOption votingOption, Country country) {
-        this.country = country;
-        this.ideologies = new HashMap<>();
-        for (IdeologyTypes ideologyTypes : votingOption.getIdeologyTypes()) {
-            ideologies.put(ideologyTypes, 0f);
-        }
-        normalizeIdeologies();
-    }
-
     public Ideology(VotingOption votingOption) {
         this.country = null;
         this.ideologies = new HashMap<>();
@@ -47,9 +38,7 @@ public class Ideology {
             int ideologyCount = ideologies.size();
             float increment = deficit / ideologyCount;
 
-            for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
-                ideologies.put(entry.getKey(), entry.getValue() + increment);
-            }
+            ideologies.replaceAll((k, v) -> v + increment);
         }
         for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
             total += entry.getValue();
@@ -61,6 +50,10 @@ public class Ideology {
     }
 
     public void setCurrentIdeology(IdeologyTypes currentIdeology) {
+        if (this.currentIdeology!=null){
+            country.removeModifier(this.currentIdeology.getModifier());
+        }
+        country.addModifier(currentIdeology.getModifier());
         this.currentIdeology = currentIdeology;
     }
 
@@ -84,8 +77,6 @@ public class Ideology {
             ideologies.put(entry.getKey(), currentPercentage * timesAmount);
         }
         ideologies.put(ideology, percentage);
-
-        changeLeadingIdeology();
     }
 
     public void changeLeadingIdeology() {
@@ -115,13 +106,24 @@ public class Ideology {
                 };
             }
         }
-        currentIdeology = highest.left();
+
+        if (currentIdeology==null){
+            if (country.getLeader()==null){
+                List<Leader> leaders = highest.left().getLeaders();
+                country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
+                currentIdeology = highest.left();
+                return;
+            }else {
+                currentIdeology=country.getLeader().getIdeologyTypes();
+            }
+        }
         List<Leader> leaders = new ArrayList<>(currentIdeology.getLeaders());
-        if (!leaders.contains(country.getLeader())) {
+        if (currentIdeology!=highest.left()) {
             if (country.getLeader() != null)
                 country.removeModifier(country.getLeader().getIdeologyTypes().getModifier());
             country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
         }
+        currentIdeology = highest.left();
     }
 
     public Ideology clone(Country country) {

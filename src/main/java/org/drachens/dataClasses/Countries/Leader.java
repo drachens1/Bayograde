@@ -1,7 +1,8 @@
 package org.drachens.dataClasses.Countries;
 
 import net.kyori.adventure.text.Component;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.Manager.defaults.enums.IdeologiesEnum;
+import org.drachens.dataClasses.additional.Modifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,11 @@ public class Leader {
 
     public void setIdeologyTypes(IdeologyTypes ideologyTypes) {
         this.ideologyTypes = ideologyTypes;
+        createDescription();
+    }
+
+    public void setIdeologyTypes(IdeologiesEnum ideologyTypes) {
+        this.ideologyTypes = ideologyTypes.getIdeologyTypes();
         createDescription();
     }
 

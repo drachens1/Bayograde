@@ -8,6 +8,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.instance.Instance;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.drachens.util.ServerUtil.getWorldClasses;
@@ -55,6 +56,19 @@ public class CommandsUtil {
     }
 
     public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, List<String> list) {
+        String input = cutInput(suggestion.getInput());
+        if (input.endsWith("\0")) return suggestions(list, suggestion);
+        return suggestions(list.stream()
+                .filter(suggestions -> suggestions.toLowerCase().startsWith(input))
+                .collect(Collectors.toList()), suggestion);
+    }
+
+    public static Suggestion suggestions(Set<String> suggestion, Suggestion suggestions) {
+        suggestion.forEach(s-> suggestions.addEntry(new SuggestionEntry(s)));
+        return suggestions;
+    }
+
+    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, Set<String> list) {
         String input = cutInput(suggestion.getInput());
         if (input.endsWith("\0")) return suggestions(list, suggestion);
         return suggestions(list.stream()

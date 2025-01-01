@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Diplomacy;
 
-import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.additional.BoostEnum;
 
 import java.util.HashMap;
 import java.util.Map;

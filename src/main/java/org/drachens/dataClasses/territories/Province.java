@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.EventDispatcher;
-import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -31,7 +30,6 @@ public class Province implements Serializable {
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
-    private final Chunk chunk;
     private final ProvinceManager provinceManager;
     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
             Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
@@ -47,7 +45,6 @@ public class Province implements Serializable {
     };
     private Building building;
     private Country occupier;
-    private boolean capturable = true;
     private Material material;
     private boolean city;
     private List<Province> neighbours;
@@ -57,7 +54,6 @@ public class Province implements Serializable {
     public Province(Pos pos, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = pos;
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.occupier = occupier;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -66,7 +62,6 @@ public class Province implements Serializable {
     public Province(int x, int y, int z, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.occupier = occupier;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -75,7 +70,6 @@ public class Province implements Serializable {
     public Province(int x, int y, int z, Instance instance, List<Province> neighbours) {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.occupier = null;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -84,7 +78,6 @@ public class Province implements Serializable {
     public Province(Pos pos, Instance instance, List<Province> neighbours) {
         this.pos = pos;
         this.instance = instance;
-        this.chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
         this.occupier = null;
         provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
@@ -92,18 +85,20 @@ public class Province implements Serializable {
 
     public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
-        if (country != null && (country == occupier || country.isAlly(occupier))) {
-            if (country.isPlayerLeader(p)){
+        if (country != null && country.isPlayerLeader(p)) {
+            if (country==occupier){
+                return createSecretDescription().append(Component.text()
+                        .append(Component.text("[EDIT]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to edit your country", NamedTextColor.GRAY)))
+                        .clickEvent(ClickEvent.runCommand("/country edit options"))
+                        .build());
+            }else if (country.isAlly(occupier)){
                 return createSecretDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
                         .build());
-            }
-
-        }
-        else if (country != null){
-            if (country.isPlayerLeader(p)){
+            }else {
                 return createPublicDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
@@ -236,16 +231,8 @@ public class Province implements Serializable {
         return pos;
     }
 
-    public Chunk getChunk() {
-        return chunk;
-    }
-
     public Instance getInstance() {
         return instance;
-    }
-
-    public Boolean isCapturable() {
-        return capturable;
     }
 
     public Country getOccupier() {
@@ -306,10 +293,6 @@ public class Province implements Serializable {
         this.occupier = occupier;
         occupier.addOccupied(this);
         updateBorders();
-    }
-
-    public void setCapturable(Boolean choice) {
-        capturable = choice;
     }
 
     public List<Troop> getTroops() {
@@ -401,7 +384,7 @@ public class Province implements Serializable {
                 Pos neighborLocation = loc.add(offsetX2, 0, offsetY2);
 
                 Province neighbourBlock = provinceManager.getProvince(neighborLocation);
-                if (neighbourBlock != null && neighbourBlock.isCapturable() && neighbourBlock.getOccupier() != country) {
+                if (neighbourBlock != null && neighbourBlock.getOccupier() != country) {
                     province.setBorder();
                     return;
                 }

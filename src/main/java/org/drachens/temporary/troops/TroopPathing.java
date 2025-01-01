@@ -7,7 +7,7 @@ import org.drachens.dataClasses.territories.Province;
 public class TroopPathing implements AStarPathfinderVoids {
     @Override
     public boolean isWalkable(Province check, Country country) {
-        return check != null && check.isCapturable() && (check.getOccupier() == country || check.getOccupier().isMilitaryAlly(country) || check.getOccupier().isAlly(country) || check.getOccupier().isAtWar(country));
+        return check != null && (check.getOccupier() == country || check.getOccupier().isMilitaryAlly(country) || check.getOccupier().isAlly(country) || check.getOccupier().isAtWar(country));
     }
 
     @Override

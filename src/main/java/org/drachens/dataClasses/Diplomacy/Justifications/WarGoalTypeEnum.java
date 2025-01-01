@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Diplomacy.Justifications;
 
-import org.drachens.dataClasses.BoostEnum;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.Modifier;
 
 public enum WarGoalTypeEnum {
     justified(new WarGoalType("justified",new Modifier.create(null).setDisplay(false).build(),30,120)),

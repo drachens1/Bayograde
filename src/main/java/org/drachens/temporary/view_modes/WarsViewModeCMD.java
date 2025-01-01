@@ -1,6 +1,8 @@
 package org.drachens.temporary.view_modes;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -13,13 +15,15 @@ public class WarsViewModeCMD extends Command {
         super("wars");
         var on = ArgumentType.String("")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!inCountry(sender)) return;
+                    if (notInCountry(sender)) return;
                     suggestion.addEntry(new SuggestionEntry("on"));
                     suggestion.addEntry(new SuggestionEntry("off"));
                 });
 
+        setDefaultExecutor((sender,context)->            sender.sendMessage(Component.text("Proper usage /view-modes wars on/off", NamedTextColor.RED)));
+
         addSyntax((sender, context) -> {
-            if (!inCountry(sender)){
+            if (notInCountry(sender)){
                 sender.sendMessage("Join a country first");
                 return;
             }
@@ -38,12 +42,12 @@ public class WarsViewModeCMD extends Command {
 
     }
 
-    private boolean inCountry(CommandSender sender){
+    private boolean notInCountry(CommandSender sender){
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            return country != null;
+            return country == null;
         }
-        return false;
+        return true;
     }
 
 }

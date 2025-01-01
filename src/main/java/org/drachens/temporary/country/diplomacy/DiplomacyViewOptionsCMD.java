@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 
@@ -45,7 +46,7 @@ public class DiplomacyViewOptionsCMD extends Command {
                     .appendNewline()
                     .appendNewline()
                     .build());
-            if (country.canFight(against)){
+            if (!country.hasCondition(ConditionEnum.cant_start_a_war)&&country.canFight(against)){
                 if (country.getCompletedWarJustificationAgainst(against)!=null){
                     WarJustification warJustification = country.getCompletedWarJustificationAgainst(against);
                     comps.add(Component.text()

@@ -114,7 +114,7 @@ public class Troop {
     }
 
     public boolean canMove(Province province) {
-        return province != null && province.isCapturable();
+        return province != null;
     }
 
     public void moveToFriendly(Province to) {

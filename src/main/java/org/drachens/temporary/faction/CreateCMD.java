@@ -1,12 +1,15 @@
 package org.drachens.temporary.faction;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
@@ -44,7 +47,6 @@ public class CreateCMD extends Command {
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
             if (notInAFaction(sender))
                 sender.sendMessage("Proper usage /faction create <type> <name> ");
-
         }, type);
 
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
@@ -52,6 +54,11 @@ public class CreateCMD extends Command {
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             String factionName = context.get(nameArg);
+
+            if (country.hasCondition(ConditionEnum.cant_join_faction)){
+                player.sendMessage(Component.text("You have the cant join a faction condition.", NamedTextColor.RED));
+                return;
+            }
 
             CountryDataManager countryDataManager = ContinentalManagers.world(player.getInstance()).countryDataManager();
             if (countryDataManager.getFactionNames().contains(factionName)) {

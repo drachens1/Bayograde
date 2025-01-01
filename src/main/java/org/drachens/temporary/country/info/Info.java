@@ -10,5 +10,6 @@ public class Info extends Command {
         addSubcommand(new LoanInfoCMD());
         addSubcommand(new WarsInfoCMD());
         addSubcommand(new PuppetsCMD());
+        addSubcommand(new LawsInfo("laws"));
     }
 }

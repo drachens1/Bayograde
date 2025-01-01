@@ -15,6 +15,7 @@ import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
+import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.NewDay;
@@ -36,8 +37,8 @@ public class TroopCountry extends ResearchCountry {
     private final List<DivisionDesign> divisionDesigns = new ArrayList<>();
     private final HashMap<Building, DivisionTrainingQueue> divisionTrainingQueueHashMap = new HashMap<>();
 
-    public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance) {
-        super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies));
+    public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, HashMap<String, LawCategory> laws) {
+        super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies), laws);
 
         HashMap<Integer, DivisionType> norm = new HashMap<>();
         int[] slots = new int[]{12,13,14,21,22,23,30,31,32};

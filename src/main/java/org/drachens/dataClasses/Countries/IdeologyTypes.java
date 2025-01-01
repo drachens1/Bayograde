@@ -2,7 +2,7 @@ package org.drachens.dataClasses.Countries;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.Modifier;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ public class IdeologyTypes {
         this.leaders = leaders;
         this.leaders.forEach((leader -> leader.setIdeologyTypes(this)));
         this.modifier = modifier;
+        modifier.setShouldDisplay(false);
     }
 
     public Component getName() {

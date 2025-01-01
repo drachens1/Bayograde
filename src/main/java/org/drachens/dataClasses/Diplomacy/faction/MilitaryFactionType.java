@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.temporary.troops.TroopCountry;
 

@@ -1,6 +1,8 @@
 package org.drachens.temporary.view_modes;
 
 import dev.ng5m.CPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -17,6 +19,8 @@ public class AllyViewModeCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("on"));
                     suggestion.addEntry(new SuggestionEntry("off"));
                 });
+
+        setDefaultExecutor((sender,context)-> sender.sendMessage(Component.text("Proper usage /view-modes ally on/off", NamedTextColor.RED)));
 
         addSyntax((sender, context) -> {
             if (!inCountry(sender)){

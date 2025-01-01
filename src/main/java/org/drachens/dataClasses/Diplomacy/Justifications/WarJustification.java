@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Diplomacy.Justifications;
 
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.Modifier;
 
 public class WarJustification {
     private float timeLeft;

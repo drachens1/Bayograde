@@ -15,9 +15,9 @@ import net.minestom.server.item.Material;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.bossbars.CapitulationBar;
-import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
@@ -33,7 +33,9 @@ import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.ImaginaryWorld;
-import org.drachens.dataClasses.Modifier;
+import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
@@ -107,9 +109,12 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
     private final CountryChat countryChat;
     private final Component originalName;
+    private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
+    private final HashMap<String, LawCategory>  laws = new HashMap<>();
     private PuppetChat puppetChat;
 
-    public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault) {
+    public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
+        laws.forEach(((string, lawCategory) -> this.laws.put(string,new LawCategory(lawCategory,this))));
         this.occupies = new ArrayList<>();
         this.ideology = defaultIdeologies.clone(this);
         this.vault = vault;
@@ -180,6 +185,7 @@ public abstract class Country implements Cloneable {
         modifiers.add(modifier);
         modifier.addCountry(this);
         modifier.getBoostHashMap().forEach(this::addBoost);
+        modifier.getConditionEnums().forEach(this::addCondition);
         if (!update && modifier.shouldDisplay()) createInfo();
     }
 
@@ -191,6 +197,14 @@ public abstract class Country implements Cloneable {
     public void minusBoost(BoostEnum boostEnum, float value) {
         float current = boostHashmap.getOrDefault(boostEnum, 1f);
         boostHashmap.put(boostEnum, current - value);
+    }
+
+    public void addCondition(ConditionEnum conditionEnum){
+        conditionEnums.add(conditionEnum);
+    }
+
+    public void removeCondition(ConditionEnum conditionEnum){
+        conditionEnums.remove(conditionEnum);
     }
 
     public void updateModifier(Modifier modifier, Modifier old) {
@@ -209,6 +223,7 @@ public abstract class Country implements Cloneable {
         modifiers.remove(modifier);
         modifier.removeCountry(this);
         modifier.getBoostHashMap().forEach(this::minusBoost);
+        modifier.getConditionEnums().forEach(this::removeCondition);
         if (!update && modifier.shouldDisplay())createInfo();
     }
 
@@ -594,6 +609,9 @@ public abstract class Country implements Cloneable {
                 .appendNewline()
                 .append(leaderComp)
                 .append(factionsComps)
+                .appendNewline()
+                .append(Component.text("Ideology: "))
+                .append(getIdeology().getCurrentIdeology().getModifier().getName())
                 .appendNewline()
                 .append(extraInfo)
                 .appendNewline()
@@ -1093,5 +1111,21 @@ public abstract class Country implements Cloneable {
 
     public PuppetChat getPuppetChat(){
         return puppetChat;
+    }
+
+    public boolean hasCondition(ConditionEnum conditionEnum){
+        return conditionEnums.contains(conditionEnum);
+    }
+
+    public Set<String> getLawNames(){
+        return laws.keySet();
+    }
+
+    public HashMap<String,LawCategory> getLaws(){
+        return laws;
+    }
+
+    public LawCategory getLaw(String name){
+        return laws.get(name);
     }
 }

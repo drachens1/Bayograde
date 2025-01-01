@@ -16,19 +16,19 @@ import org.drachens.advancement.Advancement;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.advancement.AdvancementSection;
 import org.drachens.cmd.ConfirmCMD;
-import org.drachens.dataClasses.BoostEnum;
 import org.drachens.dataClasses.ComponentListBuilder;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.dataClasses.Modifier;
 import org.drachens.dataClasses.Research.ResearchCategoryEnum;
 import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.tree.ResearchCategory;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.dataClasses.VotingOption;
+import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.databases.DataTypeEum;
 import org.drachens.fileManagement.databases.Database;
@@ -247,7 +247,7 @@ public class Main {
         VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
-                .setCountries(31)
+                .setCountries(52)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
@@ -485,7 +485,7 @@ public class Main {
         VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
-                .setCountries(31)
+                .setCountries(52)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
