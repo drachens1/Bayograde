@@ -3,7 +3,6 @@ package org.drachens.cmd.Dev.gamemode;
 import dev.ng5m.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.GameMode;
-import net.minestom.server.entity.Player;
 
 public class SurvivalCMD extends Command {
     public SurvivalCMD() {

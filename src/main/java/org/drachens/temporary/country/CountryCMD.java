@@ -8,6 +8,7 @@ import org.drachens.temporary.country.edit.EditCMD;
 import org.drachens.temporary.country.info.Info;
 import org.drachens.temporary.country.loan.LoanCMD;
 import org.drachens.temporary.country.manage.ManageCMD;
+import org.drachens.temporary.country.modifiers.ModifiersCMD;
 import org.drachens.temporary.country.puppets.PuppetCMD;
 
 public class CountryCMD extends Command {
@@ -26,6 +27,7 @@ public class CountryCMD extends Command {
         addSubcommand(new CountryChatCMD());
         addSubcommand(new PuppetCMD());
         addSubcommand(new EditCMD());
+        addSubcommand(new ModifiersCMD());
 
         var smth = ArgumentType.String("type...")
 

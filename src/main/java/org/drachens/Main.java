@@ -137,6 +137,7 @@ public class Main {
     }
 
     public static void completeStartup() {
+        System.setProperty("minestom.max-packet-size", "597_151");//see server flags
         initSrv();
         MinecraftServer.getCommandManager().register(new ConfirmCMD());
 
@@ -253,7 +254,7 @@ public class Main {
         VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new ClickWarSystem())
-                .setCountries(52)
+                .setCountries(63)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)
@@ -491,7 +492,7 @@ public class Main {
         VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_troops")
                 .setMapGenerator(new MapGeneratorManager())
                 .setWar(new TroopWarSystem())
-                .setCountries(52)
+                .setCountries(63)
                 .setDefaultCurrencies(c)
                 .setIdeologyTypes(ideologyTypesList)
                 .setElections(electionTypes)

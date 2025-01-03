@@ -12,6 +12,7 @@ import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.fileManagement.PlayerInfoEntry;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -140,7 +141,7 @@ public class CPlayer extends Player {
         return headItem;
     }
 
-    public boolean hasPermission(String permission){
+    public boolean hasPermission(@NotNull String permission){
         return permissions.contains(permission);
     }
 
@@ -148,11 +149,11 @@ public class CPlayer extends Player {
         permissions.add(permission);
     }
 
-    public void removePermission(String permission){
+    public void removePermission(@NotNull String permission){
         permissions.remove(permission);
     }
 
-    public List<String> getAllPermissions(){
+    public @NotNull List<String> getAllPermissionss(){
         return permissions;
     }
 

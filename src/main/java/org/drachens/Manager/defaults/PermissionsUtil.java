@@ -1,9 +1,6 @@
 package org.drachens.Manager.defaults;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.entity.Player;
-import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

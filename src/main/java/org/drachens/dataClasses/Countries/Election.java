@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.Countries;
 
-import it.unimi.dsi.fastutil.Pair;
 import org.drachens.Manager.defaults.enums.ElectionsEnum;
 import org.drachens.dataClasses.VotingOption;
 
@@ -8,21 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Election {
-    private final Country country;
     private ElectionsEnum currentElectionType;
     private HashMap<ElectionsEnum, Float> electionTypesHashMap;
-
-    private Election(HashMap<ElectionsEnum, Float> electionTypes, Country country) {
-        this.electionTypesHashMap = new HashMap<>(electionTypes);
-        this.country = country;
-    }
 
     public Election(VotingOption votingOption) {
         this.electionTypesHashMap = new HashMap<>();
         for (ElectionsEnum electionTypes : votingOption.getElectionTypes()) {
             electionTypesHashMap.put(electionTypes, 0f);
         }
-        this.country = null;
     }
 
     public ElectionsEnum getCurrentElectionType() {
@@ -41,52 +33,49 @@ public class Election {
         this.electionTypesHashMap = electionTypes;
     }
 
-    public void addElection(ElectionsEnum electionTypes, float percentage) {
-        if (electionTypesHashMap.containsKey(electionTypes)) percentage += electionTypesHashMap.get(electionTypes);
-        if (percentage < 0f) {
-            percentage = 0;
-        } else if (percentage > 100f) percentage = 100f;
-        float timesAmount = percentage / 100f;
-        for (Map.Entry<ElectionsEnum, Float> entry : electionTypesHashMap.entrySet()) {
-            float currentPercentage = entry.getValue();
-            electionTypesHashMap.put(entry.getKey(), currentPercentage * timesAmount);
+    public void addElection(ElectionsEnum electionType, float percentage) {
+        if (electionType == null || percentage < 0f) {
+            throw new IllegalArgumentException("Election type cannot be null and percentage must be non-negative.");
         }
-        electionTypesHashMap.put(electionTypes, percentage);
+
+        percentage = Math.min(percentage, 100f);
+
+        float totalPercentage = 0f;
+        for (Float value : electionTypesHashMap.values()) {
+            totalPercentage += value;
+        }
+
+        if (electionTypesHashMap.containsKey(electionType)) {
+            totalPercentage -= electionTypesHashMap.get(electionType);
+        }
+
+        float remainingPercentage = 100f - percentage;
+        if (remainingPercentage < totalPercentage) {
+            float scaleFactor = remainingPercentage / totalPercentage;
+            for (Map.Entry<ElectionsEnum, Float> entry : electionTypesHashMap.entrySet()) {
+                if (!entry.getKey().equals(electionType)) {
+                    entry.setValue(entry.getValue() * scaleFactor);
+                }
+            }
+        }
+
+        electionTypesHashMap.put(electionType, percentage);
 
         changeLeadingElection();
     }
 
     public void changeLeadingElection() {
-        Pair<ElectionsEnum, Float> highest = new Pair<>() {
-            @Override
-            public ElectionsEnum left() {
-                return currentElectionType;
-            }
+        ElectionsEnum leadingElection = null;
+        float highestPercentage = -1f;
 
-            @Override
-            public Float right() {
-                return electionTypesHashMap.get(currentElectionType);
-            }
-        };
-        for (Map.Entry<ElectionsEnum, Float> e : electionTypesHashMap.entrySet()) {
-            if (highest.right() == null || highest.right() < e.getValue()) {
-                highest = new Pair<>() {
-                    @Override
-                    public ElectionsEnum left() {
-                        return e.getKey();
-                    }
-
-                    @Override
-                    public Float right() {
-                        return e.getValue();
-                    }
-                };
+        for (Map.Entry<ElectionsEnum, Float> entry : electionTypesHashMap.entrySet()) {
+            if (entry.getValue() > highestPercentage) {
+                leadingElection = entry.getKey();
+                highestPercentage = entry.getValue();
             }
         }
-        currentElectionType = highest.left();
-    }
 
-    public Election clone(Country country) {
-        return new Election(electionTypesHashMap, country);
+        currentElectionType = leadingElection;
     }
 }
+

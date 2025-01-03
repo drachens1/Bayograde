@@ -22,7 +22,7 @@ public class MiniGameUtil {
         entity.setInvisible(true);
         entity.setInstance(instance, player.getPosition());
         entity.addPassenger(player);
-        player.setPose(EntityPose.STANDING);
+        player.setPose(EntityPose.SITTING);
     }
 
 }

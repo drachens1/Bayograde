@@ -4,8 +4,8 @@ import dev.ng5m.Constants;
 import dev.ng5m.events.EventHandler;
 import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.events.EventHandlerProviderManager;
+import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.AsyncPlayerPreLoginEvent;
-import net.minestom.server.network.player.GameProfile;
 
 public class BanSystemEvents implements EventHandlerProvider {
 
@@ -15,10 +15,9 @@ public class BanSystemEvents implements EventHandlerProvider {
 
     @EventHandler
     public static void onPreLogin(AsyncPlayerPreLoginEvent event) {
-        GameProfile gameProfile = event.getGameProfile();
-
-        if (Constants.BAN_MANAGER.isBanned(gameProfile.uuid())) {
-            event.getConnection().getPlayer() .kick(Constants.BAN_MANAGER.getBanMessage().apply(event.getConnection().getPlayer()));
+        if (Constants.BAN_MANAGER.isBanned(event.getGameProfile().uuid())) {
+            Player p = event.getConnection().getPlayer();
+            p.kick(Constants.BAN_MANAGER.getBanMessage().apply(p));
         }
     }
 

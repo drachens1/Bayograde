@@ -23,11 +23,13 @@ public class Modifier implements Cloneable {
     private final HashMap<BoostEnum, Float> boostHashMap;
     private final HashSet<ConditionEnum> conditionEnums;
     private final List<EventsRunner> eventsRunners;
+    private final List<ModifierCommand> modifierCommands;
 
     protected Modifier(create c) {
         this.justCompName = c.name;
         this.boostHashMap = c.boostHashMap;
         this.eventsRunners = c.eventsRunners;
+        this.modifierCommands = c.modifierCommands;
         if (c.description != null) this.startDescription = c.description;
         display = c.display;
         conditionEnums=c.conditionEnums;
@@ -60,29 +62,25 @@ public class Modifier implements Cloneable {
                                 .append(Component.text("+" + Math.round(value * 100), NamedTextColor.GREEN))
                                 .append(Component.text("%", NamedTextColor.GREEN))
                                 .append(symbol)
-                                .appendNewline()
-                                .build());
+                                .appendNewline().build());
                     } else {
                         boostComp.add(Component.text()
                                 .append(Component.text(Math.round(value * 100), NamedTextColor.RED))
                                 .append(Component.text("%", NamedTextColor.RED))
                                 .append(symbol)
-                                .appendNewline()
-                                .build());
+                                .appendNewline().build());
                     }
                 } else {
                     if (value > 0) {
                         boostComp.add(Component.text()
                                 .append(Component.text("+" + value, NamedTextColor.GREEN))
                                 .append(symbol)
-                                .appendNewline()
-                                .build());
+                                .appendNewline().build());
                     } else {
                         boostComp.add(Component.text()
                                 .append(Component.text(value, NamedTextColor.RED))
                                 .append(symbol)
-                                .appendNewline()
-                                .build());
+                                .appendNewline().build());
                     }
                 }
 
@@ -91,13 +89,22 @@ public class Modifier implements Cloneable {
         if (!conditionEnums.isEmpty()){
             boostComp.add(Component.text()
                     .append(Component.text("Conditions: "))
-                    .appendNewline()
-                    .build());
+                    .appendNewline().build());
             for (ConditionEnum conditionEnum : conditionEnums){
                 boostComp.add(Component.text()
                         .append(conditionEnum.getDescription())
-                        .appendNewline()
-                        .build());
+                        .appendNewline().build());
+            }
+        }
+
+        if (!modifierCommands.isEmpty()){
+            boostComp.add(Component.text()
+                    .append(Component.text("Modifier Commands: "))
+                    .appendNewline().build());
+            for (ModifierCommand modifierCommand : modifierCommands){
+                boostComp.add(Component.text()
+                        .append(Component.text(modifierCommand.getString()))
+                        .appendNewline().build());
             }
         }
 
@@ -141,8 +148,20 @@ public class Modifier implements Cloneable {
         boostHashMap.put(boostEnum, current + amount);
     }
 
+    public void addEventsRunner(EventsRunner eventsRunner){
+        eventsRunners.add(eventsRunner);
+    }
+
+    public void removeEventsRunner(EventsRunner eventsRunner){
+        eventsRunners.remove(eventsRunner);
+    }
+
     public HashSet<ConditionEnum> getConditionEnums(){
         return conditionEnums;
+    }
+
+    public List<ModifierCommand> getModifierCommands(){
+        return modifierCommands;
     }
 
     public void addCondition(ConditionEnum conditionEnum){
@@ -205,6 +224,7 @@ public class Modifier implements Cloneable {
     public static class create {
         private final Component name;
         private Component description;
+        private final List<ModifierCommand> modifierCommands = new ArrayList<>();
         private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
         private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
         private final List<EventsRunner> eventsRunners = new ArrayList<>();
@@ -236,6 +256,11 @@ public class Modifier implements Cloneable {
 
         public create setDisplay(boolean choice) {
             display = choice;
+            return this;
+        }
+
+        public create addModifierCommand(ModifierCommand modifierCommand){
+            modifierCommands.add(modifierCommand);
             return this;
         }
 

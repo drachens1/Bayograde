@@ -2,11 +2,7 @@ package dev.ng5m;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
-import net.minestom.server.instance.block.Block;
-import net.minestom.server.network.packet.server.play.BlockChangePacket;
-import net.minestom.server.utils.PacketSendingUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -77,8 +73,4 @@ public class Util {
 
     }
 
-
-    public static void sendGhostBlock(Player p, Block block, Pos pos) {
-        PacketSendingUtils.sendPacket(p, new BlockChangePacket(pos, block));
-    }
 }

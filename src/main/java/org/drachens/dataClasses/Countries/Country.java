@@ -36,6 +36,7 @@ import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.dataClasses.additional.ModifierCommand;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
@@ -68,7 +69,9 @@ public abstract class Country implements Cloneable {
     private final HashSet<String> countryWars = new HashSet<>();
     private final Ideology ideology;
     private final Election elections;
+    private final HashMap<String, ModifierCommand> modifierCommandsHashMap = new HashMap<>();
     private final List<Modifier> modifiers = new ArrayList<>();
+    private final List<Modifier> visibleModifiers = new ArrayList<>();
     private final List<EventsRunner> eventsRunners = new ArrayList<>();
     private final List<Country> puppets = new ArrayList<>();
     private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
@@ -175,6 +178,14 @@ public abstract class Country implements Cloneable {
         return new ArrayList<>(cores);
     }
 
+    public void addModifierCommands(ModifierCommand modifierCommands){
+        modifierCommandsHashMap.put(modifierCommands.getString(),modifierCommands);
+    }
+
+    public void removeModifierCommands(ModifierCommand modifierCommands){
+        modifierCommandsHashMap.remove(modifierCommands.getString());
+    }
+
     public void addModifier(Modifier modifier) {
         addModifier(modifier, false);
     }
@@ -188,7 +199,13 @@ public abstract class Country implements Cloneable {
         modifier.addCountry(this);
         modifier.getBoostHashMap().forEach(this::addBoost);
         modifier.getConditionEnums().forEach(this::addCondition);
+        modifier.getModifierCommands().forEach(this::addModifierCommands);
+        if (modifier.shouldDisplay())visibleModifiers.add(modifier);
         if (!update && modifier.shouldDisplay()) createInfo();
+    }
+
+    public boolean hasModifier(Modifier modifier){
+        return modifiers.contains(modifier);
     }
 
     public void addBoost(BoostEnum boostEnum, float value) {
@@ -234,6 +251,8 @@ public abstract class Country implements Cloneable {
         modifier.removeCountry(this);
         modifier.getBoostHashMap().forEach(this::minusBoost);
         modifier.getConditionEnums().forEach(this::removeCondition);
+        modifier.getModifierCommands().forEach(this::removeModifierCommands);
+        if (modifier.shouldDisplay())visibleModifiers.remove(modifier);
         if (!update && modifier.shouldDisplay())createInfo();
     }
 
@@ -543,14 +562,11 @@ public abstract class Country implements Cloneable {
     public void createInfo() {
         if (mapGen==null || mapGen.isGenerating(instance)) return;
         List<Component> modifierComps = new ArrayList<>();
-        for (Modifier modifier : modifiers) {
-            if (modifier.getName() == null) continue;
-            if (!modifier.shouldDisplay()) continue;
+        for (Modifier modifier : visibleModifiers) {
             modifierComps.add(modifier.getName());
-            if (modifiers.getLast() != modifier) {
-                modifierComps.add(Component.text(" ,"));
-            }
+            modifierComps.add(Component.text(", "));
         }
+        modifierComps.removeLast();
 
         Component leaderComp = Component.text()
                 .append(Component.text("Faction: "))
@@ -622,6 +638,9 @@ public abstract class Country implements Cloneable {
                 .appendNewline()
                 .append(Component.text("Ideology: "))
                 .append(getIdeology().getCurrentIdeology().getModifier().getName())
+                .appendNewline()
+                .append(Component.text("Elections: "))
+                .append(getElections().getCurrentElectionType().getName())
                 .appendNewline()
                 .append(extraInfo)
                 .appendNewline()
@@ -1139,5 +1158,13 @@ public abstract class Country implements Cloneable {
 
     public LawCategory getLaw(String name){
         return laws.get(name);
+    }
+
+    public Set<String> getModifierNames(){
+        return modifierCommandsHashMap.keySet();
+    }
+
+    public ModifierCommand getModifierCommand(String identifier){
+        return modifierCommandsHashMap.get(identifier);
     }
 }

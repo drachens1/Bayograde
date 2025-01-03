@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.ServerFlag;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.BlockVec;
@@ -22,6 +23,7 @@ import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.Weather;
+import net.minestom.server.network.packet.PacketReading;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
@@ -74,6 +76,7 @@ import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.temporary.view_modes.ViewModesCMD;
 import org.drachens.temporary.worlds.ContinentalWorld;
 
+import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +84,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
+import static net.minestom.server.ServerFlag.MAX_PACKET_SIZE;
 import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
 
@@ -172,6 +176,7 @@ public class ServerUtil {
                 return;
             }
             playerRanks.put(e.getConnection(), new ArrayList<>());
+
         });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {

@@ -39,7 +39,7 @@ public class TextDisplay extends Clientside {
         this.opacity = c.opacity;
         this.bitmask = c.bitmask;
         this.followPlayer = c.followPlayer;
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos,pos,0,false);
         createEntityMetaDataPacket();
     }
 
@@ -91,7 +91,7 @@ public class TextDisplay extends Clientside {
 
     public void setPos(Pos pos) {
         this.pos = pos;
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos,pos,0,false);
         if (storeViewers) PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
     }
 
