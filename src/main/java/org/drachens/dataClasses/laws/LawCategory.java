@@ -2,25 +2,33 @@ package org.drachens.dataClasses.laws;
 
 import org.drachens.dataClasses.Countries.Country;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class LawCategory {
     private final String identifier;
+    private final List<Law> laws;
     private final HashMap<String, Law> lawMap;
     private Law current;
     private final Country country;
     private LawCategory(Create create){
         this.lawMap=create.lawMap;
+        this.laws=create.laws;
         this.current=lawMap.get(create.defaultLaw);
         this.identifier= create.identifier;
         country=null;
     }
     public LawCategory(LawCategory lawCategory, Country country){
         this.lawMap=lawCategory.getLawMap();
+        this.laws=lawCategory.laws;
         this.country=country;
         this.current=lawCategory.getCurrent();
         this.identifier=lawCategory.getIdentifier();
+    }
+    public List<Law> getLawsStuff(){
+        return laws;
     }
     public HashMap<String,Law> getLawMap(){
         return lawMap;
@@ -36,17 +44,23 @@ public class LawCategory {
         return current;
     }
     public void setCurrent(String identifier){
-        Law law = lawMap.get(identifier);
+        setCurrent(lawMap.get(identifier));
+    }
+    public String getIdentifier(){
+        return identifier;
+    }
+    public Law getLaw(String name){
+        return lawMap.get(name);
+    }
+    public void setCurrent(Law law){
         if (!(law.isAvailable()==null||law.isAvailable().apply(country)))return;
         country.removeModifier(current.modifier());
         country.addModifier(law.modifier());
         this.current=law;
     }
-    public String getIdentifier(){
-        return identifier;
-    }
 
     public static class Create {
+        private final List<Law> laws = new ArrayList<>();
         private final HashMap<String, Law> lawMap = new HashMap<>();
         private final String identifier;
         private String defaultLaw;
@@ -55,6 +69,7 @@ public class LawCategory {
         }
         public Create addLaw(Law law){
             lawMap.put(law.identifier(),law);
+            laws.add(law);
             return this;
         }
         public Create setDefault(String law){

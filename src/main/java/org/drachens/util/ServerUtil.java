@@ -22,9 +22,10 @@ import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.Weather;
+import net.minestom.server.network.player.GameProfile;
+import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
-import org.drachens.Manager.PermissionsManager;
 import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
@@ -43,7 +44,6 @@ import org.drachens.cmd.Dev.Kill.killCMD;
 import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
 import org.drachens.cmd.Dev.help.HelpCMD;
-import org.drachens.cmd.Dev.serverManagement.StopCMD;
 import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
 import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
@@ -87,7 +87,7 @@ import static org.drachens.util.Messages.logCmd;
 public class ServerUtil {
     private static final HashSet<Chunk> allowedChunks = new HashSet<>();
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
-    private static final HashMap<Player, List<Rank>> playerRanks = new HashMap<>();
+    private static final HashMap<PlayerConnection, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
     private static GlobalEventHandler globalEventHandler;
 
@@ -118,11 +118,6 @@ public class ServerUtil {
 
     public static GlobalEventHandler getEventHandler() {
         return globalEventHandler;
-    }
-
-    public static void stopSrv() {
-        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) p.kick("Server closed");
-        MinecraftServer.stopCleanly();
     }
 
     public static void setupAll(List<Command> cmd, ScoreboardManager scoreboardManager) {
@@ -165,18 +160,18 @@ public class ServerUtil {
             p.setRespawnPoint(new Pos(0, 1, 0));
         });
 
-        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer()).add(e.getRank()));
-        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.getPlayer()).remove(e.getRank()));
+        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer().getPlayerConnection()).add(e.getRank()));
+        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.getPlayer().getPlayerConnection()).remove(e.getRank()));
 
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
-            final Player p = e.getPlayer();
-            Constants.BAN_MANAGER.isBanned(p.getUuid());
-            if (ContinentalManagers.configFileManager.getWhitelist().active() && !ContinentalManagers.configFileManager.getWhitelist().getPlayers().contains(p.getUuid())) {
-                p.kick("You are not whitelisted");
-                System.out.println(p.getUsername() + " tried to join the game but isn't whitelisted");
+            GameProfile gameProfile = e.getGameProfile();
+            Constants.BAN_MANAGER.isBanned(gameProfile.uuid());
+            if (ContinentalManagers.configFileManager.getWhitelist().active() && !ContinentalManagers.configFileManager.getWhitelist().getPlayers().contains(gameProfile.uuid())) {
+                e.getConnection().kick(Component.text("You are not whitelisted"));
+                System.out.println(gameProfile.name() + " tried to join the game but isn't whitelisted");
                 return;
             }
-            playerRanks.put(p, new ArrayList<>());
+            playerRanks.put(e.getConnection(), new ArrayList<>());
         });
 
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
@@ -198,15 +193,15 @@ public class ServerUtil {
             } else {
                 prefix = c.getPrefix();
             }
-            if (playerRanks.get(p) != null) {
-                Rank rank = playerRanks.get(p).getFirst();
+            Rank rank = playerRanks.get(p.getPlayerConnection()).getFirst();
+            if (rank!=null) {
                 components.add(rank.prefix);
                 components.add(Component.text(" "));
                 components.add(prefix);
                 components.add(Component.text(" "));
                 components.add(p.getName().color(rank.color));
                 components.add(Component.text(" : ", NamedTextColor.GRAY));
-                components.add(Component.text(e.getMessage(), NamedTextColor.GRAY));
+                components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
                 components.add(Component.text(" "));
                 components.add(rank.suffix);
             } else {
@@ -214,12 +209,12 @@ public class ServerUtil {
                 components.add(Component.text(" "));
                 components.add(p.getName());
                 components.add(Component.text(" : ", NamedTextColor.GRAY));
-                components.add(Component.text(e.getMessage(), NamedTextColor.GRAY));
+                components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
             }
             return Component.text().append(components).build();
         };
 
-        globEHandler.addListener(PlayerChatEvent.class, e -> e.setChatFormat(chatEvent));
+        globEHandler.addListener(PlayerChatEvent.class, e -> e.setFormattedMessage(chatEvent.apply(e)));
 
         globEHandler.addListener(PlayerCommandEvent.class, e -> {
             final Player p = e.getPlayer();
@@ -291,7 +286,6 @@ public class ServerUtil {
         commandManager.register(new VoteCMD(votingOptionsCMD));
         commandManager.register(new ResetCMD());
         commandManager.register(new SpawnCMD());
-        commandManager.register(new StopCMD());
         commandManager.register(new debugCMD());
         commandManager.register(new FactionCMD());
         commandManager.register(new SummonCMD());
@@ -315,15 +309,9 @@ public class ServerUtil {
             MinecraftServer.getCommandManager().register(command);
         }
 
-        new PermissionsManager();
-
         globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
         new CentralEventManager();
         start();
-    }
-
-    public static void addChunk(Chunk chunk) {
-        allowedChunks.add(chunk);
     }
 
     public static HashSet<Chunk> getAllowedChunks() {

@@ -11,7 +11,7 @@ import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
-import net.minestom.server.utils.PacketUtils;
+import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
@@ -35,7 +35,7 @@ public class ItemDisplay extends Clientside {
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
     }
 
     public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers) {
@@ -43,7 +43,7 @@ public class ItemDisplay extends Clientside {
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
     }
 
     public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
@@ -51,7 +51,7 @@ public class ItemDisplay extends Clientside {
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
     }
 
     public void delete() {
@@ -64,8 +64,8 @@ public class ItemDisplay extends Clientside {
 
     public void setPos(Pos pos) {
         this.pos = pos;
-        entityTeleportPacket = new EntityTeleportPacket(this.entityId, this.pos, false);
-        PacketUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
     }
 
     public void setActive(AnimationType active) {
@@ -89,7 +89,7 @@ public class ItemDisplay extends Clientside {
                 map
         );
 
-        PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
     }
 
     public void moveSmooth(Province to, int time) {
@@ -110,7 +110,7 @@ public class ItemDisplay extends Clientside {
         map.put(14, Metadata.Quaternion(quart));
 
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
-        PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
     }
 
     public void setGlowing(boolean glowing) {
@@ -121,7 +121,7 @@ public class ItemDisplay extends Clientside {
         } else
             map.put(0, Metadata.Byte((byte) 0));
         EntityMetaDataPacket entityMetaDataPacket = new EntityMetaDataPacket(entityId, map);
-        PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket);
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket);
     }
 
     public void setPosWithOffset(Province province) {
@@ -151,7 +151,7 @@ public class ItemDisplay extends Clientside {
             addPlayers(players);
 
         List<Player> players1 = new ArrayList<>(players);
-        PacketUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
+        PacketSendingUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -160,9 +160,9 @@ public class ItemDisplay extends Clientside {
         ));
 
 
-        PacketUtils.sendGroupedPacket(players1, getEntityMetaDataPacket());
+        PacketSendingUtils.sendGroupedPacket(players1, getEntityMetaDataPacket());
 
-        PacketUtils.sendGroupedPacket(players1, entityTeleportPacket);
+        PacketSendingUtils.sendGroupedPacket(players1, entityTeleportPacket);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             removePlayers(players);
 
-        PacketUtils.sendGroupedPacket(players1, new DestroyEntitiesPacket(
+        PacketSendingUtils.sendGroupedPacket(players1, new DestroyEntitiesPacket(
                 this.entityId
         ));
     }
@@ -182,7 +182,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             addPlayer(p);
 
-        PacketUtils.sendPacket(p, new SpawnEntityPacket(
+        PacketSendingUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.ITEM_DISPLAY.id(),
@@ -190,9 +190,9 @@ public class ItemDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        PacketUtils.sendPacket(p, getEntityMetaDataPacket());
+        PacketSendingUtils.sendPacket(p, getEntityMetaDataPacket());
 
-        PacketUtils.sendPacket(p, entityTeleportPacket);
+        PacketSendingUtils.sendPacket(p, entityTeleportPacket);
 
     }
 
@@ -201,7 +201,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             removePlayer(p);
 
-        PacketUtils.sendPacket(p, new DestroyEntitiesPacket(
+        PacketSendingUtils.sendPacket(p, new DestroyEntitiesPacket(
                 this.entityId
         ));
     }

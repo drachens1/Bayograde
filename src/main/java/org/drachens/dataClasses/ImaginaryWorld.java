@@ -7,7 +7,7 @@ import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.network.packet.server.play.BlockChangePacket;
-import net.minestom.server.utils.PacketUtils;
+import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.Manager.defaults.ContinentalManagers;
 
 import java.util.HashMap;
@@ -26,13 +26,13 @@ public class ImaginaryWorld {
     public void addPlayer(CPlayer p){
         players.add(p);
         ContinentalManagers.imaginaryWorldManager.addPlayers(p,this);
-        ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos,block)-> PacketUtils.sendPacket(p,block)));
+        ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos,block)-> PacketSendingUtils.sendPacket(p,block)));
     }
 
     public void removePlayer(CPlayer p){
         players.remove(p);
         ContinentalManagers.imaginaryWorldManager.removePlayers(p,this);
-        ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos,block)-> PacketUtils.sendPacket(p,new BlockChangePacket(pos,instance.getBlock(pos)))));
+        ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos,block)-> PacketSendingUtils.sendPacket(p,new BlockChangePacket(pos,instance.getBlock(pos)))));
     }
 
     public HashSet<Player> getPlayers(){
@@ -49,7 +49,7 @@ public class ImaginaryWorld {
         Chunk chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(chunk,new HashMap<>());
         BlockChangePacket blockChangePacket = new BlockChangePacket(pos,block);
-        PacketUtils.sendGroupedPacket(players,blockChangePacket);
+        PacketSendingUtils.sendGroupedPacket(players,blockChangePacket);
         ghosty.put(pos,blockChangePacket);
         ghostBlocksHashMap.put(chunk,ghosty);
     }
@@ -59,7 +59,7 @@ public class ImaginaryWorld {
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(chunk,new HashMap<>());
         if (ghosty.containsKey(pos)){
             Block block = instance.getBlock(pos);
-            PacketUtils.sendGroupedPacket(players,new BlockChangePacket(pos,block));
+            PacketSendingUtils.sendGroupedPacket(players,new BlockChangePacket(pos,block));
         }
         ghosty.remove(pos);
         ghostBlocksHashMap.put(chunk,ghosty);
@@ -70,14 +70,14 @@ public class ImaginaryWorld {
         Chunk chunk = instance.getChunk(pos.chunkX(),pos.chunkZ());
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.getOrDefault(chunk,new HashMap<>());
         if (ghosty.containsKey(pos)){
-            PacketUtils.sendGroupedPacket(players,ghosty.get(pos));
+            PacketSendingUtils.sendGroupedPacket(players,ghosty.get(pos));
         }
     }
 
     public void loadChunk(Player p, Chunk chunk){
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.get(chunk);
         if (ghosty==null)return;
-        ghosty.forEach((pos,packet)->PacketUtils.sendPacket(p,packet));
+        ghosty.forEach((pos,packet)->PacketSendingUtils.sendPacket(p,packet));
     }
 
     public Instance getInstance(){

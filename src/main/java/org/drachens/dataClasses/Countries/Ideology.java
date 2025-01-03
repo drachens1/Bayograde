@@ -9,7 +9,7 @@ public class Ideology {
     private final Country country;
     public float total = 0f;
     private IdeologyTypes currentIdeology;
-    private HashMap<IdeologyTypes, Float> ideologies;
+    private final HashMap<IdeologyTypes, Float> ideologies;
 
     private Ideology(HashMap<IdeologyTypes, Float> ideologies, Country country) {
         this.country = country;
@@ -60,23 +60,31 @@ public class Ideology {
     public HashMap<IdeologyTypes, Float> getIdeologies() {
         return ideologies;
     }
-
-    public void setIdeologies(HashMap<IdeologyTypes, Float> ideologies) {
-        this.ideologies = ideologies;
-        normalizeIdeologies();
-    }
-
     public void addIdeology(IdeologyTypes ideology, float percentage) {
-        if (ideologies.containsKey(ideology)) percentage += ideologies.get(ideology);
+        if (ideologies.containsKey(ideology)) {
+            percentage += ideologies.get(ideology);
+        }
+
         if (percentage < 0f) {
-            percentage = 0;
-        } else if (percentage > 100f) percentage = 100f;
-        float timesAmount = percentage / 100f;
-        for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
-            float currentPercentage = entry.getValue();
-            ideologies.put(entry.getKey(), currentPercentage * timesAmount);
+            percentage = 0f;
+        } else if (percentage > 100f) {
+            percentage = 100f;
+        }
+
+        float totalPercentage = total + percentage - (ideologies.getOrDefault(ideology, 0f));
+
+        if (totalPercentage > 100f) {
+            float scaleFactor = 100f / totalPercentage;
+            for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
+                float currentPercentage = entry.getValue();
+                ideologies.put(entry.getKey(), currentPercentage * scaleFactor);
+            }
         }
         ideologies.put(ideology, percentage);
+        total = 0f;
+        for (Float value : ideologies.values()) {
+            total += value;
+        }
     }
 
     public void changeLeadingIdeology() {
@@ -128,5 +136,11 @@ public class Ideology {
 
     public Ideology clone(Country country) {
         return new Ideology(ideologies, country);
+    }
+
+    public List<String> getIdeologyNames(){
+        List<String> s = new ArrayList<>();
+        ideologies.keySet().forEach(ideologyTypes -> s.add(ideologyTypes.getIdentifier()));
+        return s;
     }
 }

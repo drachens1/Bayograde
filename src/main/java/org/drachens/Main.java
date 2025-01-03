@@ -210,6 +210,8 @@ public class Main {
         Modifier socialistModifier = ModifiersEnum.ww2_socialist.getModifier();
         Modifier liberalModifier = ModifiersEnum.ww2_liberalist.getModifier();
         Modifier capitalistModifier = ModifiersEnum.ww2_capitalist.getModifier();
+        Modifier imperialistModifier = ModifiersEnum.ww2_imperialist.getModifier();
+        Modifier nationalistModifier = ModifiersEnum.ww2_nationalist.getModifier();
 
 
         IdeologiesEnum.ww2_fascist.setIdeologyTypes(new IdeologyTypes(TextColor.color(0, 0, 0), "F", "Fascist", getLeaders(fascistModifier, TextColor.color(0, 0, 0)), fascistModifier));
@@ -219,6 +221,8 @@ public class Main {
         IdeologiesEnum.ww2_socialist.setIdeologyTypes(new IdeologyTypes(TextColor.color(255, 0, 0), "S", "Socialist", getLeaders(socialistModifier, TextColor.color(255, 0, 0)), socialistModifier));
         IdeologiesEnum.ww2_liberalist.setIdeologyTypes(new IdeologyTypes(TextColor.color(51, 253, 255), "L", "Liberalist", getLeaders(liberalModifier, TextColor.color(51, 253, 255)), liberalModifier));
         IdeologiesEnum.ww2_capitalist.setIdeologyTypes(new IdeologyTypes(TextColor.color(0, 153, 0), "C", "Capitalist", getLeaders(capitalistModifier, TextColor.color(0, 153, 0)), capitalistModifier));
+        IdeologiesEnum.ww2_nationalist.setIdeologyTypes(new IdeologyTypes(TextColor.color(0, 0, 0), "N", "Nationalist", getLeaders(nationalistModifier, TextColor.color(255, 204, 0)), nationalistModifier));
+        IdeologiesEnum.ww2_imperialist.setIdeologyTypes(new IdeologyTypes(TextColor.color(255, 204, 0), "I", "Imperialist", getLeaders(imperialistModifier, TextColor.color(255, 204, 0)), imperialistModifier));
         List<IdeologyTypes> ideologyTypesList = new ArrayList<>();
 
         ideologyTypesList.add(IdeologiesEnum.ww2_fascist.getIdeologyTypes());
@@ -226,6 +230,8 @@ public class Main {
         ideologyTypesList.add(IdeologiesEnum.ww2_conservatist.getIdeologyTypes());
         ideologyTypesList.add(IdeologiesEnum.ww2_liberalist.getIdeologyTypes());
         ideologyTypesList.add(IdeologiesEnum.ww2_capitalist.getIdeologyTypes());
+        ideologyTypesList.add(IdeologiesEnum.ww2_nationalist.getIdeologyTypes());
+        ideologyTypesList.add(IdeologiesEnum.ww2_imperialist.getIdeologyTypes());
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();

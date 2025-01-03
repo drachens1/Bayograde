@@ -93,6 +93,10 @@ public class ContinentalWorld extends World {
         if (province.getOccupier()==null){
             p.sendActionBar(Component.text("Unoccupied",NamedTextColor.GOLD, TextDecoration.BOLD));
         }else {
+            if (province.getOccupier().getNameComponent()==null){
+                System.err.println("Something went wrong drastically");
+                return;
+            }
             if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner== VotingWinner.ww2_troops){
                 if (province.getTroops()!=null && (province.getOccupier()==p.getCountry() || province.getOccupier().isAlly(p.getCountry()))){
                     List<Troop> troops = province.getTroops();

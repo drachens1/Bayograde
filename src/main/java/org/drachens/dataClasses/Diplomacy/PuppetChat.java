@@ -22,7 +22,7 @@ public class PuppetChat implements Channel {
                     .append(MessageEnum.puppetChat.getComponent())
                     .append(Component.text(p.getUsername()))
                     .append(Component.text(": "))
-                    .append(Component.text(e.getMessage()))
+                    .append(Component.text(e.getRawMessage()))
                     .build();
             overlord.sendMessage(msg);
             overlord.getPuppets().forEach(puppet-> puppet.sendMessage(msg));

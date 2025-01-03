@@ -21,7 +21,7 @@ public class CountryChat implements Channel {
                     .append(MessageEnum.countryChat.getComponent())
                     .append(Component.text(p.getUsername()))
                     .append(Component.text(": "))
-                    .append(Component.text(e.getMessage()))
+                    .append(Component.text(e.getRawMessage()))
                     .build());
         }else {
             p.sendMessage(Component.text("You no longer have access to this chat", NamedTextColor.RED));

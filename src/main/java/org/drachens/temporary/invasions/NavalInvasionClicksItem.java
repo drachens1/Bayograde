@@ -8,14 +8,18 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
+import net.minestom.server.instance.Instance;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -28,7 +32,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     private final Component provinceNoExist = Component.text("That province doesn't exist",NamedTextColor.RED);
     private final Component error = Component.text("You need to join a country first", NamedTextColor.RED);
     private final Component pos1 = Component.text("You need to launch the attack from  an ally or your own land or a puppets", NamedTextColor.RED);
-    private final Component pos2 = Component.text("You cannot need a war justification to attack",NamedTextColor.RED);
+    private final Component pos2 = Component.text("You need a war justification to attack",NamedTextColor.RED);
     private final Component noWater = Component.text("It needs to be adjacent to water", NamedTextColor.RED);
     private final HashMap<CPlayer, Pair<Province, Province>> playerPairHashMap = new HashMap<>();
     private final ConfirmCMD confirm;
@@ -59,14 +63,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
             p.sendMessage(pos1);
             return;
         }
-        boolean water = false;
-        for (Province province1 : province.getNeighbours()){
-            if (province1.getMaterial()==Material.BLUE_STAINED_GLASS){
-                water=true;
-                break;
-            }
-        }
-        if (!water){
+        if (notAdjacentWater(province.getPos(), province.getInstance())){
             p.sendMessage(noWater);
             return;
         }
@@ -78,10 +75,10 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
                             .append(Component.text("Naval invasion:",NamedTextColor.BLUE))
                             .appendNewline()
                             .append(Component.text("Launch point: ",NamedTextColor.BLUE))
-                            .append(Component.text(province.getPos().toString()))
+                            .append(Component.text(posToString(province.getPos())))
                             .appendNewline()
                             .append(Component.text("Attack point: ",NamedTextColor.BLUE))
-                            .append(Component.text(a.component2().getPos().toString()))
+                            .append(Component.text(posToString(a.component2().getPos())))
                             .appendNewline()
                             .append(Component.text()
                                     .append(Component.text("[LAUNCH]",NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -110,14 +107,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
             p.sendMessage(pos2);
             return;
         }
-        boolean water = false;
-        for (Province province1 : province.getNeighbours()){
-            if (province1.getMaterial()==Material.BLUE_STAINED_GLASS){
-                water=true;
-                break;
-            }
-        }
-        if (!water){
+        if (notAdjacentWater(province.getPos(), province.getInstance())){
             p.sendMessage(noWater);
             return;
         }
@@ -144,6 +134,22 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
         }
     }
 
+    int[][] directions2 = {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+    };
+
+    private boolean notAdjacentWater(@NotNull Pos position, Instance instance) {
+        for (int[] direction : directions2) {
+            int offsetX = direction[0];
+            int offsetY = direction[1];
+
+            if (instance.getBlock(position.add(offsetX, 0, offsetY)).compare(Block.BLUE_STAINED_GLASS)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void navalInvade(CPlayer p, Province province1, Province province2){
         Country country = p.getCountry();
         if (country==null){
@@ -161,7 +167,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
         Country target = province2.getOccupier();
         for (int[] d : directions){
             Province province = province2.add(d[0],d[1]);
-            if (province.getOccupier()!=null && country.canFight(target)){
+            if (province != null  && province.getOccupier()!=null && country.canFight(target)){
                 province.capture(country);
             }
         }

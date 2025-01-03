@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -55,17 +56,21 @@ public class LawsChangeOptionsCMD extends Command {
                 return;
             }
             List<Component> comps = new ArrayList<>();
-            lawCategory.getLawMap().forEach(((string, law) -> comps.add(Component.text()
+            lawCategory.getLawsStuff().forEach((law -> comps.add(Component.text()
                     .append(law.modifier().getName())
                             .appendNewline()
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the options to change this to", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country edit laws change "+context.get(lawSet)+" "+string))
+                    .clickEvent(ClickEvent.runCommand("/country edit laws change "+lawCategory.getIdentifier()+" "+law.identifier()))
                     .build())));
             comps.removeLast();
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(country.getNameComponent())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
+                    .appendNewline()
+                    .append(Component.text("Law: "+lawCategory.getIdentifier()))
+                    .appendNewline()
+                    .append(Component.text("Click to choose the new law",NamedTextColor.GRAY, TextDecoration.ITALIC))
                     .appendNewline()
                     .append(comps));
         },lawSet);

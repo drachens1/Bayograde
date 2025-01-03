@@ -39,7 +39,7 @@ public abstract class InventoryGUI implements InventoryHandler {
     @Override
     public void onClick(InventoryPreClickEvent event) {
         event.setCancelled(true);
-        event.getPlayer().openInventory(Objects.requireNonNull(event.getInventory()));
+        event.getPlayer().openInventory((Inventory) Objects.requireNonNull(event.getInventory()));
         int slot = event.getSlot();
         InventoryButton button = this.buttonMap.get(slot);
         if (button != null && button.getEventConsumer()!=null) {

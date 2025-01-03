@@ -1,5 +1,6 @@
 package org.drachens.cmd.Dev.debug.countryDebug;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
@@ -18,7 +19,10 @@ import static org.drachens.util.ServerUtil.getWorldClasses;
 public class CountryDebugCMD extends Command {
     public CountryDebugCMD(String permission) {
         super("debug");
-        setCondition((sender, permissionName) -> sender.hasPermission(permission));
+        setCondition((sender, permissionName) -> {
+            CPlayer p = (CPlayer) sender;
+            return p.hasPermission(permission);
+        });
         setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof Player p)) return;
             List<Component> components = new ArrayList<>();

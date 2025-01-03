@@ -36,8 +36,7 @@ public class WhoisCMD extends Command {
                 p.sendMessage(Component.text("That is not a valid player", NamedTextColor.RED));
                 return;
             }
-            List<String> permissions = new ArrayList<>();
-            p.getAllPermissions().forEach(permission -> permissions.add(permission.getPermissionName()));
+            List<String> permissions = new ArrayList<>(p.getAllPermissions());
             p.sendMessage(Component.text()
                             .append(Component.text(p.getUsername()))
                             .appendNewline()

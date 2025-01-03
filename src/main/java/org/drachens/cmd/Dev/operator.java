@@ -1,5 +1,6 @@
 package org.drachens.cmd.Dev;
 
+import dev.ng5m.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
@@ -9,10 +10,15 @@ public class operator extends Command {
     public operator() {
         super("operator", "op");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Usage /op <player>"));
-        setCondition((sender, s) -> sender.hasPermission("operator"));
+        setCondition((sender, s) -> {
+            CPlayer p = (CPlayer) sender;
+            return p.hasPermission("operator");
+        });
         var player = ArgumentType.Entity("player");
         addSyntax((sender, context) -> {
-            Player p = context.get(player).findFirstPlayer(sender);
+            CPlayer player1 = (CPlayer) sender;
+            if (!player1.hasPermission("operator"))return;
+            CPlayer p = (CPlayer) context.get(player).findFirstPlayer(sender);
             if (p == null) {
                 sender.sendMessage("P is null");
                 return;

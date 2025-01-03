@@ -4,13 +4,14 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
+import net.minestom.server.inventory.AbstractInventory;
 import net.minestom.server.inventory.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GUIManager {
-    private final Map<Inventory, InventoryHandler> activeInventories = new HashMap<>();
+    private final Map<AbstractInventory, InventoryHandler> activeInventories = new HashMap<>();
 
     public void openGUI(InventoryGUI gui, CPlayer player) {
         this.registerHandledInventory(gui.getInventory(), gui);
@@ -39,7 +40,7 @@ public class GUIManager {
     }
 
     public void handleClose(InventoryCloseEvent event) {
-        Inventory inventory = event.getInventory();
+        Inventory inventory = event.getNewInventory();
         InventoryHandler handler = this.activeInventories.get(inventory);
         if (handler != null) {
             handler.onClose(event);

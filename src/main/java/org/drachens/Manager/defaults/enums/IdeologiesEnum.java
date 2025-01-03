@@ -9,7 +9,9 @@ public enum IdeologiesEnum {
     ww2_conservatist,
     ww2_socialist,
     ww2_liberalist,
-    ww2_capitalist;
+    ww2_imperialist,
+    ww2_capitalist,
+    ww2_nationalist;
 
     private IdeologyTypes ideologyTypes;
     public void setIdeologyTypes(IdeologyTypes ideologyTypes){

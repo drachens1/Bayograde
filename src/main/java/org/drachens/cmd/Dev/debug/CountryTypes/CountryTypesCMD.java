@@ -1,5 +1,6 @@
 package org.drachens.cmd.Dev.debug.CountryTypes;
 
+import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
@@ -21,18 +22,22 @@ import static org.drachens.util.ServerUtil.getWorldClasses;
 public class CountryTypesCMD extends Command {
     public CountryTypesCMD(String permission) {
         super("types");
-        setCondition((sender, permissionName) -> sender.hasPermission(permission));
+        setCondition((sender, permissionName) -> {
+            CPlayer p = (CPlayer) sender;
+            return p.hasPermission(permission);
+        });
         var type = ArgumentType.String("superpower | major | minor");
         type.setSuggestionCallback((sender, context, suggestion) -> {
-            if (!sender.hasPermission(permission)) return;
+            CPlayer p = (CPlayer) sender;
+            if (!p.hasPermission(permission)) return;
             suggestion.addEntry(new SuggestionEntry("superPower"));
             suggestion.addEntry(new SuggestionEntry("major"));
             suggestion.addEntry(new SuggestionEntry("minor"));
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof Player p)) return;
-            if (!sender.hasPermission(permission)) return;
+            if (!(sender instanceof CPlayer p)) return;
+            if (!p.hasPermission(permission)) return;
             List<Component> components = new ArrayList<>();
             CountryEnums.Type choice = CountryEnums.Type.valueOf(context.get(type));
             components.add(Component.text(context.get(type), NamedTextColor.BLUE));

@@ -14,13 +14,17 @@ public class UnbanCMD extends Command {
     public UnbanCMD() {
         super("unban");
         var player = ArgumentType.String("player");
-        setCondition((sender, s) -> sender.hasPermission("unban"));
+        setCondition((sender, s) -> {
+            CPlayer p = (CPlayer) sender;
+            return p.hasPermission("unban");
+        });
         setDefaultExecutor((sender, context) -> {
-            if (sender.hasPermission("unban")) sender.sendMessage("Usage: /unban player");
+            CPlayer p = (CPlayer) sender;
+            if (p.hasPermission("unban")) sender.sendMessage("Usage: /unban player");
         });
         addSyntax((sender, context) -> {
-            if (!sender.hasPermission("unban")) return;
-            Player p = (CPlayer) sender;
+            CPlayer p = (CPlayer) sender;
+            if (!p.hasPermission("unban")) return;
             System.out.println(p.getUsername() + " has unbanned " + context.get(player));
             UUID u = getUUIDFromName(context.get(player));
             if (u == null) {

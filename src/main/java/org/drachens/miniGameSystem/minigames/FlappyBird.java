@@ -14,7 +14,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.item.Material;
-import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
+import net.minestom.server.network.packet.client.play.ClientSteerBoatPacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;
@@ -63,11 +63,9 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
 
         getWorld().setInstance(this);
 
-        MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerVehiclePacket.class, (clientSteerVehiclePacket, player) -> {
+        MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerBoatPacket.class, (clientSteerVehiclePacket, player) -> {
             if (player != this.player) return;
-            if ((clientSteerVehiclePacket.flags() & 0x01) == 0) return;
-
-            this.pos += gravity * 2d;
+            if (clientSteerVehiclePacket.leftPaddleTurning()||clientSteerVehiclePacket.rightPaddleTurning()) this.pos += gravity * 2d;
         });
 
         this.pos = yMax / 2d - 1d;
@@ -203,7 +201,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
             flappyBird.flappyBar.addPlayer(p);
 
             MiniGameUtil.putPlayerInBoat(p, getInstance());
-            MiniGameUtil.startGameLoop(flappyBird, 60, () -> flappyBird.mainLoop());
+            MiniGameUtil.startGameLoop( 60, () -> flappyBird.mainLoop());
         }
 
         @Override

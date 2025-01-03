@@ -4,6 +4,7 @@ import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator;
 import de.articdive.jnoise.pipeline.JNoise;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -98,7 +99,6 @@ public class MapGeneratorManager extends MapGen {
 
     public MapGeneratorManager() {
         super(200, 200);
-
         List<LawCategory> lawCategories = new ArrayList<>();
         lawCategories.add(new LawCategory.Create("Conscription")
                 .setDefault("volunteer")
@@ -110,6 +110,41 @@ public class MapGeneratorManager extends MapGen {
                 .addLaw(new Law("volunteer",new Modifier.create(Component.text("Volunteer only")).addBoost(BoostEnum.recruitablePop,0.01f).build(),null))
                 .build());
 
+        lawCategories.add(new LawCategory.Create("Womens-Rights")
+                .setDefault("no-rights")
+                .addLaw(new Law("no-rights",new Modifier.create(Component.text("No rights")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_liberalist.getIdeologyTypes()))
+                .addLaw(new Law("workplace",new Modifier.create(Component.text("Allowed in the workplace")).build(),null))
+                .addLaw(new Law("right-to-vote-and-work",new Modifier.create(Component.text("The right to vote and work")).build(),country -> country.getElections().getCurrentElectionType()==ElectionsEnum.democratic))
+                .build());
+        lawCategories.add(new LawCategory.Create("Media-Policy")
+                .setDefault("limited-censoring-laws")
+                .addLaw(new Law("complete-control-of-media",new Modifier.create(Component.text("Complete control")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_liberalist.getIdeologyTypes()))
+                .addLaw(new Law("limited-censoring-laws",new Modifier.create(Component.text("Limited censoring")).build(),null))
+                .addLaw(new Law("free-media",new Modifier.create(Component.text("Free media")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .build());
+        lawCategories.add(new LawCategory.Create("Immigration-policy")
+                .setDefault("closed-borders")
+                .addLaw(new Law("open-borders", new Modifier.create(Component.text("Open borders")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .addLaw(new Law("application-process", new Modifier.create(Component.text("Application process")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .addLaw(new Law("closed-borders", new Modifier.create(Component.text("Closed borders")).build(), null))
+                .addLaw(new Law("thorough-application-process", new Modifier.create(Component.text("Thorough application process")).build(), null))
+                .build());
+        lawCategories.add(new LawCategory.Create("Equality")
+                        .setDefault("some-equality")
+                .addLaw(new Law("concentration-camps", new Modifier.create(Component.text()
+                        .append(Component.text("Concentration camps")).hoverEvent(HoverEvent.showText(Component.text("We should never forget"))).build()).build(), country -> country.getIdeology().getCurrentIdeology()==IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .addLaw(new Law("oppression", new Modifier.create(Component.text("Oppression")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .addLaw(new Law("segregation", new Modifier.create(Component.text("Oppression")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .addLaw(new Law("some-equality", new Modifier.create(Component.text("Some equality")).build(), null))
+                .addLaw(new Law("complete-equality", new Modifier.create(Component.text("Complete equality")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_fascist.getIdeologyTypes()))
+                .build());
+        lawCategories.add(new LawCategory.Create("Companies-policies")
+                        .setDefault("capitalism")
+                        .addLaw(new Law("nationalization", new Modifier.create(Component.text("Nationalization")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_capitalist.getIdeologyTypes()))
+                        .addLaw(new Law("state-capitalism",new Modifier.create(Component.text("State Capitalism")).build(), country -> country.getIdeology().getCurrentIdeology()==IdeologiesEnum.ww2_socialist.getIdeologyTypes()))
+                        .addLaw(new Law("capitalism",new Modifier.create(Component.text("Capitalism")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_socialist.getIdeologyTypes()))
+                        .addLaw(new Law("free-market",new Modifier.create(Component.text("Free Market")).build(), country -> country.getIdeology().getCurrentIdeology()!=IdeologiesEnum.ww2_socialist.getIdeologyTypes()))
+                .build());
 
         lawCategories.forEach(lawCategory -> laws.put(lawCategory.getIdentifier(),lawCategory));
 
@@ -120,59 +155,58 @@ public class MapGeneratorManager extends MapGen {
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.democratic, Component.text("Austria", ColoursEnum.WHITE.getTextColor()), "Austria", Material.SNOW_BLOCK, Material.WHITE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Kurt Schuschnigg")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Albania", ColoursEnum.GREEN.getTextColor()), "Albania", Material.PURPLE_WOOL, Material.PURPLE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Zog I")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Belgium", ColoursEnum.GREEN.getTextColor()), "Belgium", Material.YELLOW_CONCRETE_POWDER, Material.YELLOW_CONCRETE, CityNum.minor, null, new Leader.create(Component.text("Paul van Zeeland")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.authoritarian, Component.text("Bulgaria", ColoursEnum.RED.getTextColor()), "Bulgaria", Material.RED_CONCRETE, Material.RED_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Boris III")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Czechoslovakia", ColoursEnum.RED.getTextColor()), "Czechoslovakia", Material.CYAN_WOOL, Material.LIGHT_BLUE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Edvard Beneš")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Denmark", ColoursEnum.RED.getTextColor()), "Denmark", Material.SOUL_SOIL, Material.BROWN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Thorvald Stauning")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Estonia", ColoursEnum.RED.getTextColor()), "Estonia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Konstantin Päts")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Finland", ColoursEnum.RED.getTextColor()), "Finland", Material.WHITE_CONCRETE, Material.WHITE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Pehr Evind Svinhufvud")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("France", ColoursEnum.BLUE.getTextColor()), "France", Material.LIGHT_BLUE_TERRACOTTA, Material.PURPLE_CONCRETE_POWDER, CityNum.major, null, new Leader.create(Component.text("Albert Lebrun")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.authoritarian, Component.text("Bulgaria", ColoursEnum.BROWN.getTextColor()), "Bulgaria", Material.DIRT, Material.BROWN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Boris III")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Czechoslovakia", ColoursEnum.CYAN.getTextColor()), "Czechoslovakia", Material.CYAN_WOOL, Material.LIGHT_BLUE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Edvard Beneš")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Denmark", ColoursEnum.BROWN.getTextColor()), "Denmark", Material.SOUL_SOIL, Material.BROWN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Thorvald Stauning")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Estonia", ColoursEnum.CYAN.getTextColor()), "Estonia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Konstantin Päts")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Finland", ColoursEnum.WHITE.getTextColor()), "Finland", Material.WHITE_CONCRETE, Material.WHITE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Pehr Evind Svinhufvud")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("France", ColoursEnum.CYAN.getTextColor()), "France", Material.LIGHT_BLUE_TERRACOTTA, Material.PURPLE_CONCRETE_POWDER, CityNum.major, null, new Leader.create(Component.text("Albert Lebrun")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("German Reich", ColoursEnum.GRAY.getTextColor()), "GermanReich", Material.CYAN_TERRACOTTA, Material.GRAY_CONCRETE_POWDER, CityNum.superPower, null, new Leader.create(Component.text("Adolf Hitler")).addModifier(new Modifier.create(Component.text("Hitler")).addBoost(BoostEnum.stabilityBase, 5f).addBoost(BoostEnum.production, 0.05f).build()).build(), null),
-                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Greece", ColoursEnum.GRAY.getTextColor()), "Greece", Material.LIGHT_BLUE_CONCRETE_POWDER, Material.LIGHT_BLUE_CONCRETE, CityNum.superPower, null, new Leader.create(Component.text("George II")).addModifier(new Modifier.create(Component.text("Hitler")).addBoost(BoostEnum.stabilityBase, 5f).addBoost(BoostEnum.production, 0.05f).build()).build(), null),
+                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Greece", ColoursEnum.GRAY.getTextColor()), "Greece", Material.LIGHT_BLUE_CONCRETE_POWDER, Material.LIGHT_BLUE_CONCRETE, CityNum.superPower, null, new Leader.create(Component.text("George II")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Hungary", ColoursEnum.BLACK.getTextColor()), "Hungary", Material.SCULK, Material.BLACK_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Miklós Horthy")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Ireland", ColoursEnum.RED.getTextColor()), "Ireland", Material.LIME_CONCRETE_POWDER, Material.LIME_CONCRETE, CityNum.minor, null, new Leader.create(Component.text("Domhnall Ua Buachalla")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Ireland", ColoursEnum.LIME.getTextColor()), "Ireland", Material.LIME_CONCRETE_POWDER, Material.LIME_CONCRETE, CityNum.minor, null, new Leader.create(Component.text("Domhnall Ua Buachalla")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Italy", ColoursEnum.GREEN.getTextColor()), "Italy", Material.LIME_TERRACOTTA, Material.LIME_CONCRETE_POWDER, CityNum.major, null, new Leader.create(Component.text("Benito Mussolini")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Latvia", ColoursEnum.RED.getTextColor()), "Latvia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Alberts Kviesis")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.democratic, Component.text("Lithuania", ColoursEnum.RED.getTextColor()), "Lithuania", Material.SPONGE, Material.YELLOW_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Antanas Smetona")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Luxembourg", ColoursEnum.RED.getTextColor()), "Luxembourg", Material.GREEN_CONCRETE, Material.GREEN_CONCRETE_POWDER, CityNum.irrelevant, null, new Leader.create(Component.text("Charlotte Adelgonde Elisabeth Marie Wilhelmine")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Netherlands", ColoursEnum.RED.getTextColor()), "Netherlands", Material.ORANGE_CONCRETE, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Hendrikus Colijn")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Norway", ColoursEnum.RED.getTextColor()), "Norway", Material.MUD_BRICKS, Material.BROWN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Johan Nygaardsvold")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Latvia", ColoursEnum.CYAN.getTextColor()), "Latvia", Material.CRIMSON_PLANKS, Material.PURPLE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Alberts Kviesis")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.democratic, Component.text("Lithuania", ColoursEnum.YELLOW.getTextColor()), "Lithuania", Material.SPONGE, Material.YELLOW_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Antanas Smetona")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Luxembourg", ColoursEnum.GREEN.getTextColor()), "Luxembourg", Material.GREEN_CONCRETE, Material.GREEN_CONCRETE_POWDER, CityNum.irrelevant, null, new Leader.create(Component.text("Charlotte Adelgonde Elisabeth Marie Wilhelmine")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Netherlands", ColoursEnum.ORANGE.getTextColor()), "Netherlands", Material.ORANGE_CONCRETE, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Hendrikus Colijn")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Norway", ColoursEnum.BROWN.getTextColor()), "Norway", Material.MUD_BRICKS, Material.BROWN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Johan Nygaardsvold")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.authoritarian, Component.text("Poland", ColoursEnum.MAGENTA.getTextColor()), "Poland", Material.PINK_CONCRETE, Material.PINK_CONCRETE_POWDER, CityNum.almostMajor, null, new Leader.create(Component.text("Ignacy Mościcki")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.democratic, Component.text("Portugal", ColoursEnum.RED.getTextColor()), "Portugal", Material.LIME_WOOL, Material.LIME_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Óscar Carmona")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.democratic, Component.text("Portugal", ColoursEnum.LIME.getTextColor()), "Portugal", Material.LIME_WOOL, Material.LIME_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Óscar Carmona")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Romania", ColoursEnum.YELLOW.getTextColor()), "Romania", Material.YELLOW_TERRACOTTA, Material.YELLOW_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Milan Stojadinović")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Spain", ColoursEnum.RED.getTextColor()), "Spain", Material.YELLOW_CONCRETE, Material.YELLOW_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Manuel Portela")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Sweden", ColoursEnum.RED.getTextColor()), "Sweden", Material.PRISMARINE_BRICKS, Material.LIGHT_BLUE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Per Albin Hansson")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Spain", ColoursEnum.YELLOW.getTextColor()), "Spain", Material.YELLOW_CONCRETE, Material.YELLOW_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Manuel Portela")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Sweden", ColoursEnum.CYAN.getTextColor()), "Sweden", Material.PRISMARINE_BRICKS, Material.PRISMARINE, CityNum.minor, null, new Leader.create(Component.text("Per Albin Hansson")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.authoritarian, Component.text("Switzerland", ColoursEnum.RED.getTextColor()), "Switzerland", Material.RED_CONCRETE, Material.RED_CONCRETE_POWDER, CityNum.almostMajor, null, new Leader.create(Component.text("The People")).setDescription(Component.text("I tried to find something more concrete but switzerland is so confusing but a direct democracy is very good")).build(), new Modifier[]{ModifiersEnum.ww2_neutral.getModifier()}),
-                new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.democratic, Component.text("United Kingdom", ColoursEnum.PINK.getTextColor()), "United-Kingdom", Material.PINK_TERRACOTTA, Material.MAGENTA_STAINED_GLASS, CityNum.major, null, georgeV, null),
+                new CountryType(IdeologiesEnum.ww2_conservatist, ElectionsEnum.democratic, Component.text("United Kingdom", ColoursEnum.PINK.getTextColor()), "United-Kingdom", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.major, null, georgeV, null),
                 new CountryType(IdeologiesEnum.ww2_socialist, ElectionsEnum.democratic, Component.text("Soviet Union", ColoursEnum.RED.getTextColor()), "Soviet-Union", Material.NETHERRACK, Material.RED_TERRACOTTA, CityNum.superPower, null, new Leader.create(Component.text("Stalin")).addModifier(new Modifier.create(Component.text("Purges", NamedTextColor.RED)).addEventsRunner(new Purges()).build()).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Yugoslavia", ColoursEnum.BLUE.getTextColor()), "Yugoslavia", Material.BLUE_CONCRETE_POWDER, Material.BLUE_CONCRETE, CityNum.almostMajor, null, new Leader.create(Component.text("Paul Karađorđević")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.authoritarian, Component.text("Turkey", ColoursEnum.WHITE.getTextColor()), "Turkey", Material.WHITE_TERRACOTTA, Material.WHITE_CONCRETE_POWDER, CityNum.almostMajor, null, new Leader.create(Component.text("Mustafa Kemal Atatürk")).build(), null),
-
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("", ColoursEnum.RED.getTextColor()), "", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("")).build(), null),
                 //Asia
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Afghanistan", ColoursEnum.RED.getTextColor()), "Afghanistan", Material.WAXED_WEATHERED_COPPER, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Mohammad Zahir Shah")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Bhutan", ColoursEnum.RED.getTextColor()), "Bhutan", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Jigme Wangchuk")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("British Raj", ColoursEnum.RED.getTextColor()), "British-Raj", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("China", ColoursEnum.RED.getTextColor()), "China", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Lin Sen")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Dutch East Indies", ColoursEnum.RED.getTextColor()), "Dutch-East-Indies", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, "Netherlands", new Leader.create(Component.text("Bonifacius Cornelis de Jonge")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Persia", ColoursEnum.RED.getTextColor()), "Persia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Reza Shah Pahlavi")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Iraq", ColoursEnum.RED.getTextColor()), "Iraq", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Jamil Al Midfai")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Japan", ColoursEnum.RED.getTextColor()), "Japan", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Emperor Shōwa")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Malaya", ColoursEnum.RED.getTextColor()), "Malaya", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Manchukuo", ColoursEnum.RED.getTextColor()), "Manchukuo", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Puyi")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_socialist, ElectionsEnum.democratic, Component.text("Mongolia", ColoursEnum.RED.getTextColor()), "Mongolia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Anandyn Amar")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Nepal", ColoursEnum.RED.getTextColor()), "Nepal", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Tribhuvan Bir Bikram Shah Dev")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Oman", ColoursEnum.RED.getTextColor()), "Oman", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Philippines", ColoursEnum.RED.getTextColor()), "Philippines", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Manuel L. Quezon")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Saudi Arabia", ColoursEnum.RED.getTextColor()), "Saudi Arabia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Ibn Saud")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Siam", ColoursEnum.RED.getTextColor()), "Siam", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Ananda Mahidol")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Tibet", ColoursEnum.RED.getTextColor()), "Tibet", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Thubten Jamphel Yeshe Gyaltsen")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Yemen", ColoursEnum.RED.getTextColor()), "Yemen", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", new Leader.create(Component.text("Imam Yahya Hamiduddin ")).build(), null),
-
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Afghanistan", ColoursEnum.CYAN.getTextColor()), "Afghanistan", Material.WAXED_WEATHERED_COPPER, Material.OXIDIZED_CUT_COPPER, CityNum.minor, null, new Leader.create(Component.text("Mohammad Zahir Shah")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Bhutan", ColoursEnum.BROWN.getTextColor()), "Bhutan", Material.SPRUCE_WOOD, Material.SPRUCE_LOG, CityNum.minor, null, new Leader.create(Component.text("Jigme Wangchuk")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_imperialist, ElectionsEnum.democratic, Component.text("British Raj", ColoursEnum.PINK.getTextColor()), "British-Raj", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
+                new CountryType(IdeologiesEnum.ww2_nationalist, ElectionsEnum.authoritarian, Component.text("China", ColoursEnum.WHITE.getTextColor()), "China", Material.WHITE_WOOL, Material.WHITE_TERRACOTTA, CityNum.minor, null, new Leader.create(Component.text("Lin Sen")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_imperialist, ElectionsEnum.democratic, Component.text("Dutch East Indies", ColoursEnum.ORANGE.getTextColor()), "Dutch-East-Indies", Material.ORANGE_CONCRETE, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, "Netherlands", new Leader.create(Component.text("Bonifacius Cornelis de Jonge")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Persia", ColoursEnum.BLACK.getTextColor()), "Persia", Material.POLISHED_BLACKSTONE, Material.BLACKSTONE, CityNum.minor, null, new Leader.create(Component.text("Reza Shah Pahlavi")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Iraq", ColoursEnum.BROWN.getTextColor()), "Iraq", Material.STRIPPED_JUNGLE_WOOD, Material.LIGHT_GRAY_TERRACOTTA, CityNum.minor, null, new Leader.create(Component.text("Jamil Al Midfai")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Japan", ColoursEnum.ORANGE.getTextColor()), "Japan", Material.ORANGE_TERRACOTTA, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Emperor Shōwa")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_imperialist, ElectionsEnum.democratic, Component.text("Malaya", ColoursEnum.MAGENTA.getTextColor()), "Malaya", Material.MAGENTA_WOOL, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
+                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Manchukuo", ColoursEnum.ORANGE.getTextColor()), "Manchukuo", Material.ORANGE_TERRACOTTA, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, "Japan", new Leader.create(Component.text("Puyi")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Mengkukuo", ColoursEnum.ORANGE.getTextColor()), "Mengkukuo", Material.ORANGE_TERRACOTTA, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, "Japan", new Leader.create(Component.text("Puyi")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_socialist, ElectionsEnum.authoritarian, Component.text("Mongolia", ColoursEnum.CYAN.getTextColor()), "Mongolia", Material.STRIPPED_WARPED_STEM, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Anandyn Amar")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Nepal", ColoursEnum.BROWN.getTextColor()), "Nepal", Material.OAK_WOOD, Material.BROWN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Tribhuvan Bir Bikram Shah Dev")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_imperialist, ElectionsEnum.democratic, Component.text("Oman", ColoursEnum.PINK.getTextColor()), "Oman", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Philippines", ColoursEnum.BROWN.getTextColor()), "Philippines", Material.STRIPPED_MANGROVE_LOG, Material.STRIPPED_MANGROVE_WOOD, CityNum.minor, null, new Leader.create(Component.text("Manuel L. Quezon")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Saudi Arabia", ColoursEnum.LIGHT_GRAY.getTextColor()), "Saudi-Arabia", Material.LIGHT_GRAY_TERRACOTTA, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Ibn Saud")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_fascist, ElectionsEnum.authoritarian, Component.text("Siam", ColoursEnum.BLUE.getTextColor()), "Siam", Material.PACKED_ICE, Material.ICE, CityNum.minor, null, new Leader.create(Component.text("Ananda Mahidol")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Tibet", ColoursEnum.GREEN.getTextColor()), "Tibet", Material.BAMBOO_BLOCK, Material.STRIPPED_BAMBOO_BLOCK, CityNum.minor, null, new Leader.create(Component.text("Thubten Jamphel Yeshe Gyaltsen")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_neutral, ElectionsEnum.democratic, Component.text("Yemen", ColoursEnum.PINK.getTextColor()), "Yemen", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", new Leader.create(Component.text("Imam Yahya Hamiduddin ")).build(), null),
                 //Oceania
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Australia", NamedTextColor.YELLOW), "Australia", Material.YELLOW_CONCRETE, Material.YELLOW_TERRACOTTA, CityNum.minor, "United-Kingdom", new Leader.create(Component.text("")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("New Zealand", NamedTextColor.GRAY), "New-Zealand", Material.GRAY_CONCRETE, Material.GRAY_TERRACOTTA, CityNum.minor, "United-Kingdom", new Leader.create(Component.text("")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Australia", NamedTextColor.YELLOW), "Australia", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("New Zealand", NamedTextColor.GRAY), "New-Zealand", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
                 //North America
-                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("United States", NamedTextColor.BLUE), "United-States", Material.BLUE_CONCRETE, Material.BLUE_TERRACOTTA, CityNum.superPower, null, new Leader.create(Component.text("")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Canada", NamedTextColor.RED), "Canada", Material.PINK_TERRACOTTA, Material.RED_CONCRETE_POWDER, CityNum.minor, "United-Kingdom", georgeV, null),
+                new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("United States", NamedTextColor.BLUE), "United-States", Material.BLUE_CONCRETE, Material.BLUE_TERRACOTTA, CityNum.superPower, null, new Leader.create(Component.text("Teddy Roosevelt")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_liberalist, ElectionsEnum.democratic, Component.text("Mexico", NamedTextColor.RED), "Mexico", Material.RED_CONCRETE, Material.RED_TERRACOTTA, CityNum.minor, null, new Leader.create(Component.text("")).build(), null),
         };
         System.out.println("Country types length : "+countryTypes.length);
@@ -233,7 +267,7 @@ public class MapGeneratorManager extends MapGen {
         for (int x = 0; x < getSizeX(); x++) {
             for (int y = 0; y < getSizeY(); y++) {
                 double noiseValue = noisePipeline.evaluateNoise(x, y);
-                if (noiseValue < 0.02) {
+                if (noiseValue < 0.01) {
                     instance.setBlock(new Pos(x,0,y),Material.BLUE_STAINED_GLASS.block());
                 } else {
                     land.add(new FlatPos(x,y));
@@ -246,11 +280,15 @@ public class MapGeneratorManager extends MapGen {
 
     private void createCountries() {
         List<Country> countries = new ArrayList<>();
+        Country soviet = null;
 
         for (int i = 0; i < this.countries; i++) {
             Country newCount = createCountry(i);
             countries.add(newCount);
             countryDataManager.addCountry(newCount);
+            if (newCount!=null && Objects.equals(newCount.getName(), "Soviet-Union")){
+                soviet=newCount;
+            }
         }
         for (int i = 0; i < countries.size(); i++) {
             Country country = countries.get(i);
@@ -262,7 +300,7 @@ public class MapGeneratorManager extends MapGen {
                 c.addPuppet(country);
             }
         }
-        floodFill(countries);
+        floodFill(countries,soviet);
     }
 
     private Country createCountry(int count) {
@@ -311,23 +349,42 @@ public class MapGeneratorManager extends MapGen {
         }
     }
 
-    public void floodFill(List<Country> countries) {
+    public void floodFill(List<Country> countries, Country targetCountry) {
         Queue<FlatPos>[] countryQueues = new Queue[countries.size()];
 
         for (int i = 0; i < countries.size(); i++) {
-            startCountry(i,countryQueues,countries);
+            countryQueues[i] = new LinkedList<>();
+            startCountry(i, countryQueues, countries);
         }
 
         boolean anyQueueHadExpansion;
         do {
             anyQueueHadExpansion = false;
 
+            int targetIndex = countries.indexOf(targetCountry);
+            if (!countryQueues[targetIndex].isEmpty()) {
+                FlatPos currentPos = countryQueues[targetIndex].poll();
+                for (FlatPos neighbor : getNeighbours(currentPos)) {
+                    if (land.contains(neighbor) && !countryHashMap.containsKey(neighbor)) {
+                        countryQueues[targetIndex].add(neighbor);
+                        countryHashMap.put(neighbor, targetCountry);
+                        anyQueueHadExpansion = true;
+                        land.remove(neighbor);
+                    } else if (countryHashMap.containsKey(neighbor) && countryHashMap.get(neighbor) != targetCountry) {
+                        countryHashMap.put(neighbor, targetCountry);
+                        anyQueueHadExpansion = true;
+                    }
+                }
+            }
+
             for (int i = 0; i < countries.size(); i++) {
+                if (i == targetIndex) continue;
                 if (!countryQueues[i].isEmpty()) {
-                    for (FlatPos neighbor : getNeighbours(countryQueues[i].poll())) {
-                        if (land.contains(neighbor)&&!countryHashMap.containsKey(neighbor)) {
+                    FlatPos currentPos = countryQueues[i].poll();
+                    for (FlatPos neighbor : getNeighbours(currentPos)) {
+                        if (land.contains(neighbor) && !countryHashMap.containsKey(neighbor)) {
                             countryQueues[i].add(neighbor);
-                            countryHashMap.put(neighbor,countries.get(i));
+                            countryHashMap.put(neighbor, countries.get(i));
                             anyQueueHadExpansion = true;
                             land.remove(neighbor);
                         }
@@ -335,10 +392,12 @@ public class MapGeneratorManager extends MapGen {
                 }
             }
         } while (anyQueueHadExpansion);
-        land.forEach(z -> instance.setBlock(new Pos(z.x(),0,z.z()),Material.WHITE_TERRACOTTA.block()));
+
+        land.forEach(z -> instance.setBlock(new Pos(z.x(), 0, z.z()), Material.WHITE_TERRACOTTA.block()));
 
         borders(countries);
     }
+
 
     private void borders(List<Country> countries){
         countryHashMap.forEach(((flatPos, country) -> {

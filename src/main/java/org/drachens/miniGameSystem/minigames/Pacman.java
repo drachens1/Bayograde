@@ -4,15 +4,12 @@ import dev.ng5m.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.util.Direction;
 import dev.ng5m.util.MiniGameUtil;
-import dev.ng5m.util.VehicleMovementHaccUtil;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.client.play.ClientSteerBoatPacket;
-import net.minestom.server.network.packet.client.play.ClientSteerVehiclePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.DynamicPixel;
@@ -26,42 +23,41 @@ import java.util.List;
 import static java.lang.Math.*;
 
 public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
-    private static final String MAP_LAYOUT = "■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n" +
-            "■            ■■            ■\n" +
-            "■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■\n" +
-            "■ ■  ■ ■   ■ ■■ ■   ■ ■  ■ ■\n" +
-            "■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■\n" +
-            "■                          ■\n" +
-            "■ ■■■■ ■■ ■■■■■■■■ ■■ ■■■■ ■\n" +
-            "■ ■■■■ ■■ ■■■■■■■■ ■■ ■■■■ ■\n" +
-            "■      ■■    ■■    ■■      ■\n" +
-            "■■■■■■ ■■■■■ ■■ ■■■■■ ■■■■■■\n" +
-            "xxxxx■ ■■■■■ ■■ ■■■■■ ■xxxxx\n" +
-            "xxxxx■ ■■          ■■ ■xxxxx\n" +
-            "xxxxx■ ■■ ■■■.x■■■ ■■ ■xxxxx\n" +
-            "■■■■■■ ■■ ■xx.xxx■ ■■ ■■■■■■\n" +
-            "          ■xx..xx■          \n" +
-            "■■■■■■ ■■ ■xxxxxx■ ■■ ■■■■■■\n" +
-            "xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx\n" +
-            "xxxxx■ ■■  READY!  ■■ ■xxxxx\n" +
-            "xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx\n" +
-            "■■■■■■ ■■ ■■■■■■■■ ■■ ■■■■■■\n" +
-            "■            ■■            ■\n" +
-            "■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■\n" +
-            "■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■\n" +
-            "■   ■■                ■■   ■\n" +
-            "■■■ ■■ ■■ ■■■■■■■■ ■■ ■■ ■■■\n" +
-            "■■■ ■■ ■■ ■■■■■■■■ ■■ ■■ ■■■\n" +
-            "■      ■■    ■■    ■■      ■\n" +
-            "■ ■■■■■■■■■■ ■■ ■■■■■■■■■■ ■\n" +
-            "■ ■■■■■■■■■■ ■■ ■■■■■■■■■■ ■\n" +
-            "■                          ■\n" +
-            "■■■■■■■■■■■■■■■■■■■■■■■■■■■■";
+    private static final String MAP_LAYOUT = """
+            ■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+            ■            ■■            ■
+            ■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■
+            ■ ■  ■ ■   ■ ■■ ■   ■ ■  ■ ■
+            ■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■
+            ■                          ■
+            ■ ■■■■ ■■ ■■■■■■■■ ■■ ■■■■ ■
+            ■ ■■■■ ■■ ■■■■■■■■ ■■ ■■■■ ■
+            ■      ■■    ■■    ■■      ■
+            ■■■■■■ ■■■■■ ■■ ■■■■■ ■■■■■■
+            xxxxx■ ■■■■■ ■■ ■■■■■ ■xxxxx
+            xxxxx■ ■■          ■■ ■xxxxx
+            xxxxx■ ■■ ■■■.x■■■ ■■ ■xxxxx
+            ■■■■■■ ■■ ■xx.xxx■ ■■ ■■■■■■
+                      ■xx..xx■         \s
+            ■■■■■■ ■■ ■xxxxxx■ ■■ ■■■■■■
+            xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx
+            xxxxx■ ■■  READY!  ■■ ■xxxxx
+            xxxxx■ ■■ ■■■■■■■■ ■■ ■xxxxx
+            ■■■■■■ ■■ ■■■■■■■■ ■■ ■■■■■■
+            ■            ■■            ■
+            ■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■
+            ■ ■■■■ ■■■■■ ■■ ■■■■■ ■■■■ ■
+            ■   ■■                ■■   ■
+            ■■■ ■■ ■■ ■■■■■■■■ ■■ ■■ ■■■
+            ■■■ ■■ ■■ ■■■■■■■■ ■■ ■■ ■■■
+            ■      ■■    ■■    ■■      ■
+            ■ ■■■■■■■■■■ ■■ ■■■■■■■■■■ ■
+            ■ ■■■■■■■■■■ ■■ ■■■■■■■■■■ ■
+            ■                          ■
+            ■■■■■■■■■■■■■■■■■■■■■■■■■■■■""";
 
     // REVERSED ⚠
     private static final List<String> MAP_LAYOUT_LINES = Arrays.asList(MAP_LAYOUT.split("\n")).reversed();
-
-    private final Sprite map;
 
     private final PacmanSprite pacman;
 
@@ -89,7 +85,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         getWorld().setInstance(this);
 
-        map = new Sprite.Builder()
+        new Sprite.Builder()
                 .setIdentifier("pacmanMap")
                 .setLayout(
                         MAP_LAYOUT
@@ -105,17 +101,17 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         inky = new Inky();
         clyde = new Clyde();
 
-        MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerVehiclePacket.class, (clientSteerVehiclePacket, player) -> {
-            if (player != this.player) return;
-
-            final byte flags = clientSteerVehiclePacket.flags();
-
-            if (VehicleMovementHaccUtil.jumping(flags) && isWalkablePacman(Direction.NORTH)) {
-                pacman.direction = Direction.NORTH;
-            } else if (VehicleMovementHaccUtil.sneaking(flags) && isWalkablePacman(Direction.SOUTH)) {
-                pacman.direction = Direction.SOUTH;
-            }
-        });
+//        MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerVehiclePacket.class, (clientSteerVehiclePacket, player) -> {
+//            if (player != this.player) return;
+//
+//            final byte flags = clientSteerVehiclePacket.flags();
+//
+//            if (VehicleMovementHaccUtil.jumping(flags) && isWalkablePacman(Direction.NORTH)) {
+//                pacman.direction = Direction.NORTH;
+//            } else if (VehicleMovementHaccUtil.sneaking(flags) && isWalkablePacman(Direction.SOUTH)) {
+//                pacman.direction = Direction.SOUTH;
+//            }
+//        });
 
         MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerBoatPacket.class, (clientSteerBoatPacket, player) -> {
             if (clientSteerBoatPacket.rightPaddleTurning() && isWalkablePacman(Direction.WEST)) { // turn left coz inverted
@@ -410,7 +406,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         public enum State {
             SCATTER,
-            CHASE;
+            CHASE
         }
     }
 
@@ -448,7 +444,7 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         @Override
         public void addPlayer(CPlayer p) {
             MiniGameUtil.putPlayerInBoat(p, getInstance());
-            MiniGameUtil.startGameLoop(instance, instance.fps, instance::mainLoop);
+            MiniGameUtil.startGameLoop( instance.fps, instance::mainLoop);
 
             for (int y = 0; y < MAP_LAYOUT_LINES.size(); ++y) {
                 String line = MAP_LAYOUT_LINES.get(y);
@@ -471,11 +467,6 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         @Override
         public void removePlayer(CPlayer p) {
             ContinentalManagers.worldManager.unregisterWorld(this);
-        }
-
-        @Override
-        public void playerMove(PlayerMoveEvent e) {
-
         }
     }
 

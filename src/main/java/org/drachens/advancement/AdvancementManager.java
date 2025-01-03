@@ -5,8 +5,7 @@ import kotlin.Pair;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.AdvancementRoot;
 import net.minestom.server.advancements.AdvancementTab;
-import net.minestom.server.advancements.notifications.Notification;
-import net.minestom.server.advancements.notifications.NotificationCenter;
+import net.minestom.server.advancements.Notification;
 import org.drachens.events.AdvancementEvent;
 import org.drachens.fileManagement.PlayerInfoEntry;
 
@@ -84,7 +83,7 @@ public class AdvancementManager {
                             displayAdv.frameType(),
                             displayAdv.item()
                     );
-                    NotificationCenter.send(notification, player);
+                    player.sendNotification(notification);
                     return true;
                 }
                 return false;

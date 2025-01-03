@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CommandsUtil {
-
     public static Argument<String> getCountriesArg(){
         return ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {

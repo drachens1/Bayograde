@@ -4,7 +4,7 @@ import net.minestom.server.coordinate.Pos;
 
 public class OtherUtil {
     public static String posToString(Pos pos){
-        return pos.x()+", "+pos.y();
+        return pos.x()+", "+pos.z();
     }
 
     public static float[] yawToQuat(double yaw) {

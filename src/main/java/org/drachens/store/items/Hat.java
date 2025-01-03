@@ -18,7 +18,7 @@ public class Hat extends StoreItem {
 
     @Override
     public void onPurchase(CPlayer p) {
-        p.getInventory().setHelmet(itemStack);
+        p.setHelmet(itemStack);
     }
 
     @Override

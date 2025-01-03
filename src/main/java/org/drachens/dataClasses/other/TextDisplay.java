@@ -12,7 +12,7 @@ import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.EntityTeleportPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
-import net.minestom.server.utils.PacketUtils;
+import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
 
@@ -39,7 +39,7 @@ public class TextDisplay extends Clientside {
         this.opacity = c.opacity;
         this.bitmask = c.bitmask;
         this.followPlayer = c.followPlayer;
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
         createEntityMetaDataPacket();
     }
 
@@ -73,7 +73,7 @@ public class TextDisplay extends Clientside {
         } else
             map.put(11, Metadata.Vector3(to.sub(pos.x(), 0, pos.z())));
 
-        PacketUtils.sendGroupedPacket(getAsPlayers(), new EntityMetaDataPacket(entityId, map));
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), new EntityMetaDataPacket(entityId, map));
     }
 
     public void destroy(Long delay) {
@@ -85,14 +85,14 @@ public class TextDisplay extends Clientside {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
         map.put(23, Metadata.Chat(text));
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
-        if (storeViewers) PacketUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
+        if (storeViewers) PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
         createEntityMetaDataPacket();
     }
 
     public void setPos(Pos pos) {
         this.pos = pos;
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, false);
-        if (storeViewers) PacketUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos,0,false);
+        if (storeViewers) PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class TextDisplay extends Clientside {
             addPlayers(players);
         List<Player> players1 = new ArrayList<>(players);
 
-        PacketUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
+        PacketSendingUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
@@ -110,9 +110,9 @@ public class TextDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        PacketUtils.sendGroupedPacket(players1, entityMetaDataPacket);
+        PacketSendingUtils.sendGroupedPacket(players1, entityMetaDataPacket);
 
-        PacketUtils.sendGroupedPacket(players1, entityTeleportPacket);
+        PacketSendingUtils.sendGroupedPacket(players1, entityTeleportPacket);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             removePlayers(players);
 
-        PacketUtils.sendGroupedPacket(new ArrayList<>(players), new DestroyEntitiesPacket(this.entityId));
+        PacketSendingUtils.sendGroupedPacket(new ArrayList<>(players), new DestroyEntitiesPacket(this.entityId));
     }
 
     @Override
@@ -129,7 +129,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             addPlayer(p);
 
-        PacketUtils.sendPacket(p, new SpawnEntityPacket(
+        PacketSendingUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
@@ -137,9 +137,9 @@ public class TextDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-        PacketUtils.sendPacket(p, entityMetaDataPacket);
+        PacketSendingUtils.sendPacket(p, entityMetaDataPacket);
 
-        PacketUtils.sendPacket(p, entityTeleportPacket);
+        PacketSendingUtils.sendPacket(p, entityTeleportPacket);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class TextDisplay extends Clientside {
         if (storeViewers)
             addViewer(p);
 
-        PacketUtils.sendPacket(p, new DestroyEntitiesPacket(this.entityId));
+        PacketSendingUtils.sendPacket(p, new DestroyEntitiesPacket(this.entityId));
     }
 
     @Override

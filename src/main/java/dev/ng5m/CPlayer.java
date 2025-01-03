@@ -8,10 +8,10 @@ import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.component.HeadProfile;
+import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.fileManagement.PlayerInfoEntry;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -23,6 +23,7 @@ import static org.drachens.util.OtherUtil.formatPlaytime;
 
 public class CPlayer extends Player {
     private final List<String> ownedCosmetics = new ArrayList<>();
+    private final List<String> permissions = new ArrayList<>();
     private Country country;
 
     private UUID lastMessenger;
@@ -34,8 +35,8 @@ public class CPlayer extends Player {
     private LocalTime lastCheck;
     private PlayerInfoEntry playerInfoEntry;
 
-    public CPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection playerConnection) {
-        super(uuid, username, playerConnection);
+    public CPlayer(PlayerConnection playerConnection, GameProfile gameProfile) {
+        super(playerConnection,gameProfile);
     }
 
     public PlayerInfoEntry getPlayerInfoEntry() {
@@ -137,6 +138,22 @@ public class CPlayer extends Player {
 
     public ItemStack getPlayerHead() {
         return headItem;
+    }
+
+    public boolean hasPermission(String permission){
+        return permissions.contains(permission);
+    }
+
+    public void addPermission(String permission){
+        permissions.add(permission);
+    }
+
+    public void removePermission(String permission){
+        permissions.remove(permission);
+    }
+
+    public List<String> getAllPermissions(){
+        return permissions;
     }
 
 }

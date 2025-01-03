@@ -2,18 +2,14 @@ package org.drachens.temporary.country.edit.laws;
 
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.laws.Law;
 import org.drachens.dataClasses.laws.LawCategory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
@@ -21,18 +17,18 @@ public class LawsChangeCMD extends Command {
     public LawsChangeCMD() {
         super("change");
 
-        var laws = ArgumentType.String("categories")
+        var law2 = ArgumentType.String("categories")
                 .setSuggestionCallback((sender,context,suggestion)->{
                     if (!isLeaderOfCountry(sender))return;
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion,p.getCountry().getLawNames());
                 });
 
-        var options = ArgumentType.String("laws")
+        var options = ArgumentType.String("options")
                 .setSuggestionCallback((sender,context,suggestion)->{
                     if (!isLeaderOfCountry(sender))return;
                     CPlayer p = (CPlayer) sender;
-                    LawCategory law =  p.getCountry().getLaw(context.get(laws));
+                    LawCategory law =  p.getCountry().getLaw(context.get(law2));
                     if (law==null){
                         suggestion.addEntry(new SuggestionEntry("Invalid category inputted"));
                         return;
@@ -59,29 +55,28 @@ public class LawsChangeCMD extends Command {
             p.sendMessage(Component.text("Proper usage: /country laws change-options <laws>", NamedTextColor.RED));
         });
 
+        addSyntax((sender,context)->{},law2);
+
         addSyntax((sender,context)->{
             if (!isLeaderOfCountry(sender))return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            LawCategory lawCategory = country.getLaw(country.getName());
+            LawCategory lawCategory = country.getLaw(context.get(law2));
             if (lawCategory==null){
                 p.sendMessage(Component.text("That law category is null",NamedTextColor.RED));
                 return;
             }
-            List<Component> comps = new ArrayList<>();
-            lawCategory.getLawMap().forEach(((string, law) -> comps.add(Component.text()
-                    .append(law.modifier().getName())
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the options to change this to", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country edit laws change "+string))
-                    .build())));
+            Law law = lawCategory.getLaw(context.get(options));
+            if (law==null){
+                p.sendMessage(Component.text("That law is null",NamedTextColor.RED));
+                return;
+            }
+            lawCategory.setCurrent(law);
             p.sendMessage(Component.text()
-                    .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(country.getNameComponent())
-                    .append(Component.text("\\_______", NamedTextColor.BLUE))
-                    .appendNewline()
-                    .append(comps)
+                            .append(Component.text("Changed the law to "))
+                            .append(law.modifier().getName())
                     .build());
-        },laws,options);
+        },law2,options);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

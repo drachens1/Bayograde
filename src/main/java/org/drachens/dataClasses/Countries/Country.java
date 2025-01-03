@@ -34,6 +34,7 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
@@ -68,6 +69,7 @@ public abstract class Country implements Cloneable {
     private final Ideology ideology;
     private final Election elections;
     private final List<Modifier> modifiers = new ArrayList<>();
+    private final List<EventsRunner> eventsRunners = new ArrayList<>();
     private final List<Country> puppets = new ArrayList<>();
     private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
     private final AStarPathfinderXZ aStarPathfinder;
@@ -197,6 +199,14 @@ public abstract class Country implements Cloneable {
     public void minusBoost(BoostEnum boostEnum, float value) {
         float current = boostHashmap.getOrDefault(boostEnum, 1f);
         boostHashmap.put(boostEnum, current - value);
+    }
+
+    public void addEventsRunner(EventsRunner eventsRunner){
+        eventsRunners.add(eventsRunner);
+    }
+
+    public void removeEventsRunner(EventsRunner eventsRunner){
+        eventsRunners.remove(eventsRunner);
     }
 
     public void addCondition(ConditionEnum conditionEnum){
@@ -574,7 +584,7 @@ public abstract class Country implements Cloneable {
                     extraInfo.add(Component.text()
                             .append(Component.text(" [CLICK]",NamedTextColor.GOLD,TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click show the list of all the puppets", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country info puppets"))
+                            .clickEvent(ClickEvent.runCommand("/country info puppets "+getName()))
                             .build());
                     break;
                 }
@@ -594,7 +604,7 @@ public abstract class Country implements Cloneable {
         if (getLeader()==null)return;
         this.description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
-                .append(Component.text(getName(), NamedTextColor.GOLD))
+                .append(originalName)
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Leader: "))
@@ -616,7 +626,7 @@ public abstract class Country implements Cloneable {
                 .append(extraInfo)
                 .appendNewline()
                 .append(Component.text()
-                        .append(Component.text("[JOIN]", NamedTextColor.GOLD))
+                        .append(Component.text("[JOIN]", NamedTextColor.GOLD,TextDecoration.BOLD))
                         .clickEvent(ClickEvent.runCommand("/country join " + getName()))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))
                 )
@@ -963,6 +973,8 @@ public abstract class Country implements Cloneable {
          });
          toRemove.forEach(warJustificationHashMap::remove);
         newDay(newDay);
+
+        eventsRunners.removeIf(EventsRunner::newDay);
     }
 
     public abstract void newDay(NewDay newDay);

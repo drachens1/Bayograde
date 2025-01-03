@@ -1,7 +1,6 @@
 package org.drachens.fileManagement;
 
 import dev.ng5m.CPlayer;
-import net.minestom.server.permission.Permission;
 import org.drachens.fileManagement.databases.Entry;
 import org.drachens.fileManagement.databases.Table;
 
@@ -151,7 +150,7 @@ public class PlayerInfoEntry implements Entry {
 
                 String permissionsString = resultSet.getString("permissions");
                 this.permissions = new ArrayList<>(Arrays.asList(permissionsString.split(",")));
-                permissions.forEach(permission -> p.addPermission(new Permission(permission)));
+                permissions.forEach(permission -> p.addPermission(permission));
 
 
                 String cosmeticsString = resultSet.getString("cosmetics");

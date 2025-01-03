@@ -1,5 +1,6 @@
 package org.drachens.cmd.ban;
 
+import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -16,14 +17,16 @@ public class BanCMD extends Command {
         var reason = ArgumentType.StringArray("reason");
         var duration = ArgumentType.Long("time (minutes)");
         setCondition((sender, s) -> {
-            return sender.hasPermission("ban");
+            CPlayer p = (CPlayer) sender;
+            return p.hasPermission("ban");
         });
         setDefaultExecutor((sender, context) -> {
-            if (sender.hasPermission("ban")) sender.sendMessage("Usage /ban <player>");
+            CPlayer p = (CPlayer) sender;
+            if (p.hasPermission("ban")) sender.sendMessage("Usage /ban <player>");
         });
         addSyntax((sender, context) -> {
-            if (!sender.hasPermission("ban")) return;
-            Player send = (Player) sender;
+            CPlayer send = (CPlayer) sender;
+            if (!send.hasPermission("ban")) return;
             System.out.println(send.getUsername() + " has banned " + context.get(player));
             UUID p = getUUIDFromName(context.get(player));
             if (p == null) {
