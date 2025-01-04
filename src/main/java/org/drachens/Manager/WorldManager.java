@@ -17,7 +17,6 @@ import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.databases.Table;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -64,11 +63,21 @@ public class WorldManager {
         ContinentalManagers.advancementManager.addPlayer(p);
         p.setJoinTime(LocalTime.now());
         p.setHead();
-        try {
-            p.sendResourcePacks(ResourcePackRequest.addingRequest(ResourcePackInfo.resourcePackInfo(p.getUuid(),new URI("https://download.mc-packs.net/pack/e12c2a17430747a9bb58cce2af34aef1aebac149.zip"),"e12c2a17430747a9bb58cce2af34aef1aebac149")));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        sendResourcePack(p);
+    }
+
+    private ResourcePackInfo resourcePackInfo = ResourcePackInfo.resourcePackInfo()
+            .uri(URI.create("https://download.mc-packs.net/pack/60f880067ca235c61abbc7949269cba5a0f0d01e.zip"))
+            .hash("60f880067ca235c61abbc7949269cba5a0f0d01e").build();
+
+    private void sendResourcePack(CPlayer p){
+        final ResourcePackRequest request = ResourcePackRequest.resourcePackRequest()
+                .packs(resourcePackInfo)
+                .prompt(Component.text("Please download the resource pack!"))
+                .required(true)
+                .build();
+
+        //p.sendResourcePacks(request);
     }
 
     public void setDefaultWorld(World world) {

@@ -49,11 +49,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import static net.minestom.server.ServerFlag.MAX_PACKET_SIZE;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;
 
-public class Main {
+public class  Main {
     private static final String[] firstName = {
             "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth",
             "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen",
@@ -132,15 +133,16 @@ public class Main {
             "Cherry", "Hayden", "Shaffer", "Mann", "Riddle", "Aletander", "Buck", "Clemons", "Blackwell", "McNeill",
     };
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
+        System.setProperty("minestom.max-packet-size", "2963852");//see server flags
         completeStartup();
     }
 
     public static void completeStartup() {
-        System.setProperty("minestom.max-packet-size", "597_151");//see server flags
         initSrv();
         MinecraftServer.getCommandManager().register(new ConfirmCMD());
 
+        System.out.println(MAX_PACKET_SIZE);
         createWW2VotingOption();
 
         BuildingEnum.university.setBuildType(new ResearchUniversity());

@@ -89,7 +89,6 @@ public abstract class Country implements Cloneable {
     private final List<Province> occupies;
     private final List<Province> cities;
     private String name;
-    private Component nameComponent;
     private Material block;
     private Material border;
     private Province capital;
@@ -113,7 +112,7 @@ public abstract class Country implements Cloneable {
     private final HashSet<Province> cores = new HashSet<>();
     private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
     private final CountryChat countryChat;
-    private final Component originalName;
+    private Component originalName;
     private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
     private final HashMap<String, LawCategory>  laws = new HashMap<>();
     private PuppetChat puppetChat;
@@ -124,8 +123,7 @@ public abstract class Country implements Cloneable {
         this.ideology = defaultIdeologies.clone(this);
         this.vault = vault;
         vault.setCountry(this);
-        this.originalName=nameComponent;
-        this.nameComponent = nameComponent;
+        this.originalName=nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name));
         this.name = name;
         this.setPrefix(Component.text(name, NamedTextColor.BLUE));
         this.block = block;
@@ -313,11 +311,11 @@ public abstract class Country implements Cloneable {
     }
 
     public void setName(Component name) {
-        this.nameComponent = name;
+        this.originalName = name;
     }
 
     public Component getNameComponent() {
-        return nameComponent;
+        return originalName;
     }
 
     public Material getBlock() {
@@ -350,8 +348,8 @@ public abstract class Country implements Cloneable {
         EventDispatcher.call(new CountryJoinEvent(this, p));
         capitulationBar.addPlayer(p);
         this.players.add(p);
-        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have joined ", NamedTextColor.BLUE).append(nameComponent)).build()).build());
-        broadcast(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text(p.getUsername(), NamedTextColor.GOLD, TextDecoration.BOLD)).append(Component.text(" has joined ", NamedTextColor.BLUE)).append(nameComponent).build()).build(), p.getInstance());
+        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have joined ", NamedTextColor.GREEN).append(originalName)).build()).build());
+        broadcast(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text(p.getUsername())).append(Component.text(" has joined ", NamedTextColor.GREEN)).append(originalName).build()).build(), p.getInstance());
         p.teleport(capital.getPos().add(0, 1, 0));
         scoreboardManager.openScoreboard(new DefaultCountryScoreboard(), p);
         DefaultCountryScoreboard defaultCountryScoreboard = (DefaultCountryScoreboard) scoreboardManager.getScoreboard(p);
@@ -368,7 +366,7 @@ public abstract class Country implements Cloneable {
         if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
         capitulationBar.removePlayer(p);
         this.players.remove(p);
-        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(nameComponent).build()).build());
+        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(originalName).build()).build());
         clientsides.forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
             if (players.isEmpty()) {
@@ -411,7 +409,7 @@ public abstract class Country implements Cloneable {
                         .append(MessageEnum.country.getComponent())
                         .append(attacker.getNameComponent())
                         .append(Component.text(" has seized the ", NamedTextColor.RED))
-                        .append(nameComponent)
+                        .append(originalName)
                         .append(Component.text(" capital",NamedTextColor.RED))
                         .build(), capital.getInstance());
             }
@@ -566,7 +564,9 @@ public abstract class Country implements Cloneable {
             modifierComps.add(modifier.getName());
             modifierComps.add(Component.text(", "));
         }
-        modifierComps.removeLast();
+        if (!modifierComps.isEmpty()) {
+            modifierComps.removeLast();
+        }
 
         Component leaderComp = Component.text()
                 .append(Component.text("Faction: "))
@@ -589,18 +589,19 @@ public abstract class Country implements Cloneable {
         }
 
         List<Component> extraInfo = new ArrayList<>();
-        if (hasPuppets()){
+        if (hasPuppets()) {
+            extraInfo.add(Component.newline());
             extraInfo.add(Component.text("Puppets: "));
             int i = 0;
-            boolean c = true;
-            for (Country country : getPuppets()){
-                if (i>2){
-                    c=false;
+            boolean showMore = false;
+            for (Country country : getPuppets()) {
+                if (i > 2) {
+                    showMore = true;
                     extraInfo.removeLast();
                     extraInfo.add(Component.text()
-                            .append(Component.text(" [CLICK]",NamedTextColor.GOLD,TextDecoration.BOLD))
-                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click show the list of all the puppets", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country info puppets "+getName()))
+                            .append(Component.text(" [CLICK]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to show the list of all the puppets", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country info puppets " + getName()))
                             .build());
                     break;
                 }
@@ -608,9 +609,11 @@ public abstract class Country implements Cloneable {
                 extraInfo.add(Component.text(", "));
                 i++;
             }
-            if (c)
+            if (!showMore) {
                 extraInfo.removeLast();
-        }else if (hasOverlord()){
+            }
+        } else if (hasOverlord()) {
+            extraInfo.add(Component.newline());
             extraInfo.add(Component.text()
                     .append(Component.text("Overlord: "))
                     .append(getOverlord().getNameComponent())
@@ -624,11 +627,8 @@ public abstract class Country implements Cloneable {
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Leader: "))
-                .append(Component.text()
-                        .append(getLeader().getName())
+                .append(getLeader().getName())
                         .clickEvent(ClickEvent.runCommand("/country leader " + getName()))
-                        .hoverEvent(HoverEvent.showText(getLeader().getDescription()))
-                )
                 .appendNewline()
                 .append(Component.text("Modifiers: "))
                 .append(modifierComps)
@@ -641,20 +641,7 @@ public abstract class Country implements Cloneable {
                 .appendNewline()
                 .append(Component.text("Elections: "))
                 .append(getElections().getCurrentElectionType().getName())
-                .appendNewline()
                 .append(extraInfo)
-                .appendNewline()
-                .append(Component.text()
-                        .append(Component.text("[JOIN]", NamedTextColor.GOLD,TextDecoration.BOLD))
-                        .clickEvent(ClickEvent.runCommand("/country join " + getName()))
-                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))
-                )
-                .build();
-
-        this.nameComponent = Component.text()
-                .append(originalName)
-                .clickEvent(ClickEvent.runCommand("/country info general " + getName()))
-                .hoverEvent(description)
                 .build();
     }
 
@@ -913,7 +900,7 @@ public abstract class Country implements Cloneable {
         sendMessage(Component.text()
                 .append(MessageEnum.country.getComponent())
                 .append(Component.text("The demand from "))
-                .append(demand.getFromCountry().nameComponent)
+                .append(demand.getFromCountry().originalName)
                 .append(Component.text(" has been cancelled"))
                 .build());
     }

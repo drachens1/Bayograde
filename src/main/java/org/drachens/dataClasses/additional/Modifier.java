@@ -55,7 +55,12 @@ public class Modifier implements Cloneable {
                     .build());
             for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()) {
                 float value = e.getValue();
-                Component symbol = e.getKey().getSymbol();
+                Component symbol;
+                if (e.getValue()<0){
+                    symbol=e.getKey().getNegSymbol();
+                }else {
+                    symbol=e.getKey().getPosSymbol();
+                }
                 if (e.getKey().isPercentage()) {
                     if (value > 0) {
                         boostComp.add(Component.text()
