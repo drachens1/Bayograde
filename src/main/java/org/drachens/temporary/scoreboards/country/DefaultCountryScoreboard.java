@@ -42,7 +42,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         CPlayer p = getPlayer();
         Sidebar sidebar = getSidebar();
         Country country = p.getCountry();
-        sidebar.updateLineContent("generalInfo", Component.text("General-Info--v", categoryColour));
+        sidebar.updateLineContent("generalInfo", Component.text("General-Info    --v", categoryColour));
         sidebar.createLine(new Sidebar.ScoreboardLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE))
                 .append(country.getNameComponent()).build(), 49));
         sidebar.createLine(new Sidebar.ScoreboardLine("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE))
@@ -52,7 +52,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     public void closeGeneralInfo() {
         generalInfo = false;
         Sidebar sidebar = getSidebar();
-        sidebar.updateLineContent("generalInfo", Component.text("General-Info--^", categoryColour));
+        sidebar.updateLineContent("generalInfo", Component.text("General-Info    --^", categoryColour));
         sidebar.removeLine("generalInfo1");
         sidebar.removeLine("generalInfo2");
     }
@@ -77,7 +77,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     public void closeEconomy() {
         economy = false;
         Sidebar sidebar = getSidebar();
-        sidebar.updateLineContent("economy", Component.text("Economy--^", categoryColour));
+        sidebar.updateLineContent("economy", Component.text("Economy          --^", categoryColour));
         for (int i = 39; i > 20; i--) {
             sidebar.removeLine("economy" + i);
         }
@@ -88,7 +88,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         CPlayer p = getPlayer();
         Country country = p.getCountry();
         Sidebar sidebar = getSidebar();
-        sidebar.updateLineContent("ideologies", Component.text("Ideologies--v", categoryColour));
+        sidebar.updateLineContent("ideologies", Component.text("Ideologies        --v", categoryColour));
         int i = 29;
         for (Map.Entry<IdeologyTypes, Float> e : country.getIdeology().getIdeologies().entrySet()) {
             float amount = e.getValue();
@@ -105,7 +105,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     public void closeIdeologies() {
         ideologies = false;
         Sidebar sidebar = getSidebar();
-        sidebar.updateLineContent("ideologies", Component.text("Ideologies--^", categoryColour));
+        sidebar.updateLineContent("ideologies", Component.text("Ideologies        --^", categoryColour));
         for (int i = 29; i > 10; i--) {
             sidebar.removeLine("ideology" + i);
         }
@@ -116,7 +116,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         CPlayer p = getPlayer();
         Country country = p.getCountry();
         Sidebar sidebar = getSidebar();
-        sidebar.updateLineContent("diplomacy", Component.text("Diplomacy--v", categoryColour));
+        sidebar.updateLineContent("diplomacy", Component.text("Diplomacy         --v", categoryColour));
         Map<Country, Float> pos = country.getRelations().getPositiveRelations();
         Map<Country, Float> neg = country.getRelations().getNegativeRelations();
         int i = 19;
@@ -137,18 +137,17 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     public void closeDiplomacy() {
         diplomacy = false;
         Sidebar sidebar = getSidebar();
-        sidebar.updateLineContent("diplomacy", Component.text("Diplomacy--^", categoryColour));
+        sidebar.updateLineContent("diplomacy", Component.text("Diplomacy         --^", categoryColour));
         for (int i = 19; i > 0; i--) {
             sidebar.removeLine("diplomacy" + i);
         }
     }
 
     public void updateAll() {
-        return;
-//        updateGeneralInfo();
-//        updateDiplomacy();
-//        updateIdeologies();
-//        updateEconomy();
+        updateGeneralInfo();
+        updateDiplomacy();
+        updateIdeologies();
+        updateEconomy();
     }
 
     public void updateGeneralInfo() {
@@ -156,7 +155,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         CPlayer p = getPlayer();
         Sidebar sidebar = getSidebar();
         Country country = p.getCountry();
-        sidebar.updateLineContent("generalInfo2", Component.text().append(Component.text("    Stability: ", NamedTextColor.BLUE))
+        sidebar.updateLineContent("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE))
                 .append(Component.text((int) country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12",NamedTextColor.WHITE)).build());
     }
 

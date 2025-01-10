@@ -38,9 +38,11 @@ import org.drachens.store.items.Hat;
 import org.drachens.temporary.Factory;
 import org.drachens.temporary.MapGeneratorManager;
 import org.drachens.temporary.clicks.ClickWarSystem;
+import org.drachens.temporary.clicks.ClicksAI;
 import org.drachens.temporary.research.ResearchLab;
 import org.drachens.temporary.research.ResearchLibrary;
 import org.drachens.temporary.research.ResearchUniversity;
+import org.drachens.temporary.troops.TroopAI;
 import org.drachens.temporary.troops.TroopWarSystem;
 import org.drachens.temporary.troops.buildings.Barracks;
 
@@ -142,7 +144,9 @@ public class  Main {
         initSrv();
         MinecraftServer.getCommandManager().register(new ConfirmCMD());
 
-        System.out.println(MAX_PACKET_SIZE);
+        ContinentalManagers.centralAIManager.registerEventManager(new ClicksAI(VotingWinner.ww2_clicks));
+        ContinentalManagers.centralAIManager.registerEventManager(new TroopAI(VotingWinner.ww2_troops));
+
         createWW2VotingOption();
 
         BuildingEnum.university.setBuildType(new ResearchUniversity());
@@ -238,7 +242,7 @@ public class  Main {
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
-        c.put(production, new Currencies(production, 10f));
+        c.put(production, new Currencies(production, 1000f));
 
         Material capMaterial = Material.CYAN_DYE;
         Material effMaterial = Material.CYAN_DYE;
@@ -272,6 +276,7 @@ public class  Main {
                                                 .addBoost(BoostEnum.production, 0.1f)
                                                 .build())
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Streamline Production 1"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_eff2", itemBuilder(effMaterial), 1000f)
                                         .setDescription(new ComponentListBuilder()
@@ -284,6 +289,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_eff1")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Streamline Production 2"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_eff3", itemBuilder(effMaterial), 2000f)
                                         .setDescription(new ComponentListBuilder()
@@ -296,6 +302,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_eff2")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Streamline Production 3"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_eff4", itemBuilder(effMaterial), 3000f)
                                         .setDescription(new ComponentListBuilder()
@@ -308,6 +315,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_eff3")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Streamline Production 4"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_capacity, Component.text("Increases factory capacity", NamedTextColor.DARK_PURPLE), Component.text("Factory capacity", NamedTextColor.GRAY, TextDecoration.ITALIC))
@@ -320,6 +328,7 @@ public class  Main {
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
                                                 .build())
+                                        .setName(Component.text("Capacity increase 1"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_cap2", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -332,6 +341,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_cap1")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Capacity increase 2"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_cap3", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 150f)
                                         .setDescription(new ComponentListBuilder()
@@ -344,6 +354,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_cap2")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Capacity increase 3"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_cap4", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 200f)
                                         .setDescription(new ComponentListBuilder()
@@ -356,23 +367,26 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_cap3")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Capacity increase 4"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.radar, Component.text("Radar tech tree increases coordination massively", NamedTextColor.DARK_PURPLE), Component.text("Radar", NamedTextColor.GRAY, TextDecoration.ITALIC))
                                 .addResearchOption(new ResearchOption.Create("ww2_radar1", itemBuilder(radMaterial), 30f)
                                         .setDescription(new ComponentListBuilder()
                                                 .addComponent(Component.text("Increases fighter attack by 10% and troops damage by 5%", NamedTextColor.GRAY))
-                                                .build())//todo Create an airport and plane system that can then have boosts
+                                                .build())
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.planes, 0.1f)
                                                 .build())
+                                        .setName(Component.text("Radar"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.penicillin, Component.text("Antibiotics research means less people die", NamedTextColor.DARK_PURPLE), Component.text("Antibiotics", NamedTextColor.GRAY, TextDecoration.ITALIC))
                                 .addResearchOption(new ResearchOption.Create("ww2_antibiotics1", itemBuilder(antiBiotics), 30f)
                                         .setDescription(new ComponentListBuilder()
-                                                .addComponent(Component.text("10% less people die! - eventually", NamedTextColor.AQUA))//todo add MANPOWER
+                                                .addComponent(Component.text("10% less people die! - eventually", NamedTextColor.AQUA))
                                                 .build())
+                                        .setName(Component.text("Antibiotics"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.airoplane, Component.text("Airoplane research!", NamedTextColor.DARK_PURPLE), Component.text("Airoplane", NamedTextColor.GRAY, TextDecoration.ITALIC))
@@ -380,6 +394,7 @@ public class  Main {
                                         .setDescription(new ComponentListBuilder()
                                                 .addComponent(Component.text("Airoplanes are good at murdering people", NamedTextColor.AQUA))
                                                 .build())
+                                        .setName(Component.text("Don't research this"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.guns, Component.text("Better guns", NamedTextColor.DARK_PURPLE), Component.text("GUNS", NamedTextColor.GRAY, TextDecoration.ITALIC))
@@ -390,6 +405,7 @@ public class  Main {
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.3f)
                                                 .build())
+                                        .setName(Component.text("Enhanced accuracy"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_guns2", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -400,6 +416,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_guns1")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Streamlined production"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_guns3", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -410,6 +427,7 @@ public class  Main {
                                                 .build())
                                         .setComparedToLast(0, 1)
                                         .addRequires("ww2_guns2")
+                                        .setName(Component.text("Streamlined production 2"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_semi_auto", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -420,6 +438,7 @@ public class  Main {
                                                 .build())
                                         .setComparedToLast(0, 1)
                                         .addRequires("ww2_guns3")
+                                        .setName(Component.text("Research semi automatic weapons"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_semi_gas", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -431,6 +450,7 @@ public class  Main {
                                                 .build())
                                         .setComparedToLast(0, 1)
                                         .addRequires("ww2_semi_auto")
+                                        .setName(Component.text("Make the semi automatic weapons gas operated"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_semi_bigger_magazine", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -442,6 +462,7 @@ public class  Main {
                                                 .build())
                                         .setComparedToLast(0, 1)
                                         .addRequires("ww2_semi_gas")
+                                        .setName(Component.text("Develop bigger magazines"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_submachine", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -452,6 +473,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_guns3")
                                         .setComparedToLast(-1, -3)
+                                        .setName(Component.text("Create a submachine gun"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_folding_stacks", itemBuilder(gunMaterial), 200f)
                                         .setDescription(new ComponentListBuilder()
@@ -463,6 +485,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_submachine")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Create folding stacks"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_full_auto", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -474,6 +497,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_guns3")
                                         .setComparedToLast(-1, -1)
+                                        .setName(Component.text("Begin fully automatic guns development"))
                                         .build())
                                 .addResearchOption(new ResearchOption.Create("ww2_cooling", itemBuilder(gunMaterial), 100f)
                                         .setDescription(new ComponentListBuilder()
@@ -485,6 +509,7 @@ public class  Main {
                                                 .build())
                                         .addRequires("ww2_full_auto")
                                         .setComparedToLast(0, 1)
+                                        .setName(Component.text("Better cooling"))
                                         .build())
                                 .build())
                         .build())

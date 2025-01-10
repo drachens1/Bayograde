@@ -26,12 +26,12 @@ public enum InventoryEnum {
             new BuildItem(2, itemBuilder(Material.BROWN_DYE, 2), BuildingEnum.university), new BuildItem(3, itemBuilder(Material.BROWN_DYE, 3), BuildingEnum.researchCenter),
             new BuildItem(4, itemBuilder(Material.BROWN_DYE, 4), BuildingEnum.researchLab), new ExitItem()})),
 
-    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10), BuildingEnum.factory),
+    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1, itemBuilder(Material.CYAN_DYE, 1), BuildingEnum.factory),
             new ChangeInventoryButton(0, itemBuilder(Material.BOOK),
                     InventoryEnum.scoreboardInv), new ChangeInventoryButton(1, itemBuilder(Material.BROWN_DYE), InventoryEnum.research),
             new NavalInvasionClicksItem()})),
 
-    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(10, itemBuilder(Material.CYAN_DYE, 10), BuildingEnum.factory),
+    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new BuildItem(1, itemBuilder(Material.CYAN_DYE, 1), BuildingEnum.factory),
             new TroopMover(), new ChangeInventoryButton(0, itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),
             new ChangeInventoryButton(1, itemBuilder(Material.BROWN_DYE), InventoryEnum.research), new BuildItem(11,itemBuilder(Material.ACACIA_BOAT),BuildingEnum.barracks)}));
 

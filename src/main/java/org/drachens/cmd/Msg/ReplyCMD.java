@@ -5,6 +5,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
@@ -19,7 +20,7 @@ public class ReplyCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             msgBuild(
-                    p, PlayerUtil.getPlayerFromUUID(p.getLastMessenger()),
+                    p, MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(p.getLastMessenger()),
                     context.get(msg));
         }, msg);
     }

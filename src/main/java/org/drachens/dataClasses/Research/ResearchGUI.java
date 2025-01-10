@@ -123,9 +123,8 @@ public class ResearchGUI extends InventoryGUI {
                 .consumer(e -> {
                     CPlayer player = (CPlayer) e.getPlayer();
                     ResearchCountry country = (ResearchCountry) player.getCountry();
-                    if (country.isResearching() || !country.hasResearchedAll(prev) || country.hasResearchedAny(or) || country.hasResearched(identifier))
-                        return;
-                    country.startResearching(researchOption);
+                    if (researchOption.canResearch(country))
+                        country.startResearching(researchOption);
                 });
     }
 }

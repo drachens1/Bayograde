@@ -88,7 +88,7 @@ public class Province implements Serializable {
         if (country != null && country.isPlayerLeader(p)) {
             if (country==occupier){
                 return createSecretDescription().append(Component.text()
-                        .append(Component.text("[EDIT]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .append(Component.text("[EXTRA]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to edit your country", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country edit options"))
                         .build());
@@ -277,14 +277,23 @@ public class Province implements Serializable {
         if (building != null) {
             building.capture(attacker);
         }
+        if (!corers.isEmpty()){
+            corers.forEach(country -> {
+                attacker.addOthersCores(country,this);
+                if (country!=occupier){
+                    occupier.removeOthersCores(country,this);
+                }
+            });
+        }
         this.occupier = attacker;
-        occupier.captureProvince(this);
+        attacker.captureProvince(this);
         if (isCity()) {
+            System.out.println("1 : "+pos.x()+" : "+pos.z());
             if (attacker.isMajorCity(this))
-                this.setCity(attacker.getMajorCity(this));
+                setCity(attacker.getMajorCity(this));
             else
                 setCity(1);
-            occupier.addCity(this);
+            attacker.addCity(this);
         }
         updateBorders();
     }

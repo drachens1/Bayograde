@@ -15,7 +15,7 @@ public enum BoostEnum {
     stabilityBase("\uD83D\uDC36","\uD83E\uDDAE", false),
     relations("r1","r2", true),
     buildingSlotBoost("\uD83D\uDC30","neg", true),
-    capitulation("\uD83D\uDC3B","", true),
+    capitulation("\uD83D\uDC3B","\uD83D\uDC3B", true),
     production("\uD83D\uDC34","\uD83D\uDC08", true),
     gunCost("Gun Cost","Gun Cost", true),
     gunAccuracy("gunacc1","gunacc2", true);

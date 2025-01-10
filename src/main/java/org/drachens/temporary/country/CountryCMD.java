@@ -10,6 +10,7 @@ import org.drachens.temporary.country.loan.LoanCMD;
 import org.drachens.temporary.country.manage.ManageCMD;
 import org.drachens.temporary.country.modifiers.ModifiersCMD;
 import org.drachens.temporary.country.puppets.PuppetCMD;
+import org.drachens.temporary.country.research.ResearchCMD;
 
 public class CountryCMD extends Command {
     public CountryCMD() {
@@ -28,6 +29,7 @@ public class CountryCMD extends Command {
         addSubcommand(new PuppetCMD());
         addSubcommand(new EditCMD());
         addSubcommand(new ModifiersCMD());
+        addSubcommand(new ResearchCMD());
 
         var smth = ArgumentType.String("type...")
 

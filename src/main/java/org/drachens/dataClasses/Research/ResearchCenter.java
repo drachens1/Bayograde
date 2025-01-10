@@ -61,7 +61,9 @@ public class ResearchCenter extends BuildTypes {
             if (province.getBuilding() == null) continue;
             if (province.getBuilding().getSynonyms().contains("research")) {
                 Building building1 = province.getBuilding();
-                ResearchBuilding researchBuilding = (ResearchBuilding) building1.getBuildTypes().getBuildTypes();
+                if (!(building1.getBuildTypes().getBuildTypes() instanceof ResearchBuilding researchBuilding)){
+                    continue;
+                }
                 central.add(researchBuilding.generate(building1));
             }
         }

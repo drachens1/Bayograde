@@ -1,6 +1,7 @@
 package org.drachens.temporary.country.manage;
 
 import dev.ng5m.CPlayer;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -12,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
-import static org.drachens.util.PlayerUtil.getOnlinePlayerFromName;
-
 public class CooperateCMD extends Command {
     public CooperateCMD() {
         super("co-op");
@@ -31,7 +30,7 @@ public class CooperateCMD extends Command {
             if (!isLeaderOfCountry(sender)) return;
             String player = context.get(players);
             CPlayer senders = (CPlayer) sender;
-            CPlayer p = (CPlayer) getOnlinePlayerFromName(player);
+            CPlayer p = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(player);
             if (p == null) return;
             if (p.getCountry() == null || p.getCountry() != senders.getCountry()) return;
             Country country = p.getCountry();

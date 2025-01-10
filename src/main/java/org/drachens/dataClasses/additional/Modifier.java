@@ -24,15 +24,30 @@ public class Modifier implements Cloneable {
     private final HashSet<ConditionEnum> conditionEnums;
     private final List<EventsRunner> eventsRunners;
     private final List<ModifierCommand> modifierCommands;
+    private final String identifier;
 
     protected Modifier(create c) {
         this.justCompName = c.name;
         this.boostHashMap = c.boostHashMap;
         this.eventsRunners = c.eventsRunners;
         this.modifierCommands = c.modifierCommands;
+        this.identifier = c.identifier;
         if (c.description != null) this.startDescription = c.description;
         display = c.display;
         conditionEnums=c.conditionEnums;
+        createDescription();
+        oldModifier = this.clone();
+    }
+
+    protected Modifier(Modifier c){
+        this.justCompName = c.name;
+        this.boostHashMap = new HashMap<>(c.boostHashMap);
+        this.eventsRunners = new ArrayList<>(c.eventsRunners);
+        this.modifierCommands = new ArrayList<>(c.modifierCommands);
+        this.identifier = c.identifier;
+        if (c.description != null) this.startDescription = c.description;
+        display = c.display;
+        conditionEnums=new HashSet<>(c.conditionEnums);
         createDescription();
         oldModifier = this.clone();
     }
@@ -43,6 +58,10 @@ public class Modifier implements Cloneable {
 
     public boolean shouldDisplay() {
         return display;
+    }
+
+    public String getIdentifier(){
+        return identifier;
     }
 
     public void createDescription() {
@@ -88,7 +107,6 @@ public class Modifier implements Cloneable {
                                 .appendNewline().build());
                     }
                 }
-
             }
         }
         if (!conditionEnums.isEmpty()){
@@ -149,8 +167,21 @@ public class Modifier implements Cloneable {
     }
 
     public void addBoost(BoostEnum boostEnum, float amount) {
-        float current = boostHashMap.getOrDefault(boostEnum, 1f);
+        float current = boostHashMap.getOrDefault(boostEnum, 0f);
         boostHashMap.put(boostEnum, current + amount);
+        update();
+    }
+
+    public void addBoosts(HashMap<BoostEnum, Float> boosts){
+        boosts.forEach(((boostEnum, aFloat) -> {
+            float current = boostHashMap.getOrDefault(boostEnum, 0f);
+            boostHashMap.put(boostEnum, current + aFloat);
+        }));
+        update();
+    }
+
+    public List<EventsRunner> getEventsRunners(){
+        return eventsRunners;
     }
 
     public void addEventsRunner(EventsRunner eventsRunner){
@@ -175,6 +206,10 @@ public class Modifier implements Cloneable {
 
     public void removeCondition(ConditionEnum conditionEnum){
         conditionEnums.remove(conditionEnum);
+    }
+
+    public float getBoost(BoostEnum boostEnum){
+        return boostHashMap.getOrDefault(boostEnum,0f);
     }
 
     public Component getName() {
@@ -205,7 +240,7 @@ public class Modifier implements Cloneable {
 
     public void update() {
         createDescription();
-        for (Country country : appliedCountries) {
+        for (Country country : new ArrayList<>(appliedCountries)) {
             country.updateModifier(this, oldModifier);
             country.createInfo();
         }
@@ -215,6 +250,10 @@ public class Modifier implements Cloneable {
     public void setShouldDisplay(boolean b){
         display=b;
         appliedCountries.forEach(Country::createInfo);
+    }
+
+    public Modifier independantClone(){
+        return new Modifier(this);
     }
 
     @Override
@@ -234,10 +273,17 @@ public class Modifier implements Cloneable {
         private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
         private final List<EventsRunner> eventsRunners = new ArrayList<>();
         private boolean display = true;
+        private String identifier;
+
+        public create(Component name, String identifier) {
+            this.name = name;
+            this.identifier=identifier;
+        }
 
         public create(Component name) {
             this.name = name;
         }
+
 
         public create setDescription(Component description) {
             this.description = description;

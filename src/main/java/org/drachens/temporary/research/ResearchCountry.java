@@ -35,7 +35,7 @@ public abstract class ResearchCountry extends Country {
 
     public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault, laws);
-        researchModifier = new Modifier.create(Component.text("Research", NamedTextColor.BLUE))
+        researchModifier = new Modifier.create(Component.text("Research", NamedTextColor.BLUE),"research")
                 .setDisplay(false)
                 .build();
         addModifier(researchModifier);
@@ -88,6 +88,10 @@ public abstract class ResearchCountry extends Country {
         researchCurrent = null;
     }
 
+    public List<String> getCompletedResearch(){
+        return new ArrayList<>(completedResearch);
+    }
+
     public boolean hasResearched(String identifier) {
         return completedResearch.contains(identifier);
     }
@@ -111,13 +115,7 @@ public abstract class ResearchCountry extends Country {
         return true;
     }
 
-    
     public void startResearching(ResearchOption researchOption){
         EventDispatcher.call(new ResearchStartEvent(getInstance(), this, researchOption));
-    }
-
-    public void startResearching(ResearchOption researchOption, Runnable onFinish){
-        EventDispatcher.call(new ResearchStartEvent(getInstance(), this, researchOption));
-        onFinishResearch=onFinish;
     }
 }

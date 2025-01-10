@@ -33,6 +33,7 @@ import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.ImaginaryWorld;
+import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
@@ -70,7 +71,7 @@ public abstract class Country implements Cloneable {
     private final Ideology ideology;
     private final Election elections;
     private final HashMap<String, ModifierCommand> modifierCommandsHashMap = new HashMap<>();
-    private final List<Modifier> modifiers = new ArrayList<>();
+    private final HashMap<String,Modifier> modifiers = new HashMap<>();
     private final List<Modifier> visibleModifiers = new ArrayList<>();
     private final List<EventsRunner> eventsRunners = new ArrayList<>();
     private final List<Country> puppets = new ArrayList<>();
@@ -115,6 +116,8 @@ public abstract class Country implements Cloneable {
     private Component originalName;
     private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
     private final HashMap<String, LawCategory>  laws = new HashMap<>();
+    private final HashMap<Province, List<String>> bordersProvince = new HashMap<>();
+    private final List<String> borders = new ArrayList<>();
     private PuppetChat puppetChat;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
@@ -125,7 +128,7 @@ public abstract class Country implements Cloneable {
         vault.setCountry(this);
         this.originalName=nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name));
         this.name = name;
-        this.setPrefix(Component.text(name, NamedTextColor.BLUE));
+        setPrefix(Component.text(name, NamedTextColor.BLUE));
         this.block = block;
         this.border = border;
         this.players = new ArrayList<>();
@@ -189,21 +192,24 @@ public abstract class Country implements Cloneable {
     }
 
     public void addModifier(Modifier modifier, boolean update) {
-        if (modifiers.contains(modifier)) {
+        if (modifiers.containsKey(modifier.getIdentifier())) {
             return;
         }
 
-        modifiers.add(modifier);
+        modifiers.put(modifier.getIdentifier(),modifier);
         modifier.addCountry(this);
         modifier.getBoostHashMap().forEach(this::addBoost);
         modifier.getConditionEnums().forEach(this::addCondition);
         modifier.getModifierCommands().forEach(this::addModifierCommands);
-        if (modifier.shouldDisplay())visibleModifiers.add(modifier);
-        if (!update && modifier.shouldDisplay()) createInfo();
+        modifier.getEventsRunners().forEach(this::addEventsRunner);
+        if (!update && modifier.shouldDisplay()) {
+            visibleModifiers.add(modifier);
+            createInfo();
+        }
     }
 
-    public boolean hasModifier(Modifier modifier){
-        return modifiers.contains(modifier);
+    public boolean hasModifier(String identifier){
+        return modifiers.containsKey(identifier);
     }
 
     public void addBoost(BoostEnum boostEnum, float value) {
@@ -242,19 +248,24 @@ public abstract class Country implements Cloneable {
     }
 
     public void removeModifier(Modifier modifier, boolean update) {
-        if (!modifiers.contains(modifier))
+        if (!modifiers.containsKey(modifier.getIdentifier())){
             return;
+        }
 
-        modifiers.remove(modifier);
+
+        modifiers.remove(modifier.getIdentifier());
         modifier.removeCountry(this);
         modifier.getBoostHashMap().forEach(this::minusBoost);
         modifier.getConditionEnums().forEach(this::removeCondition);
         modifier.getModifierCommands().forEach(this::removeModifierCommands);
-        if (modifier.shouldDisplay())visibleModifiers.remove(modifier);
-        if (!update && modifier.shouldDisplay())createInfo();
+        modifier.getEventsRunners().forEach(this::removeEventsRunner);
+        if (!update && modifier.shouldDisplay()) {
+            visibleModifiers.remove(modifier);
+            createInfo();
+        }
     }
 
-    public List<Modifier> getModifiers() {
+    public HashMap<String,Modifier> getModifiers() {
         return modifiers;
     }
 
@@ -499,7 +510,7 @@ public abstract class Country implements Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
@@ -980,7 +991,12 @@ public abstract class Country implements Cloneable {
          toRemove.forEach(warJustificationHashMap::remove);
         newDay(newDay);
 
-        eventsRunners.removeIf(EventsRunner::newDay);
+        List<EventsRunner> e = new ArrayList<>();
+        new ArrayList<>(eventsRunners).forEach(eventsRunner -> {
+            if (eventsRunner.newDay())e.add(eventsRunner);
+        });
+
+        e.forEach(eventsRunners::remove);
     }
 
     public abstract void newDay(NewDay newDay);
@@ -1042,7 +1058,7 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean isMilitaryFriend(Country country){
-        return isPuppet(country)||isMilitaryAlly(country)||country==this||overlord==country;
+        return isPuppet(country)||isMilitaryAlly(country)||country==this||(hasOverlord()&&(overlord==country||overlord.isPuppet(country)));
     }
 
     public boolean cantStartAWarWith(Country country){
@@ -1153,5 +1169,26 @@ public abstract class Country implements Cloneable {
 
     public ModifierCommand getModifierCommand(String identifier){
         return modifierCommandsHashMap.get(identifier);
+    }
+
+    public Modifier getModifier(String identifier){
+        return modifiers.get(identifier);
+    }
+
+    public void addBorders(Province province, Country country){
+        List<String> c = bordersProvince.getOrDefault(province,new ArrayList<>());
+        c.add(country.getName());
+        bordersProvince.put(province,c);
+        if (!borders.contains(country.getName())){
+            borders.add(country.getName());
+        }
+    }
+
+    public List<String> getProvinceborders(Province province){
+        return bordersProvince.get(province);
+    }
+
+    public List<String> getBorders(){
+        return borders;
     }
 }

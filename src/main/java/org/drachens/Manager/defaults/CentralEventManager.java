@@ -155,7 +155,7 @@ public class CentralEventManager {
             attacker.removeCompletedWarJustification(defender.getName());
             List<Component> warsWith = new ArrayList<>();
             List<Country> atks = new ArrayList<>();
-            atks.add(defender);
+            atks.add(attacker);
             if (attacker.hasPuppets()){
                 attacker.getPuppets().forEach(country -> {
                     atks.add(country);
@@ -169,8 +169,10 @@ public class CentralEventManager {
                     warsWith.add(country.getNameComponent());
                     warsWith.add(Component.text(","));
                 });
+                atks.add(attacker.getOverlord());
                 attacker.getOverlord().addCountryWar(defender);
                 warsWith.add(attacker.getOverlord().getNameComponent());
+                warsWith.add(Component.text(","));
             }else {
                 attacker.addCountryWar(defender);
             }
@@ -191,7 +193,11 @@ public class CentralEventManager {
                     warsAgainst.add(country.getNameComponent());
                     warsAgainst.add(Component.text(","));
                 });
+                defs.add(defender.getOverlord());
                 warsAgainst.add(defender.getOverlord().getNameComponent());
+                warsAgainst.add(defender.getOverlord().getNameComponent());
+                warsAgainst.add(Component.text(","));
+
             }else {
                 defender.addCountryWar(attacker);
                 warsAgainst.add(defender.getNameComponent());
@@ -503,8 +509,8 @@ public class CentralEventManager {
             e.getCountry().setCurrentResearch(e.getResearchOption());
             e.getCountry().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have started researching "))
-                    .append(Component.text(e.getResearchOption().getIdentifier()))
+                    .append(Component.text("You have started researching ",NamedTextColor.GREEN))
+                    .append(e.getResearchOption().getName())
                     .build());
         });
 
@@ -513,8 +519,8 @@ public class CentralEventManager {
             e.getCountry().completeActiveResearch();
             e.getCountry().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have finished researching "))
-                    .append(Component.text(e.getResearchOption().getIdentifier()))
+                    .append(Component.text("You have finished researching ",NamedTextColor.GREEN))
+                    .append(e.getResearchOption().getName())
                     .build());
         });
 

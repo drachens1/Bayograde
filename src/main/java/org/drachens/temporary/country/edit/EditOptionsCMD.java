@@ -33,6 +33,10 @@ public class EditOptionsCMD extends Command {
                             .append(Component.text(" [IDEOLOGIES] ",NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the ideologies options", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country edit ideologies change-options")))
+                    .append(Component.text()
+                            .append(Component.text(" [RESEARCH] ",NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to show the research tech tree", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country research full-tree")))
                     .build());
         });
     }

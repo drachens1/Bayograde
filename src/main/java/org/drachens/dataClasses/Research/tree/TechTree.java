@@ -2,6 +2,7 @@ package org.drachens.dataClasses.Research.tree;
 
 import net.kyori.adventure.text.Component;
 import org.drachens.dataClasses.Research.ResearchCategoryEnum;
+import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +10,10 @@ import java.util.List;
 
 public class TechTree {
     private final HashMap<ResearchCategoryEnum, ResearchCategory> researchCategoriesHashMaps;
-    private final HashMap<String,List<ResearchOption>> researchAfterHashMap = new HashMap<>();
+    private final HashMap<String,List<String>> researchAfterHashMap = new HashMap<>();
     private final List<ResearchCategory> researchCategories;
     private final Component name;
+    private final List<String> noRequires = new ArrayList<>();
     private final HashMap<String, ResearchOption> identifierHashMap = new HashMap<>();
     private final HashMap<Integer[], ResearchOption> researchOptionMap = new HashMap<>();
 
@@ -19,9 +21,7 @@ public class TechTree {
         name = create.name;
         researchCategoriesHashMaps = create.researchCategoriesHashmap;
         researchCategories = create.researchCategories;
-        researchCategories.forEach(researchCategory -> researchCategory.getResearchOptionList().forEach(researchOption -> {
-            identifierHashMap.put(researchOption.getIdentifier(), researchOption);
-        }));
+        researchCategories.forEach(researchCategory -> researchCategory.getResearchOptionList().forEach(researchOption -> identifierHashMap.put(researchOption.getIdentifier(), researchOption)));
         int i = 0;
         for (ResearchCategory researchCategory : researchCategories) {
             int[] last = new int[]{0, 0};
@@ -36,7 +36,21 @@ public class TechTree {
             }
             i += 3;
         }
-        //researchOptionMap.
+
+        for (ResearchCategory researchCategory : researchCategories){
+            for (ResearchOption researchOption : researchCategory.getResearchOptionList()){
+                List<String> requires = researchOption.getRequires();
+                if (requires.isEmpty()){
+                    noRequires.add(researchOption.getIdentifier());
+                }else {
+                    requires.forEach(require->{
+                        List<String> s = researchAfterHashMap.getOrDefault(require,new ArrayList<>());
+                        s.add(researchOption.getIdentifier());
+                        researchAfterHashMap.put(require,s);
+                    });
+                }
+            }
+        }
     }
 
     public Component getName() {
@@ -63,9 +77,21 @@ public class TechTree {
         return researchOptionMap;
     }
 
-    public void getAfter(String identifier){
-        List<ResearchOption> e = researchAfterHashMap.get(identifier);
-        
+    public List<String> getAfter(String identifier) {
+        return researchAfterHashMap.getOrDefault(identifier, new ArrayList<>());
+    }
+
+    public List<String> getNoRequiresString(){
+        return noRequires;
+    }
+
+    public List<String> getAvailable(ResearchCountry country){
+        List<String> available = getNoRequiresString();
+        country.getCompletedResearch().forEach(completedResearch->{
+            available.remove(completedResearch);
+            available.addAll(getAfter(completedResearch));
+        });
+        return available;
     }
 
     public static class Create {

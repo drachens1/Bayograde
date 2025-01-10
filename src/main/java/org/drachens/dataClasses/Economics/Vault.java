@@ -120,6 +120,7 @@ public abstract class Vault {
     public void calculateIncrease() {
         Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
         List<Building> buildings = country.getBuildings(BuildingEnum.factory);
+        extraCalcIncrease();
         if (buildings == null) return;
 
         Payments toCountry = new Payments();
@@ -145,7 +146,6 @@ public abstract class Vault {
             country.getOverlord().addPayments(toOverlord);
         }
         loans.forEach(Loan::payThisWeek);
-        extraCalcIncrease();
     }
 
     public abstract void extraCalcIncrease();

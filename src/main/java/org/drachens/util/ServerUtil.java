@@ -49,6 +49,7 @@ import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
+import org.drachens.cmd.ai.AICmd;
 import org.drachens.cmd.ban.BanCMD;
 import org.drachens.cmd.ban.UnbanCMD;
 import org.drachens.cmd.example.ExampleCMD;
@@ -66,7 +67,6 @@ import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
-import org.drachens.temporary.clicks.TmpCMD;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
@@ -299,12 +299,12 @@ public class ServerUtil {
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
 
-        commandManager.register(new TmpCMD());
         commandManager.register(new PingCMD());
         commandManager.register(new TpsCMD());
 
         commandManager.register(new WhoisCMD());
-        commandManager.register(new RegenCMD());
+
+        commandManager.register(new AICmd());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

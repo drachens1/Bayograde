@@ -8,6 +8,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
+import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Countries.Country;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public abstract class Clientside {
     public final Instance instance;
     public boolean storeViewers;
     public Pos pos;
+    private AnimationType animation;
 
     public Clientside(boolean storeViewers, Instance instance, Pos pos) {
         this.storeViewers = storeViewers;
@@ -78,4 +80,11 @@ public abstract class Clientside {
         return new ArrayList<>(VIEWERS);
     }
 
+    public void setAnimation(AnimationType animation){
+        this.animation=animation;
+    }
+
+    public AnimationType getAnimation(){
+        return animation;
+    }
 }

@@ -19,7 +19,7 @@ public class Stability {
     public Stability(float startingStability, Country country) {
         stabilityTotal = startingStability;
         this.country = country;
-        stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD))
+        stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD),"stability")
                 .addBoost(BoostEnum.production,(startingStability - 50f)/100)
                 .build();
 

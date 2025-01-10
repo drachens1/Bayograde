@@ -42,9 +42,7 @@ public class Factory extends BuildTypes {
             .build();
     private final HashMap<Material, Integer> materialLvls = new HashMap<>();
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
-    int[] constructionFrames = {2, 3, 4, 5};
-    private final Animation constructionAnimation = new Animation(1000, Material.CYAN_DYE, constructionFrames);
-    int[] smokeFrames = {6, 7, 8};
+    int[] smokeFrames = {2, 3};
     private final Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, smokeFrames);
 
     public Factory() {
@@ -64,7 +62,7 @@ public class Factory extends BuildTypes {
         country.removePayments(payments);
         Building factory = new Building(this, province);
         ItemDisplay itemDisplay = factory.getItemDisplay();
-        constructionAnimation.start(itemDisplay).onFinish(itemDisplay, () -> smokeAnimation.start(itemDisplay, true, 1000L));
+        smokeAnimation.start(itemDisplay, true, 1000L);
     }
 
     @Override
@@ -121,6 +119,10 @@ public class Factory extends BuildTypes {
         }
         building.setCurrent(num);
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));
+        int add = (num-1)*2;
+        int[] newFrames = new int[]{2 + add,3+add};
+        Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, newFrames);
+        smokeAnimation.start(itemDisplay,true);
     }
 
     public Payments generate(Building building) {

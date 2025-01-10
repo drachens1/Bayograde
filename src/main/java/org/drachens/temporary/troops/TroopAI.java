@@ -2,6 +2,7 @@ package org.drachens.temporary.troops;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
+import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.territories.Province;
@@ -17,11 +18,18 @@ import java.util.Random;
 
 public class TroopAI implements AIManager {
     private final HashMap<Country, AI> ais = new HashMap<>();
+    private final VotingWinner votingWinner;
 
-    public TroopAI(){
+    public TroopAI(VotingWinner votingWinner){
+        this.votingWinner=votingWinner;
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e->{
             tick(e.getInstance());
         });
+    }
+
+    @Override
+    public VotingWinner getIdentifier() {
+        return votingWinner;
     }
 
     @Override

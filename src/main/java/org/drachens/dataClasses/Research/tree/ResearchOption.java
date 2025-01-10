@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.Research.tree;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResearchOption {
+    private final Component descript;
+    private final Component name;
     private final String identifier;
     private final List<String> requiresString;
     private final List<String> orString;
@@ -31,6 +35,12 @@ public class ResearchOption {
         orString = create.or;
         cost = create.cost;
         description = create.description;
+        name = create.name;
+        descript = create.descript;
+    }
+
+    public boolean canResearch(ResearchCountry country){
+        return !country.isResearching() && country.hasResearchedAll(getRequires()) && !country.hasResearchedAny(getOr()) && !country.hasResearched(identifier);
     }
 
     public Payment getCost() {
@@ -63,6 +73,14 @@ public class ResearchOption {
 
     public void setResearchCategory(ResearchCategory researchCategory) {
         this.researchCategory = researchCategory;
+    }
+
+    public Component getName(){
+        return name;
+    }
+
+    public Component getDescript(){
+        return descript;
     }
 
     public List<Component> createLore(ResearchCountry country) {
@@ -106,6 +124,8 @@ public class ResearchOption {
         private final List<String> or = new ArrayList<>();
         private final Payment cost;
         private Modifier modifier;
+        private Component name;
+        private Component descript;
         private int[] comparedToLast;
 
         public Create(String identifier, ItemStack item, float cost) {
@@ -139,7 +159,58 @@ public class ResearchOption {
             return this;
         }
 
+        public Create setName(Component component){
+            this.name=component;
+            return this;
+        }
+
         public ResearchOption build() {
+            List<Component> comps = new ArrayList<>();
+            if (!requires.isEmpty()){
+                comps.add(Component.text()
+                                .append(Component.text("Requires: "))
+                                .appendNewline()
+                        .build());
+                requires.forEach(require-> comps.add(Component.text()
+                        .append(Component.text(" - "))
+                        .append(Component.text(require))
+                        .appendNewline()
+                        .build()));
+            }
+            if (!or.isEmpty()) {
+                comps.add(Component.text()
+                        .append(Component.text("Or: "))
+                        .appendNewline()
+                        .build());
+                or.forEach(string -> comps.add(Component.text()
+                                .append(Component.text(" - "))
+                                .append(Component.text(string))
+                                .appendNewline()
+                        .build()));
+            }
+            if (modifier!=null && !modifier.getBoostHashMap().isEmpty()){
+                comps.add(Component.text()
+                        .append(Component.text("Boosts: "))
+                        .appendNewline().build());
+                modifier.getBoostHashMap().forEach((boostEnum, aFloat) -> {
+                    if (aFloat<0){
+                        comps.add(Component.text()
+                                .append(Component.text(aFloat))
+                                .append(boostEnum.getNegSymbol())
+                                .build());
+                    }else {
+                        comps.add(Component.text()
+                                .append(Component.text(aFloat))
+                                .append(boostEnum.getPosSymbol())
+                                .build());
+                    }
+                });
+            }
+            descript = Component.text()
+                    .append(comps)
+                    .build();
+            name = name.hoverEvent(HoverEvent.showText(descript));
+            name = name.clickEvent(ClickEvent.runCommand("/country research start "+identifier));
             return new ResearchOption(this);
         }
     }

@@ -32,4 +32,9 @@ public class NewDay extends Event {
     public int getMonth() {
         return month;
     }
+
+    @Override
+    public String toString(){
+        return day+"/"+month+"/"+year;
+    }
 }

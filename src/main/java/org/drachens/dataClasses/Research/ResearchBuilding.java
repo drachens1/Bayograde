@@ -8,6 +8,7 @@ import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.territories.Province;
+import org.drachens.temporary.research.ResearchCountry;
 
 public abstract class ResearchBuilding extends BuildTypes {
     protected final BuildingEnum researchCenter = BuildingEnum.researchCenter;
@@ -20,8 +21,6 @@ public abstract class ResearchBuilding extends BuildTypes {
     public void onBuild(Country country, Province province, CPlayer p) {
         if (!canBuild(country, province, p)) return;
         new Building(this, province);
-        province.getBuilding().getItemDisplay().addViewer((CPlayer) p);
-
     }
 
     public abstract Payment generate(Building building);

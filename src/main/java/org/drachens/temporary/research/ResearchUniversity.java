@@ -27,7 +27,6 @@ public class ResearchUniversity extends ResearchBuilding {
                 return true;
             }
         }
-        System.out.println(4);
         return false;
     }
 
