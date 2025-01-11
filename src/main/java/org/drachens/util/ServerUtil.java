@@ -305,6 +305,7 @@ public class ServerUtil {
         commandManager.register(new WhoisCMD());
 
         commandManager.register(new AICmd());
+        commandManager.register(new CheckNeighbours());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

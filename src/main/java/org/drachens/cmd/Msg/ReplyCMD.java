@@ -10,7 +10,6 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.sound.SoundEvent;
-import org.drachens.util.PlayerUtil;
 
 public class ReplyCMD extends Command {
     public ReplyCMD() {
@@ -19,8 +18,13 @@ public class ReplyCMD extends Command {
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /r <msg>"));
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
+            Player to = MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(p.getLastMessenger());
+            if (to==null){
+                p.sendMessage(Component.text("You have no one to reply to",NamedTextColor.RED));
+                return;
+            }
             msgBuild(
-                    p, MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(p.getLastMessenger()),
+                    p, to,
                     context.get(msg));
         }, msg);
     }

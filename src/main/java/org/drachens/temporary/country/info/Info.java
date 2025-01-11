@@ -11,5 +11,7 @@ public class Info extends Command {
         addSubcommand(new WarsInfoCMD());
         addSubcommand(new PuppetsCMD());
         addSubcommand(new LawsInfo("laws"));
+        addSubcommand(new BordersInfoCMD());
+        addSubcommand(new InfoOptionsCMD());
     }
 }

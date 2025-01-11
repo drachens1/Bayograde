@@ -141,31 +141,8 @@ public class ConfigFileManager {
         }
     }
 
-    public ConfigurationNode getPermissionsFile() {
-        return permissionsNode;
-    }
-
     public ServerPropertiesFile getServerPropertiesFile() {
         return serverPropertiesFile;
-    }
-
-    private void createDefaultsServerProperties(ConfigurationNode serverProp) {
-        try {
-            if (serverProp.node("server", "port").isNull()) {
-                serverProp.node("server", "port").set(25565);
-            }
-            if (serverProp.node("server", "host").isNull()) {
-                serverProp.node("server", "host").set("localHost");
-            }
-            if (serverProp.node("velocity", "active").isNull()) {
-                serverProp.node("velocity", "active").set(false);
-            }
-            if (serverProp.node("velocity", "secret").isNull()) {
-                serverProp.node("velocity", "secret").set("null");
-            }
-        } catch (SerializationException e) {
-            System.err.println("Properties defaults setting error " + e.getMessage());
-        }
     }
 
     private void createDefaultsWhitelist(ConfigurationNode whitelist) {
@@ -178,12 +155,6 @@ public class ConfigFileManager {
             }
         } catch (SerializationException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void addDefault(ConfigurationNode c, Object data, Object... path) throws SerializationException {
-        if (c.node(path).isNull()) {
-            c.node(path).set(data);
         }
     }
 

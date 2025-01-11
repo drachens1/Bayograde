@@ -19,13 +19,12 @@ import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
 import org.drachens.temporary.troops.Combat;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public class Province implements Serializable {
+public class Province {
     private Combat combat;
     private final Instance instance;
     private final Pos pos;
@@ -33,16 +32,6 @@ public class Province implements Serializable {
     private final ProvinceManager provinceManager;
     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
             Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
-    private final Pos[] directions = {
-            new Pos(-1, 0, 0), // West
-            new Pos(1, 0, 0),  // East
-            new Pos(0, 0, -1), // North
-            new Pos(0, 0, 1),   // South
-            new Pos(0, 0, 0) // current
-    };
-    private final int[][] directions2 = {
-            {-1, 0}, {1, 0}, {0, -1}, {0, 1},
-    };
     private Building building;
     private Country occupier;
     private Material material;
@@ -245,14 +234,6 @@ public class Province implements Serializable {
             if (isCity())
                 this.occupier.cityCaptured(attacker, this);
         }
-        if (!corers.isEmpty()){
-            corers.forEach(country -> {
-                attacker.addOthersCores(country,this);
-                if (country!=occupier){
-                    occupier.removeOthersCores(country,this);
-                }
-            });
-        }
         attacker.captureProvince(this);
         if (isCity()) {
             if (attacker.isMajorCity(this))
@@ -277,18 +258,9 @@ public class Province implements Serializable {
         if (building != null) {
             building.capture(attacker);
         }
-        if (!corers.isEmpty()){
-            corers.forEach(country -> {
-                attacker.addOthersCores(country,this);
-                if (country!=occupier){
-                    occupier.removeOthersCores(country,this);
-                }
-            });
-        }
         this.occupier = attacker;
         attacker.captureProvince(this);
         if (isCity()) {
-            System.out.println("1 : "+pos.x()+" : "+pos.z());
             if (attacker.isMajorCity(this))
                 setCity(attacker.getMajorCity(this));
             else
@@ -301,7 +273,6 @@ public class Province implements Serializable {
     public void initialOccupier(Country occupier) {
         this.occupier = occupier;
         occupier.addOccupied(this);
-        updateBorders();
     }
 
     public List<Troop> getTroops() {
@@ -318,12 +289,6 @@ public class Province implements Serializable {
 
     public void capture(Country attacker) {
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
-    }
-
-    public void changeOccupier(Country to){
-        if (building != null) this.building.capture(to);
-        setOccupier(to);
-        updateBorders();
     }
 
     public Building getBuilding() {
@@ -375,31 +340,20 @@ public class Province implements Serializable {
     }
 
     private void updateBorders() {
-        for (Pos direction : directions) {
-            Pos newLoc = this.getPos().add(direction);
-            change(newLoc);
-        }
+        List<Province> neigh = new ArrayList<>(neighbours);
+        neigh.add(this);
+        neigh.forEach(this::updateProv);
     }
 
-    private void change(Pos loc) {
-        Province province = provinceManager.getProvince(loc);
-        if (province == null || province.isCity()) return;
-        Country country = province.getOccupier();
-        if (country != null) {
-            for (int[] direction2 : directions2) {
-                int offsetX2 = direction2[0];
-                int offsetY2 = direction2[1];
-
-                Pos neighborLocation = loc.add(offsetX2, 0, offsetY2);
-
-                Province neighbourBlock = provinceManager.getProvince(neighborLocation);
-                if (neighbourBlock != null && neighbourBlock.getOccupier() != country) {
-                    province.setBorder();
-                    return;
-                }
+    public void updateProv(Province p){
+        if (p.isCity())return;
+        for (Province p2 : p.getNeighbours()) {
+            if (p2.getOccupier() != p.getOccupier()) {
+                p.setBorder();
+                return;
             }
-            province.setBlock();
         }
+        p.setBlock();
     }
 
     public List<Province> getNeighbours() {

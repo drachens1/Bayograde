@@ -33,7 +33,6 @@ import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.ImaginaryWorld;
-import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
@@ -116,8 +115,7 @@ public abstract class Country implements Cloneable {
     private Component originalName;
     private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
     private final HashMap<String, LawCategory>  laws = new HashMap<>();
-    private final HashMap<Province, List<String>> bordersProvince = new HashMap<>();
-    private final List<String> borders = new ArrayList<>();
+    private final HashMap<String, List<Province>> bordersProvince = new HashMap<>();
     private PuppetChat puppetChat;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
@@ -1175,20 +1173,38 @@ public abstract class Country implements Cloneable {
         return modifiers.get(identifier);
     }
 
-    public void addBorders(Province province, Country country){
-        List<String> c = bordersProvince.getOrDefault(province,new ArrayList<>());
-        c.add(country.getName());
-        bordersProvince.put(province,c);
-        if (!borders.contains(country.getName())){
-            borders.add(country.getName());
-        }
+    public void addBorders(Province province) {
+        List<String> adjCountries = getAdjacentCountries(province);
+        adjCountries.forEach(country ->
+                bordersProvince.computeIfAbsent(country, k -> new ArrayList<>()).add(province)
+        );
     }
 
-    public List<String> getProvinceborders(Province province){
-        return bordersProvince.get(province);
+    public void removeBorders(Province province) {
+        List<String> adjCountries = getAdjacentCountries(province);
+        adjCountries.forEach(country -> {
+            List<Province> provinces = bordersProvince.get(country);
+            if (provinces != null) {
+                provinces.remove(province);
+                if (provinces.isEmpty()) {
+                    bordersProvince.remove(country);
+                }
+            }
+        });
     }
 
-    public List<String> getBorders(){
-        return borders;
+    private List<String> getAdjacentCountries(Province province) {
+        List<String> adj = new ArrayList<>();
+        province.getNeighbours().forEach(province1 -> {
+            Country country = province1.getOccupier();
+            if (country != this) {
+                adj.add(country.getName());
+            }
+        });
+        return adj;
+    }
+
+    public Set<String> getBorders(){
+        return bordersProvince.keySet();
     }
 }

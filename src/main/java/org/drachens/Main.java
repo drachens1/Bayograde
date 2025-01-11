@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import static net.minestom.server.ServerFlag.MAX_PACKET_SIZE;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;

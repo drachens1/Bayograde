@@ -144,7 +144,7 @@ public class CentralEventManager {
             Country occupier = e.getDefender();
             Country attacker = e.getAggressor();
             occupier.sendActionBar(Component.text("You have been attacked at " + e.getAttacked().getPos(), NamedTextColor.RED));
-            e.getAttacked().changeOccupier(attacker);
+            e.getAttacked().setOccupier(attacker);
         });
 
         globEHandler.addListener(StartWarEvent.class, e -> {

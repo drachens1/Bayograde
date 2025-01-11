@@ -19,10 +19,6 @@ public class MsgCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Player ps = context.get(player).findFirstPlayer(sender);
-            if (p == ps) {
-                p.sendMessage("You cannot msg yourself silly");
-                return;
-            }
             if (ps == null) {
                 p.sendMessage("Player not found");
                 return;

@@ -2,19 +2,18 @@ package org.drachens.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.entity.Player;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.UUID;
 
 public class PlayerUtil {
     public static UUID getUUIDFromName(String playerName) {
         try {
-            URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + playerName);
+            URL url = URL.of(URI.create("https://api.mojang.com/users/profiles/minecraft/" + playerName), null);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
