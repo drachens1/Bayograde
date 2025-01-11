@@ -11,7 +11,7 @@ import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.temporary.research.ResearchCountry;
 
 import static org.drachens.util.Messages.sendMessage;

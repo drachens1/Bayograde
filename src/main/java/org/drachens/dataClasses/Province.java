@@ -1,4 +1,4 @@
-package org.drachens.dataClasses.territories;
+package org.drachens.dataClasses;
 
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
@@ -12,7 +12,6 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
@@ -29,8 +28,7 @@ public class Province {
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
-    private final ProvinceManager provinceManager;
-    private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
+     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
             Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
     private Building building;
     private Country occupier;
@@ -44,7 +42,6 @@ public class Province {
         this.pos = pos;
         this.instance = instance;
         this.occupier = occupier;
-        provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
     }
 
@@ -52,7 +49,6 @@ public class Province {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
         this.occupier = occupier;
-        provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
     }
 
@@ -60,7 +56,6 @@ public class Province {
         this.pos = new Pos(x, y, z);
         this.instance = instance;
         this.occupier = null;
-        provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
     }
 
@@ -68,7 +63,6 @@ public class Province {
         this.pos = pos;
         this.instance = instance;
         this.occupier = null;
-        provinceManager = ContinentalManagers.world(instance).provinceManager();
         this.neighbours = neighbours;
     }
 
@@ -80,19 +74,28 @@ public class Province {
                         .append(Component.text("[EXTRA]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to edit your country", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country edit options"))
-                        .build());
+                        .build())
+                        .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
             }else if (country.isAlly(occupier)){
                 return createSecretDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
-                        .build());
+                        .build()
+                        .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName()))));
             }else {
                 return createPublicDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
-                        .build());
+                        .build())
+                        .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
             }
         }
         return createPublicDescription();

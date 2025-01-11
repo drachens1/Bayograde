@@ -18,8 +18,8 @@ import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.World;
-import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
 import java.util.List;

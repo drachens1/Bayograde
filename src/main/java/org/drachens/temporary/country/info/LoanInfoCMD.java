@@ -13,7 +13,7 @@ public class LoanInfoCMD extends Command {
     public LoanInfoCMD() {
         super("loan_info");
         setCondition(((sender, s) -> isLeaderOfCountry(sender)));
-        addSyntax((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             if (!isLeaderOfCountry(sender)){
                 sender.sendMessage("You are not the leader of a country");
                 return;

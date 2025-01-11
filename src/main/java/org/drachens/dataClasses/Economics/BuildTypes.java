@@ -4,7 +4,7 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 
 import java.util.HashSet;
 

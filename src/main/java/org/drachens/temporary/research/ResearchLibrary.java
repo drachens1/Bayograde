@@ -7,8 +7,8 @@ import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.Research.ResearchBuilding;
-import org.drachens.dataClasses.territories.Province;
 
 public class ResearchLibrary extends ResearchBuilding {
     private final Payment cost = new Payment(CurrencyEnum.production, 2f);

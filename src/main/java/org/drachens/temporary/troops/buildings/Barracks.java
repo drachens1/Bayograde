@@ -13,7 +13,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
 

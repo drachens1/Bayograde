@@ -2,7 +2,7 @@ package org.drachens.Manager;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.events.NewDay;
 import org.drachens.temporary.troops.Combat;
 

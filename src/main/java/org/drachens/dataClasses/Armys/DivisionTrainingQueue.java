@@ -6,8 +6,8 @@ import org.drachens.Manager.defaults.enums.TroopTypeEnum;
 import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
-import org.drachens.dataClasses.territories.Province;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.TroopPathing;
 

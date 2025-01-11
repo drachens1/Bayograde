@@ -6,7 +6,7 @@ import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 
 public class BuildItem extends HotbarItemButton {
     private final BuildingEnum buildingEnum;

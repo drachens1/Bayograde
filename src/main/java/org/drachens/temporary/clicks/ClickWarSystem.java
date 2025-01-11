@@ -13,7 +13,7 @@ import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.War;
 import org.jetbrains.annotations.NotNull;
 

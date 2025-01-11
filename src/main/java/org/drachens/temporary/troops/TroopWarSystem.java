@@ -7,7 +7,7 @@ import net.minestom.server.event.player.PlayerUseItemEvent;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.War;
 import org.drachens.temporary.troops.buildings.Barracks;
 

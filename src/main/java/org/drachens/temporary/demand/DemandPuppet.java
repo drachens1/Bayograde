@@ -11,7 +11,7 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;

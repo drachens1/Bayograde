@@ -33,6 +33,7 @@ import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.ImaginaryWorld;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
@@ -41,7 +42,6 @@ import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
-import org.drachens.dataClasses.territories.Province;
 import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
@@ -261,10 +261,6 @@ public abstract class Country implements Cloneable {
             visibleModifiers.remove(modifier);
             createInfo();
         }
-    }
-
-    public HashMap<String,Modifier> getModifiers() {
-        return modifiers;
     }
 
     public void calculateCapitulationPercentage() {

@@ -99,23 +99,6 @@ public class DiplomacyViewOptionsCMD extends Command {
                         .build());
             }
             comps.add(Component.text()
-                    .append(Component.text(" [VIEW WARS] ",NamedTextColor.GOLD,TextDecoration.BOLD))
-                    .clickEvent(ClickEvent.runCommand("/country info wars " + against.getName()))
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the wars this country is in", NamedTextColor.GRAY)))
-                    .build());
-            comps.add(Component.text()
-                    .appendNewline()
-                    .append(Component.text(" [VIEW GENERAL] ",NamedTextColor.GOLD,TextDecoration.BOLD))
-                    .clickEvent(ClickEvent.runCommand("/country info general " + against.getName()))
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view general information about this country", NamedTextColor.GRAY)))
-                    .appendNewline()
-                    .build());
-            comps.add(Component.text()
-                    .append(Component.text(" [VIEW ALL INFO] ",NamedTextColor.GOLD,TextDecoration.BOLD))
-                    .clickEvent(ClickEvent.runCommand("/country info all " + against.getName()))
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view all information about this country", NamedTextColor.GRAY)))
-                    .build());
-            comps.add(Component.text()
                     .append(Component.text(" [LOAN] ",NamedTextColor.GOLD,TextDecoration.BOLD))
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to prompt you to the loan creation command", NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.suggestCommand("/country loan create " + against.getName()))

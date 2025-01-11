@@ -1,7 +1,7 @@
 package org.drachens.temporary.troops;
 
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 
 import java.util.ArrayList;
 import java.util.List;

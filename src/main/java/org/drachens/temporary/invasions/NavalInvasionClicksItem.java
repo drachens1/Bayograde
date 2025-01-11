@@ -17,7 +17,7 @@ import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
 import org.jetbrains.annotations.NotNull;
 

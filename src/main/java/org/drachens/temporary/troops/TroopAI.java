@@ -5,7 +5,7 @@ import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.VotingWinner;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 import org.drachens.events.NewDay;
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;

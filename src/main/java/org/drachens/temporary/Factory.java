@@ -15,10 +15,10 @@ import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
-import org.drachens.dataClasses.territories.Province;
 
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;

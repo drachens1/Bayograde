@@ -4,7 +4,7 @@ import dev.ng5m.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.territories.Province;
+import org.drachens.dataClasses.Province;
 
 public class CheckNeighbours extends Command {
     public CheckNeighbours() {
