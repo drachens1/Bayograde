@@ -31,6 +31,7 @@ public class ContinentalManagers {
     public static final ChannelManager channelManager = new ChannelManager();
     public static final ServerHealthManager serverHealthManager = new ServerHealthManager();
     public static final CentralAIManager centralAIManager = new CentralAIManager();
+    public static final PlayerModsManager playerModsManager = new PlayerModsManager();
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

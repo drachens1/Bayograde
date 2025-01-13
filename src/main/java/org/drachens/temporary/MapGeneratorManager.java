@@ -451,6 +451,11 @@ public class MapGeneratorManager extends MapGen {
         for (Province neighbour : province.getNeighbours()){
             if (neighbour.getOccupier()!=country){
                 province.setBorder();
+                province.getNeighbours().forEach(province1 -> {
+                    if (province1.getOccupier()!=country){
+                        province1.getOccupier().addBorder(province,country.getName());
+                    }
+                });
                 return;
             }
         }

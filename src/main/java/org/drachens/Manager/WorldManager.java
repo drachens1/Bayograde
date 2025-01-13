@@ -6,6 +6,7 @@ import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
@@ -26,7 +27,7 @@ public class WorldManager {
     private final HashMap<Instance, World> worldHashMap = new HashMap<>();
     private final HashMap<CPlayer, Instance> playerHashSet = new HashMap<>();
     private final Function<Player, Component> displayNameSupplier = Player::getName;
-    private final Rank r = new Rank(displayNameSupplier, Component.text("cool", NamedTextColor.BLUE), Component.text("cool2", NamedTextColor.BLUE), NamedTextColor.RED, "cool");
+    private final Rank defaultRank = new Rank(displayNameSupplier, Component.text("", NamedTextColor.GRAY, TextDecoration.BOLD), Component.text(""), NamedTextColor.GRAY, "default");
 
     public WorldManager() {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
@@ -55,7 +56,7 @@ public class WorldManager {
     public void initialJoin(CPlayer p) {
         Table table = ContinentalManagers.database.getTable("player_info");
         new PlayerInfoEntry(p, table);
-        r.addPlayer(p);
+        defaultRank.addPlayer(p);
         ContinentalManagers.permissions.playerOp(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
@@ -64,9 +65,10 @@ public class WorldManager {
         p.setJoinTime(LocalTime.now());
         p.setHead();
         sendResourcePack(p);
+        p.sendPluginMessage("continentalmod","joined");
     }
 
-    private ResourcePackInfo resourcePackInfo = ResourcePackInfo.resourcePackInfo()
+    private final ResourcePackInfo resourcePackInfo = ResourcePackInfo.resourcePackInfo()
             .uri(URI.create("https://download.mc-packs.net/pack/60f880067ca235c61abbc7949269cba5a0f0d01e.zip"))
             .hash("60f880067ca235c61abbc7949269cba5a0f0d01e").build();
 

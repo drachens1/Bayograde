@@ -12,14 +12,13 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.util.MessageEnum;
 
-import static org.drachens.util.CommandsUtil.getCountryNames;
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+import static org.drachens.util.CommandsUtil.*;
 
 public class AcceptCMD extends Command {
     public AcceptCMD() {
         super("accept");
 
-        var countries = ArgumentType.String("Countries");
+        var countries = getCountriesArg();
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {
                 return;

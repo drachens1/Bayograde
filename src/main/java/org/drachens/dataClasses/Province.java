@@ -84,7 +84,7 @@ public class Province {
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
                         .build()
-                        .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                            .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
                                 .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName()))));
             }else {
@@ -232,12 +232,12 @@ public class Province {
     }
 
     public void setOccupier(Country attacker) {
+        attacker.captureProvince(this);
         if (occupier != null) {
             occupier.removeOccupied(this);
             if (isCity())
                 this.occupier.cityCaptured(attacker, this);
         }
-        attacker.captureProvince(this);
         if (isCity()) {
             if (attacker.isMajorCity(this))
                 this.setCity(attacker.getMajorCity(this));

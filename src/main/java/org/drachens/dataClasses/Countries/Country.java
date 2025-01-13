@@ -165,18 +165,6 @@ public abstract class Country implements Cloneable {
         cores.add(province);
     }
 
-    public void removeCore(Province province){
-        cores.remove(province);
-    }
-
-    public boolean hasCore(Province province){
-        return cores.contains(province);
-    }
-
-    public List<Province> getCores(){
-        return new ArrayList<>(cores);
-    }
-
     public void addModifierCommands(ModifierCommand modifierCommands){
         modifierCommandsHashMap.put(modifierCommands.getString(),modifierCommands);
     }
@@ -293,18 +281,28 @@ public abstract class Country implements Cloneable {
 
     public void addOccupied(Province province) {
         province.getCorers().forEach(country -> addOthersCores(country,province));
+        province.getNeighbours().forEach(provinces->{
+            if (provinces.getOccupier()==this)return;
+            addBorder(provinces,provinces.getOccupier().getName());
+            provinces.getOccupier().addBorder(province,getName());
+        });
         occupies.add(province);
+    }
+
+    public void removeOccupied(Province province) {
+        province.getCorers().forEach(country -> removeOthersCores(country,province));
+        province.getNeighbours().forEach(provinces->{
+            if (provinces.getOccupier()==this)return;
+            removeBorder(provinces,provinces.getOccupier().getName());
+            provinces.getOccupier().removeBorder(province,getName());
+        });
+        occupies.remove(province);
     }
 
     public void captureProvince(Province province){
         warsWorld.removeGhostBlock(province.getPos());
         allyWorld.removeGhostBlock(province.getPos());
         addOccupied(province);
-    }
-
-    public void removeOccupied(Province province) {
-        province.getCorers().forEach(country -> removeOthersCores(country,province));
-        occupies.remove(province);
     }
 
     public String getName() {
@@ -1169,35 +1167,26 @@ public abstract class Country implements Cloneable {
         return modifiers.get(identifier);
     }
 
-    public void addBorders(Province province) {
-        List<String> adjCountries = getAdjacentCountries(province);
-        adjCountries.forEach(country ->
-                bordersProvince.computeIfAbsent(country, k -> new ArrayList<>()).add(province)
-        );
+    public void addBorder(Province province, String country) {
+        List<Province> p = bordersProvince.getOrDefault(country, new ArrayList<>());
+        p.add(province);
+        bordersProvince.put(country, p);
     }
 
-    public void removeBorders(Province province) {
-        List<String> adjCountries = getAdjacentCountries(province);
-        adjCountries.forEach(country -> {
-            List<Province> provinces = bordersProvince.get(country);
-            if (provinces != null) {
-                provinces.remove(province);
-                if (provinces.isEmpty()) {
-                    bordersProvince.remove(country);
-                }
+    public void removeBorder(Province province, String country) {
+        List<Province> p = bordersProvince.get(country);
+        if (p.remove(province)) {
+            if (p.isEmpty()) {
+                bordersProvince.remove(country);
+            } else {
+                bordersProvince.put(country, p);
             }
-        });
+        }
     }
 
-    private List<String> getAdjacentCountries(Province province) {
-        List<String> adj = new ArrayList<>();
-        province.getNeighbours().forEach(province1 -> {
-            Country country = province1.getOccupier();
-            if (country != this) {
-                adj.add(country.getName());
-            }
-        });
-        return adj;
+
+    public List<Province> getBordersCountry(String country){
+        return bordersProvince.get(country);
     }
 
     public Set<String> getBorders(){

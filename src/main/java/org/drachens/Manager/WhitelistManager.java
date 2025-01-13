@@ -52,7 +52,6 @@ public class WhitelistManager {
     }
 
     public void toggle(boolean e) {
-        globalBroadcast(e + "");
         //Handles the configuration part so it is persistent
         ConfigurationNode whitelistNode = ContinentalManagers.configFileManager.getWhitelistListNode();
         ConfigurationNode whitelist = whitelistNode.node("whitelist");

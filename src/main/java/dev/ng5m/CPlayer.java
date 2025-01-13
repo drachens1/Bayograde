@@ -35,6 +35,7 @@ public class CPlayer extends Player {
     private Long playTime;
     private LocalTime lastCheck;
     private PlayerInfoEntry playerInfoEntry;
+    private boolean isUsingMod = false;
 
     public CPlayer(PlayerConnection playerConnection, GameProfile gameProfile) {
         super(playerConnection,gameProfile);
@@ -42,6 +43,10 @@ public class CPlayer extends Player {
 
     public PlayerInfoEntry getPlayerInfoEntry() {
         return playerInfoEntry;
+    }
+
+    public void setIsUsingMod(boolean b){
+        isUsingMod=b;
     }
 
     public void setPlayerDataFile(PlayerInfoEntry playerInfoEntry) {

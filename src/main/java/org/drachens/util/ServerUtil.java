@@ -111,7 +111,8 @@ public class ServerUtil {
         ServerPropertiesFile serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
         if (serverPropertiesFile.isVelocity()) {
             VelocityProxy.enable(serverPropertiesFile.getSecret());
-        } else
+        }
+        else
             MojangAuth.init();
         srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
     }
@@ -298,6 +299,8 @@ public class ServerUtil {
         commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
+
+        commandManager.register(new ViewBorderBlocks());
 
         commandManager.register(new PingCMD());
         commandManager.register(new TpsCMD());
