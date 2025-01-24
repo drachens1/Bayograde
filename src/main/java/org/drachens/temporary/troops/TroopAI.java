@@ -2,7 +2,7 @@ package org.drachens.temporary.troops;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
-import org.drachens.Manager.defaults.VotingWinner;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;

@@ -60,14 +60,4 @@ public class OtherUtil {
         }
         return Math.max(value, lower);
     }
-
-    public static CompletableFuture<Void> runAsyncTask() {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
-    }
 }

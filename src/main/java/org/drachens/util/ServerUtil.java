@@ -28,7 +28,7 @@ import org.drachens.Main;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.VotingWinner;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.per_instance.CountryDataManager;

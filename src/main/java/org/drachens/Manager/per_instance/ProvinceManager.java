@@ -35,10 +35,6 @@ public class ProvinceManager {
         provinceHashMap.put(new FlatPos(x, z), province);
     }
 
-    public Map<FlatPos, Province> getProvinceHashMap() {
-        return provinceHashMap;
-    }
-
     public void reset() {
         provinceHashMap = new HashMap<>();
     }

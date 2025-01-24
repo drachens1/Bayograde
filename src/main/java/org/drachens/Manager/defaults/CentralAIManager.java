@@ -1,6 +1,7 @@
 package org.drachens.Manager.defaults;
 
 import net.minestom.server.instance.Instance;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.interfaces.AIManager;
 
 import java.util.HashMap;

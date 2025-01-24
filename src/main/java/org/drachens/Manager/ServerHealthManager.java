@@ -48,14 +48,6 @@ public class ServerHealthManager {
         return tps;
     }
 
-    public List<Double> getTpsHistory() {
-        List<Double> history = new ArrayList<>();
-        for (TPSData data : tpsHistory) {
-            history.add(data.tps);
-        }
-        return history;
-    }
-
     public Double getTpsFromSecondsAgo(int seconds) {
         long targetTime = System.currentTimeMillis() - (seconds * 1000L);
         for (int i = tpsHistory.size() - 1; i >= 0; i--) {

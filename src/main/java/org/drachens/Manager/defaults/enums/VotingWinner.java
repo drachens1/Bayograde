@@ -1,4 +1,4 @@
-package org.drachens.Manager.defaults;
+package org.drachens.Manager.defaults.enums;
 
 import org.drachens.dataClasses.VotingOption;
 

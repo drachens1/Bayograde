@@ -3,7 +3,7 @@ package org.drachens.temporary.clicks;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.VotingWinner;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
