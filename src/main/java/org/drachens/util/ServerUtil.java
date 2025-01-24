@@ -242,7 +242,7 @@ public class ServerUtil {
         schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
             if (!(e instanceof NewDay newDay)) return;
             ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(newDay));
-        }).setDelay(7).repeat().schedule());
+        }).setDelay(7).schedule());
 
 
         globEHandler.addListener(NewDay.class, e -> {
