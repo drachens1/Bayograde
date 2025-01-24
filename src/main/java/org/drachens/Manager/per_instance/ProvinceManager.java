@@ -20,10 +20,10 @@ public class ProvinceManager {
     }
 
     public Province getProvince(int x, int z) {
-        return provinceHashMap.get(new FlatPos(x,z));
+        return provinceHashMap.get(new FlatPos(x, z));
     }
 
-    public Province getProvince(FlatPos flatPos){
+    public Province getProvince(FlatPos flatPos) {
         return provinceHashMap.get(flatPos);
     }
 
@@ -32,7 +32,7 @@ public class ProvinceManager {
     }
 
     public void registerProvince(int x, int z, Province province) {
-        provinceHashMap.put(new FlatPos(x,z), province);
+        provinceHashMap.put(new FlatPos(x, z), province);
     }
 
     public Map<FlatPos, Province> getProvinceHashMap() {

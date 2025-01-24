@@ -19,7 +19,7 @@ public class Animation extends AnimationType {
     }
 
     public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
-        if (itemDisplay.getAnimation()!=null)itemDisplay.getAnimation().stop(itemDisplay);
+        if (itemDisplay.getAnimation() != null) itemDisplay.getAnimation().stop(itemDisplay);
         itemDisplay.setAnimation(this);
         addTask(itemDisplay, getScheduler().buildTask(new Runnable() {
             int current = 0;

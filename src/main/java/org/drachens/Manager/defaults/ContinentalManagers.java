@@ -14,6 +14,7 @@ import org.drachens.store.CosmeticsManager;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class ContinentalManagers {
+    public static final PlayerModsManager playerModsManager = new PlayerModsManager();
     public static final ConfigFileManager configFileManager = new ConfigFileManager();
     public static final PermissionsUtil permissions = new PermissionsUtil();
     public static final YearManager yearManager = new YearManager();
@@ -24,14 +25,13 @@ public class ContinentalManagers {
     public static final ContinentalSchedulerManager schedulerManager = new ContinentalSchedulerManager();
     public static final ScoreboardManager scoreboardManager = new ScoreboardManager();
     public static final AdvancementManager advancementManager = new AdvancementManager();
-    public static Database database;
     public static final WorldManager worldManager = new WorldManager();
     public static final ImaginaryWorldManager imaginaryWorldManager = new ImaginaryWorldManager();
     public static final CombatManager combatManager = new CombatManager();
     public static final ChannelManager channelManager = new ChannelManager();
     public static final ServerHealthManager serverHealthManager = new ServerHealthManager();
     public static final CentralAIManager centralAIManager = new CentralAIManager();
-    public static final PlayerModsManager playerModsManager = new PlayerModsManager();
+    public static Database database;
 
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);

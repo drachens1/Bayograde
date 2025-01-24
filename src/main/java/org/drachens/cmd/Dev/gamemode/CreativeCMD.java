@@ -7,7 +7,7 @@ import net.minestom.server.entity.GameMode;
 public class CreativeCMD extends Command {
     public CreativeCMD() {
         super("creative");
-        setCondition((sender, s)  ->{
+        setCondition((sender, s) -> {
             CPlayer p = (CPlayer) sender;
             return p.hasPermission("gamemode");
         });

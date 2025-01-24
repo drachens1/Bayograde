@@ -20,8 +20,8 @@ public enum BuildingEnum {
         this.synonyms = synonyms;
     }
 
-    public void setBuildType(BuildTypes buildTypes){
-        this.buildTypes=buildTypes;
+    public void setBuildType(BuildTypes buildTypes) {
+        this.buildTypes = buildTypes;
     }
 
     public BuildTypes getBuildTypes() {

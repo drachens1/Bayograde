@@ -34,10 +34,10 @@ public class YearBar extends HideableBossBar {
         if (task != null) task.cancel();
         task = MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             final int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            final int endYear = votingOption.getEndYear();
             int day = 0;
             int month = 0;
             int year = votingOption.getStartingYear();
-            final int endYear = votingOption.getEndYear();
 
             @Override
             public void run() {

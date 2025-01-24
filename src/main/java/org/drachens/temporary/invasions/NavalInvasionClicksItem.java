@@ -27,12 +27,12 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.OtherUtil.posToString;
 
 public class NavalInvasionClicksItem extends HotbarItemButton {
-    private final Component selectedAttackPoint = Component.text("Selected the attack point",NamedTextColor.GREEN);
-    private final Component selectedInvasionPoint = Component.text("Selected initial launch point",NamedTextColor.GREEN);
-    private final Component provinceNoExist = Component.text("That province doesn't exist",NamedTextColor.RED);
+    private final Component selectedAttackPoint = Component.text("Selected the attack point", NamedTextColor.GREEN);
+    private final Component selectedInvasionPoint = Component.text("Selected initial launch point", NamedTextColor.GREEN);
+    private final Component provinceNoExist = Component.text("That province doesn't exist", NamedTextColor.RED);
     private final Component error = Component.text("You need to join a country first", NamedTextColor.RED);
     private final Component pos1 = Component.text("You need to launch the attack from  an ally or your own land or a puppets", NamedTextColor.RED);
-    private final Component pos2 = Component.text("You need a war justification to attack",NamedTextColor.RED);
+    private final Component pos2 = Component.text("You need a war justification to attack", NamedTextColor.RED);
     private final Component noWater = Component.text("It needs to be adjacent to water", NamedTextColor.RED);
     private final HashMap<CPlayer, Pair<Province, Province>> playerPairHashMap = new HashMap<>();
     private final ConfirmCMD confirm;
@@ -41,8 +41,12 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1},
             {0, 0}
     };
+    int[][] directions2 = {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+    };
+
     public NavalInvasionClicksItem() {
-        super(1, itemBuilder(Material.SPRUCE_BOAT,1));
+        super(1, itemBuilder(Material.SPRUCE_BOAT, 1));
         confirm = (ConfirmCMD) MinecraftServer.getCommandManager().getCommand("confirm");
     }
 
@@ -50,43 +54,43 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     public void onUse(PlayerStartDiggingEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
-        if (country==null){
+        if (country == null) {
             p.sendMessage(error);
             return;
         }
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getBlockPosition());
-        if (province==null){
+        if (province == null) {
             p.sendMessage(provinceNoExist);
             return;
         }
-        if (!country.isMilitaryFriend(province.getOccupier())){
+        if (!country.isMilitaryFriend(province.getOccupier())) {
             p.sendMessage(pos1);
             return;
         }
-        if (notAdjacentWater(province.getPos(), province.getInstance())){
+        if (notAdjacentWater(province.getPos(), province.getInstance())) {
             p.sendMessage(noWater);
             return;
         }
-        Pair<Province,Province> a = playerPairHashMap.getOrDefault(p,new Pair<>(null,null));
-        playerPairHashMap.put(p,new Pair<>(province,a.component2()));
+        Pair<Province, Province> a = playerPairHashMap.getOrDefault(p, new Pair<>(null, null));
+        playerPairHashMap.put(p, new Pair<>(province, a.component2()));
         p.sendMessage(selectedInvasionPoint);
-        if (a.component2()!=null){
+        if (a.component2() != null) {
             p.sendMessage(Component.text()
-                            .append(Component.text("Naval invasion:",NamedTextColor.BLUE))
-                            .appendNewline()
-                            .append(Component.text("Launch point: ",NamedTextColor.BLUE))
-                            .append(Component.text(posToString(province.getPos())))
-                            .appendNewline()
-                            .append(Component.text("Attack point: ",NamedTextColor.BLUE))
-                            .append(Component.text(posToString(a.component2().getPos())))
-                            .appendNewline()
-                            .append(Component.text()
-                                    .append(Component.text("[LAUNCH]",NamedTextColor.GOLD, TextDecoration.BOLD))
-                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to confirm the naval invasion", NamedTextColor.GRAY)))
-                                    .clickEvent(ClickEvent.runCommand("/confirm"))
-                            )
+                    .append(Component.text("Naval invasion:", NamedTextColor.BLUE))
+                    .appendNewline()
+                    .append(Component.text("Launch point: ", NamedTextColor.BLUE))
+                    .append(Component.text(posToString(province.getPos())))
+                    .appendNewline()
+                    .append(Component.text("Attack point: ", NamedTextColor.BLUE))
+                    .append(Component.text(posToString(a.component2().getPos())))
+                    .appendNewline()
+                    .append(Component.text()
+                            .append(Component.text("[LAUNCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to confirm the naval invasion", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/confirm"))
+                    )
                     .build());
-            confirm.putPlayerRunnable(p, () -> navalInvade(p,province,a.component2()));
+            confirm.putPlayerRunnable(p, () -> navalInvade(p, province, a.component2()));
         }
     }
 
@@ -94,49 +98,45 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     public void onUse(PlayerUseItemOnBlockEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
-        if (country==null){
+        if (country == null) {
             p.sendMessage(error);
             return;
         }
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getPosition());
-        if (province==null){
+        if (province == null) {
             p.sendMessage(provinceNoExist);
             return;
         }
-        if (!country.canFight(province.getOccupier())){
+        if (!country.canFight(province.getOccupier())) {
             p.sendMessage(pos2);
             return;
         }
-        if (notAdjacentWater(province.getPos(), province.getInstance())){
+        if (notAdjacentWater(province.getPos(), province.getInstance())) {
             p.sendMessage(noWater);
             return;
         }
-        Pair<Province,Province> a = playerPairHashMap.getOrDefault(p,new Pair<>(null,null));
-        playerPairHashMap.put(p,new Pair<>(a.component1(),province));
+        Pair<Province, Province> a = playerPairHashMap.getOrDefault(p, new Pair<>(null, null));
+        playerPairHashMap.put(p, new Pair<>(a.component1(), province));
         p.sendMessage(selectedAttackPoint);
-        if (a.component1()!=null){
+        if (a.component1() != null) {
             p.sendMessage(Component.text()
-                    .append(Component.text("Naval invasion:",NamedTextColor.BLUE))
+                    .append(Component.text("Naval invasion:", NamedTextColor.BLUE))
                     .appendNewline()
-                    .append(Component.text("Launch point: ",NamedTextColor.BLUE))
+                    .append(Component.text("Launch point: ", NamedTextColor.BLUE))
                     .append(Component.text(posToString(a.component1().getPos())))
                     .appendNewline()
-                    .append(Component.text("Attack point: ",NamedTextColor.BLUE))
+                    .append(Component.text("Attack point: ", NamedTextColor.BLUE))
                     .append(Component.text(posToString(province.getPos())))
                     .appendNewline()
                     .append(Component.text()
-                            .append(Component.text("[LAUNCH]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .append(Component.text("[LAUNCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to confirm the naval invasion", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/confirm"))
                     )
                     .build());
-            confirm.putPlayerRunnable(p, () -> navalInvade(p,a.component1(),province));
+            confirm.putPlayerRunnable(p, () -> navalInvade(p, a.component1(), province));
         }
     }
-
-    int[][] directions2 = {
-            {-1, 0}, {1, 0}, {0, -1}, {0, 1}
-    };
 
     private boolean notAdjacentWater(@NotNull Pos position, Instance instance) {
         for (int[] direction : directions2) {
@@ -150,24 +150,24 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
         return true;
     }
 
-    public void navalInvade(CPlayer p, Province province1, Province province2){
+    public void navalInvade(CPlayer p, Province province1, Province province2) {
         Country country = p.getCountry();
-        if (country==null){
+        if (country == null) {
             p.sendMessage(error);
             return;
         }
-        if (!country.isMilitaryFriend(province1.getOccupier())){
+        if (!country.isMilitaryFriend(province1.getOccupier())) {
             p.sendMessage(pos1);
             return;
         }
-        if (!country.canFight(province2.getOccupier())){
+        if (!country.canFight(province2.getOccupier())) {
             p.sendMessage(pos2);
             return;
         }
         Country target = province2.getOccupier();
-        for (int[] d : directions){
-            Province province = province2.add(d[0],d[1]);
-            if (province != null  && province.getOccupier()!=null && country.canFight(target)){
+        for (int[] d : directions) {
+            Province province = province2.add(d[0], d[1]);
+            if (province != null && province.getOccupier() != null && country.canFight(target)) {
                 province.capture(country);
             }
         }

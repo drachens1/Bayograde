@@ -15,8 +15,6 @@ public class ServerHealthManager {
     private long lastTickTime = System.nanoTime();
     private double tps = 20;
 
-    private record TPSData(double tps, long timestamp) { }
-
     public ServerHealthManager() {
 
         MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, e -> {
@@ -29,11 +27,11 @@ public class ServerHealthManager {
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
             logTPS(tps);
-        }).repeat(1,ChronoUnit.SECONDS).schedule();
+        }).repeat(1, ChronoUnit.SECONDS).schedule();
     }
 
     private double calculateTPS(long tickDuration) {
-        if (tickDuration<=0)return 25.0;
+        if (tickDuration <= 0) return 25.0;
         return (1_000_000_000.0 / tickDuration);
     }
 
@@ -69,7 +67,10 @@ public class ServerHealthManager {
         return null;
     }
 
-    public Long getUptime(){
-        return Duration.between(startupTime,LocalTime.now()).toSeconds();
+    public Long getUptime() {
+        return Duration.between(startupTime, LocalTime.now()).toSeconds();
+    }
+
+    private record TPSData(double tps, long timestamp) {
     }
 }

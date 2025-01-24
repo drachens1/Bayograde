@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CommandsUtil {
-    public static Argument<String> getCountriesArg(){
+    public static Argument<String> getCountriesArg() {
         return ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
@@ -24,7 +24,7 @@ public class CommandsUtil {
                 });
     }
 
-    public static Argument<String> getCountriesArgExcludingPlayersCountry(){
+    public static Argument<String> getCountriesArgExcludingPlayersCountry() {
         return ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
@@ -45,7 +45,7 @@ public class CommandsUtil {
     }
 
     public static Suggestion suggestions(List<String> suggestion, Suggestion suggestions) {
-        suggestion.forEach(s-> suggestions.addEntry(new SuggestionEntry(s)));
+        suggestion.forEach(s -> suggestions.addEntry(new SuggestionEntry(s)));
         return suggestions;
     }
 
@@ -63,7 +63,7 @@ public class CommandsUtil {
     }
 
     public static Suggestion suggestions(Set<String> suggestion, Suggestion suggestions) {
-        suggestion.forEach(s-> suggestions.addEntry(new SuggestionEntry(s)));
+        suggestion.forEach(s -> suggestions.addEntry(new SuggestionEntry(s)));
         return suggestions;
     }
 

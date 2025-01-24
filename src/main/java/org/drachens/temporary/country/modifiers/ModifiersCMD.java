@@ -14,60 +14,60 @@ public class ModifiersCMD extends Command {
         super("modifiers");
 
         var modifier = ArgumentType.String("modifier")
-                        .setSuggestionCallback((sender,context,suggestion)->{
-                            if (notInCountry(sender))return;
-                            CPlayer p = (CPlayer) sender;
-                            Country country = p.getCountry();
-                            getSuggestionBasedOnInput(suggestion,country.getModifierNames());
-                        });
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (notInCountry(sender)) return;
+                    CPlayer p = (CPlayer) sender;
+                    Country country = p.getCountry();
+                    getSuggestionBasedOnInput(suggestion, country.getModifierNames());
+                });
 
         var second = ArgumentType.String("input")
-                .setSuggestionCallback((sender,context,suggestion)->{
-                    if (notInCountry(sender))return;
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (notInCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
                     ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
-                    if (modifierCommand==null){
+                    if (modifierCommand == null) {
                         p.sendMessage("You do not have that modifier");
                         return;
                     }
-                    modifierCommand.getSuggestion(p,context,suggestion);
+                    modifierCommand.getSuggestion(p, context, suggestion);
                 });
 
-        setCondition((sender,s)->!notInCountry(sender));
+        setCondition((sender, s) -> !notInCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (notInCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (notInCountry(sender)) return;
             sender.sendMessage("Proper usage /country modifiers <modifier>");
         });
 
-        addSyntax((sender,context)->{
-            if (notInCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (notInCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
-            if (modifierCommand==null){
+            if (modifierCommand == null) {
                 p.sendMessage("You do not have that modifier");
                 return;
             }
-            modifierCommand.properUsage(p,context);
-        },modifier);
+            modifierCommand.properUsage(p, context);
+        }, modifier);
 
-        addSyntax((sender,context)->{
-            if (notInCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (notInCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
-            if (modifierCommand==null){
+            if (modifierCommand == null) {
                 p.sendMessage("You do not have that modifier");
                 return;
             }
-            modifierCommand.execute(p,context.get(second));
-        },modifier,second);
+            modifierCommand.execute(p, context.get(second));
+        }, modifier, second);
     }
 
-    private boolean notInCountry(CommandSender sender){
+    private boolean notInCountry(CommandSender sender) {
         CPlayer p = (CPlayer) sender;
-        return p.getCountry()==null;
+        return p.getCountry() == null;
     }
 }

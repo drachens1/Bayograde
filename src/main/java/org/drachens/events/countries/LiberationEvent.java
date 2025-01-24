@@ -10,9 +10,9 @@ public class LiberationEvent extends Event {
 
     public LiberationEvent(Country liberated, Country liberator, String type) {
         super(liberator.getInstance());
-        this.liberated=liberated;
-        this.liberator=liberator;
-        this.type=type;
+        this.liberated = liberated;
+        this.liberator = liberator;
+        this.type = type;
     }
 
     public Country getLiberated() {
@@ -23,7 +23,7 @@ public class LiberationEvent extends Event {
         return liberator;
     }
 
-    public String getType(){
+    public String getType() {
         return type;
     }
 }

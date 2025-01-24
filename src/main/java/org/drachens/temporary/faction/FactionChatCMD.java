@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 public class FactionChatCMD extends Command {
     private final HashMap<CPlayer, Boolean> active = new HashMap<>();
+
     public FactionChatCMD() {
         super("chat");
 
@@ -32,35 +33,35 @@ public class FactionChatCMD extends Command {
                     }
                 });
 
-        setCondition((sender,s)->isInAFaction(sender));
+        setCondition((sender, s) -> isInAFaction(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (isInAFaction(sender)){
+        setDefaultExecutor((sender, context) -> {
+            if (isInAFaction(sender)) {
                 sender.sendMessage("Proper usage /faction chat <faction> ");
             }
         });
 
-        addSyntax((sender,context)->{
-            if (!isInAFaction(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isInAFaction(sender)) return;
             CPlayer p = (CPlayer) sender;
             Factions faction = ContinentalManagers.world(p.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (faction==null||!faction.containsCountry(p.getCountry()))return;
+            if (faction == null || !faction.containsCountry(p.getCountry())) return;
             FactionChat factionChat = faction.getFactionChat();
-            boolean current = active.getOrDefault(p,false);
-            current=!current;
-            active.put(p,current);
-            if (current){
+            boolean current = active.getOrDefault(p, false);
+            current = !current;
+            active.put(p, current);
+            if (current) {
                 factionChat.addPlayer(p);
                 p.sendMessage(Component.text()
                         .append(MessageEnum.faction.getComponent())
                         .append(Component.text("Faction chat is now active")));
-            }else {
+            } else {
                 factionChat.removePlayer(p);
                 p.sendMessage(Component.text()
                         .append(MessageEnum.faction.getComponent())
                         .append(Component.text("Faction chat is now inactive")));
             }
-        },factionsArg);
+        }, factionsArg);
     }
 
     private boolean isInAFaction(CommandSender sender) {

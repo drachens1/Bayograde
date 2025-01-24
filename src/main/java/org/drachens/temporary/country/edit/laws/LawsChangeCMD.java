@@ -18,65 +18,66 @@ public class LawsChangeCMD extends Command {
         super("change");
 
         var law2 = ArgumentType.String("categories")
-                .setSuggestionCallback((sender,context,suggestion)->{
-                    if (!isLeaderOfCountry(sender))return;
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
-                    getSuggestionBasedOnInput(suggestion,p.getCountry().getLawNames());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getLawNames());
                 });
 
         var options = ArgumentType.String("options")
-                .setSuggestionCallback((sender,context,suggestion)->{
-                    if (!isLeaderOfCountry(sender))return;
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
-                    LawCategory law =  p.getCountry().getLaw(context.get(law2));
-                    if (law==null){
+                    LawCategory law = p.getCountry().getLaw(context.get(law2));
+                    if (law == null) {
                         suggestion.addEntry(new SuggestionEntry("Invalid category inputted"));
                         return;
                     }
-                    getSuggestionBasedOnInput(suggestion,law.getLaws());
+                    getSuggestionBasedOnInput(suggestion, law.getLaws());
                 });
 
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country==null){
+            if (country == null) {
                 p.sendMessage(Component.text("Join a country in order to execute this command", NamedTextColor.RED));
                 return;
             }
-            if (!country.isPlayerLeader(p)){
+            if (!country.isPlayerLeader(p)) {
                 p.sendMessage(Component.text("You are not the leader of a country", NamedTextColor.RED));
                 return;
             }
             p.sendMessage(Component.text("Proper usage: /country laws change-options <laws>", NamedTextColor.RED));
         });
 
-        addSyntax((sender,context)->{},law2);
+        addSyntax((sender, context) -> {
+        }, law2);
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             LawCategory lawCategory = country.getLaw(context.get(law2));
-            if (lawCategory==null){
-                p.sendMessage(Component.text("That law category is null",NamedTextColor.RED));
+            if (lawCategory == null) {
+                p.sendMessage(Component.text("That law category is null", NamedTextColor.RED));
                 return;
             }
             Law law = lawCategory.getLaw(context.get(options));
-            if (law==null){
-                p.sendMessage(Component.text("That law is null",NamedTextColor.RED));
+            if (law == null) {
+                p.sendMessage(Component.text("That law is null", NamedTextColor.RED));
                 return;
             }
             lawCategory.setCurrent(law);
             p.sendMessage(Component.text()
-                            .append(Component.text("Changed the law to "))
-                            .append(law.modifier().getName())
+                    .append(Component.text("Changed the law to "))
+                    .append(law.modifier().getName())
                     .build());
-        },law2,options);
+        }, law2, options);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

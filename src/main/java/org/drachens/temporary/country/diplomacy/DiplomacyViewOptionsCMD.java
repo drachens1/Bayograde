@@ -23,15 +23,15 @@ public class DiplomacyViewOptionsCMD extends Command {
         super("view_options");
         var countries = getCountriesArgExcludingPlayersCountry();
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender)){
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) {
                 sender.sendMessage("You are not the leader of a country");
                 return;
             }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (against==null){
+            if (against == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
@@ -46,66 +46,66 @@ public class DiplomacyViewOptionsCMD extends Command {
                     .appendNewline()
                     .appendNewline()
                     .build());
-            if (!country.hasCondition(ConditionEnum.cant_start_a_war)&&country.canFight(against)){
-                if (country.getCompletedWarJustificationAgainst(against)!=null){
+            if (!country.hasCondition(ConditionEnum.cant_start_a_war) && country.canFight(against)) {
+                if (country.getCompletedWarJustificationAgainst(against) != null) {
                     WarJustification warJustification = country.getCompletedWarJustificationAgainst(against);
                     comps.add(Component.text()
-                            .append(Component.text(" [DECLARE WAR] ",NamedTextColor.GOLD, TextDecoration.BOLD))
-                            .append(Component.text("expires "+warJustification.getExpires(),NamedTextColor.GRAY,TextDecoration.ITALIC))
+                            .append(Component.text(" [DECLARE WAR] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .append(Component.text("expires " + warJustification.getExpires(), NamedTextColor.GRAY, TextDecoration.ITALIC))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy declare-war " + against.getName()))
                             .build());
-                }else if (country.getCreatingWarJustificationAgainst(against.getName())!=null){
+                } else if (country.getCreatingWarJustificationAgainst(against.getName()) != null) {
                     WarJustification warJustification = country.getCreatingWarJustificationAgainst(against.getName());
                     comps.add(Component.text()
-                            .append(Component.text(" [Justification time : ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                            .append(Component.text(" [Justification time : ", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .append(Component.text(warJustification.getTimeLeft()))
                             .append(Component.text("] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to cancel the justification", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war cancel " + against.getName()))
                             .build());
-                }else {
+                } else {
                     comps.add(Component.text()
-                            .append(Component.text(" [JUSTIFY WAR] ",NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .append(Component.text(" [JUSTIFY WAR] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the justification options", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war options " + against.getName()))
                             .build());
                 }
                 comps.add(Component.newline());
                 comps.add(Component.text()
-                        .append(Component.text(" [NON-AGGRESSION-PACT] ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .append(Component.text(" [NON-AGGRESSION-PACT] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to send this player a non aggression pact offer", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy non-aggression-pact create " + against.getName()))
                         .build());
                 comps.add(Component.newline());
             }
-            if (!ContinentalManagers.demandManager.isPlayerActive(country)){
+            if (!ContinentalManagers.demandManager.isPlayerActive(country)) {
                 comps.add(Component.text()
-                        .append(Component.text(" [DEMAND] ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .append(Component.text(" [DEMAND] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy demand start " + against.getName()))
                         .build());
-            }else if (ContinentalManagers.demandManager.getDemand(country).getToCountry()==against){
+            } else if (ContinentalManagers.demandManager.getDemand(country).getToCountry() == against) {
                 comps.add(Component.text()
-                        .append(Component.text(" [COMPLETE DEMAND] ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .append(Component.text(" [COMPLETE DEMAND] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy demand complete "))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to prompt you to the loan creation command", NamedTextColor.GRAY)))
                         .build());
             }
-            if (country.isAtWar(against)){
+            if (country.isAtWar(against)) {
                 comps.add(Component.text()
-                        .append(Component.text(" [PEACE DEAl] ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .append(Component.text(" [PEACE DEAl] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy peace_deal " + against.getName()))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start a peace deal process with this player", NamedTextColor.GRAY)))
                         .build());
             }
             comps.add(Component.text()
-                    .append(Component.text(" [LOAN] ",NamedTextColor.GOLD,TextDecoration.BOLD))
+                    .append(Component.text(" [LOAN] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to prompt you to the loan creation command", NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.suggestCommand("/country loan create " + against.getName()))
                     .build());
 
             p.sendMessage(Component.text().append(comps));
-        },countries);
+        }, countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

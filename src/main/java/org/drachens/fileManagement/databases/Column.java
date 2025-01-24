@@ -4,8 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Column {
-    private String msg;
     private final String name;
+    private String msg;
     private Table table;
     private int columnNumber;
 

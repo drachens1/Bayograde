@@ -23,28 +23,28 @@ public class UnconditionalSurrenderCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getCountryWars());
                 });
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             sender.sendMessage("Proper usage /country diplomacy unconditional_surrender <country_at_war_with>");
         });
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country other = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countriesAtWar));
-            if (other==null){
+            if (other == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
-            if (!country.isAtWar(other)){
+            if (!country.isAtWar(other)) {
                 p.sendMessage("You are not at war with that country");
                 return;
             }
-            EventDispatcher.call(new UnconditionalSurrenderEvent(country,other));
-        },countriesAtWar);
+            EventDispatcher.call(new UnconditionalSurrenderEvent(country, other));
+        }, countriesAtWar);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

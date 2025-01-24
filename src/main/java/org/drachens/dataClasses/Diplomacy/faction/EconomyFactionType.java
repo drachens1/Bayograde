@@ -16,7 +16,7 @@ public class EconomyFactionType extends Factions {
     private final Component name = Component.text("Economy", NamedTextColor.GOLD);
 
     public EconomyFactionType(Country creator, String name) {
-        super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.GREEN),"economy_faction")
+        super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.GREEN), "economy_faction")
                 .setDescription(Component.text("The bonuses from the economic faction", NamedTextColor.GRAY))
                 .build());
     }

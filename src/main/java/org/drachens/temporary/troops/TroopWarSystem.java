@@ -21,14 +21,14 @@ public class TroopWarSystem implements War {
     @Override
     public void onClick(PlayerBlockInteractEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (!p.isSneaking())return;
+        if (!p.isSneaking()) return;
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getBlockPosition());
-        if (province == null || province.getBuilding()==null)return;
+        if (province == null || province.getBuilding() == null) return;
         Country country = p.getCountry();
-        if (country==null || country!=p.getCountry())return;
-        if (province.getBuilding().getBuildTypes()!= BuildingEnum.barracks) return;
+        if (country == null || country != p.getCountry()) return;
+        if (province.getBuilding().getBuildTypes() != BuildingEnum.barracks) return;
         Barracks barracks = (Barracks) BuildingEnum.barracks.getBuildTypes();
-        barracks.openGui(p,province.getBuilding());
+        barracks.openGui(p, province.getBuilding());
     }
 
     @Override

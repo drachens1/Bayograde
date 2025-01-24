@@ -37,8 +37,8 @@ public class CreateCMD extends Command {
                 });
 
         var nameArg = ArgumentType.String("factionName");
-        setDefaultExecutor((sender,context)->{
-            if (notInAFaction(sender)){
+        setDefaultExecutor((sender, context) -> {
+            if (notInAFaction(sender)) {
                 sender.sendMessage("Proper usage /faction create <type> <name> ");
             }
         });
@@ -55,7 +55,7 @@ public class CreateCMD extends Command {
             Country country = player.getCountry();
             String factionName = context.get(nameArg);
 
-            if (country.hasCondition(ConditionEnum.cant_join_faction)){
+            if (country.hasCondition(ConditionEnum.cant_join_faction)) {
                 player.sendMessage(Component.text("You have the cant join a faction condition.", NamedTextColor.RED));
                 return;
             }

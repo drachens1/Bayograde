@@ -15,7 +15,7 @@ public abstract class World {
     public World(InstanceContainer instance, Pos spawnPoint) {
         this.instance = instance;
         this.instanceContainer = instance;
-        this.spawnPoint=spawnPoint;
+        this.spawnPoint = spawnPoint;
         instance.setChunkSupplier(LightingChunk::new);
     }
 
@@ -43,7 +43,7 @@ public abstract class World {
 
     }
 
-    public void playerAnimationEvent(PlayerHandAnimationEvent e){
+    public void playerAnimationEvent(PlayerHandAnimationEvent e) {
 
     }
 
@@ -55,7 +55,7 @@ public abstract class World {
         return instanceContainer;
     }
 
-    public Pos getSpawnPoint(){
+    public Pos getSpawnPoint() {
         return spawnPoint;
     }
 }

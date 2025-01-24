@@ -6,7 +6,7 @@ import net.minestom.server.command.builder.Command;
 public class GamemodeCMD extends Command {
     public GamemodeCMD() {
         super("gamemode");
-        setCondition((sender, s)  ->{
+        setCondition((sender, s) -> {
             CPlayer p = (CPlayer) sender;
             return p.hasPermission("gamemode");
         });

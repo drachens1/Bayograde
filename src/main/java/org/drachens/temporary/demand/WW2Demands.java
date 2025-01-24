@@ -34,14 +34,14 @@ public class WW2Demands extends Demand {
 
     public WW2Demands(Country from, Country to) {
         super(from, to);
-        imaginaryWorld=new ImaginaryWorld(to.getInstance(),true);
+        imaginaryWorld = new ImaginaryWorld(to.getInstance(), true);
         List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
         countries.remove(to);
         countries.removeAll(to.getPuppets());
         countries.remove(from);
         countries.removeAll(from.getPuppets());
-        countries.forEach(country -> country.getOccupies().forEach(province -> imaginaryWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE)));
-        shownBlocks.forEach((province, block) -> imaginaryWorld.addGhostBlock(province.getPos(),block));
+        countries.forEach(country -> country.getOccupies().forEach(province -> imaginaryWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE)));
+        shownBlocks.forEach((province, block) -> imaginaryWorld.addGhostBlock(province.getPos(), block));
         CPlayer p = (CPlayer) from.getPlayerLeader();
         showPlayer(p);
     }
@@ -290,7 +290,7 @@ public class WW2Demands extends Demand {
 
     private void updateProvinceBlock(Province province, Block block) {
         shownBlocks.put(province, block);
-        imaginaryWorld.addGhostBlock(province.getPos(),block);
+        imaginaryWorld.addGhostBlock(province.getPos(), block);
     }
 
     private void processCountryDemand(Country country, Block block, boolean addDemand) {
@@ -304,7 +304,7 @@ public class WW2Demands extends Demand {
                     newBlock = Block.RED_CONCRETE;
                 }
                 shownBlocks.put(province, newBlock);
-                imaginaryWorld.addGhostBlock(province.getPos(),newBlock);
+                imaginaryWorld.addGhostBlock(province.getPos(), newBlock);
             }
         });
     }
@@ -341,7 +341,7 @@ public class WW2Demands extends Demand {
         if (!demandedProvinces.contains(province)) return;
         demandedProvinces.remove(province);
         shownBlocks.remove(province);
-        imaginaryWorld.addGhostBlock(province.getPos(),province.getMaterial().block());
+        imaginaryWorld.addGhostBlock(province.getPos(), province.getMaterial().block());
     }
 
     public void removePuppetsDemand(Country country) {
@@ -382,7 +382,7 @@ public class WW2Demands extends Demand {
         if (!offeredProvinces.contains(province)) return;
         offeredProvinces.remove(province);
         shownBlocks.remove(province);
-        imaginaryWorld.addGhostBlock(province.getPos(),province.getMaterial().block());
+        imaginaryWorld.addGhostBlock(province.getPos(), province.getMaterial().block());
     }
 
     public void removePuppetsOffer(Country country) {

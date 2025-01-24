@@ -9,17 +9,17 @@ public class WarGoalType {
     private final String name;
 
     public WarGoalType(String name, Modifier modifier, float expires, float timeToMake) {
-        this.modifier=modifier;
+        this.modifier = modifier;
         this.timeToMake = timeToMake;
         this.name = name;
         this.expires = expires;
     }
 
-    public Modifier getModifier(){
+    public Modifier getModifier() {
         return modifier;
     }
 
-    public float getTimeToMake(){
+    public float getTimeToMake() {
         return timeToMake;
     }
 

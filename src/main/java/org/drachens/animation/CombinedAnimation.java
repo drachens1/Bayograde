@@ -13,7 +13,7 @@ public class CombinedAnimation extends AnimationType {
 
     @Override
     public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
-        if (itemDisplay.getAnimation()!=null)itemDisplay.getAnimation().stop(itemDisplay);
+        if (itemDisplay.getAnimation() != null) itemDisplay.getAnimation().stop(itemDisplay);
         itemDisplay.setAnimation(this);
         animationTypes.forEach((animationType -> animationType.start(itemDisplay, repeat)));
         return this;

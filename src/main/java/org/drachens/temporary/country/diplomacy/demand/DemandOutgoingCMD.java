@@ -17,10 +17,10 @@ public class DemandOutgoingCMD extends Command {
     public DemandOutgoingCMD() {
         super("out_going");
         var demands = ArgumentType.String("demands")
-                .setSuggestionCallback((sender,context,suggestion)->{
+                .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasSentADemand(sender)) return;
-                    CPlayer p = (CPlayer)sender;
-                    getSuggestionBasedOnInput(suggestion,p.getCountry().getOutgoingDemands());
+                    CPlayer p = (CPlayer) sender;
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getOutgoingDemands());
                 });
 
         var choice = ArgumentType.String("choice")
@@ -40,36 +40,39 @@ public class DemandOutgoingCMD extends Command {
                     }
                 });
 
-        setCondition((sender,s)->hasSentADemand(sender));
+        setCondition((sender, s) -> hasSentADemand(sender));
 
-        addSyntax((sender,context)->{},demands);
+        addSyntax((sender, context) -> {
+        }, demands);
 
-        addSyntax((sender,context)->{
-            if (!hasSentADemand(sender))return;
+        addSyntax((sender, context) -> {
+            if (!hasSentADemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Demand demand = country.getOutgoingDemand(context.get(demands));
-            if (demand==null)return;;
-            switch (context.get(choice)){
+            if (demand == null) return;
+            ;
+            switch (context.get(choice)) {
                 case "cancel":
                     demand.getToCountry().removeDemand(demand);
                 case "view":
                     p.sendMessage("You need to choose on / off");
             }
-        },demands,choice);
+        }, demands, choice);
 
-        addSyntax((sender,context)->{
-            if (!hasSentADemand(sender))return;
+        addSyntax((sender, context) -> {
+            if (!hasSentADemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             WW2Demands demand = (WW2Demands) country.getOutgoingDemand(context.get(demands));
-            if (demand==null)return;;
-            switch (context.get(choice)){
+            if (demand == null) return;
+            ;
+            switch (context.get(choice)) {
                 case "cancel":
                     demand.getToCountry().removeDemand(demand);
                     break;
                 case "view":
-                    switch (context.get(third)){
+                    switch (context.get(third)) {
                         case "on":
                             demand.showPlayer(p);
                             break;
@@ -78,7 +81,7 @@ public class DemandOutgoingCMD extends Command {
                             break;
                     }
             }
-        },demands,choice,third);
+        }, demands, choice, third);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {
@@ -90,8 +93,8 @@ public class DemandOutgoingCMD extends Command {
         return false;
     }
 
-    private boolean hasSentADemand(CommandSender sender){
-        if (!isLeaderOfCountry(sender))return false;
+    private boolean hasSentADemand(CommandSender sender) {
+        if (!isLeaderOfCountry(sender)) return false;
         CPlayer p = (CPlayer) sender;
         return p.getCountry().hasOutgoingDemands();
     }

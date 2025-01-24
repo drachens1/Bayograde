@@ -69,13 +69,13 @@ public class DemandIncomingCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
             if (from == null) {
-                sendMessage(p,notSent);
+                sendMessage(p, notSent);
                 return;
             }
 
             Demand sentDemand = p.getCountry().getDemand(from);
-            if (sentDemand==null){
-                sendMessage(p,notSent);
+            if (sentDemand == null) {
+                sendMessage(p, notSent);
                 return;
             }
 
@@ -89,7 +89,7 @@ public class DemandIncomingCMD extends Command {
                     sentDemand.denied();
                     break;
                 case "counter-offer":
-                    EventDispatcher.call(new DemandCounterOfferEvent(to, from,sentDemand));
+                    EventDispatcher.call(new DemandCounterOfferEvent(to, from, sentDemand));
                     break;
             }
 
@@ -100,7 +100,7 @@ public class DemandIncomingCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
             if (from == null) {
-                sendMessage(p,notSent);
+                sendMessage(p, notSent);
                 return;
             }
 
@@ -117,7 +117,7 @@ public class DemandIncomingCMD extends Command {
                     sentDemand.denied();
                     break;
                 case "counter-offer":
-                    EventDispatcher.call(new DemandCounterOfferEvent(to, from,sentDemand));
+                    EventDispatcher.call(new DemandCounterOfferEvent(to, from, sentDemand));
                     break;
                 case "view":
                     switch (context.get(third)) {
@@ -132,12 +132,12 @@ public class DemandIncomingCMD extends Command {
             }
         }, options, choice, third);
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             if (!hasDemandSent(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             List<Component> comps = new ArrayList<>();
-            country.getDemandCountryNames().forEach(name-> comps.add(Component.text("- "+name)));
+            country.getDemandCountryNames().forEach(name -> comps.add(Component.text("- " + name)));
             p.sendMessage(Component.text().append(comps).build());
         });
     }

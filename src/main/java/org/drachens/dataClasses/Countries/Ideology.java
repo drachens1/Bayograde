@@ -7,9 +7,9 @@ import java.util.*;
 
 public class Ideology {
     private final Country country;
+    private final HashMap<IdeologyTypes, Float> ideologies;
     public float total = 0f;
     private IdeologyTypes currentIdeology;
-    private final HashMap<IdeologyTypes, Float> ideologies;
 
     private Ideology(HashMap<IdeologyTypes, Float> ideologies, Country country) {
         this.country = country;
@@ -50,7 +50,7 @@ public class Ideology {
     }
 
     public void setCurrentIdeology(IdeologyTypes currentIdeology) {
-        if (this.currentIdeology!=null){
+        if (this.currentIdeology != null) {
             country.removeModifier(this.currentIdeology.getModifier());
         }
         country.addModifier(currentIdeology.getModifier());
@@ -60,6 +60,7 @@ public class Ideology {
     public HashMap<IdeologyTypes, Float> getIdeologies() {
         return ideologies;
     }
+
     public void addIdeology(IdeologyTypes ideology, float percentage) {
         if (ideologies.containsKey(ideology)) {
             percentage += ideologies.get(ideology);
@@ -115,18 +116,18 @@ public class Ideology {
             }
         }
 
-        if (currentIdeology==null){
-            if (country.getLeader()==null){
+        if (currentIdeology == null) {
+            if (country.getLeader() == null) {
                 List<Leader> leaders = highest.left().getLeaders();
                 country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
                 currentIdeology = highest.left();
                 return;
-            }else {
-                currentIdeology=country.getLeader().getIdeologyTypes();
+            } else {
+                currentIdeology = country.getLeader().getIdeologyTypes();
             }
         }
         List<Leader> leaders = new ArrayList<>(currentIdeology.getLeaders());
-        if (currentIdeology!=highest.left()) {
+        if (currentIdeology != highest.left()) {
             if (country.getLeader() != null)
                 country.removeModifier(country.getLeader().getIdeologyTypes().getModifier());
             country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
@@ -138,7 +139,7 @@ public class Ideology {
         return new Ideology(ideologies, country);
     }
 
-    public List<String> getIdeologyNames(){
+    public List<String> getIdeologyNames() {
         List<String> s = new ArrayList<>();
         ideologies.keySet().forEach(ideologyTypes -> s.add(ideologyTypes.getIdentifier()));
         return s;

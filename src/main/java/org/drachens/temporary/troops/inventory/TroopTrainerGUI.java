@@ -19,14 +19,16 @@ import java.util.HashMap;
 
 import static org.drachens.util.InventoryUtil.addExitButton;
 
-public class TroopTrainerGUI extends InventoryGUI{
+public class TroopTrainerGUI extends InventoryGUI {
     private final Building building;
-    public TroopTrainerGUI(Building building){
-        this.building=building;
+
+    public TroopTrainerGUI(Building building) {
+        this.building = building;
     }
+
     @Override
     protected Inventory createInventory() {
-        return new Inventory(InventoryType.CHEST_6_ROW,"Trainer");
+        return new Inventory(InventoryType.CHEST_6_ROW, "Trainer");
     }
 
     @Override
@@ -34,32 +36,32 @@ public class TroopTrainerGUI extends InventoryGUI{
         TroopCountry country = (TroopCountry) p.getCountry();
         int y = 0;
         int x = 1;
-        for (DivisionDesign divisionDesign : country.getDivisionDesigns()){
-            if (x>8){
-                x=1;
-                y+=18;
+        for (DivisionDesign divisionDesign : country.getDivisionDesigns()) {
+            if (x > 8) {
+                x = 1;
+                y += 18;
             }
             DivisionDesign.Profile profile = divisionDesign.getProfile();
-            addButton(y+x,head(profile));
-            addButton(y+x+1,profile.getDelete().consumer(e -> {
+            addButton(y + x, head(profile));
+            addButton(y + x + 1, profile.getDelete().consumer(e -> {
                 TroopCountry country1 = (TroopCountry) p.getCountry();
                 country1.removeDivisionDesign(divisionDesign);
-                ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building),p);
+                ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building), p);
             }));
-            addButton(y+x+9,profile.getTrain().consumer(inventoryPreClickEvent -> {
+            addButton(y + x + 9, profile.getTrain().consumer(inventoryPreClickEvent -> {
                 Barracks barracks = (Barracks) building.getBuildTypes().getBuildTypes();
-                barracks.startTraining(building,divisionDesign,p);
+                barracks.startTraining(building, divisionDesign, p);
             }));
-            addButton(y+x+10,profile.getEdit());
-            x+=2;
+            addButton(y + x + 10, profile.getEdit());
+            x += 2;
         }
-        if (country.getDivisionDesigns().size()<11) addButton(y+x+1,addNew());
-        for (int i = 0; i < 54; i+=9){
-            addButton(i,sideButtons());
+        if (country.getDivisionDesigns().size() < 11) addButton(y + x + 1, addNew());
+        for (int i = 0; i < 54; i += 9) {
+            addButton(i, sideButtons());
         }
-        addButton(52,sideButtons());
-        addButton(43,sideButtons());
-        addButton(44,sideButtons());
+        addButton(52, sideButtons());
+        addButton(43, sideButtons());
+        addButton(44, sideButtons());
         addExitButton(this);
         super.decorate(p);
     }
@@ -71,7 +73,7 @@ public class TroopTrainerGUI extends InventoryGUI{
                         .build());
     }
 
-    protected InventoryButton addNew(){
+    protected InventoryButton addNew() {
         return new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GREEN_CONCRETE)
                         .customName(Component.text("Add new"))
@@ -79,13 +81,13 @@ public class TroopTrainerGUI extends InventoryGUI{
                 .consumer(inventoryPreClickEvent -> {
                     CPlayer p = (CPlayer) inventoryPreClickEvent.getPlayer();
                     TroopCountry troopCountry = (TroopCountry) p.getCountry();
-                    troopCountry.addDivisionDesign(new DivisionDesign("Womp",new HashMap<>(),troopCountry));
+                    troopCountry.addDivisionDesign(new DivisionDesign("Womp", new HashMap<>(), troopCountry));
                     p.closeInventory();
-                    ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building),p);
+                    ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building), p);
                 });
     }
 
-    protected InventoryButton head(DivisionDesign.Profile profile){
+    protected InventoryButton head(DivisionDesign.Profile profile) {
         return new InventoryButton()
                 .creator(player -> profile.getFace());
     }

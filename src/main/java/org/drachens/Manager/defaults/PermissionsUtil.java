@@ -3,12 +3,10 @@ package org.drachens.Manager.defaults;
 import dev.ng5m.CPlayer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class PermissionsUtil {
     private final List<String> operator = new ArrayList<>();
-    private final HashMap<String, List<String>> groups = new HashMap<>();
 
     public PermissionsUtil() {
         operator.add("ban");
@@ -23,12 +21,13 @@ public class PermissionsUtil {
         operator.add("stop");
         operator.add("restart");
         operator.add("summon");
-        operator.add("cheat");//For gold permission
+        operator.add("cheat");
     }
 
     public void playerOp(CPlayer p) {
         System.out.println(p.getUsername() + " was opped");
         operator.forEach(p::addPermission);
         p.addPermission("operator");
+        p.refreshCommands();
     }
 }

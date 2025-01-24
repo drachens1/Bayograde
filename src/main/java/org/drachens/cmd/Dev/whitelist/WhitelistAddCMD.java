@@ -23,7 +23,7 @@ public class WhitelistAddCMD extends Command {
         });
         addSyntax((sender, context) -> {
             CPlayer player1 = (CPlayer) sender;
-            if (!player1.hasPermission("whitelist"))return;
+            if (!player1.hasPermission("whitelist")) return;
             UUID p = getUUIDFromName(context.get(player));
             whitelistManager.addPlayer(p);
             sender.sendMessage(context.get(player) + " was added to the whitelist");

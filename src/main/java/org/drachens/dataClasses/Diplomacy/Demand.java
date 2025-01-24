@@ -36,7 +36,7 @@ public abstract class Demand {
 
     protected abstract void ifDenied();
 
-    public void runCompleteEvent(){
+    public void runCompleteEvent() {
         EventDispatcher.call(new DemandCompletionEvent(this, fromCountry, toCountry));
     }
 

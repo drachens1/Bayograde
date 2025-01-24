@@ -8,9 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Monitor {
-    private Material defaultMaterial;
     private final Instance instance;
     private final Map<Pos, Pixel> pixelHashMap = new HashMap<>();
+    private Material defaultMaterial;
+
     public Monitor(Instance instance, Material defaultMaterial) {
         this.instance = instance;
         this.defaultMaterial = defaultMaterial;
@@ -53,12 +54,12 @@ public class Monitor {
         return instance;
     }
 
-    public void setDefaultMaterial(Material material) {
-        this.defaultMaterial = material;
-    }
-
     public Material getDefaultMaterial() {
         return defaultMaterial;
+    }
+
+    public void setDefaultMaterial(Material material) {
+        this.defaultMaterial = material;
     }
 }
 

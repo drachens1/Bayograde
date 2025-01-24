@@ -20,9 +20,9 @@ public class TroopAI implements AIManager {
     private final HashMap<Country, AI> ais = new HashMap<>();
     private final VotingWinner votingWinner;
 
-    public TroopAI(VotingWinner votingWinner){
-        this.votingWinner=votingWinner;
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e->{
+    public TroopAI(VotingWinner votingWinner) {
+        this.votingWinner = votingWinner;
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
             tick(e.getInstance());
         });
     }
@@ -35,7 +35,7 @@ public class TroopAI implements AIManager {
     @Override
     public AI createAIForCountry(Country country) {
         AI ai = new TroopAI.FactorySpammer(country);
-        ais.put(country,ai);
+        ais.put(country, ai);
         return ai;
     }
 
@@ -49,25 +49,25 @@ public class TroopAI implements AIManager {
         private final Country country;
         private final Random r = new Random();
 
-        public FactorySpammer(Country country){
-            this.country=country;
+        public FactorySpammer(Country country) {
+            this.country = country;
         }
 
-        public void tick(){
+        public void tick() {
             buildFactory(new ArrayList<>(country.getCities()));
         }
 
-        private void buildFactory(List<Province> cities){
-            if (cities.isEmpty())return;
+        private void buildFactory(List<Province> cities) {
+            if (cities.isEmpty()) return;
             Province province = cities.get(r.nextInt(cities.size()));
-            if (province.getBuilding()!=null){
-                if (factory.requirementsToUpgrade(province.getBuilding(),country,1,null)){
-                    factory.upgrade(1,province.getBuilding(),country,null);
+            if (province.getBuilding() != null) {
+                if (factory.requirementsToUpgrade(province.getBuilding(), country, 1, null)) {
+                    factory.upgrade(1, province.getBuilding(), country, null);
                 }
-            }else {
-                if (factory.canBuild(country, province, null)){
+            } else {
+                if (factory.canBuild(country, province, null)) {
                     factory.forceBuild(country, province, null);
-                }else{
+                } else {
                     cities.remove(province);
                     buildFactory(cities);
                 }

@@ -16,35 +16,19 @@ public class PlayerInfoEntry implements Entry {
     private final Table table;
     private final String uuid;
     private final String name;
+    private final HashMap<String, Integer> eventAchievementTrigger = new HashMap<>();
     private Long playtime;
     private int gold;
     private List<String> permissions;
     private List<String> cosmetics;
-    private final HashMap<String, Integer> eventAchievementTrigger = new HashMap<>();
 
     public PlayerInfoEntry(CPlayer p, Table table) {
-        this.p=p;
+        this.p = p;
         p.setPlayerDataFile(this);
         this.uuid = String.valueOf(p.getUuid());
         this.name = p.getUsername();
         this.table = table;
         insert();
-    }
-
-    public void setPlaytime(Long playtime) {
-        this.playtime = playtime;
-    }
-
-    public void setGold(int gold) {
-        this.gold = gold;
-    }
-
-    public void setPermissions(ArrayList<String> permissions) {
-        this.permissions = permissions;
-    }
-
-    public void setCosmetics(ArrayList<String> cosmetics) {
-        this.cosmetics = cosmetics;
     }
 
     public void addCosmetic(String toAdd) {
@@ -67,16 +51,32 @@ public class PlayerInfoEntry implements Entry {
         return cosmetics;
     }
 
+    public void setCosmetics(ArrayList<String> cosmetics) {
+        this.cosmetics = cosmetics;
+    }
+
     public List<String> getPermissions() {
         return permissions;
+    }
+
+    public void setPermissions(ArrayList<String> permissions) {
+        this.permissions = permissions;
     }
 
     public int getGold() {
         return gold;
     }
 
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
     public Long getPlaytime() {
         return playtime;
+    }
+
+    public void setPlaytime(Long playtime) {
+        this.playtime = playtime;
     }
 
     public String getName() {

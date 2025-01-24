@@ -19,8 +19,8 @@ public class ReplyCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Player to = MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(p.getLastMessenger());
-            if (to==null){
-                p.sendMessage(Component.text("You have no one to reply to",NamedTextColor.RED));
+            if (to == null) {
+                p.sendMessage(Component.text("You have no one to reply to", NamedTextColor.RED));
                 return;
             }
             msgBuild(

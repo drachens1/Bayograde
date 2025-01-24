@@ -26,37 +26,37 @@ public class JustifyAgainstCMD extends Command {
         super("against");
         var countries = getCountriesArgExcludingPlayersCountry();
 
-        List<String> opts = Arrays.stream(new String[]{WarGoalTypeEnum.justified.name(),WarGoalTypeEnum.partially_justified.name(),WarGoalTypeEnum.surprise.name()}).toList();
+        List<String> opts = Arrays.stream(new String[]{WarGoalTypeEnum.justified.name(), WarGoalTypeEnum.partially_justified.name(), WarGoalTypeEnum.surprise.name()}).toList();
 
         var option = ArgumentType.String("Option")
-                .setSuggestionCallback((sender,context,suggestion)-> getSuggestionBasedOnInput(suggestion,opts));
+                .setSuggestionCallback((sender, context, suggestion) -> getSuggestionBasedOnInput(suggestion, opts));
 
         HashSet<String> stuff = new HashSet<>(opts);
 
-        addSyntax((sender,context)-> sender.sendMessage("Proper usage /country diplomacy justify-war against <country> <type>"),option);
+        addSyntax((sender, context) -> sender.sendMessage("Proper usage /country diplomacy justify-war against <country> <type>"), option);
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country.cantStartAWarWith(against)){
+            if (country.cantStartAWarWith(against)) {
                 p.sendMessage(Component.text("You cant justify on yourself/ally/puppet/non-aggression pact", NamedTextColor.RED));
                 return;
             }
-            if (country.hasCondition(ConditionEnum.cant_start_a_war)){
+            if (country.hasCondition(ConditionEnum.cant_start_a_war)) {
                 p.sendMessage(Component.text("You have the cant start a war condition. Therefore you cant start a war.", NamedTextColor.RED));
                 return;
             }
             String choice = context.get(option);
-            if (!stuff.contains(choice)){
+            if (!stuff.contains(choice)) {
                 p.sendMessage(Component.text("That is not a valid option", NamedTextColor.RED));
                 return;
             }
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);
-            WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(),against);
-            EventDispatcher.call(new WarJustificationStartEvent(warJustification,country));
-        },option,countries);
+            WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(), against);
+            EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
+        }, option, countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

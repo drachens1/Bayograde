@@ -18,22 +18,22 @@ public class Combat {
         province.setCombat(this);
     }
 
-    public void addAttacker(Troop troop){
+    public void addAttacker(Troop troop) {
         attackers.add(troop);
         troop.setBattle(this);
     }
 
-    public void removeAttacker(Troop troop){
+    public void removeAttacker(Troop troop) {
         attackers.remove(troop);
         troop.setBattle(null);
     }
 
-    public void addDefender(Troop troop){
+    public void addDefender(Troop troop) {
         defenders.add(troop);
         troop.setBattle(this);
     }
 
-    public void removeDefender(Troop troop){
+    public void removeDefender(Troop troop) {
         defenders.remove(troop);
         troop.setBattle(null);
     }
@@ -48,33 +48,33 @@ public class Combat {
             for (Troop defender : defenders) {
                 float attackerDamage = attacker.getDamage() * attacker.getStrength();
                 float defenderDamage = defender.getDamage() * defender.getStrength();
-    
+
                 float attackerDamageReduction = defender.getDefence() / (defender.getDefence() + attacker.getDamage());
                 float defenderDamageReduction = attacker.getDefence() / (attacker.getDefence() + defender.getDamage());
-    
+
                 defender.setHealth(defender.getHealth() - (attackerDamage * (1 - defenderDamageReduction)));
                 defender.setOrg(defender.getOrg() - (attackerDamage * (1 - defenderDamageReduction) * 0.2f)); // 20% of the damage goes to organization
-    
+
                 attacker.setHealth(attacker.getHealth() - (defenderDamage * (1 - attackerDamageReduction)));
                 attacker.setOrg(attacker.getOrg() - (defenderDamage * (1 - attackerDamageReduction) * 0.2f)); // 20% of the damage goes to organization
-    
+
                 if (defender.getHealth() <= 0 || defender.getOrg() <= 0) {
                     defender.retreat();
                     defenders.remove(defender);
                 }
-    
+
                 if (attacker.getHealth() <= 0 || attacker.getOrg() <= 0) {
                     attacker.retreat();
                     attackers.remove(attacker);
                 }
             }
         }
-    
+
         if (attackers.isEmpty() || defenders.isEmpty()) {
-            isActive=false;
+            isActive = false;
         }
     }
-    
+
 
     public boolean isActive() {
         return isActive;

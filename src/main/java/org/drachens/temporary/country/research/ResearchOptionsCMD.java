@@ -18,18 +18,18 @@ public class ResearchOptionsCMD extends Command {
     public ResearchOptionsCMD() {
         super("options");
 
-        setCondition((sender,s)->!notCountry(sender));
+        setCondition((sender, s) -> !notCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (notCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             ResearchCountry country = (ResearchCountry) p.getCountry();
             List<Component> comps = new ArrayList<>();
-            getAvailable(country,p).forEach(string -> {
+            getAvailable(country, p).forEach(string -> {
                 comps.add(Component.text()
                         .append(Component.text(string))
                         .append(Component.text()
-                                .append(Component.text("[RESEARCH]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .append(Component.text("[RESEARCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .clickEvent(ClickEvent.runCommand("/country research option " + string))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start researching this", NamedTextColor.GOLD))))
                         .build());
@@ -44,14 +44,14 @@ public class ResearchOptionsCMD extends Command {
         });
     }
 
-    private boolean notCountry(CommandSender sender){
-        if (sender instanceof CPlayer p){
-            return p.getCountry()==null;
+    private boolean notCountry(CommandSender sender) {
+        if (sender instanceof CPlayer p) {
+            return p.getCountry() == null;
         }
         return true;
     }
 
-    private List<String> getAvailable(ResearchCountry country, CPlayer p){
+    private List<String> getAvailable(ResearchCountry country, CPlayer p) {
         return ContinentalManagers.world(p.getInstance()).dataStorer().votingOption.getTree().getAvailable(country);
     }
 }

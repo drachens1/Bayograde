@@ -36,7 +36,7 @@ public class ClickWarSystem implements War {
             int offsetY = direction[1];
 
             Province province = ContinentalManagers.world(instance).provinceManager().getProvince(position.add(offsetX, 0, offsetY));
-            if (province != null && province.getOccupier()!=null && country.isMilitaryFriend(province.getOccupier())) {
+            if (province != null && province.getOccupier() != null && country.isMilitaryFriend(province.getOccupier())) {
                 adjacentCount++;
                 if (adjacentCount >= 3) {
                     return province;
@@ -61,13 +61,13 @@ public class ClickWarSystem implements War {
         if (country == null) return;
         Instance instance = e.getInstance();
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
-        if (province == null || province.getOccupier()==null || !province.getOccupier().isAtWar(country)) return;
+        if (province == null || province.getOccupier() == null || !province.getOccupier().isAtWar(country)) return;
         if (!country.canMinusCost(payment)) {
             p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;
         }
         Province atkFrom = AdjacentBlocks(province.getPos(), country, instance);
-        if (atkFrom==null) return;
+        if (atkFrom == null) return;
         country.removePayment(payment);
         province.capture(atkFrom.getOccupier());
     }

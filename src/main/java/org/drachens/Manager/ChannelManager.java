@@ -10,20 +10,20 @@ import java.util.HashMap;
 public class ChannelManager {
     private final HashMap<CPlayer, Channel> channelHashMap = new HashMap<>();
 
-    public ChannelManager(){
-        MinecraftServer.getGlobalEventHandler().addListener(PlayerChatEvent.class, e->{
+    public ChannelManager() {
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerChatEvent.class, e -> {
             CPlayer p = (CPlayer) e.getPlayer();
-            if (!channelHashMap.containsKey(p))return;
+            if (!channelHashMap.containsKey(p)) return;
             e.setCancelled(true);
             channelHashMap.get(p).onChat(e);
         });
     }
 
-    public void putPlayer(CPlayer player, Channel channel){
-        channelHashMap.put(player,channel);
+    public void putPlayer(CPlayer player, Channel channel) {
+        channelHashMap.put(player, channel);
     }
 
-    public void removePlayer(CPlayer player){
+    public void removePlayer(CPlayer player) {
         channelHashMap.remove(player);
     }
 }

@@ -21,6 +21,7 @@ public class DemandProvince extends HotbarItemButton {
     public DemandProvince() {
         super(1, itemBuilder(Material.IRON_SWORD, Component.text("Demand province", NamedTextColor.AQUA)));
     }
+
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();

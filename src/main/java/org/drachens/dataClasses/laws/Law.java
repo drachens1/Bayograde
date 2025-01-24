@@ -5,4 +5,5 @@ import org.drachens.dataClasses.additional.Modifier;
 
 import java.util.function.Function;
 
-public record Law(String identifier, Modifier modifier, Function<Country,Boolean> isAvailable) {}
+public record Law(String identifier, Modifier modifier, Function<Country, Boolean> isAvailable) {
+}

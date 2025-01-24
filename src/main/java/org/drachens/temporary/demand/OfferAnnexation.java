@@ -21,6 +21,7 @@ public class OfferAnnexation extends HotbarItemButton {
     public OfferAnnexation() {
         super(3, itemBuilder(Material.IRON_SWORD, Component.text("Offer Annexation", NamedTextColor.AQUA)));
     }
+
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();

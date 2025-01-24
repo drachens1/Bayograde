@@ -21,62 +21,62 @@ public class InfoOptionsCMD extends Command {
 
         var countries = getCountriesArg();
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            if (country==null){
+            if (country == null) {
                 p.sendMessage(Component.text("You need to join a country first", NamedTextColor.RED));
                 return;
             }
-            sendMsg(p,country);
+            sendMsg(p, country);
         });
 
-        addSyntax((sender,context)->{
+        addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country==null){
-                p.sendMessage( Component.text("That is not a valid country",NamedTextColor.RED));
+            if (country == null) {
+                p.sendMessage(Component.text("That is not a valid country", NamedTextColor.RED));
                 return;
             }
-            sendMsg(p,country);
-        },countries);
+            sendMsg(p, country);
+        }, countries);
     }
 
 
-    public void sendMsg(CPlayer p, Country country){
+    public void sendMsg(CPlayer p, Country country) {
         List<Component> comps = new ArrayList<>();
         String name = country.getName();
-        if (p.getCountry()==country){
+        if (p.getCountry() == country) {
             comps.add(Component.text()
-                            .append(Component.text("[BORDERS] ",NamedTextColor.GOLD, TextDecoration.BOLD))
-                            .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries borders",NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country info borders"))
+                    .append(Component.text("[BORDERS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries borders", NamedTextColor.GRAY)))
+                    .clickEvent(ClickEvent.runCommand("/country info borders"))
                     .build());
 
             comps.add(Component.text()
-                    .append(Component.text(" [LOANS] ",NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries loans",NamedTextColor.GRAY)))
+                    .append(Component.text(" [LOANS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries loans", NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.runCommand("/country info loan_info"))
                     .build());
 
             comps.add(Component.text()
-                    .append(Component.text(" [LAWS] ",NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries laws",NamedTextColor.GRAY)))
+                    .append(Component.text(" [LAWS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries laws", NamedTextColor.GRAY)))
                     .clickEvent(ClickEvent.runCommand("/country info laws"))
                     .build());
             comps.add(Component.newline());
         }
 
         comps.add(Component.text()
-                .append(Component.text(" [WARS] ",NamedTextColor.GOLD, TextDecoration.BOLD))
-                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries wars",NamedTextColor.GRAY)))
-                .clickEvent(ClickEvent.runCommand("/country info wars "+name))
+                .append(Component.text(" [WARS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries wars", NamedTextColor.GRAY)))
+                .clickEvent(ClickEvent.runCommand("/country info wars " + name))
                 .build());
 
         comps.add(Component.text()
-                .append(Component.text(" [PUPPETS] ",NamedTextColor.GOLD, TextDecoration.BOLD))
-                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries puppets",NamedTextColor.GRAY)))
-                .clickEvent(ClickEvent.runCommand("/country info puppets "+name))
+                .append(Component.text(" [PUPPETS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries puppets", NamedTextColor.GRAY)))
+                .clickEvent(ClickEvent.runCommand("/country info puppets " + name))
                 .build());
 
         p.sendMessage(Component.text()

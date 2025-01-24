@@ -23,19 +23,19 @@ public abstract class HotbarItemButton {
         return modelData;
     }
 
-    public void onUse(PlayerUseItemEvent e){
+    public void onUse(PlayerUseItemEvent e) {
 
     }
 
-    public void onUse(PlayerUseItemOnBlockEvent e){
+    public void onUse(PlayerUseItemOnBlockEvent e) {
 
     }
 
-    public void onUse(PlayerStartDiggingEvent e){
+    public void onUse(PlayerStartDiggingEvent e) {
 
     }
 
-    public void onUse(PlayerHandAnimationEvent e){
+    public void onUse(PlayerHandAnimationEvent e) {
 
     }
 }

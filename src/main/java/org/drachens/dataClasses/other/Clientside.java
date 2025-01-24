@@ -17,11 +17,11 @@ import java.util.UUID;
 
 public abstract class Clientside {
     public static final List<Clientside> INSTANCES = new ArrayList<>();
-    private final List<CPlayer> VIEWERS = new ArrayList<>();
     public final int entityId;
     public final BoundingBox boundingBox;
     public final UUID uuid;
     public final Instance instance;
+    private final List<CPlayer> VIEWERS = new ArrayList<>();
     public boolean storeViewers;
     public Pos pos;
     private AnimationType animation;
@@ -80,11 +80,11 @@ public abstract class Clientside {
         return new ArrayList<>(VIEWERS);
     }
 
-    public void setAnimation(AnimationType animation){
-        this.animation=animation;
+    public AnimationType getAnimation() {
+        return animation;
     }
 
-    public AnimationType getAnimation(){
-        return animation;
+    public void setAnimation(AnimationType animation) {
+        this.animation = animation;
     }
 }

@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.drachens.util.Messages.globalBroadcast;
-
 public class WhitelistManager {
     public void addPlayer(UUID p) {
         //Handles the configuration part so it is persistent

@@ -22,45 +22,45 @@ public class LawsChangeOptionsCMD extends Command {
         super("change-options");
 
         var lawSet = ArgumentType.String("law")
-                .setSuggestionCallback((sender,context,suggestion)->{
-                    if (!isLeaderOfCountry(sender))return;
+                .setSuggestionCallback((sender, context, suggestion) -> {
+                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
-                    getSuggestionBasedOnInput(suggestion,p.getCountry().getLawNames());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getLawNames());
                 });
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country==null){
+            if (country == null) {
                 p.sendMessage(Component.text("Join a country in order to execute this command", NamedTextColor.RED));
                 return;
             }
-            if (!country.isPlayerLeader(p)){
+            if (!country.isPlayerLeader(p)) {
                 p.sendMessage(Component.text("You are not the leader of a country", NamedTextColor.RED));
                 return;
             }
             p.sendMessage(Component.text("Proper usage: /country laws change-options <laws>", NamedTextColor.RED));
         });
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             LawCategory lawCategory = country.getLaw(context.get(lawSet));
-            if (lawCategory==null){
-                p.sendMessage(Component.text("That law category is null",NamedTextColor.RED));
+            if (lawCategory == null) {
+                p.sendMessage(Component.text("That law category is null", NamedTextColor.RED));
                 return;
             }
             List<Component> comps = new ArrayList<>();
             lawCategory.getLawsStuff().forEach((law -> comps.add(Component.text()
                     .append(law.modifier().getName())
-                            .appendNewline()
+                    .appendNewline()
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the options to change this to", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country edit laws change "+lawCategory.getIdentifier()+" "+law.identifier()))
+                    .clickEvent(ClickEvent.runCommand("/country edit laws change " + lawCategory.getIdentifier() + " " + law.identifier()))
                     .build())));
             comps.removeLast();
             p.sendMessage(Component.text()
@@ -68,12 +68,12 @@ public class LawsChangeOptionsCMD extends Command {
                     .append(country.getNameComponent())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
-                    .append(Component.text("Law: "+lawCategory.getIdentifier()))
+                    .append(Component.text("Law: " + lawCategory.getIdentifier()))
                     .appendNewline()
-                    .append(Component.text("Click to choose the new law",NamedTextColor.GRAY, TextDecoration.ITALIC))
+                    .append(Component.text("Click to choose the new law", NamedTextColor.GRAY, TextDecoration.ITALIC))
                     .appendNewline()
                     .append(comps));
-        },lawSet);
+        }, lawSet);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

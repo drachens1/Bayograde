@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.TextColor;
 public enum ColoursEnum {
     RED(255, 0, 0),
     GREEN(0, 255, 0),
-    LIME(134,179,0),
+    LIME(134, 179, 0),
     BLUE(0, 0, 255),
     YELLOW(255, 255, 0),
     CYAN(0, 255, 255),
@@ -26,10 +26,12 @@ public enum ColoursEnum {
     TEAL(0, 128, 128);
 
     private final TextColor textColor;
-    ColoursEnum(int r, int g, int b){
-        this.textColor=TextColor.color(r,g,b);
+
+    ColoursEnum(int r, int g, int b) {
+        this.textColor = TextColor.color(r, g, b);
     }
-    public TextColor getTextColor(){
+
+    public TextColor getTextColor() {
         return textColor;
     }
 }

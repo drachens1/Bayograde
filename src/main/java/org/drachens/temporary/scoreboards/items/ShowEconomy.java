@@ -13,11 +13,12 @@ import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ShowEconomy extends HotbarItemButton {
+    ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
+
     public ShowEconomy() {
         super(1, itemBuilder(Material.BOOK, Component.text("Show Economy"), 1));
     }
 
-    ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     @Override
     public void onUse(PlayerUseItemEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();

@@ -6,15 +6,18 @@ import org.drachens.interfaces.Event;
 public class CapitulationEvent extends Event {
     private final Country from;
     private final Country to;
+
     public CapitulationEvent(Country from, Country to) {
         super(from.getInstance());
-        this.from=from;
-        this.to=to;
+        this.from = from;
+        this.to = to;
     }
-    public Country getFrom(){
+
+    public Country getFrom() {
         return from;
     }
-    public Country getTo(){
+
+    public Country getTo() {
         return to;
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MilitaryFactionType extends Factions {
     public MilitaryFactionType(Country creator, String name) {
-        super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.RED),"military_faction").build());
+        super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.RED), "military_faction").build());
     }
 
     @Override

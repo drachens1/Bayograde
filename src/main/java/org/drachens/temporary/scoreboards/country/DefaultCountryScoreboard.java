@@ -17,20 +17,20 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultCountryScoreboard extends ContinentalScoreboards {
+    private final TextColor categoryColour = ColoursEnum.WHITE.getTextColor();
     private boolean generalInfo = true;
     private boolean economy = false;
     private boolean ideologies = false;
     private boolean diplomacy = false;
-    private final TextColor categoryColour = ColoursEnum.WHITE.getTextColor();
 
     @Override
     protected Sidebar createSidebar(CPlayer p) {
         Country country = p.getCountry();
         return new ScoreboardBuilder(Component.text("Country", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .addLine("generalInfo", Component.text("General-Info    --v", categoryColour), 50)
-                .addLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE)).append(country.getNameComponent()).build(),49)
+                .addLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE)).append(country.getNameComponent()).build(), 49)
                 .addLine("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE)).append(Component.text((int) country.getStability().getStability()))
-                        .append(Component.text("%")).append(Component.text("\uD83D\uDC12",NamedTextColor.WHITE)).build(), 50)
+                        .append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build(), 50)
                 .addLine("economy", Component.text("Economy          --^", categoryColour), 40)
                 .addLine("ideologies", Component.text("Ideologies        --^", categoryColour), 30)
                 .addLine("diplomacy", Component.text("Diplomacy         --^", categoryColour), 20)
@@ -46,7 +46,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         sidebar.createLine(new Sidebar.ScoreboardLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE))
                 .append(country.getNameComponent()).build(), 49));
         sidebar.createLine(new Sidebar.ScoreboardLine("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE))
-                .append(Component.text((int)country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12",NamedTextColor.WHITE)).build(), 50));
+                .append(Component.text((int) country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build(), 50));
     }
 
     public void closeGeneralInfo() {
@@ -67,7 +67,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         int i = 39;
         for (Currencies currencies : currenciesList) {
             sidebar.createLine(new Sidebar.ScoreboardLine("economy" + i, Component.text()
-                    .append(Component.text((int)currencies.getAmount()))
+                    .append(Component.text((int) currencies.getAmount()))
                     .append(currencies.getCurrencyType().getSymbol())
                     .build(), i));
             i--;
@@ -95,7 +95,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
             if (amount < 1f) continue;
             IdeologyTypes ideologyTypes = e.getKey();
             sidebar.createLine(new Sidebar.ScoreboardLine("ideology" + i, Component.text()
-                    .append(Component.text((int)amount))
+                    .append(Component.text((int) amount))
                     .append(ideologyTypes.getPrefix())
                     .build(), i));
             i--;
@@ -156,7 +156,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         Sidebar sidebar = getSidebar();
         Country country = p.getCountry();
         sidebar.updateLineContent("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE))
-                .append(Component.text((int) country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12",NamedTextColor.WHITE)).build());
+                .append(Component.text((int) country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build());
     }
 
     public void updateDiplomacy() {
@@ -190,7 +190,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         int i = 39;
         for (Currencies currencies : currenciesList) {
             sidebar.updateLineContent("economy" + i, Component.text()
-                    .append(Component.text((int)currencies.getAmount()))
+                    .append(Component.text((int) currencies.getAmount()))
                     .append(currencies.getCurrencyType().getSymbol())
                     .build());
             i--;
@@ -208,7 +208,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
             if (amount < 5f) continue;
             IdeologyTypes ideologyTypes = e.getKey();
             updateLine(sidebar, "ideology" + i, Component.text()
-                    .append(Component.text((int)amount))
+                    .append(Component.text((int) amount))
                     .append(ideologyTypes.getPrefix())
                     .build(), i);
             i--;

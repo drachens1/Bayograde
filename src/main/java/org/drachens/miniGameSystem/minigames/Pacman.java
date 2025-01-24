@@ -58,24 +58,17 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
     // REVERSED ⚠
     private static final List<String> MAP_LAYOUT_LINES = Arrays.asList(MAP_LAYOUT.split("\n")).reversed();
-
+    private static final int xMax = 28;
+    private static final int yMax = 31;
+    public final int fps = 2;
     private final PacmanSprite pacman;
-
     private final Blinky blinky;
     private final Pinky pinky;
     private final Inky inky;
     private final Clyde clyde;
-
     private final CPlayer player;
-
-    private static final int xMax = 28;
-    private static final int yMax = 31;
-
-    public final int fps = 2;
-    private int frames = 0;
-
     public int score = 0;
-
+    private int frames = 0;
     private Ghost.State state = Ghost.State.SCATTER;
 
 
@@ -242,6 +235,46 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
         }
 
         throw new RuntimeException("what the fuck bro");
+    }
+
+    static class PacmanWorld extends World {
+        private Pacman instance;
+
+        public PacmanWorld() {
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(14, 15, -20));
+        }
+
+        public void setInstance(Pacman instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public void addPlayer(CPlayer p) {
+            MiniGameUtil.putPlayerInBoat(p, getInstance());
+            MiniGameUtil.startGameLoop(instance.fps, instance::mainLoop);
+
+            for (int y = 0; y < MAP_LAYOUT_LINES.size(); ++y) {
+                String line = MAP_LAYOUT_LINES.get(y);
+                for (int x = 0; x < line.length(); ++x) {
+                    char tile = line.charAt(x);
+                    Block block = Block.HEAVY_CORE;
+
+                    if (tile == '■') {
+                        block = Block.BLUE_CONCRETE;
+                    }
+
+                    if (tile == 'x' || tile == '.') {
+                        block = Block.BLACK_CONCRETE;
+                    }
+                    getInstance().setBlock(x, y, -1, block);
+                }
+            }
+        }
+
+        @Override
+        public void removePlayer(CPlayer p) {
+            ContinentalManagers.worldManager.unregisterWorld(this);
+        }
     }
 
     class Blinky extends Ghost {
@@ -427,46 +460,6 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
 
         public void updatePosition() {
             setPos(new Pos(realX, realY, 0));
-        }
-    }
-
-    static class PacmanWorld extends World {
-        private Pacman instance;
-
-        public PacmanWorld() {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(14, 15, -20));
-        }
-
-        public void setInstance(Pacman instance) {
-            this.instance = instance;
-        }
-
-        @Override
-        public void addPlayer(CPlayer p) {
-            MiniGameUtil.putPlayerInBoat(p, getInstance());
-            MiniGameUtil.startGameLoop( instance.fps, instance::mainLoop);
-
-            for (int y = 0; y < MAP_LAYOUT_LINES.size(); ++y) {
-                String line = MAP_LAYOUT_LINES.get(y);
-                for (int x = 0; x < line.length(); ++x) {
-                    char tile = line.charAt(x);
-                    Block block = Block.HEAVY_CORE;
-
-                    if (tile == '■') {
-                        block = Block.BLUE_CONCRETE;
-                    }
-
-                    if (tile == 'x' || tile == '.') {
-                        block = Block.BLACK_CONCRETE;
-                    }
-                    getInstance().setBlock(x, y, -1, block);
-                }
-            }
-        }
-
-        @Override
-        public void removePlayer(CPlayer p) {
-            ContinentalManagers.worldManager.unregisterWorld(this);
         }
     }
 

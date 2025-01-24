@@ -5,11 +5,13 @@ import org.drachens.interfaces.Event;
 
 public class NonAggressionAcceptedEvent extends Event {
     private final NonAggressionPact nonAggressionPact;
+
     public NonAggressionAcceptedEvent(NonAggressionPact nonAggressionPact) {
         super(nonAggressionPact.getFrom().getInstance());
-        this.nonAggressionPact=nonAggressionPact;
+        this.nonAggressionPact = nonAggressionPact;
     }
-    public NonAggressionPact getNonAggressionPact(){
+
+    public NonAggressionPact getNonAggressionPact() {
         return nonAggressionPact;
     }
 }

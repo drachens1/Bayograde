@@ -63,7 +63,7 @@ public class CentralEventManager {
 
         globEHandler.addListener(StartGameEvent.class, e -> {
             Instance instance = e.getInstance();
-            if (e.isCancelled()){
+            if (e.isCancelled()) {
                 ContinentalManagers.world(instance).votingManager().reset();
                 return;
             }
@@ -86,13 +86,13 @@ public class CentralEventManager {
 
             broadcast(Component.text().append(MessageEnum.system.getComponent())
                     .append(Component.text(e.getVotingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
-                    .append(Component.text(" has won!!", NamedTextColor.GREEN)).build(),e.getInstance());
+                    .append(Component.text(" has won!!", NamedTextColor.GREEN)).build(), e.getInstance());
         });
 
         Delay provinceDelay = new Delay(100L);
 
         globEHandler.addListener(PlayerBlockInteractEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Player player = e.getPlayer();
             if (!player.isSneaking()) return;
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
@@ -105,7 +105,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(ResetEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Instance instance = e.getInstance();
             YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
             yearBar.cancelTask();
@@ -114,13 +114,13 @@ public class CentralEventManager {
             CountryDataManager countryDataManager = worldClasses.countryDataManager();
             countryDataManager.getCountries().forEach((Country::endGame));
             ClientEntsToLoad clientEntsToLoad = worldClasses.clientEntsToLoad();
-            if (clientEntsToLoad.getClientSides(e.getInstance())!=null){
+            if (clientEntsToLoad.getClientSides(e.getInstance()) != null) {
                 new ArrayList<>(clientEntsToLoad.getClientSides(e.getInstance())).forEach((Clientside::dispose));
             }
             e.getInstance().getPlayers().forEach(player -> {
                 CPlayer p = (CPlayer) player;
-                if (p.getCountry()!=null){
-                    p.getCountry().removePlayer(p,true);
+                if (p.getCountry() != null) {
+                    p.getCountry().removePlayer(p, true);
                 }
             });
             clientEntsToLoad.reset();
@@ -132,11 +132,11 @@ public class CentralEventManager {
                     worldClasses.provinceManager(),
                     new DataStorer()
             ));
-            broadcast(Component.text().append(MessageEnum.system.getComponent()).append(Component.text("Game Over", NamedTextColor.GREEN)).build(),e.getInstance());
+            broadcast(Component.text().append(MessageEnum.system.getComponent()).append(Component.text("Game Over", NamedTextColor.GREEN)).build(), e.getInstance());
         });
 
-        globEHandler.addListener(CaptureBlockEvent.class, e ->{
-            if (e.isCancelled())return;
+        globEHandler.addListener(CaptureBlockEvent.class, e -> {
+            if (e.isCancelled()) return;
             Country occupier = e.getDefender();
             Country attacker = e.getAggressor();
             occupier.sendActionBar(Component.text("You have been attacked at " + e.getAttacked().getPos(), NamedTextColor.RED));
@@ -144,7 +144,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(StartWarEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country defender = e.getDefender();
             Country attacker = e.getAggressor();
             attacker.addModifier(e.getWarJustification().getModifier());
@@ -152,14 +152,14 @@ public class CentralEventManager {
             List<Component> warsWith = new ArrayList<>();
             List<Country> atks = new ArrayList<>();
             atks.add(attacker);
-            if (attacker.hasPuppets()){
+            if (attacker.hasPuppets()) {
                 attacker.getPuppets().forEach(country -> {
                     atks.add(country);
                     warsWith.add(country.getNameComponent());
                     warsWith.add(Component.text(","));
                 });
                 warsWith.removeLast();
-            }else if (attacker.hasOverlord()){
+            } else if (attacker.hasOverlord()) {
                 attacker.getOverlord().getPuppets().forEach(country -> {
                     atks.add(country);
                     warsWith.add(country.getNameComponent());
@@ -169,21 +169,21 @@ public class CentralEventManager {
                 attacker.getOverlord().addCountryWar(defender);
                 warsWith.add(attacker.getOverlord().getNameComponent());
                 warsWith.add(Component.text(","));
-            }else {
+            } else {
                 attacker.addCountryWar(defender);
             }
 
             List<Component> warsAgainst = new ArrayList<>();
             List<Country> defs = new ArrayList<>();
             defs.add(defender);
-            if (defender.hasPuppets()){
+            if (defender.hasPuppets()) {
                 defender.getPuppets().forEach(country -> {
                     defs.add(country);
                     warsAgainst.add(country.getNameComponent());
                     warsAgainst.add(Component.text(","));
                 });
                 warsAgainst.removeLast();
-            }else if (defender.hasOverlord()){
+            } else if (defender.hasOverlord()) {
                 defender.getOverlord().getPuppets().forEach(country -> {
                     defs.add(country);
                     warsAgainst.add(country.getNameComponent());
@@ -194,7 +194,7 @@ public class CentralEventManager {
                 warsAgainst.add(defender.getOverlord().getNameComponent());
                 warsAgainst.add(Component.text(","));
 
-            }else {
+            } else {
                 defender.addCountryWar(attacker);
                 warsAgainst.add(defender.getNameComponent());
             }
@@ -209,7 +209,7 @@ public class CentralEventManager {
                     .append(warsWith)
                     .append(Component.text(" started a war with ", NamedTextColor.RED))
                     .append(warsAgainst)
-                    .build(),e.getInstance());
+                    .build(), e.getInstance());
         });
 
         globEHandler.addListener(EndWarEvent.class, e -> {
@@ -219,18 +219,18 @@ public class CentralEventManager {
             defender.removeWar(attacker);
         });
 
-        globEHandler.addListener(CapitulationEvent.class, e->{
+        globEHandler.addListener(CapitulationEvent.class, e -> {
             Country defender = e.getFrom();
             Country attacker = e.getTo();
             attacker.removeWar(defender);
             defender.removeWar(attacker);
-            if (attacker.hasOverlord()){
-                attacker=attacker.getOverlord();
+            if (attacker.hasOverlord()) {
+                attacker = attacker.getOverlord();
             }
-            if (attacker.hasPuppets()){
+            if (attacker.hasPuppets()) {
                 Country finalAttacker1 = attacker;
                 attacker.getPuppets().forEach(country -> {
-                    if (country.occupiesCoresFrom(defender)){
+                    if (country.occupiesCoresFrom(defender)) {
                         new ArrayList<>(country.getOthersCores(defender)).forEach(province -> province.liberate(finalAttacker1));
                     }
                 });
@@ -239,32 +239,32 @@ public class CentralEventManager {
             broadcast(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(defender.getNameComponent())
-                    .append(Component.text(" has capitulated to ",NamedTextColor.RED))
+                    .append(Component.text(" has capitulated to ", NamedTextColor.RED))
                     .append(attacker.getNameComponent())
-                    .build(),defender.getInstance());
+                    .build(), defender.getInstance());
 
             attacker.sendMessage(Component.text()
-                            .append(MessageEnum.country.getComponent())
-                            .append(Component.text("Capitulation event options: "))
-                            .appendNewline()
-                            .append(Component.text()
-                                    .append(Component.text("[ANNEX]", NamedTextColor.GOLD,TextDecoration.BOLD))
-                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to annex "+defender.getName(), NamedTextColor.GRAY)))
-                            )
-                            .append(Component.text()
-                                    .append(Component.text(" [LIBERATE] ",NamedTextColor.GOLD,TextDecoration.BOLD))
-                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to liberate all there occupied cores", NamedTextColor.GRAY)))
-                                    .clickEvent(ClickEvent.runCommand("/country diplomacy liberate " + defender.getName() + " free "))
-                            )
-                            .append(Component.text()
-                                .append(Component.text("[PUPPET]",NamedTextColor.GOLD,TextDecoration.BOLD))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to release all of there occupied cores as a puppet", NamedTextColor.GRAY)))
-                                .clickEvent(ClickEvent.runCommand("/country diplomacy liberate " + defender.getName() + " puppet "))
-                            )
+                    .append(MessageEnum.country.getComponent())
+                    .append(Component.text("Capitulation event options: "))
+                    .appendNewline()
+                    .append(Component.text()
+                            .append(Component.text("[ANNEX]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to annex " + defender.getName(), NamedTextColor.GRAY)))
+                    )
+                    .append(Component.text()
+                            .append(Component.text(" [LIBERATE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to liberate all there occupied cores", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy liberate " + defender.getName() + " free "))
+                    )
+                    .append(Component.text()
+                            .append(Component.text("[PUPPET]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to release all of there occupied cores as a puppet", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy liberate " + defender.getName() + " puppet "))
+                    )
                     .build());
         });
 
-        globEHandler.addListener(UnconditionalSurrenderEvent.class, e->{
+        globEHandler.addListener(UnconditionalSurrenderEvent.class, e -> {
             Country defender = e.getFrom();
             Country attacker = e.getTo();
             attacker.removeWar(defender);
@@ -275,11 +275,11 @@ public class CentralEventManager {
                     .append(Component.text(defender.getPlayerLeader().getUsername()))
                     .append(Component.text(" has decided to unconditionally surrender to ", NamedTextColor.RED))
                     .append(attacker.getNameComponent())
-                    .build(),defender.getInstance());
+                    .build(), defender.getInstance());
         });
 
         globEHandler.addListener(FactionCreateEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country creator = e.getCreator();
             Factions factions = e.getNewFaction();
             broadcast(Component.text()
@@ -292,7 +292,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(FactionDeleteEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country deleter = e.getDeleter();
             Factions factions = e.getDeletedFaction();
             broadcast(Component.text()
@@ -305,17 +305,17 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(FactionJoinEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Factions factions = e.getFactions();
             Country country = e.getCountry();
-            if (factions instanceof MilitaryFactionType militaryFactionType){
+            if (factions instanceof MilitaryFactionType militaryFactionType) {
                 if (!country.canJoinFaction(militaryFactionType)) return;
                 militaryFactionType.getMembers().forEach(country1 -> country1.getOccupies().forEach(province -> country1.getAllyWorld().removeGhostBlock(province.getPos())));
                 militaryFactionType.addMember(country);
                 country.setMilitaryFactionType(militaryFactionType);
                 country.createInfo();
 
-            }else if (factions instanceof EconomyFactionType economyFactionType){
+            } else if (factions instanceof EconomyFactionType economyFactionType) {
                 if (!country.canJoinFaction(economyFactionType)) return;
                 country.setEconomyFactionType(economyFactionType);
                 economyFactionType.addCountry(country);
@@ -331,7 +331,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(FactionInviteEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Factions factions = e.getFaction();
             factions.addToInvites(e.getInvited());
             e.getInvited().inviteToFaction(factions);
@@ -345,15 +345,15 @@ public class CentralEventManager {
                     .append(MessageEnum.faction.getComponent())
                     .append(Component.text(" you have been invited to join ", NamedTextColor.GREEN))
                     .append(factions.getNameComponent())
-                            .append(Component.text()
-                                    .append(Component.text(" [CLICK]",NamedTextColor.GOLD,TextDecoration.BOLD))
-                                    .hoverEvent(Component.text("Click to join the faction", NamedTextColor.GRAY))
-                                    .clickEvent(ClickEvent.runCommand("/faction join "+ factions.getStringName())))
+                    .append(Component.text()
+                            .append(Component.text(" [CLICK]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(Component.text("Click to join the faction", NamedTextColor.GRAY))
+                            .clickEvent(ClickEvent.runCommand("/faction join " + factions.getStringName())))
                     .build());
         });
 
         globEHandler.addListener(FactionKickEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Factions factions = e.getFaction();
             factions.removeCountry(e.getCountry());
             Country country = e.getCountry();
@@ -370,7 +370,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(FactionSetLeaderEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Factions factions = e.getFactions();
             Country country = e.getCountry();
             factions.setLeader(country);
@@ -387,7 +387,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(CountrySetLeaderEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             e.getCountry().setPlayerLeader(e.getNewLeader());
             e.getCountry().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
@@ -397,7 +397,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(CountryCoopPlayerEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             CPlayer cPlayer = e.getPlayer();
             Country country = e.getInviter();
             country.invitePlayer(cPlayer);
@@ -414,7 +414,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(DemandCounterOfferEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country from = e.getFrom();
             Country to = e.getTo();
             Demand demand = new WW2Demands(to, from);
@@ -429,7 +429,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(DemandAcceptedEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country from = e.getFrom();
             Country to = e.getTo();
             e.getDemand().accepted();
@@ -448,7 +448,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(DemandDeniedEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country from = e.getFrom();
             Country to = e.getTo();
             e.getDemand().accepted();
@@ -467,7 +467,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(DemandCompletionEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             Country from = e.getFrom();
             Country to = e.getTo();
             e.getDemand().complete();
@@ -479,77 +479,77 @@ public class CentralEventManager {
                     .append(Component.text()
                             .append(Component.text("[Accept]", NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to accept the demands", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" accept")))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming " + from.getName() + " accept")))
                     .append(Component.text()
                             .append(Component.text(" [Refuse]", NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" refuse")))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming " + from.getName() + " refuse")))
                     .appendNewline()
                     .append(Component.text("View: ", NamedTextColor.GREEN, TextDecoration.UNDERLINED, TextDecoration.BOLD))
                     .appendNewline()
                     .append(Component.text()
                             .append(Component.text(" [On]", NamedTextColor.GREEN, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.GREEN))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" view on"))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming " + from.getName() + " view on"))
                             .build())
                     .append(Component.text()
                             .append(Component.text(" [Off]", NamedTextColor.RED, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to refuse the demands", NamedTextColor.RED))
-                            .clickEvent(ClickEvent.runCommand("/demand incoming "+ from.getName() +" view off"))
+                            .clickEvent(ClickEvent.runCommand("/demand incoming " + from.getName() + " view off"))
                             .build())
                     .build());
         });
 
         globEHandler.addListener(ResearchStartEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             e.getCountry().setCurrentResearch(e.getResearchOption());
             e.getCountry().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have started researching ",NamedTextColor.GREEN))
+                    .append(Component.text("You have started researching ", NamedTextColor.GREEN))
                     .append(e.getResearchOption().getName())
                     .build());
         });
 
         globEHandler.addListener(ResearchCompletionEvent.class, e -> {
-            if (e.isCancelled())return;
+            if (e.isCancelled()) return;
             e.getCountry().completeActiveResearch();
             e.getCountry().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have finished researching ",NamedTextColor.GREEN))
+                    .append(Component.text("You have finished researching ", NamedTextColor.GREEN))
                     .append(e.getResearchOption().getName())
                     .build());
         });
 
-        globEHandler.addListener(WarJustificationStartEvent.class, e->{
-            if (e.isCancelled())return;
+        globEHandler.addListener(WarJustificationStartEvent.class, e -> {
+            if (e.isCancelled()) return;
             Country against = e.getAgainst();
             Country from = e.getFrom();
             from.addWarJustification(e.getWarJustification());
             against.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(from.getNameComponent())
-                    .append(Component.text(" has started justifying against you",NamedTextColor.GREEN))
+                    .append(Component.text(" has started justifying against you", NamedTextColor.GREEN))
                     .build());
             from.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have started justifying against ",NamedTextColor.GREEN))
+                    .append(Component.text("You have started justifying against ", NamedTextColor.GREEN))
                     .append(against.getNameComponent())
                     .build());
         });
 
-        globEHandler.addListener(WarJustificationCancelEvent.class, e->{
-            if (e.isCancelled())return;
+        globEHandler.addListener(WarJustificationCancelEvent.class, e -> {
+            if (e.isCancelled()) return;
             Country against = e.getAgainst();
             Country from = e.getFrom();
             from.removeWarJustification(against.getName());
             against.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(from.getNameComponent())
-                    .append(Component.text(" has cancelled the justification against you",NamedTextColor.GREEN))
+                    .append(Component.text(" has cancelled the justification against you", NamedTextColor.GREEN))
                     .build());
             from.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have cancelled the justification against ",NamedTextColor.GREEN))
+                    .append(Component.text("You have cancelled the justification against ", NamedTextColor.GREEN))
                     .append(against.getNameComponent())
                     .build());
         });
@@ -558,51 +558,51 @@ public class CentralEventManager {
 
         //todo factions overhaul: redo the cmds so they all work
 
-        globEHandler.addListener(WarJustificationCompletionEvent.class, e->{ //Not cancelable
+        globEHandler.addListener(WarJustificationCompletionEvent.class, e -> { //Not cancelable
             Country against = e.getAgainst();
             Country from = e.getFrom();
             against.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(from.getNameComponent())
-                    .append(Component.text(" has completed the justification against you",NamedTextColor.GREEN))
+                    .append(Component.text(" has completed the justification against you", NamedTextColor.GREEN))
                     .build());
             from.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("Your justification against ",NamedTextColor.GREEN))
+                    .append(Component.text("Your justification against ", NamedTextColor.GREEN))
                     .append(against.getNameComponent())
-                    .append(Component.text(" has finished",NamedTextColor.GREEN))
+                    .append(Component.text(" has finished", NamedTextColor.GREEN))
                     .appendNewline()
                     .append(Component.text()
-                            .append(Component.text("[DECLARE WAR]", NamedTextColor.GOLD,TextDecoration.BOLD))
-                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war on "+against.getName(), NamedTextColor.GRAY)))
+                            .append(Component.text("[DECLARE WAR]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war on " + against.getName(), NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy declare-war " + against.getName()))
                     )
                     .build());
         });
 
-        globEHandler.addListener(WarJustificationExpiresEvent.class, e->{ //Not cancelable
+        globEHandler.addListener(WarJustificationExpiresEvent.class, e -> { //Not cancelable
             Country against = e.getAgainst();
             Country from = e.getFrom();
             against.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(from.getNameComponent())
-                    .append(Component.text(" has let the justification expire",NamedTextColor.GREEN))
+                    .append(Component.text(" has let the justification expire", NamedTextColor.GREEN))
                     .build());
             from.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("Your justification against ",NamedTextColor.GREEN))
+                    .append(Component.text("Your justification against ", NamedTextColor.GREEN))
                     .append(against.getNameComponent())
-                    .append(Component.text(" has expired",NamedTextColor.GREEN))
+                    .append(Component.text(" has expired", NamedTextColor.GREEN))
                     .build());
         });
 
-        globEHandler.addListener(LiberationEvent.class, e->{
-            if (e.isCancelled())return;
+        globEHandler.addListener(LiberationEvent.class, e -> {
+            if (e.isCancelled()) return;
             Country target = e.getLiberated();
             Country country = e.getLiberator();
 
             new ArrayList<>(country.getOthersCores(target)).forEach(province -> province.liberate(target));
-            if (target.hasCapitulated()){
+            if (target.hasCapitulated()) {
                 target.setCapitulated(false);
                 target.calculateCapitulationPercentage();
                 broadcast(Component.text()
@@ -610,7 +610,7 @@ public class CentralEventManager {
                         .append(target.getNameComponent())
                         .append(Component.text(" has been liberated by "))
                         .append(country.getNameComponent())
-                        .build(),country.getInstance());
+                        .build(), country.getInstance());
                 if (Objects.equals(e.getType(), "puppet")) {
                     target.puppet(country);
                     country.addPuppet(target);

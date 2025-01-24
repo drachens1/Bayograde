@@ -38,15 +38,19 @@ public class CPlayer extends Player {
     private boolean isUsingMod = false;
 
     public CPlayer(PlayerConnection playerConnection, GameProfile gameProfile) {
-        super(playerConnection,gameProfile);
+        super(playerConnection, gameProfile);
     }
 
     public PlayerInfoEntry getPlayerInfoEntry() {
         return playerInfoEntry;
     }
 
-    public void setIsUsingMod(boolean b){
-        isUsingMod=b;
+    public void setIsUsingMod(boolean b) {
+        isUsingMod = b;
+    }
+
+    public boolean isUsingMod() {
+        return isUsingMod;
     }
 
     public void setPlayerDataFile(PlayerInfoEntry playerInfoEntry) {
@@ -146,19 +150,19 @@ public class CPlayer extends Player {
         return headItem;
     }
 
-    public boolean hasPermission(@NotNull String permission){
+    public boolean hasPermission(@NotNull String permission) {
         return permissions.contains(permission);
     }
 
-    public void addPermission(String permission){
+    public void addPermission(String permission) {
         permissions.add(permission);
     }
 
-    public void removePermission(@NotNull String permission){
+    public void removePermission(@NotNull String permission) {
         permissions.remove(permission);
     }
 
-    public @NotNull List<String> getAllPermissionss(){
+    public @NotNull List<String> getAllPermissionss() {
         return permissions;
     }
 

@@ -9,18 +9,18 @@ public class ResearchActiveCMD extends Command {
     public ResearchActiveCMD() {
         super("currently-active");
 
-        setCondition((sender,s)->!notCountry(sender));
-        setDefaultExecutor((sender,context)->{
-           if (notCountry(sender))return;
-           CPlayer p = (CPlayer) sender;
-           ResearchCountry country = (ResearchCountry) p.getCountry();
-           p.sendMessage(country.getCurrentResearch().getName());
+        setCondition((sender, s) -> !notCountry(sender));
+        setDefaultExecutor((sender, context) -> {
+            if (notCountry(sender)) return;
+            CPlayer p = (CPlayer) sender;
+            ResearchCountry country = (ResearchCountry) p.getCountry();
+            p.sendMessage(country.getCurrentResearch().getName());
         });
     }
 
-    private boolean notCountry(CommandSender sender){
-        if (sender instanceof CPlayer p){
-            return p.getCountry()==null;
+    private boolean notCountry(CommandSender sender) {
+        if (sender instanceof CPlayer p) {
+            return p.getCountry() == null;
         }
         return true;
     }

@@ -27,15 +27,15 @@ import java.util.List;
 
 public abstract class ResearchCountry extends Country {
     private final HashSet<String> completedResearch = new HashSet<>();
-    private ResearchOption current = null;
-    private Payment researchCurrent;
     private final List<Building> researchCentersBuildings = new ArrayList<>();
     private final Modifier researchModifier;
+    private ResearchOption current = null;
+    private Payment researchCurrent;
     private Runnable onFinishResearch;
 
     public ResearchCountry(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, vault, laws);
-        researchModifier = new Modifier.create(Component.text("Research", NamedTextColor.BLUE),"research")
+        researchModifier = new Modifier.create(Component.text("Research", NamedTextColor.BLUE), "research")
                 .setDisplay(false)
                 .build();
         addModifier(researchModifier);
@@ -48,9 +48,9 @@ public abstract class ResearchCountry extends Country {
             researchCurrent.remove(vault.getResearch());
             if (researchCurrent.getAmount() <= 0) {
                 EventDispatcher.call(new ResearchCompletionEvent(getInstance(), this, current));
-                if (onFinishResearch!=null){
+                if (onFinishResearch != null) {
                     onFinishResearch.run();
-                    onFinishResearch=null;
+                    onFinishResearch = null;
                 }
             }
         }
@@ -66,17 +66,17 @@ public abstract class ResearchCountry extends Country {
         researchCentersBuildings.remove(building);
     }
 
-    public void setCurrentResearch(ResearchOption identifier) {
-        current = identifier;
-        researchCurrent = identifier.getCost();
-    }
-
     public boolean isResearching() {
         return current != null;
     }
 
     public ResearchOption getCurrentResearch() {
         return current;
+    }
+
+    public void setCurrentResearch(ResearchOption identifier) {
+        current = identifier;
+        researchCurrent = identifier.getCost();
     }
 
     public void completeActiveResearch() {
@@ -88,7 +88,7 @@ public abstract class ResearchCountry extends Country {
         researchCurrent = null;
     }
 
-    public List<String> getCompletedResearch(){
+    public List<String> getCompletedResearch() {
         return new ArrayList<>(completedResearch);
     }
 
@@ -115,7 +115,7 @@ public abstract class ResearchCountry extends Country {
         return true;
     }
 
-    public void startResearching(ResearchOption researchOption){
+    public void startResearching(ResearchOption researchOption) {
         EventDispatcher.call(new ResearchStartEvent(getInstance(), this, researchOption));
     }
 }

@@ -10,30 +10,32 @@ import org.drachens.util.MessageEnum;
 
 public class CountryChat implements Channel {
     private final Country country;
-    public CountryChat(Country country){
-        this.country=country;
+
+    public CountryChat(Country country) {
+        this.country = country;
     }
+
     @Override
     public void onChat(PlayerChatEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (country.containsPlayer(p)){
+        if (country.containsPlayer(p)) {
             country.sendMessage(Component.text()
                     .append(MessageEnum.countryChat.getComponent())
                     .append(Component.text(p.getUsername()))
                     .append(Component.text(": "))
                     .append(Component.text(e.getRawMessage()))
                     .build());
-        }else {
+        } else {
             p.sendMessage(Component.text("You no longer have access to this chat", NamedTextColor.RED));
             removePlayer(p);
         }
     }
 
-    public void addPlayer(CPlayer p){
-        ContinentalManagers.channelManager.putPlayer(p,this);
+    public void addPlayer(CPlayer p) {
+        ContinentalManagers.channelManager.putPlayer(p, this);
     }
 
-    public void removePlayer(CPlayer p){
+    public void removePlayer(CPlayer p) {
         ContinentalManagers.channelManager.removePlayer(p);
     }
 }

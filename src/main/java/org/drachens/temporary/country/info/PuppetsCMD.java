@@ -18,11 +18,11 @@ public class PuppetsCMD extends Command {
 
         var countries = getCountriesArg();
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
             Country target = p.getCountry();
-            if (target==null){
+            if (target == null) {
                 p.sendMessage("Join a country or do /country info puppet <country>");
                 return;
             }
@@ -37,11 +37,11 @@ public class PuppetsCMD extends Command {
                     .build());
         });
 
-        addSyntax((sender,context)->{
+        addSyntax((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (target == null){
+            if (target == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
@@ -52,8 +52,8 @@ public class PuppetsCMD extends Command {
                     .append(Component.text("Puppets", NamedTextColor.GOLD))
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
-                            .append(comps)
+                    .append(comps)
                     .build());
-        },countries);
+        }, countries);
     }
 }

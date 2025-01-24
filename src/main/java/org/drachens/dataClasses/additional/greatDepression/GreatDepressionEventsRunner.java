@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GreatDepressionEventsRunner implements EventsRunner {
+    private final Country country;
+    private final Modifier greatDepression;
+    private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
+    int count = 0;
     private int timeSinceLast = 70;
     private boolean protectionismComp = false;
     private boolean devalueCurrencyComp = false;
@@ -21,42 +25,37 @@ public class GreatDepressionEventsRunner implements EventsRunner {
     private boolean relief = false;
     private boolean recovery = false;
     private boolean reform = false;
-    private final Country country;
-    private final Modifier greatDepression;
-    private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
-    int count = 0;
+    private boolean completed = false;
 
-    public GreatDepressionEventsRunner(Country country, Modifier modifier){
-        this.country=country;
-        greatDepression=modifier;
+    public GreatDepressionEventsRunner(Country country, Modifier modifier) {
+        this.country = country;
+        greatDepression = modifier;
     }
 
     public void addBoost(BoostEnum boostEnum, float f) {
-        float current = boostHashMap.getOrDefault(boostEnum,0f);
-        boostHashMap.put(boostEnum,current+f);
+        float current = boostHashMap.getOrDefault(boostEnum, 0f);
+        boostHashMap.put(boostEnum, current + f);
     }
-
-    private boolean completed = false;
 
     @Override
     public boolean newDay() {
         count++;
         timeSinceLast++;
-        if (count<7){
+        if (count < 7) {
             return false;
         }
-        if (completed)return false;
-        count=0;
+        if (completed) return false;
+        count = 0;
         double current = Math.floor(greatDepression.getBoost(BoostEnum.production));
-        if (current>0){
+        if (current > 0) {
             country.removeModifier(greatDepression);
             completed = true;
             country.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
-                    .append(Component.text("You have began your recovery from the great depression",NamedTextColor.GREEN))
+                    .append(Component.text("You have began your recovery from the great depression", NamedTextColor.GREEN))
                     .build());
             boostHashMap.remove(BoostEnum.production);
-            Modifier recovery = new Modifier.create(Component.text("Recovery", ColoursEnum.ORANGE.getTextColor()),"recovery")
+            Modifier recovery = new Modifier.create(Component.text("Recovery", ColoursEnum.ORANGE.getTextColor()), "recovery")
                     .addBoost(BoostEnum.production, +0.1f)
                     .addBoost(BoostEnum.stabilityBase, +10f)
                     .addBoost(BoostEnum.buildingSlotBoost, +1)
@@ -69,14 +68,14 @@ public class GreatDepressionEventsRunner implements EventsRunner {
         return false;
     }
 
-    public Component getDescription(){
+    public Component getDescription() {
         List<Component> comps = new ArrayList<>();
         boostHashMap.forEach((boostEnum, value) -> {
             Component symbol;
-            if (value<0){
-                symbol=boostEnum.getNegSymbol();
-            }else {
-                symbol=boostEnum.getPosSymbol();
+            if (value < 0) {
+                symbol = boostEnum.getNegSymbol();
+            } else {
+                symbol = boostEnum.getPosSymbol();
             }
             if (boostEnum.isPercentage()) {
                 if (value > 0) {
@@ -115,56 +114,56 @@ public class GreatDepressionEventsRunner implements EventsRunner {
                 .build();
     }
 
-    public int getTimeSinceLast(){
+    public int getTimeSinceLast() {
         return timeSinceLast;
     }
 
-    public void setTimeSinceLast(int timeSinceLast){
-        this.timeSinceLast=timeSinceLast;
+    public void setTimeSinceLast(int timeSinceLast) {
+        this.timeSinceLast = timeSinceLast;
     }
 
     public boolean isAbandonGoldStandard() {
         return abandonGoldStandard;
     }
 
-    public boolean isDevalueCurrencyComp() {
-        return devalueCurrencyComp;
-    }
-
-    public boolean isProtectionismComp() {
-        return protectionismComp;
-    }
-
-    public boolean isRecovery() {
-        return recovery;
-    }
-
-    public boolean isReform() {
-        return reform;
-    }
-
-    public boolean isRelief() {
-        return relief;
-    }
-
     public void setAbandonGoldStandard(boolean abandonGoldStandard) {
         this.abandonGoldStandard = abandonGoldStandard;
+    }
+
+    public boolean isDevalueCurrencyComp() {
+        return devalueCurrencyComp;
     }
 
     public void setDevalueCurrencyComp(boolean devalueCurrencyComp) {
         this.devalueCurrencyComp = devalueCurrencyComp;
     }
 
+    public boolean isProtectionismComp() {
+        return protectionismComp;
+    }
+
     public void setProtectionismComp(boolean protectionismComp) {
         this.protectionismComp = protectionismComp;
+    }
+
+    public boolean isRecovery() {
+        return recovery;
     }
 
     public void setRecovery(boolean recovery) {
         this.recovery = recovery;
     }
 
+    public boolean isReform() {
+        return reform;
+    }
+
     public void setReform(boolean reform) {
         this.reform = reform;
+    }
+
+    public boolean isRelief() {
+        return relief;
     }
 
     public void setRelief(boolean relief) {

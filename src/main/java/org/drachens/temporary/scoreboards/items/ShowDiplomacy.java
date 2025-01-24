@@ -13,11 +13,11 @@ import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ShowDiplomacy extends HotbarItemButton {
+    ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
+
     public ShowDiplomacy() {
         super(0, itemBuilder(Material.BOOK, Component.text("Show Diplomacy"), 0));
     }
-
-    ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
 
     @Override
     public void onUse(PlayerUseItemEvent e) {

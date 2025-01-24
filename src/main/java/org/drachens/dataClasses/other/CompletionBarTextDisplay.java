@@ -7,48 +7,48 @@ import net.minestom.server.instance.Instance;
 
 import java.util.ArrayList;
 
-public class CompletionBarTextDisplay  {
+public class CompletionBarTextDisplay {
     private final TextDisplay textDisplay;
-    private float progress = 1f;
     private final String fullBar = "||||||||||||||||||||||||||";
     private final TextColor colour;
+    private float progress = 1f;
 
-    public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour){
-        pos = pos.add(0.5,0,0.5);
-        textDisplay = new TextDisplay.create(pos,instance, Component.text(fullBar,colour))
+    public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour) {
+        pos = pos.add(0.5, 0, 0.5);
+        textDisplay = new TextDisplay.create(pos, instance, Component.text(fullBar, colour))
                 .setFollowPlayer(true)
                 .build();
-        this.colour=colour;
+        this.colour = colour;
     }
 
-    public TextDisplay getTextDisplay(){
+    public TextDisplay getTextDisplay() {
         return textDisplay;
     }
 
-    public void setProgress(float progress){
-        if (progress>1f)progress=1f;
-        if (progress<0f) {
-            return;
-        }
-        this.progress=progress;
-        int end = Math.round(fullBar.length()*progress);
-        String bar = fullBar.substring(0,end);
-        String second = fullBar.substring(end);
-        textDisplay.setText(Component.text()
-                .append(Component.text(bar,colour))
-                        .append(Component.text(second,TextColor.color(0,0,0)))
-                .build());
-    }
-
-    public void hide(){
+    public void hide() {
         new ArrayList<>(textDisplay.getViewers()).forEach(textDisplay::removeViewer);
     }
 
-    public void addProgress(float amount){
-        progress+=amount;
+    public void addProgress(float amount) {
+        progress += amount;
     }
 
-    public float getProgress(){
+    public float getProgress() {
         return progress;
+    }
+
+    public void setProgress(float progress) {
+        if (progress > 1f) progress = 1f;
+        if (progress < 0f) {
+            return;
+        }
+        this.progress = progress;
+        int end = Math.round(fullBar.length() * progress);
+        String bar = fullBar.substring(0, end);
+        String second = fullBar.substring(end);
+        textDisplay.setText(Component.text()
+                .append(Component.text(bar, colour))
+                .append(Component.text(second, TextColor.color(0, 0, 0)))
+                .build());
     }
 }

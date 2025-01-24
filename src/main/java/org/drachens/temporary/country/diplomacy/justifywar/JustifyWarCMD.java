@@ -9,7 +9,7 @@ public class JustifyWarCMD extends Command {
     public JustifyWarCMD() {
         super("justify-war");
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
         addSubcommand(new JustifyAgainstCMD());
         addSubcommand(new JustifyCancelCMD());

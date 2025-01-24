@@ -2,9 +2,11 @@ package org.drachens.util;
 
 import net.minestom.server.coordinate.Pos;
 
+import java.util.concurrent.CompletableFuture;
+
 public class OtherUtil {
-    public static String posToString(Pos pos){
-        return pos.x()+", "+pos.z();
+    public static String posToString(Pos pos) {
+        return pos.x() + ", " + pos.z();
     }
 
     public static float[] yawToQuat(double yaw) {
@@ -57,5 +59,15 @@ public class OtherUtil {
             return upper;
         }
         return Math.max(value, lower);
+    }
+
+    public static CompletableFuture<Void> runAsyncTask() {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
     }
 }

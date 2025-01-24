@@ -24,13 +24,13 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class TroopTypeSelectionGUI extends InventoryGUI {
     private final DivisionDesign design;
-    private HashMap<Integer, DivisionType> divTypeHash = new HashMap<>();
     private final int slot;
+    private HashMap<Integer, DivisionType> divTypeHash = new HashMap<>();
 
     public TroopTypeSelectionGUI(HashMap<Integer, DivisionType> dHashMap, DivisionDesign design, int slot) {
-        this.divTypeHash=dHashMap;
-        this.design=design;
-        this.slot=slot;
+        this.divTypeHash = dHashMap;
+        this.design = design;
+        this.slot = slot;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TroopTypeSelectionGUI extends InventoryGUI {
     }
 
     @Override
-    public void decorate(@NotNull CPlayer p){
+    public void decorate(@NotNull CPlayer p) {
         outlineInventory(this, sideButtons());
         addExitButton(this);
         addButton(10, divisionType(DivisionTypeEnum.ww2_artillery));
@@ -59,21 +59,21 @@ public class TroopTypeSelectionGUI extends InventoryGUI {
                         .build());
     }
 
-    protected InventoryButton divisionType(DivisionTypeEnum divisionType){
+    protected InventoryButton divisionType(DivisionTypeEnum divisionType) {
         return new InventoryButton()
                 .creator(player -> divisionType.getDivisionType().getIcon())
                 .consumer(e -> {
                     divTypeHash.put(slot, divisionType.getDivisionType());
-                    ContinentalManagers.guiManager.openGUI(new TroopEditGUI(divTypeHash,design), (CPlayer) e.getPlayer());
+                    ContinentalManagers.guiManager.openGUI(new TroopEditGUI(divTypeHash, design), (CPlayer) e.getPlayer());
                 });
     }
 
-    protected InventoryButton remove(){
+    protected InventoryButton remove() {
         return new InventoryButton()
-                .creator(player -> itemBuilder(Material.BARRIER,Component.text("Remove", NamedTextColor.RED, TextDecoration.BOLD)))
-                .consumer(e->{
+                .creator(player -> itemBuilder(Material.BARRIER, Component.text("Remove", NamedTextColor.RED, TextDecoration.BOLD)))
+                .consumer(e -> {
                     divTypeHash.remove(slot);
-                    ContinentalManagers.guiManager.openGUI(new TroopEditGUI(divTypeHash,design), (CPlayer) e.getPlayer());
+                    ContinentalManagers.guiManager.openGUI(new TroopEditGUI(divTypeHash, design), (CPlayer) e.getPlayer());
                 });
     }
 }

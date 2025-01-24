@@ -13,7 +13,7 @@ public class StartWarEvent extends Event {
         super(aggressor.getInstance());
         this.aggressor = aggressor;
         this.defender = occupier;
-        this.warJustification=warJustification;
+        this.warJustification = warJustification;
     }
 
     public Country getAggressor() {

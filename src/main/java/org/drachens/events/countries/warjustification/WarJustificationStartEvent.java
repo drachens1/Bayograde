@@ -8,11 +8,12 @@ public class WarJustificationStartEvent extends Event {
     private final WarJustification warJustification;
     private final Country from;
     private final Country against;
+
     public WarJustificationStartEvent(WarJustification warJustification, Country from) {
         super(from.getInstance());
-        this.from=from;
-        this.against=warJustification.getAgainstCountry();
-        this.warJustification=warJustification;
+        this.from = from;
+        this.against = warJustification.getAgainstCountry();
+        this.warJustification = warJustification;
     }
 
     public WarJustification getWarJustification() {

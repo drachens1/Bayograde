@@ -14,8 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Messages {
-    public static void sendMessage(CPlayer p, Component msg){
-        if (p!=null)p.sendMessage(msg);
+    public static void sendMessage(CPlayer p, Component msg) {
+        if (p != null) p.sendMessage(msg);
     }
 
     public static void globalBroadcast(String msg) {

@@ -24,18 +24,23 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Province {
-    private Combat combat;
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
-     private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
+    private final Material[] cities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
             Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
+    private final HashSet<Country> corers = new HashSet<>();
+    private final Component unoccupied = Component.text()
+            .append(Component.text("_______/", NamedTextColor.BLUE))
+            .append(Component.text("Unoccupied", TextColor.color(51, 129, 255)))
+            .append(Component.text("\\_______", NamedTextColor.BLUE))
+            .build();
+    private Combat combat;
     private Building building;
     private Country occupier;
     private Material material;
     private boolean city;
     private List<Province> neighbours;
-    private final HashSet<Country> corers = new HashSet<>();
     private boolean isBorder = false;
 
     public Province(Pos pos, Instance instance, Country occupier, List<Province> neighbours) {
@@ -69,31 +74,31 @@ public class Province {
     public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
         if (country != null && country.isPlayerLeader(p)) {
-            if (country==occupier){
+            if (country == occupier) {
                 return createSecretDescription().append(Component.text()
-                        .append(Component.text("[EXTRA]",NamedTextColor.GOLD, TextDecoration.BOLD))
-                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to edit your country", NamedTextColor.GRAY)))
-                        .clickEvent(ClickEvent.runCommand("/country edit options"))
-                        .build())
-                        .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                .append(Component.text("[EXTRA]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to edit your country", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country edit options"))
+                                .build())
+                        .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
                                 .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
-            }else if (country.isAlly(occupier)){
+            } else if (country.isAlly(occupier)) {
                 return createSecretDescription().append(Component.text()
-                        .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .append(Component.text("[DIPLOMATIC OPTIONS]", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
                         .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
                         .build()
-                            .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
                                 .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName()))));
-            }else {
+            } else {
                 return createPublicDescription().append(Component.text()
-                        .append(Component.text("[DIPLOMATIC OPTIONS]",NamedTextColor.GOLD, TextDecoration.BOLD))
-                        .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
-                        .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
-                        .build())
-                        .append(Component.text().append(Component.text(" [INFO]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                .append(Component.text("[DIPLOMATIC OPTIONS]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
+                                .build())
+                        .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
                                 .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
             }
@@ -113,12 +118,6 @@ public class Province {
         }
         return createSecretProvinceDescription();
     }
-
-    private final Component unoccupied = Component.text()
-            .append(Component.text("_______/", NamedTextColor.BLUE))
-            .append(Component.text("Unoccupied", TextColor.color(51, 129, 255)))
-            .append(Component.text("\\_______", NamedTextColor.BLUE))
-            .build();
 
     private Component createProvinceDescription() {
         if (occupier == null) return unoccupied;
@@ -252,7 +251,7 @@ public class Province {
         updateBorders();
     }
 
-    public void liberate(Country attacker){
+    public void liberate(Country attacker) {
         if (occupier != null) {
             occupier.removeOccupied(this);
             if (isCity())
@@ -308,12 +307,12 @@ public class Province {
     }
 
     public void setBlock() {
-        isBorder=false;
+        isBorder = false;
         setBlock(occupier.getBlock());
     }
 
     public void setBorder() {
-        isBorder=true;
+        isBorder = true;
         setBlock(occupier.getBorder());
     }
 
@@ -336,7 +335,7 @@ public class Province {
 
     //6 = capital
     public void setCity(int lvl) {
-        if (!city) if (occupier!=null)occupier.addCity(this);
+        if (!city) if (occupier != null) occupier.addCity(this);
         this.city = true;
         this.setBlock(cities[lvl]);
         material = cities[lvl];
@@ -348,8 +347,8 @@ public class Province {
         neigh.forEach(this::updateProv);
     }
 
-    public void updateProv(Province p){
-        if (p.isCity())return;
+    public void updateProv(Province p) {
+        if (p.isCity()) return;
         for (Province p2 : p.getNeighbours()) {
             if (p2.getOccupier() != p.getOccupier()) {
                 p.setBorder();
@@ -375,31 +374,31 @@ public class Province {
         building = null;
     }
 
-    public void setCombat(Combat combat){
-        this.combat=combat;
+    public boolean isThereCombat() {
+        return combat != null;
     }
 
-    public boolean isThereCombat(){
-        return combat!=null;
-    }
-
-    public Combat getCombat(){
+    public Combat getCombat() {
         return combat;
     }
 
-    public void setCore(Country country){
+    public void setCombat(Combat combat) {
+        this.combat = combat;
+    }
+
+    public void setCore(Country country) {
         corers.add(country);
     }
 
-    public HashSet<Country> getCorers(){
+    public HashSet<Country> getCorers() {
         return corers;
     }
 
-    public boolean isBorder(){
-        return isBorder&&!isCity();
+    public boolean isBorder() {
+        return isBorder && !isCity();
     }
 
-    public Province add(int x, int z){
-        return ContinentalManagers.world(instance).provinceManager().getProvince((int) (pos.x()+x), (int) (pos.z()+z));
+    public Province add(int x, int z) {
+        return ContinentalManagers.world(instance).provinceManager().getProvince((int) (pos.x() + x), (int) (pos.z() + z));
     }
 }

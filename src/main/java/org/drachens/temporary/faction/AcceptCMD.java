@@ -25,8 +25,8 @@ public class AcceptCMD extends Command {
                     }
                 });
 
-        setDefaultExecutor((sender,context)->{
-            if (hasInvites(sender)){
+        setDefaultExecutor((sender, context) -> {
+            if (hasInvites(sender)) {
                 sender.sendMessage("Proper usage /faction accept <faction>");
             }
         });

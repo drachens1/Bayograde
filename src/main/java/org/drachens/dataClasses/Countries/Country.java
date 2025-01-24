@@ -59,7 +59,6 @@ import java.util.*;
 import static org.drachens.util.Messages.broadcast;
 
 public abstract class Country implements Cloneable {
-    private CompletionBarTextDisplay capitulationTextBar;
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     private final MapGen mapGen;
     private final List<CPlayer> players;
@@ -70,7 +69,7 @@ public abstract class Country implements Cloneable {
     private final Ideology ideology;
     private final Election elections;
     private final HashMap<String, ModifierCommand> modifierCommandsHashMap = new HashMap<>();
-    private final HashMap<String,Modifier> modifiers = new HashMap<>();
+    private final HashMap<String, Modifier> modifiers = new HashMap<>();
     private final List<Modifier> visibleModifiers = new ArrayList<>();
     private final List<EventsRunner> eventsRunners = new ArrayList<>();
     private final List<Country> puppets = new ArrayList<>();
@@ -82,22 +81,8 @@ public abstract class Country implements Cloneable {
     private final List<String> factionInvites = new ArrayList<>();
     private final HashMap<String, Demand> demandHashMap = new HashMap<>();
     private final DemandManager demandManager = ContinentalManagers.demandManager;
-    private Player playerLeader;
-    private Leader leader;
-    private EconomyFactionType economyFactionType;
-    private MilitaryFactionType militaryFactionType;
     private final List<Province> occupies;
     private final List<Province> cities;
-    private String name;
-    private Material block;
-    private Material border;
-    private Province capital;
-    private float capitulationPoints;
-    private float maxCapitulationPoints;
-    private boolean capitulated = false;
-    private Component prefix;
-    private Component description;
-    private Country overlord = null;
     private final Stability stability;
     private final Relations relations = new Relations(this);
     private final HashMap<String, Loan> loanRequests = new HashMap<>();
@@ -112,19 +97,34 @@ public abstract class Country implements Cloneable {
     private final HashSet<Province> cores = new HashSet<>();
     private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
     private final CountryChat countryChat;
-    private Component originalName;
     private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
-    private final HashMap<String, LawCategory>  laws = new HashMap<>();
+    private final HashMap<String, LawCategory> laws = new HashMap<>();
     private final HashMap<String, List<Province>> bordersProvince = new HashMap<>();
+    private CompletionBarTextDisplay capitulationTextBar;
+    private Player playerLeader;
+    private Leader leader;
+    private EconomyFactionType economyFactionType;
+    private MilitaryFactionType militaryFactionType;
+    private String name;
+    private Material block;
+    private Material border;
+    private Province capital;
+    private float capitulationPoints;
+    private float maxCapitulationPoints;
+    private boolean capitulated = false;
+    private Component prefix;
+    private Component description;
+    private Country overlord = null;
+    private Component originalName;
     private PuppetChat puppetChat;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
-        laws.forEach(((string, lawCategory) -> this.laws.put(string,new LawCategory(lawCategory,this))));
+        laws.forEach(((string, lawCategory) -> this.laws.put(string, new LawCategory(lawCategory, this))));
         this.occupies = new ArrayList<>();
         this.ideology = defaultIdeologies.clone(this);
         this.vault = vault;
         vault.setCountry(this);
-        this.originalName=nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name));
+        this.originalName = nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name));
         this.name = name;
         setPrefix(Component.text(name, NamedTextColor.BLUE));
         this.block = block;
@@ -138,38 +138,38 @@ public abstract class Country implements Cloneable {
         this.instance = instance;
         aStarPathfinder = new AStarPathfinderXZ(ContinentalManagers.world(instance).provinceManager());
         this.mapGen = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
-        warsWorld=new ImaginaryWorld(instance,true);
-        allyWorld=new ImaginaryWorld(instance,true);
-        stability=new Stability(50f, this);
-        countryChat=new CountryChat(this);
+        warsWorld = new ImaginaryWorld(instance, true);
+        allyWorld = new ImaginaryWorld(instance, true);
+        stability = new Stability(50f, this);
+        countryChat = new CountryChat(this);
     }
 
-    public void init(){
+    public void init() {
         List<Country> countries = new ArrayList<>(ContinentalManagers.world(instance).countryDataManager().getCountries());
         countries.remove(this);
         countries.forEach(country -> country.getOccupies().forEach(province -> {
-            warsWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE);
-            allyWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE);
+            warsWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
+            allyWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
         }));
     }
 
-    public ImaginaryWorld getWarsWorld(){
+    public ImaginaryWorld getWarsWorld() {
         return warsWorld;
     }
 
-    public ImaginaryWorld getAllyWorld(){
+    public ImaginaryWorld getAllyWorld() {
         return allyWorld;
     }
 
-    public void addCore(Province province){
+    public void addCore(Province province) {
         cores.add(province);
     }
 
-    public void addModifierCommands(ModifierCommand modifierCommands){
-        modifierCommandsHashMap.put(modifierCommands.getString(),modifierCommands);
+    public void addModifierCommands(ModifierCommand modifierCommands) {
+        modifierCommandsHashMap.put(modifierCommands.getString(), modifierCommands);
     }
 
-    public void removeModifierCommands(ModifierCommand modifierCommands){
+    public void removeModifierCommands(ModifierCommand modifierCommands) {
         modifierCommandsHashMap.remove(modifierCommands.getString());
     }
 
@@ -182,7 +182,7 @@ public abstract class Country implements Cloneable {
             return;
         }
 
-        modifiers.put(modifier.getIdentifier(),modifier);
+        modifiers.put(modifier.getIdentifier(), modifier);
         modifier.addCountry(this);
         modifier.getBoostHashMap().forEach(this::addBoost);
         modifier.getConditionEnums().forEach(this::addCondition);
@@ -194,7 +194,7 @@ public abstract class Country implements Cloneable {
         }
     }
 
-    public boolean hasModifier(String identifier){
+    public boolean hasModifier(String identifier) {
         return modifiers.containsKey(identifier);
     }
 
@@ -208,33 +208,33 @@ public abstract class Country implements Cloneable {
         boostHashmap.put(boostEnum, current - value);
     }
 
-    public void addEventsRunner(EventsRunner eventsRunner){
+    public void addEventsRunner(EventsRunner eventsRunner) {
         eventsRunners.add(eventsRunner);
     }
 
-    public void removeEventsRunner(EventsRunner eventsRunner){
+    public void removeEventsRunner(EventsRunner eventsRunner) {
         eventsRunners.remove(eventsRunner);
     }
 
-    public void addCondition(ConditionEnum conditionEnum){
+    public void addCondition(ConditionEnum conditionEnum) {
         conditionEnums.add(conditionEnum);
     }
 
-    public void removeCondition(ConditionEnum conditionEnum){
+    public void removeCondition(ConditionEnum conditionEnum) {
         conditionEnums.remove(conditionEnum);
     }
 
     public void updateModifier(Modifier modifier, Modifier old) {
-        removeModifier(old,true);
+        removeModifier(old, true);
         addModifier(modifier, true);
     }
 
-    public void removeModifier(Modifier m){
-        removeModifier(m,false);
+    public void removeModifier(Modifier m) {
+        removeModifier(m, false);
     }
 
     public void removeModifier(Modifier modifier, boolean update) {
-        if (!modifiers.containsKey(modifier.getIdentifier())){
+        if (!modifiers.containsKey(modifier.getIdentifier())) {
             return;
         }
 
@@ -270,8 +270,8 @@ public abstract class Country implements Cloneable {
         this.cities.remove(city);
     }
 
-    public void removeCityWithoutHarm(Province province){
-        this.maxCapitulationPoints-=city.indexOf(province.getMaterial());
+    public void removeCityWithoutHarm(Province province) {
+        this.maxCapitulationPoints -= city.indexOf(province.getMaterial());
         this.cities.remove(province);
     }
 
@@ -280,26 +280,26 @@ public abstract class Country implements Cloneable {
     }
 
     public void addOccupied(Province province) {
-        province.getCorers().forEach(country -> addOthersCores(country,province));
-        province.getNeighbours().forEach(provinces->{
-            if (provinces.getOccupier()==this)return;
-            addBorder(provinces,provinces.getOccupier().getName());
-            provinces.getOccupier().addBorder(province,getName());
+        province.getCorers().forEach(country -> addOthersCores(country, province));
+        province.getNeighbours().forEach(provinces -> {
+            if (provinces.getOccupier() == this) return;
+            addBorder(provinces, provinces.getOccupier().getName());
+            provinces.getOccupier().addBorder(province, getName());
         });
         occupies.add(province);
     }
 
     public void removeOccupied(Province province) {
-        province.getCorers().forEach(country -> removeOthersCores(country,province));
-        province.getNeighbours().forEach(provinces->{
-            if (provinces.getOccupier()==this)return;
-            removeBorder(provinces,provinces.getOccupier().getName());
-            provinces.getOccupier().removeBorder(province,getName());
+        province.getCorers().forEach(country -> removeOthersCores(country, province));
+        province.getNeighbours().forEach(provinces -> {
+            if (provinces.getOccupier() == this) return;
+            removeBorder(provinces, provinces.getOccupier().getName());
+            provinces.getOccupier().removeBorder(province, getName());
         });
         occupies.remove(province);
     }
 
-    public void captureProvince(Province province){
+    public void captureProvince(Province province) {
         warsWorld.removeGhostBlock(province.getPos());
         allyWorld.removeGhostBlock(province.getPos());
         addOccupied(province);
@@ -343,8 +343,8 @@ public abstract class Country implements Cloneable {
 
     public void setCapital(Province capital) {
         this.capital = capital;
-        if (capitulationTextBar!=null)capitulationTextBar.getTextDisplay().dispose();
-        this.capitulationTextBar=new CompletionBarTextDisplay(capital.getPos().add(0,3,0),capital.getInstance(), TextColor.color(0,255,0));
+        if (capitulationTextBar != null) capitulationTextBar.getTextDisplay().dispose();
+        this.capitulationTextBar = new CompletionBarTextDisplay(capital.getPos().add(0, 3, 0), capital.getInstance(), TextColor.color(0, 255, 0));
     }
 
     public void addPlayer(CPlayer p) {
@@ -413,18 +413,18 @@ public abstract class Country implements Cloneable {
                         .append(attacker.getNameComponent())
                         .append(Component.text(" has seized the ", NamedTextColor.RED))
                         .append(originalName)
-                        .append(Component.text(" capital",NamedTextColor.RED))
+                        .append(Component.text(" capital", NamedTextColor.RED))
                         .build(), capital.getInstance());
             }
         }
         float capPercentage = bound(0.5f * boostHashmap.getOrDefault(BoostEnum.capitulation, 1f));
-        if (capPercentage>=1f)capPercentage=0.85f;
+        if (capPercentage >= 1f) capPercentage = 0.85f;
         float capPoints = maxCapitulationPoints * capPercentage;
         float progress = capitulationPoints / capPoints;
-        capitulationTextBar.setProgress(1f-progress);
+        capitulationTextBar.setProgress(1f - progress);
         capitulationBar.setProgress(progress);
         if (capitulationPoints >= capPoints && !capitulated) {
-            EventDispatcher.call(new CapitulationEvent(this,attacker));
+            EventDispatcher.call(new CapitulationEvent(this, attacker));
         }
     }
 
@@ -439,7 +439,7 @@ public abstract class Country implements Cloneable {
         for (Province p : new ArrayList<>(this.occupies)) {
             p.capture(attacker);
         }
-        if (hasPuppets()){
+        if (hasPuppets()) {
             puppets.forEach(puppet -> EventDispatcher.call(new CapitulationEvent(puppet, attacker)));
         }
     }
@@ -477,18 +477,18 @@ public abstract class Country implements Cloneable {
         getVault().minusThenLoan(payment, from);
     }
 
-    public void addClientside(Clientside clientside){
+    public void addClientside(Clientside clientside) {
         clientsides.add(clientside);
         players.forEach(clientside::addViewer);
-        if (hasOverlord()){
+        if (hasOverlord()) {
             getOverlord().addClientside(clientside);
         }
     }
 
-    public void removeClientside(Clientside clientside){
+    public void removeClientside(Clientside clientside) {
         clientsides.remove(clientside);
         players.forEach(clientside::removeViewer);
-        if (hasOverlord()){
+        if (hasOverlord()) {
             getOverlord().removeClientside(clientside);
         }
     }
@@ -514,7 +514,7 @@ public abstract class Country implements Cloneable {
         return countryWars.stream().toList();
     }
 
-    public void addCountryWar(Country country){
+    public void addCountryWar(Country country) {
         countryWars.add(country.getName());
         country.getOccupies().forEach(province -> warsWorld.removeGhostBlock(province.getPos()));
         addClientside(country.getCapitulationTextBar().getTextDisplay());
@@ -522,9 +522,9 @@ public abstract class Country implements Cloneable {
 
     public void removeWar(Country country) {
         countryWars.remove(country.getName());
-        country.getOccupies().forEach(province -> warsWorld.addGhostBlock(province.getPos(),Block.GRAY_CONCRETE));
+        country.getOccupies().forEach(province -> warsWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE));
         removeClientside(country.getCapitulationTextBar().getTextDisplay());
-        if (!isInAWar())removeClientside(capitulationTextBar.getTextDisplay());
+        if (!isInAWar()) removeClientside(capitulationTextBar.getTextDisplay());
     }
 
     public Component getPrefix() {
@@ -561,7 +561,7 @@ public abstract class Country implements Cloneable {
     }
 
     public void createInfo() {
-        if (mapGen==null || mapGen.isGenerating(instance)) return;
+        if (mapGen == null || mapGen.isGenerating(instance)) return;
         List<Component> modifierComps = new ArrayList<>();
         for (Modifier modifier : visibleModifiers) {
             modifierComps.add(modifier.getName());
@@ -623,7 +623,7 @@ public abstract class Country implements Cloneable {
                     .build());
         }
 
-        if (getLeader()==null)return;
+        if (getLeader() == null) return;
         this.description = Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(originalName)
@@ -631,7 +631,7 @@ public abstract class Country implements Cloneable {
                 .appendNewline()
                 .append(Component.text("Leader: "))
                 .append(getLeader().getName())
-                        .clickEvent(ClickEvent.runCommand("/country leader " + getName()))
+                .clickEvent(ClickEvent.runCommand("/country leader " + getName()))
                 .appendNewline()
                 .append(Component.text("Modifiers: "))
                 .append(modifierComps)
@@ -660,21 +660,21 @@ public abstract class Country implements Cloneable {
         return puppets;
     }
 
-    public boolean hasOverlord(){
-        return overlord!=null;
+    public boolean hasOverlord() {
+        return overlord != null;
     }
 
     public void addPuppet(Country country) {
-        if (hasOverlord()){
+        if (hasOverlord()) {
             country.setOverlord(overlord);
             overlord.addPuppet(country);
-        }else {
-            if (puppets.isEmpty()){
+        } else {
+            if (puppets.isEmpty()) {
                 puppetChat = new PuppetChat(this);
             }
             createInfo();
             puppets.add(country);
-            countryWars.forEach(country1->{
+            countryWars.forEach(country1 -> {
                 Country country2 = ContinentalManagers.world(instance).countryDataManager().getCountryFromName(country1);
                 country.addCountryWar(country2);
                 country2.addCountryWar(country);
@@ -683,16 +683,16 @@ public abstract class Country implements Cloneable {
         }
     }
 
-    public void removePuppet(Country country){
+    public void removePuppet(Country country) {
         puppets.remove(country);
         country.getClientsides().forEach(clientside -> players.forEach(clientside::removeViewer));
-        if (puppets.isEmpty()){
+        if (puppets.isEmpty()) {
             puppetChat = null;
         }
         createInfo();
     }
 
-    public List<Clientside> getClientsides(){
+    public List<Clientside> getClientsides() {
         return clientsides;
     }
 
@@ -870,23 +870,23 @@ public abstract class Country implements Cloneable {
         demandHashMap.put(demand.getFromCountry().name, demand);
     }
 
-    public void addOutgoingDemand(Demand demand){
-        outgoingDemands.put(demand.getToCountry().name,demand);
+    public void addOutgoingDemand(Demand demand) {
+        outgoingDemands.put(demand.getToCountry().name, demand);
     }
 
-    public void removeOutgoingDemand(Demand demand){
+    public void removeOutgoingDemand(Demand demand) {
         outgoingDemands.remove(demand.getToCountry().name);
     }
 
-    public Demand getOutgoingDemand(String countryName){
+    public Demand getOutgoingDemand(String countryName) {
         return outgoingDemands.get(countryName);
     }
 
-    public List<String> getOutgoingDemands(){
+    public List<String> getOutgoingDemands() {
         return outgoingDemands.keySet().stream().toList();
     }
 
-    public boolean hasOutgoingDemands(){
+    public boolean hasOutgoingDemands() {
         return !outgoingDemands.isEmpty();
     }
 
@@ -894,11 +894,11 @@ public abstract class Country implements Cloneable {
         return !demandHashMap.isEmpty();
     }
 
-    public Demand getDemand(Country country){
+    public Demand getDemand(Country country) {
         return demandHashMap.get(country.name);
     }
 
-    public void removeDemand(Demand demand){
+    public void removeDemand(Demand demand) {
         demandHashMap.remove(demand.getFromCountry().name);
         sendMessage(Component.text()
                 .append(MessageEnum.country.getComponent())
@@ -960,32 +960,32 @@ public abstract class Country implements Cloneable {
 
     protected abstract void newWeek(NewDay newDay);
 
-    public void nextDay(NewDay newDay){
+    public void nextDay(NewDay newDay) {
         List<String> toRemove = new ArrayList<>();
-         completedWarJustifications.forEach((name,warJust)->{
+        completedWarJustifications.forEach((name, warJust) -> {
             warJust.minusExpires(1f);
-            if (warJust.getExpires()<=0f){
+            if (warJust.getExpires() <= 0f) {
                 toRemove.add(warJust.getAgainstCountry().name);
-                EventDispatcher.call(new WarJustificationExpiresEvent(warJust,this));
+                EventDispatcher.call(new WarJustificationExpiresEvent(warJust, this));
             }
         });
-         toRemove.forEach(completedWarJustifications::remove);
+        toRemove.forEach(completedWarJustifications::remove);
 
-         toRemove.clear();
-         warJustificationHashMap.forEach((name,warJust)->{
+        toRemove.clear();
+        warJustificationHashMap.forEach((name, warJust) -> {
             warJust.minusTimeLeft(1f);
-            if (warJust.getTimeLeft()<=0f){
+            if (warJust.getTimeLeft() <= 0f) {
                 toRemove.add(warJust.getAgainstCountry().name);
-                completedWarJustifications.put(warJust.getAgainstCountry().name,warJust);
-                EventDispatcher.call(new WarJustificationCompletionEvent(warJust,this));
+                completedWarJustifications.put(warJust.getAgainstCountry().name, warJust);
+                EventDispatcher.call(new WarJustificationCompletionEvent(warJust, this));
             }
-         });
-         toRemove.forEach(warJustificationHashMap::remove);
+        });
+        toRemove.forEach(warJustificationHashMap::remove);
         newDay(newDay);
 
         List<EventsRunner> e = new ArrayList<>();
         new ArrayList<>(eventsRunners).forEach(eventsRunner -> {
-            if (eventsRunner.newDay())e.add(eventsRunner);
+            if (eventsRunner.newDay()) e.add(eventsRunner);
         });
 
         e.forEach(eventsRunners::remove);
@@ -993,177 +993,177 @@ public abstract class Country implements Cloneable {
 
     public abstract void newDay(NewDay newDay);
 
-    public List<Province> getCities(){
+    public List<Province> getCities() {
         return cities;
     }
 
-    public void addWarJustification(WarJustification warJustification){
-        warJustificationHashMap.put(warJustification.getAgainstCountry().name,warJustification);
+    public void addWarJustification(WarJustification warJustification) {
+        warJustificationHashMap.put(warJustification.getAgainstCountry().name, warJustification);
     }
 
-    public void removeWarJustification(String country){
+    public void removeWarJustification(String country) {
         warJustificationHashMap.remove(country);
     }
 
-    public void removeCompletedWarJustification(String country){
+    public void removeCompletedWarJustification(String country) {
         completedWarJustifications.remove(country);
     }
 
-    public List<String> getWarJustifications(){
+    public List<String> getWarJustifications() {
         return warJustificationHashMap.keySet().stream().toList();
     }
 
-    public List<String> getCompletedWarJustifications(){
+    public List<String> getCompletedWarJustifications() {
         return completedWarJustifications.keySet().stream().toList();
     }
 
-    public WarJustification getCreatingWarJustificationAgainst(String name){
+    public WarJustification getCreatingWarJustificationAgainst(String name) {
         return warJustificationHashMap.get(name);
     }
 
-    public WarJustification getCompletedWarJustificationAgainst(Country country){
+    public WarJustification getCompletedWarJustificationAgainst(Country country) {
         return completedWarJustifications.get(country.name);
     }
 
-    public void addNonAggressionPact(NonAggressionPact nonAggressionPact, Country other){
-        nonAggressionPactHashMap.put(other.name,nonAggressionPact);
+    public void addNonAggressionPact(NonAggressionPact nonAggressionPact, Country other) {
+        nonAggressionPactHashMap.put(other.name, nonAggressionPact);
     }
 
-    public void removeNonAggressionPact(Country other){
+    public void removeNonAggressionPact(Country other) {
         nonAggressionPactHashMap.remove(other.name);
     }
 
-    public List<String> getNonAggressionPacts(){
+    public List<String> getNonAggressionPacts() {
         return nonAggressionPactHashMap.keySet().stream().toList();
     }
 
-    public boolean hasNonAggressionPact(String country){
+    public boolean hasNonAggressionPact(String country) {
         return nonAggressionPactHashMap.containsKey(country);
     }
 
-    public boolean isPuppet(Country country){
+    public boolean isPuppet(Country country) {
         return puppets.contains(country);
     }
 
-    public boolean canFight(Country country){
+    public boolean canFight(Country country) {
         return !cantStartAWarWith(country);
     }
 
-    public boolean isMilitaryFriend(Country country){
-        return isPuppet(country)||isMilitaryAlly(country)||country==this||(hasOverlord()&&(overlord==country||overlord.isPuppet(country)));
+    public boolean isMilitaryFriend(Country country) {
+        return isPuppet(country) || isMilitaryAlly(country) || country == this || (hasOverlord() && (overlord == country || overlord.isPuppet(country)));
     }
 
-    public boolean cantStartAWarWith(Country country){
-        return isMilitaryFriend(country)||hasNonAggressionPact(country.getName())||isEconomicAlly(country);
+    public boolean cantStartAWarWith(Country country) {
+        return isMilitaryFriend(country) || hasNonAggressionPact(country.getName()) || isEconomicAlly(country);
     }
 
-    public boolean isInAWar(){
+    public boolean isInAWar() {
         return !countryWars.isEmpty();
     }
 
-    public void addOthersCores(Country country, Province province){
-        List<Province> p = occupiesThereCores.getOrDefault(country.getName(),new ArrayList<>());
+    public void addOthersCores(Country country, Province province) {
+        List<Province> p = occupiesThereCores.getOrDefault(country.getName(), new ArrayList<>());
         p.add(province);
-        occupiesThereCores.put(country.getName(),p);
+        occupiesThereCores.put(country.getName(), p);
     }
 
-    public void removeOthersCores(Country country, Province province){
-        List<Province> p = occupiesThereCores.getOrDefault(country.getName(),new ArrayList<>());
+    public void removeOthersCores(Country country, Province province) {
+        List<Province> p = occupiesThereCores.getOrDefault(country.getName(), new ArrayList<>());
         p.remove(province);
-        if (p.isEmpty()){
+        if (p.isEmpty()) {
             occupiesThereCores.remove(country.getName());
-        }else {
-            occupiesThereCores.put(country.getName(),p);
+        } else {
+            occupiesThereCores.put(country.getName(), p);
         }
     }
 
-    public List<Province> getOthersCores(Country country){
+    public List<Province> getOthersCores(Country country) {
         return occupiesThereCores.get(country.getName());
     }
 
-    public boolean occupiesCoresFrom(Country country){
+    public boolean occupiesCoresFrom(Country country) {
         return occupiesThereCores.containsKey(country.getName());
     }
 
-    public boolean occupiesAnyOtherCores(){
+    public boolean occupiesAnyOtherCores() {
         return !occupiesThereCores.isEmpty();
     }
 
-    public void setCapitulated(boolean opt){
-        capitulated=opt;
+    public void setCapitulated(boolean opt) {
+        capitulated = opt;
     }
 
-    public List<String> getOtherCountriesOccupier(){
+    public List<String> getOtherCountriesOccupier() {
         return occupiesThereCores.keySet().stream().toList();
     }
 
-    public boolean hasCapitulated(){
+    public boolean hasCapitulated() {
         return capitulated;
     }
 
-    public CompletionBarTextDisplay getCapitulationTextBar(){
+    public CompletionBarTextDisplay getCapitulationTextBar() {
         return capitulationTextBar;
     }
 
-    public void puppet(Country overlord){
-        if (hasOverlord()){
+    public void puppet(Country overlord) {
+        if (hasOverlord()) {
             getOverlord().removePuppet(this);
-        }else {
+        } else {
             createInfo();
         }
         setOverlord(overlord);
         setBlock(overlord.getBlock());
         setBorder(overlord.getBorder());
         occupies.forEach(province -> {
-            if (province.isBorder()){
+            if (province.isBorder()) {
                 province.setBorder();
-            }else if (!province.isCity()) {
+            } else if (!province.isCity()) {
                 province.setBlock();
             }
         });
     }
 
-    public boolean hasPuppets(){
+    public boolean hasPuppets() {
         return !puppets.isEmpty();
     }
 
-    public boolean containsPlayer(CPlayer player){
+    public boolean containsPlayer(CPlayer player) {
         return players.contains(player);
     }
 
-    public CountryChat getCountryChat(){
+    public CountryChat getCountryChat() {
         return countryChat;
     }
 
-    public PuppetChat getPuppetChat(){
+    public PuppetChat getPuppetChat() {
         return puppetChat;
     }
 
-    public boolean hasCondition(ConditionEnum conditionEnum){
+    public boolean hasCondition(ConditionEnum conditionEnum) {
         return conditionEnums.contains(conditionEnum);
     }
 
-    public Set<String> getLawNames(){
+    public Set<String> getLawNames() {
         return laws.keySet();
     }
 
-    public HashMap<String,LawCategory> getLaws(){
+    public HashMap<String, LawCategory> getLaws() {
         return laws;
     }
 
-    public LawCategory getLaw(String name){
+    public LawCategory getLaw(String name) {
         return laws.get(name);
     }
 
-    public Set<String> getModifierNames(){
+    public Set<String> getModifierNames() {
         return modifierCommandsHashMap.keySet();
     }
 
-    public ModifierCommand getModifierCommand(String identifier){
+    public ModifierCommand getModifierCommand(String identifier) {
         return modifierCommandsHashMap.get(identifier);
     }
 
-    public Modifier getModifier(String identifier){
+    public Modifier getModifier(String identifier) {
         return modifiers.get(identifier);
     }
 
@@ -1185,11 +1185,11 @@ public abstract class Country implements Cloneable {
     }
 
 
-    public List<Province> getBordersCountry(String country){
+    public List<Province> getBordersCountry(String country) {
         return bordersProvince.get(country);
     }
 
-    public Set<String> getBorders(){
+    public Set<String> getBorders() {
         return bordersProvince.keySet();
     }
 }

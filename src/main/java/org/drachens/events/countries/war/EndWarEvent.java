@@ -9,15 +9,15 @@ public class EndWarEvent extends Event {
 
     public EndWarEvent(Country from, Country to) {
         super(from.getInstance());
-        this.from=from;
-        this.to=to;
+        this.from = from;
+        this.to = to;
     }
 
-    public Country getFrom(){
+    public Country getFrom() {
         return from;
     }
 
-    public Country getTo(){
+    public Country getTo() {
         return to;
     }
 }

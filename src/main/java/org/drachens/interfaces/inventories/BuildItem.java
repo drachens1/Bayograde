@@ -15,6 +15,7 @@ public class BuildItem extends HotbarItemButton {
         super(modelData, item);
         this.buildingEnum = buildingEnum;
     }
+
     @Override
     public void onUse(PlayerUseItemOnBlockEvent e) {
         Country country = ((CPlayer) e.getPlayer()).getCountry();

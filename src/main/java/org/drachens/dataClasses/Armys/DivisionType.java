@@ -16,22 +16,22 @@ public class DivisionType {
 
     public DivisionType(String name, float atk, float def, float org, float hp, float speed, float trainingTime, Payment payment, ItemStack icon) {
         this.name = name;
-        this.hp=hp;
+        this.hp = hp;
         this.atk = atk;
         this.def = def;
         this.org = org;
         this.speed = speed;
         this.payment = payment;
-        this.icon=icon;
+        this.icon = icon;
         this.trainingTime = trainingTime;
     }
 
-    public float getHp(){
+    public float getHp() {
         return hp;
     }
 
-    public void setHp(float hp){
-        this.hp=hp;
+    public void setHp(float hp) {
+        this.hp = hp;
     }
 
     public float getAtk() {
@@ -82,11 +82,11 @@ public class DivisionType {
         this.name = name;
     }
 
-    public ItemStack getIcon(){
+    public ItemStack getIcon() {
         return icon;
     }
 
-    public float getTrainingTime(){
+    public float getTrainingTime() {
         return trainingTime;
     }
 }

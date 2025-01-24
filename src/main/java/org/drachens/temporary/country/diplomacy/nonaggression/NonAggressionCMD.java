@@ -9,7 +9,7 @@ public class NonAggressionCMD extends Command {
     public NonAggressionCMD() {
         super("non-aggression-pact");
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
         addSubcommand(new NonAggressionCreateCMD());
     }
 

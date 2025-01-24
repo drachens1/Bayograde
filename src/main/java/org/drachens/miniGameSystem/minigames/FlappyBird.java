@@ -30,31 +30,23 @@ import static java.lang.Math.floor;
 public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
         implements EventHandlerProvider {
     public static final File db = new File("flappy.json");
-
-    private final Sprite bird;
     private static final double gravity = 0.5;
-    private double pos = 0;
-    private final double realX;
-
-    private final int xMax;
-    private final int yMax;
-
-    private boolean gameEnded = false;
-    private boolean gameStarted = false;
-
     private static final String SID_BIRD = "bird";
     private static final String SID_PIPE = "flappyPipe";
-
+    private final Sprite bird;
+    private final double realX;
+    private final int xMax;
+    private final int yMax;
     private final FlappyBar flappyBar;
-
     private final List<PipeSprite> pipes = new ArrayList<>();
-
     private final CPlayer player;
-
+    private double pos = 0;
+    private boolean gameEnded = false;
+    private boolean gameStarted = false;
     private int score = 0;
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
-        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(xMax,yMax));
+        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(xMax, yMax));
         this.xMax = xMax;
         this.yMax = yMax;
         this.player = p;
@@ -65,7 +57,8 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
 
         MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerBoatPacket.class, (clientSteerVehiclePacket, player) -> {
             if (player != this.player) return;
-            if (clientSteerVehiclePacket.leftPaddleTurning()||clientSteerVehiclePacket.rightPaddleTurning()) this.pos += gravity * 2d;
+            if (clientSteerVehiclePacket.leftPaddleTurning() || clientSteerVehiclePacket.rightPaddleTurning())
+                this.pos += gravity * 2d;
         });
 
         this.pos = yMax / 2d - 1d;
@@ -150,19 +143,6 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
         player.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
     }
 
-    class PipeSprite extends Sprite {
-        public double realX = 0;
-
-        public PipeSprite(int height, boolean down, Pos pos) {
-            super(pos, FlappyBird.this.getMonitor(), SID_PIPE, (MiniGameRunnable) null);
-
-            Sprite.Builder.loadLayout(1,
-                    down
-                            ? (" ###\n".repeat(height) + "#####")
-                            : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
-        }
-    }
-
     private void mainLoop() {
         pipes.forEach(pipeSprite -> {
             pipeSprite.realX += 0.2 + (score / 100d);
@@ -186,11 +166,11 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
     }
 
     static class FlappyWorld extends World {
-        public FlappyWorld(double xMax, double yMax) {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
-        }
-
         private FlappyBird flappyBird;
+
+        public FlappyWorld(double xMax, double yMax) {
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
+        }
 
         public void setInstance(FlappyBird flappyBird) {
             this.flappyBird = flappyBird;
@@ -201,7 +181,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
             flappyBird.flappyBar.addPlayer(p);
 
             MiniGameUtil.putPlayerInBoat(p, getInstance());
-            MiniGameUtil.startGameLoop( 60, () -> flappyBird.mainLoop());
+            MiniGameUtil.startGameLoop(60, () -> flappyBird.mainLoop());
         }
 
         @Override
@@ -236,6 +216,19 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
                     .append(Component.text("Score: "))
                     .append(Component.text(score))
                     .build());
+        }
+    }
+
+    class PipeSprite extends Sprite {
+        public double realX = 0;
+
+        public PipeSprite(int height, boolean down, Pos pos) {
+            super(pos, FlappyBird.this.getMonitor(), SID_PIPE, (MiniGameRunnable) null);
+
+            Sprite.Builder.loadLayout(1,
+                    down
+                            ? (" ###\n".repeat(height) + "#####")
+                            : ("#####\n" + " ###\n".repeat(height)), Map.of('#', Material.GREEN_CONCRETE), this);
         }
     }
 }

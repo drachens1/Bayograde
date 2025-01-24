@@ -12,24 +12,25 @@ import java.util.HashMap;
 
 public class CountryChatCMD extends Command {
     private final HashMap<CPlayer, Boolean> active = new HashMap<>();
+
     public CountryChatCMD() {
         super("chat");
 
-        setCondition((sender,s)->isInCountry(sender));
+        setCondition((sender, s) -> isInCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (!isInCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (!isInCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             CountryChat countryChat = p.getCountry().getCountryChat();
-            boolean current = active.getOrDefault(p,false);
-            current=!current;
-            active.put(p,current);
-            if (current){
+            boolean current = active.getOrDefault(p, false);
+            current = !current;
+            active.put(p, current);
+            if (current) {
                 countryChat.addPlayer(p);
                 p.sendMessage(Component.text()
                         .append(MessageEnum.faction.getComponent())
                         .append(Component.text("Country chat is now active")));
-            }else {
+            } else {
                 countryChat.removePlayer(p);
                 p.sendMessage(Component.text()
                         .append(MessageEnum.faction.getComponent())
@@ -38,7 +39,7 @@ public class CountryChatCMD extends Command {
         });
     }
 
-    private boolean isInCountry(CommandSender sender){
+    private boolean isInCountry(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
             return country != null;

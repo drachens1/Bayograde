@@ -21,19 +21,19 @@ public class JustifyOptionsCMD extends Command {
 
         var countries = getCountriesArgExcludingPlayersCountry();
 
-        setDefaultExecutor((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             sender.sendMessage("proper usage /country diplomacy justify options <country>");
         });
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender)){
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) {
                 sender.sendMessage("You are not the leader of a country");
                 return;
             }
             CPlayer p = (CPlayer) sender;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country==null){
+            if (country == null) {
                 p.sendMessage("That country is not valid");
                 return;
             }
@@ -45,21 +45,21 @@ public class JustifyOptionsCMD extends Command {
                     .append(Component.text("Country: "))
                     .append(country.getNameComponent())
                     .appendNewline()
-                            .append(Component.text()
-                                    .append(Component.text("Surprise ", TextColor.color(255,0,0)))
-                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text()
-                                            .append(Component.text("Effects: ")
-                                                    .appendNewline()
-                                                    .append(Component.text(" -55% stability"))
-                                                    .appendNewline()
-                                                    .append(Component.text(" 1 day to justify"))
-                                                    .appendNewline()
-                                                    .append(Component.text("Click to start justifying",NamedTextColor.GRAY, TextDecoration.ITALIC)))
-                                            .build()))
-                                    .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against surprise " + country.getName()))
-                                    .build())
                     .append(Component.text()
-                            .append(Component.text("Partially Justified ", TextColor.color(255,125,0)))
+                            .append(Component.text("Surprise ", TextColor.color(255, 0, 0)))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text()
+                                    .append(Component.text("Effects: ")
+                                            .appendNewline()
+                                            .append(Component.text(" -55% stability"))
+                                            .appendNewline()
+                                            .append(Component.text(" 1 day to justify"))
+                                            .appendNewline()
+                                            .append(Component.text("Click to start justifying", NamedTextColor.GRAY, TextDecoration.ITALIC)))
+                                    .build()))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against surprise " + country.getName()))
+                            .build())
+                    .append(Component.text()
+                            .append(Component.text("Partially Justified ", TextColor.color(255, 125, 0)))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text()
                                     .append(Component.text("Effects: ")
                                             .appendNewline()
@@ -67,12 +67,12 @@ public class JustifyOptionsCMD extends Command {
                                             .appendNewline()
                                             .append(Component.text(" 85 day to justify"))
                                             .appendNewline()
-                                            .append(Component.text("Click to start justifying",NamedTextColor.GRAY, TextDecoration.ITALIC)))
+                                            .append(Component.text("Click to start justifying", NamedTextColor.GRAY, TextDecoration.ITALIC)))
                                     .build()))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against partially_justified " + country.getName()))
                             .build())
                     .append(Component.text()
-                            .append(Component.text("Justified ", TextColor.color(0,255,0)))
+                            .append(Component.text("Justified ", TextColor.color(0, 255, 0)))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text()
                                     .append(Component.text("Effects: ")
                                             .appendNewline()
@@ -80,12 +80,12 @@ public class JustifyOptionsCMD extends Command {
                                             .appendNewline()
                                             .append(Component.text(" 120 day to justify"))
                                             .appendNewline()
-                                            .append(Component.text("Click to start justifying",NamedTextColor.GRAY, TextDecoration.ITALIC)))
+                                            .append(Component.text("Click to start justifying", NamedTextColor.GRAY, TextDecoration.ITALIC)))
                                     .build()))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy justify-war against justified " + country.getName()))
                             .build())
                     .build());
-        },countries);
+        }, countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

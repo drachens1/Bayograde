@@ -9,9 +9,9 @@ import java.util.List;
 public class IdeologyTypes {
     private final List<Leader> leaders;
     private final String identifier;
-    private Component name;
     private final Component prefix;
     private final Modifier modifier;
+    private Component name;
 
     public IdeologyTypes(TextColor colour, String prefix, String name, List<Leader> leaders, Modifier modifier) {
         this.name = Component.text(name, colour);

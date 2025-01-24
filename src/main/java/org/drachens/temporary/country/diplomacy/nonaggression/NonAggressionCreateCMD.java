@@ -19,17 +19,18 @@ public class NonAggressionCreateCMD extends Command {
 
         var length = ArgumentType.Float("length");
 
-        addSyntax((sender,context)->{},countries);
+        addSyntax((sender, context) -> {
+        }, countries);
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (to==null)return;
-            NonAggressionPact nonAggressionPact = new NonAggressionPact(country,to,context.get(length));
+            if (to == null) return;
+            NonAggressionPact nonAggressionPact = new NonAggressionPact(country, to, context.get(length));
             EventDispatcher.call(new NonAggressionAcceptedEvent(nonAggressionPact));
-        },countries,length);
+        }, countries, length);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

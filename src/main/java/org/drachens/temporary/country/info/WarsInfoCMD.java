@@ -20,10 +20,10 @@ public class WarsInfoCMD extends Command {
 
         var countries = getCountriesArg();
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
-            if (p.getCountry()==null){
+            if (p.getCountry() == null) {
                 p.sendMessage("You need to join a country or do /country info wars <country>");
                 return;
             }
@@ -35,7 +35,7 @@ public class WarsInfoCMD extends Command {
             if (!(sender instanceof CPlayer p))
                 return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null){
+            if (country == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
@@ -43,26 +43,26 @@ public class WarsInfoCMD extends Command {
         }, countries);
     }
 
-    public void run(Country country, CPlayer p){
+    public void run(Country country, CPlayer p) {
         List<Component> comps = new ArrayList<>();
         comps.add(Component.text()
                 .append(Component.text("______/", NamedTextColor.BLUE))
                 .append(country.getNameComponent())
-                .append(Component.text("\\______",NamedTextColor.BLUE))
+                .append(Component.text("\\______", NamedTextColor.BLUE))
                 .build());
         country.getCountryWars().forEach(war -> {
             comps.add(Component.newline());
             comps.add(ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(war).getNameComponent());
         });
-        if (!country.getWarJustifications().isEmpty()){
+        if (!country.getWarJustifications().isEmpty()) {
             comps.add(Component.newline());
             comps.add(Component.text()
-                    .append(Component.text("-----",NamedTextColor.BLUE))
-                    .append(Component.text("Justifications",NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .append(Component.text("-----",NamedTextColor.BLUE))
+                    .append(Component.text("-----", NamedTextColor.BLUE))
+                    .append(Component.text("Justifications", NamedTextColor.GOLD, TextDecoration.BOLD))
+                    .append(Component.text("-----", NamedTextColor.BLUE))
                     .build());
 
-            country.getWarJustifications().forEach(justification-> {
+            country.getWarJustifications().forEach(justification -> {
                 WarJustification warJustification = country.getCreatingWarJustificationAgainst(justification);
                 comps.add(Component.text()
                         .appendNewline()
@@ -73,14 +73,14 @@ public class WarsInfoCMD extends Command {
             });
         }
 
-        if (!country.getCompletedWarJustifications().isEmpty()){
+        if (!country.getCompletedWarJustifications().isEmpty()) {
             comps.add(Component.newline());
             comps.add(Component.text()
-                    .append(Component.text("-",NamedTextColor.BLUE))
-                    .append(Component.text("Completed-Justifications",NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .append(Component.text("-",NamedTextColor.BLUE))
+                    .append(Component.text("-", NamedTextColor.BLUE))
+                    .append(Component.text("Completed-Justifications", NamedTextColor.GOLD, TextDecoration.BOLD))
+                    .append(Component.text("-", NamedTextColor.BLUE))
                     .build());
-            country.getCompletedWarJustifications().forEach(justification-> {
+            country.getCompletedWarJustifications().forEach(justification -> {
                 WarJustification warJustification = country.getCreatingWarJustificationAgainst(justification);
                 comps.add(Component.text()
                         .appendNewline()

@@ -19,34 +19,34 @@ public class BordersInfoCMD extends Command {
 
         var countries = getCountriesArg();
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country==null){
+            if (country == null) {
                 p.sendMessage("Join a country or do /country info general <country>");
                 return;
             }
-            sendPlayer(country,p);
+            sendPlayer(country, p);
         });
 
         addSyntax((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null){
+            if (country == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
-            sendPlayer(country,p);
+            sendPlayer(country, p);
         }, countries);
     }
 
-    private void sendPlayer(Country country, CPlayer p){
+    private void sendPlayer(Country country, CPlayer p) {
         List<Component> comps = new ArrayList<>();
         CountryDataManager c = ContinentalManagers.world(p.getInstance()).countryDataManager();
-        country.getBorders().forEach(string-> {
+        country.getBorders().forEach(string -> {
             comps.add(c.getCountryFromName(string).getNameComponent());
         });
         p.sendMessage(Component.text()

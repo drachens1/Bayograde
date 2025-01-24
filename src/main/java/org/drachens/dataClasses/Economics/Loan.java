@@ -9,9 +9,9 @@ public class Loan {
     private final Country fromCountry;
     private final Country toCountry;
     private final CurrencyTypes currencyTypes;
-    private float balanceToPayOff;
     private final float perWeek;
     private final int termlength;
+    private float balanceToPayOff;
 
     public Loan(Payment payment, int termLength, Country from, Country to) {
         this.balanceToPayOff = payment.getAmount();

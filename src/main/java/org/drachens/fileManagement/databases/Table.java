@@ -3,12 +3,12 @@ package org.drachens.fileManagement.databases;
 import java.util.HashMap;
 
 public class Table {
-    private Database database;
     private final String tableName;
     private final String createStatement;
     private final HashMap<String, Column> columns;
     private final String updateMsg;
     private final String primaryKeyName;
+    private Database database;
 
     private Table(String tableName, String createStatement, HashMap<String, Column> columns, String primaryKeyName) {
         this.tableName = tableName;
@@ -27,10 +27,6 @@ public class Table {
         return columns.get(identifier);
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
-
     public String getCreateStatement() {
         return createStatement;
     }
@@ -43,6 +39,10 @@ public class Table {
         return database;
     }
 
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
+
     public String getUpdateMsg() {
         return updateMsg;
     }
@@ -52,10 +52,10 @@ public class Table {
     }
 
     public static class Create {
-        private String primaryKey = null;
         private final StringBuilder createStatementBuilder;
         private final String tableName;
         private final HashMap<String, Column> columns = new HashMap<>();
+        private String primaryKey = null;
 
         public Create(String tableName) {
             this.tableName = tableName;

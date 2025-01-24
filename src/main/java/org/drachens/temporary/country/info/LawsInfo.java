@@ -16,39 +16,39 @@ public class LawsInfo extends Command {
     public LawsInfo(String name) {
         super(name);
 
-        setCondition((sender,s)->{
+        setCondition((sender, s) -> {
             CPlayer p = (CPlayer) sender;
-            return p.getCountry()!=null;
+            return p.getCountry() != null;
         });
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country==null){
-                p.sendMessage(Component.text("Join a country in order to execute this command",NamedTextColor.RED));
+            if (country == null) {
+                p.sendMessage(Component.text("Join a country in order to execute this command", NamedTextColor.RED));
                 return;
             }
-            p.sendMessage(getLawsDescription(country,p));
+            p.sendMessage(getLawsDescription(country, p));
         });
     }
 
-    private Component getLawsDescription(Country country, CPlayer p){
+    private Component getLawsDescription(Country country, CPlayer p) {
         List<Component> comps = new ArrayList<>();
-        if (country.isPlayerLeader(p)){
+        if (country.isPlayerLeader(p)) {
             country.getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
                     .append(Component.text(string))
                     .append(Component.text(" : "))
                     .append(lawCategory.getCurrent().modifier().getName())
                     .append(Component.text()
-                            .append(Component.text(" [CHANGE] ",NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .append(Component.text(" [CHANGE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the options to change this to", NamedTextColor.GRAY)))
-                            .clickEvent(ClickEvent.runCommand("/country edit laws change-options "+string))
+                            .clickEvent(ClickEvent.runCommand("/country edit laws change-options " + string))
                     )
                     .appendNewline()
                     .build())));
-        }else {
+        } else {
             country.getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
                     .append(Component.text(string))
                     .append(Component.text(" : "))

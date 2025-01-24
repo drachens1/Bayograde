@@ -10,7 +10,7 @@ public class LawsCMD extends Command {
     public LawsCMD() {
         super("laws");
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
         addSubcommand(new LawsInfo("info"));
         addSubcommand(new LawsChangeOptionsCMD());

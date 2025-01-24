@@ -9,7 +9,7 @@ import org.drachens.dataClasses.Province;
 public class CheckNeighbours extends Command {
     public CheckNeighbours() {
         super("check-neighbours");
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Province prov = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(p.getTargetBlockPosition(5));
             for (Province neighbour : prov.getNeighbours()) {

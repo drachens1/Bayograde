@@ -49,13 +49,17 @@ public class Troop {
         this.defence = design.getDef();
         this.speed = design.getSpeed();
         this.country.addTroop(this);
-        this.organisation=trainedTroop.getDesign().getOrg();
+        this.organisation = trainedTroop.getDesign().getOrg();
         province.addTroop(this);
         //MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
     }
 
-    public float getOrg(){
+    public float getOrg() {
         return organisation;
+    }
+
+    public void setOrg(float org) {
+        this.organisation = org;
     }
 
     public Province getProvince() {
@@ -74,11 +78,7 @@ public class Troop {
         return troop;
     }
 
-    public void setStrength(float s){
-        strength=s;
-    }
-
-    public float getSpeed(){
+    public float getSpeed() {
         return speed;
     }
 
@@ -138,10 +138,10 @@ public class Troop {
         to.addTroop(this);
     }
 
-    public void attack(Province province){
-        if (province.isThereCombat()){
+    public void attack(Province province) {
+        if (province.isThereCombat()) {
             joinBattle(province.getCombat());
-        }else{
+        } else {
             new Combat(province).addAttacker(this);
         }
     }
@@ -149,19 +149,15 @@ public class Troop {
     public void joinBattle(Combat battle) {
         battle.addAttacker(this);
     }
-    
+
     public void leaveBattle() {
         if (battle != null) {
             battle.removeAttacker(this);
         }
     }
 
-    public void retreat(){
+    public void retreat() {
 
-    }
-
-    public void setHealth(float amount){
-        this.health=amount;
     }
 
     public Combat getBattle() {
@@ -176,12 +172,20 @@ public class Troop {
         return health;
     }
 
+    public void setHealth(float amount) {
+        this.health = amount;
+    }
+
     public float getDefence() {
         return defence;
     }
 
     public float getStrength() {
         return damage;
+    }
+
+    public void setStrength(float s) {
+        strength = s;
     }
 
     public float getDamage() {
@@ -194,11 +198,7 @@ public class Troop {
         enemy.delete();
     }
 
-    public TroopCountry getCountry(){
+    public TroopCountry getCountry() {
         return country;
-    }
-
-    public void setOrg(float org){
-        this.organisation=org;
     }
 }

@@ -67,11 +67,11 @@ public class Factory extends BuildTypes {
 
     @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
-        if (province.getOccupier() != country&&country.isPuppet(province.getOccupier())) return false;
+        if (province.getOccupier() != country && country.isPuppet(province.getOccupier())) return false;
         if (province.getBuilding() != null) return false;
         if (!province.isCity()) return false;
         if (!country.canMinusCosts(payments)) {
-            sendMessage(p,cantAffordMsg);
+            sendMessage(p, cantAffordMsg);
             return false;
         }
         return true;
@@ -85,14 +85,14 @@ public class Factory extends BuildTypes {
         Payments temp = new Payments(payments);
         temp.multiply(add);
         if (!country.canMinusCosts(temp)) {
-            sendMessage(p,cantAffordToUpgrade);
+            sendMessage(p, cantAffordToUpgrade);
             return false;
         }
         int maxLvl = materialLvls.get(province.getMaterial());
         maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
-        if (lvlsModelData.length<maxLvl)return false;
+        if (lvlsModelData.length < maxLvl) return false;
         if (!(building.getCurrentLvl() + add <= maxLvl)) {
-            sendMessage(p,maxCapacityReached);
+            sendMessage(p, maxCapacityReached);
             return false;
         } else
             return true;
@@ -119,10 +119,10 @@ public class Factory extends BuildTypes {
         }
         building.setCurrent(num);
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));
-        int add = (num-1)*2;
-        int[] newFrames = new int[]{2 + add,3+add};
+        int add = (num - 1) * 2;
+        int[] newFrames = new int[]{2 + add, 3 + add};
         Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, newFrames);
-        smokeAnimation.start(itemDisplay,true);
+        smokeAnimation.start(itemDisplay, true);
     }
 
     public Payments generate(Building building) {

@@ -8,15 +8,15 @@ import org.drachens.dataClasses.Countries.Country;
 public class PuppetCMD extends Command {
     public PuppetCMD() {
         super("puppet");
-        setCondition((sender,s)->isOrHasPuppets(sender));
+        setCondition((sender, s) -> isOrHasPuppets(sender));
 
         addSubcommand(new PuppetChatCMD());
     }
 
-    private boolean isOrHasPuppets(CommandSender sender){
+    private boolean isOrHasPuppets(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && (country.hasOverlord()||country.hasPuppets());
+            return country != null && (country.hasOverlord() || country.hasPuppets());
         }
         return false;
     }

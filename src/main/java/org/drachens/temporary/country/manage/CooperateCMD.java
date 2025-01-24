@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+
 public class CooperateCMD extends Command {
     public CooperateCMD() {
         super("co-op");

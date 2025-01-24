@@ -11,7 +11,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.ImaginaryWorld;
 
 public class WarsViewModeCMD extends Command {
-    public WarsViewModeCMD(){
+    public WarsViewModeCMD() {
         super("wars");
         var on = ArgumentType.String("")
                 .setSuggestionCallback((sender, context, suggestion) -> {
@@ -20,17 +20,17 @@ public class WarsViewModeCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("off"));
                 });
 
-        setDefaultExecutor((sender,context)->            sender.sendMessage(Component.text("Proper usage /view-modes wars on/off", NamedTextColor.RED)));
+        setDefaultExecutor((sender, context) -> sender.sendMessage(Component.text("Proper usage /view-modes wars on/off", NamedTextColor.RED)));
 
         addSyntax((sender, context) -> {
-            if (notInCountry(sender)){
+            if (notInCountry(sender)) {
                 sender.sendMessage("Join a country first");
                 return;
             }
-            CPlayer p = (CPlayer)sender;
+            CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ImaginaryWorld world = country.getWarsWorld();
-            switch (context.get(on)){
+            switch (context.get(on)) {
                 case "on":
                     world.addPlayer(p);
                     break;
@@ -38,11 +38,11 @@ public class WarsViewModeCMD extends Command {
                     world.removePlayer(p);
                     break;
             }
-        },on);
+        }, on);
 
     }
 
-    private boolean notInCountry(CommandSender sender){
+    private boolean notInCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
             return country == null;

@@ -11,16 +11,16 @@ import static org.drachens.util.OtherUtil.bound;
 
 public class Stability {
     private final Country country;
+    private final Modifier stabilityModifier;
     private float stabilityTotal;
     private float visibleStability;
-    private final Modifier stabilityModifier;
     private float prevBase;
 
     public Stability(float startingStability, Country country) {
         stabilityTotal = startingStability;
         this.country = country;
-        stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD),"stability")
-                .addBoost(BoostEnum.production,(startingStability - 50f)/100)
+        stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD), "stability")
+                .addBoost(BoostEnum.production, (startingStability - 50f) / 100)
                 .build();
 
         country.addModifier(stabilityModifier);

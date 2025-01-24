@@ -23,8 +23,8 @@ public class Pixel {
         if (!dynamicPixels.isEmpty()) {
             Sprite sprite = dynamicPixel.getSprite();
             dynamicPixels.forEach(dynamicPixel1 -> {
-                dynamicPixel1.getSprite().onCollision(sprite,pos);
-                sprite.onCollision(dynamicPixel1.getSprite(),pos);
+                dynamicPixel1.getSprite().onCollision(sprite, pos);
+                sprite.onCollision(dynamicPixel1.getSprite(), pos);
             });
 
         }
@@ -59,7 +59,7 @@ public class Pixel {
         dynamicPixels.clear();
     }
 
-    public String toString(){
-        return pos+", "+material;
+    public String toString() {
+        return pos + ", " + material;
     }
 }

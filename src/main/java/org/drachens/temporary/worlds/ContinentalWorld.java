@@ -28,8 +28,8 @@ public class ContinentalWorld extends World {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
 
     public ContinentalWorld() {
-        super(MinecraftServer.getInstanceManager().createInstanceContainer(),new Pos(0,1,0));
-        getInstance().setBlock(0,0,0,Block.LAPIS_BLOCK);
+        super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
+        getInstance().setBlock(0, 0, 0, Block.LAPIS_BLOCK);
     }
 
     @Override
@@ -84,21 +84,21 @@ public class ContinentalWorld extends World {
 
     @Override
     public void playerMove(PlayerMoveEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner==null)return;
+        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == null) return;
         CPlayer p = (CPlayer) e.getPlayer();
         Point point = p.getTargetBlockPosition(10);
-        if (point==null)return;
+        if (point == null) return;
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(point);
-        if (province==null)return;
-        if (province.getOccupier()==null){
-            p.sendActionBar(Component.text("Unoccupied",NamedTextColor.GOLD, TextDecoration.BOLD));
-        }else {
-            if (province.getOccupier().getNameComponent()==null){
+        if (province == null) return;
+        if (province.getOccupier() == null) {
+            p.sendActionBar(Component.text("Unoccupied", NamedTextColor.GOLD, TextDecoration.BOLD));
+        } else {
+            if (province.getOccupier().getNameComponent() == null) {
                 System.err.println("Something went wrong drastically");
                 return;
             }
-            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner== VotingWinner.ww2_troops){
-                if (province.getTroops()!=null && (province.getOccupier()==p.getCountry() || province.getOccupier().isAlly(p.getCountry()))){
+            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == VotingWinner.ww2_troops) {
+                if (province.getTroops() != null && (province.getOccupier() == p.getCountry() || province.getOccupier().isAlly(p.getCountry()))) {
                     List<Troop> troops = province.getTroops();
                     float meanHp = 0f;
                     float meanOrg = 0f;
@@ -107,7 +107,7 @@ public class ContinentalWorld extends World {
                     float meanSped = 0f;
                     float meanDmg = 0f;
                     int troopCount = troops.size();
-                    if (troopCount==0){
+                    if (troopCount == 0) {
                         p.sendActionBar(province.getOccupier().getNameComponent());
                         return;
                     }

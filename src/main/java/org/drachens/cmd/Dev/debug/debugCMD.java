@@ -8,7 +8,7 @@ public class debugCMD extends Command {
 
     public debugCMD() {
         super("debug");
-        setCondition((sender, s) ->{
+        setCondition((sender, s) -> {
             CPlayer p = (CPlayer) sender;
             return p.hasPermission(permission);
         });

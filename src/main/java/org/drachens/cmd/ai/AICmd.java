@@ -10,7 +10,7 @@ public class AICmd extends Command {
     public AICmd() {
         super("ai");
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ClicksAI clicksAI = (ClicksAI) ContinentalManagers.centralAIManager.getAIManagerFor(p.getInstance());

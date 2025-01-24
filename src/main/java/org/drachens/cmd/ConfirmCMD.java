@@ -8,14 +8,15 @@ import net.minestom.server.command.builder.Command;
 import java.util.HashMap;
 
 public class ConfirmCMD extends Command {
-    private final Component error = Component.text("You have nothing to confirm" , NamedTextColor.RED);
+    private final Component error = Component.text("You have nothing to confirm", NamedTextColor.RED);
     private final HashMap<CPlayer, Runnable> playerRunnableHashMap = new HashMap<>();
+
     public ConfirmCMD() {
         super("confirm");
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p))return;
-            if (!playerRunnableHashMap.containsKey(p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) return;
+            if (!playerRunnableHashMap.containsKey(p)) {
                 p.sendMessage(error);
                 return;
             }
@@ -24,7 +25,7 @@ public class ConfirmCMD extends Command {
         });
     }
 
-    public void putPlayerRunnable(CPlayer p, Runnable runnable){
-        playerRunnableHashMap.put(p,runnable);
+    public void putPlayerRunnable(CPlayer p, Runnable runnable) {
+        playerRunnableHashMap.put(p, runnable);
     }
 }

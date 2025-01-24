@@ -7,13 +7,15 @@ public class NonAggressionPact {
     private final Country to;
     private final float max;
     private float duration;
-    public NonAggressionPact(Country from, Country to, float duration){
-        this.from=from;
-        this.to=to;
-        this.max=duration;
-        this.duration=duration;
+
+    public NonAggressionPact(Country from, Country to, float duration) {
+        this.from = from;
+        this.to = to;
+        this.max = duration;
+        this.duration = duration;
     }
-    public Country getFrom(){
+
+    public Country getFrom() {
         return from;
     }
 
@@ -25,11 +27,11 @@ public class NonAggressionPact {
         return max;
     }
 
-    public float getDuration(){
+    public float getDuration() {
         return duration;
     }
 
-    public void minus(float amount){
-        duration-=amount;
+    public void minus(float amount) {
+        duration -= amount;
     }
 }

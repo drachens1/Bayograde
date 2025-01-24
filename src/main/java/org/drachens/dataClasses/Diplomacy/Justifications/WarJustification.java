@@ -4,15 +4,15 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.Modifier;
 
 public class WarJustification {
-    private float timeLeft;
     private final Country againstCountry;
     private final Modifier modifier;
+    private float timeLeft;
     private float expires;
 
     public WarJustification(WarGoalType warGoalType, Country againstCountry) {
         this.timeLeft = warGoalType.getTimeToMake();
         this.againstCountry = againstCountry;
-        this.modifier=warGoalType.getModifier();
+        this.modifier = warGoalType.getModifier();
         this.expires = warGoalType.getExpires();
     }
 
@@ -20,8 +20,8 @@ public class WarJustification {
         return timeLeft;
     }
 
-    public void minusTimeLeft(float amount){
-        timeLeft-=amount;
+    public void minusTimeLeft(float amount) {
+        timeLeft -= amount;
     }
 
     public Country getAgainstCountry() {
@@ -36,7 +36,7 @@ public class WarJustification {
         return expires;
     }
 
-    public void minusExpires(float amount){
-        expires-=amount;
+    public void minusExpires(float amount) {
+        expires -= amount;
     }
 }

@@ -14,11 +14,11 @@ public class Tp extends Command {
         setDefaultExecutor((sender, context) -> sender.sendMessage("Default usage: /country tp <country>"));
         var countries = getCountriesArg();
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
             Country country = p.getCountry();
-            if (country == null){
+            if (country == null) {
                 p.sendMessage("Join a country or do /country tp <country>");
                 return;
             }
@@ -29,7 +29,7 @@ public class Tp extends Command {
             if (!(sender instanceof Player p))
                 return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null){
+            if (country == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }

@@ -27,13 +27,14 @@ public class Barracks extends BuildTypes {
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the barracks : 5 Production", NamedTextColor.RED))
             .build();
+
     public Barracks() {
         super(new int[]{22}, Material.ORANGE_DYE, BuildingEnum.barracks);
     }
 
     @Override
     public void onBuild(Country country, Province province, CPlayer p) {
-        new Building(this,province);
+        new Building(this, province);
     }
 
     @Override
@@ -46,16 +47,16 @@ public class Barracks extends BuildTypes {
         return true;
     }
 
-    public void startTraining(Building building, DivisionDesign divisionDesign, CPlayer p){
-        if (!building.getProvince().getOccupier().canMinusCosts(divisionDesign.getCost())){
-            sendMessage(p,Component.text("You cannot afford this"));
+    public void startTraining(Building building, DivisionDesign divisionDesign, CPlayer p) {
+        if (!building.getProvince().getOccupier().canMinusCosts(divisionDesign.getCost())) {
+            sendMessage(p, Component.text("You cannot afford this"));
             return;
         }
         TroopCountry troopCountry = (TroopCountry) building.getCountry();
         troopCountry.getBuildingsTraining(building).addToQueue(divisionDesign);
     }
 
-    public void openGui(CPlayer p, Building building){
-        ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building),p);
+    public void openGui(CPlayer p, Building building) {
+        ContinentalManagers.guiManager.openGUI(new TroopTrainerGUI(building), p);
     }
 }

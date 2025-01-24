@@ -9,8 +9,8 @@ public class PingCMD extends Command {
     public PingCMD() {
         super("ping");
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p))return;
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) return;
             p.sendMessage(Component.text()
                     .append(Component.text(p.getLatency(), NamedTextColor.GREEN))
                     .append(Component.text(" MS", NamedTextColor.GREEN)));

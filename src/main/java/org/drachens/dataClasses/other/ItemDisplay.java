@@ -35,7 +35,7 @@ public class ItemDisplay extends Clientside {
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos,pos,0,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
     }
 
     public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers) {
@@ -43,7 +43,7 @@ public class ItemDisplay extends Clientside {
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos,pos,0,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
     }
 
     public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
@@ -51,7 +51,7 @@ public class ItemDisplay extends Clientside {
 
         this.item = item;
         this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos,pos,0,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
     }
 
     public void delete() {
@@ -64,7 +64,7 @@ public class ItemDisplay extends Clientside {
 
     public void setPos(Pos pos) {
         this.pos = pos;
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos,pos,0,false);
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
     }
 

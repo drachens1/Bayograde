@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class PuppetChatCMD extends Command {
     private final HashMap<CPlayer, Boolean> active = new HashMap<>();
+
     public PuppetChatCMD() {
         super("chat");
 
@@ -38,10 +39,10 @@ public class PuppetChatCMD extends Command {
         });
     }
 
-    private boolean isOrHasPuppets(CommandSender sender){
+    private boolean isOrHasPuppets(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && (country.hasOverlord()||country.hasPuppets());
+            return country != null && (country.hasOverlord() || country.hasPuppets());
         }
         return false;
     }

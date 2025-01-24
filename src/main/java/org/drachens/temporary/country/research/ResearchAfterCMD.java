@@ -23,19 +23,19 @@ public class ResearchAfterCMD extends Command {
         super("after");
 
         var choice = ArgumentType.String("choice")
-                .setSuggestionCallback((sender,context,suggestion)->{
+                .setSuggestionCallback((sender, context, suggestion) -> {
                     getSuggestionBasedOnInput(suggestion, getAvailable(sender));
                 });
 
-        setCondition((sender,s)->!notCountry(sender));
+        setCondition((sender, s) -> !notCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (notCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (notCountry(sender)) return;
             sender.sendMessage(Component.text("Proper usage: /country research option <choice>", NamedTextColor.RED));
         });
 
-        addSyntax((sender,context)->{
-            if (notCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             ResearchCountry country = (ResearchCountry) p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
@@ -44,7 +44,7 @@ public class ResearchAfterCMD extends Command {
                 comps.add(Component.text()
                         .append(Component.text(string))
                         .append(Component.text()
-                                .append(Component.text("[RESEARCH]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .append(Component.text("[RESEARCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .clickEvent(ClickEvent.runCommand("/country research option " + string))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start researching this", NamedTextColor.GOLD))))
                         .build());
@@ -56,18 +56,18 @@ public class ResearchAfterCMD extends Command {
                     .appendNewline()
                     .append(comps)
                     .build());
-        },choice);
+        }, choice);
     }
 
-    private boolean notCountry(CommandSender sender){
-        if (sender instanceof CPlayer p){
-            return p.getCountry()==null;
+    private boolean notCountry(CommandSender sender) {
+        if (sender instanceof CPlayer p) {
+            return p.getCountry() == null;
         }
         return true;
     }
 
-    private List<String> getAvailable(CommandSender sender){
-        if (notCountry(sender))return new ArrayList<>();
+    private List<String> getAvailable(CommandSender sender) {
+        if (notCountry(sender)) return new ArrayList<>();
         CPlayer p = (CPlayer) sender;
         ResearchCountry country = (ResearchCountry) p.getCountry();
         TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();

@@ -49,7 +49,7 @@ public class SetLeaderCMD extends Command {
             if (country == null || factions1 == null) return;
             if (!factions1.getMembers().contains(country)) return;
             EventDispatcher.call(new FactionSetLeaderEvent(factions1, country));
-            }, factionsArg, countryArg);
+        }, factionsArg, countryArg);
     }
 
     private boolean leaderOfAFaction(CommandSender sender) {

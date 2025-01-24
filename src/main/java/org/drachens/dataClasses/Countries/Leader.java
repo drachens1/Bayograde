@@ -63,8 +63,8 @@ public class Leader {
 
     public static class create {
         private final Component name;
-        private Component description;
         private final List<Modifier> modifier = new ArrayList<>();
+        private Component description;
 
         public create(Component name) {
             this.name = name;

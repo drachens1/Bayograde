@@ -34,7 +34,7 @@ public class LoanCreateCMD extends Command {
         }, countries, interest);
 
         addSyntax(((sender, context) -> {
-            if (!isLeaderOfCountry(sender)){
+            if (!isLeaderOfCountry(sender)) {
                 sender.sendMessage("You are not the leader of a country");
                 return;
             }

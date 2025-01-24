@@ -20,5 +20,4 @@ public class BanSystemEvents implements EventHandlerProvider {
             p.kick(Constants.BAN_MANAGER.getBanMessage().apply(p));
         }
     }
-
 }

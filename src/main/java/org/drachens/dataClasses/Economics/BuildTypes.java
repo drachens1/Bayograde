@@ -19,7 +19,7 @@ public abstract class BuildTypes {
         this.identifier = identifier;
     }
 
-    public void forceBuild(Country country, Province province, CPlayer p){
+    public void forceBuild(Country country, Province province, CPlayer p) {
         onBuild(country, province, p);
     }
 
@@ -27,19 +27,19 @@ public abstract class BuildTypes {
         if (canBuild(country, province, p)) onBuild(country, province, p);
     }
 
-    public void onBuild(Country country, Province province, CPlayer p){
+    public void onBuild(Country country, Province province, CPlayer p) {
 
     }
 
-    public boolean canBuild(Country country, Province province, CPlayer p){
+    public boolean canBuild(Country country, Province province, CPlayer p) {
         return false;
     }
 
-    public boolean requirementsToUpgrade(Building building, Country country, int add, CPlayer p){
+    public boolean requirementsToUpgrade(Building building, Country country, int add, CPlayer p) {
         return false;
     }
 
-    public boolean requirementsToDestroy(Country country){
+    public boolean requirementsToDestroy(Country country) {
         return false;
     }
 
@@ -47,7 +47,7 @@ public abstract class BuildTypes {
         onCaptured(capturer, building);
     }
 
-    protected void onCaptured(Country capturer, Building building){
+    protected void onCaptured(Country capturer, Building building) {
 
     }
 
@@ -55,7 +55,7 @@ public abstract class BuildTypes {
         bombed(dmg);
     }
 
-    protected void bombed(float dmg){
+    protected void bombed(float dmg) {
 
     }
 
@@ -63,7 +63,7 @@ public abstract class BuildTypes {
         onDestroyed(building);
     }
 
-    protected void onDestroyed(Building building){
+    protected void onDestroyed(Building building) {
 
     }
 
@@ -73,7 +73,7 @@ public abstract class BuildTypes {
         }
     }
 
-    protected void onUpgrade(int amount, Building building){
+    protected void onUpgrade(int amount, Building building) {
 
     }
 

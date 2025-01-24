@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class Vault {
-    private Country country;
     private final HashMap<CurrencyTypes, Currencies> amount;
     private final List<Loan> loans;
+    private Country country;
 
     public Vault(HashMap<CurrencyTypes, Currencies> startingCurrencies) {
         this.amount = new HashMap<>(startingCurrencies);
@@ -184,7 +184,7 @@ public abstract class Vault {
         return currencies;
     }
 
-    public float getAmount(CurrencyTypes currencyTypes){
+    public float getAmount(CurrencyTypes currencyTypes) {
         return amount.get(currencyTypes).getAmount();
     }
 

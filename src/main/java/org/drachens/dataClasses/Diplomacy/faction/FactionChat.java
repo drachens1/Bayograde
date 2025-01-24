@@ -10,30 +10,32 @@ import org.drachens.util.MessageEnum;
 
 public class FactionChat implements Channel {
     private final Factions factions;
-    public FactionChat(Factions factions){
-        this.factions=factions;
+
+    public FactionChat(Factions factions) {
+        this.factions = factions;
     }
+
     @Override
     public void onChat(PlayerChatEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (factions.containsCountry(p.getCountry())){
+        if (factions.containsCountry(p.getCountry())) {
             factions.sendMessage(Component.text()
                     .append(MessageEnum.factionChat.getComponent())
                     .append(Component.text(p.getUsername()))
                     .append(Component.text(": "))
                     .append(Component.text(e.getRawMessage()))
                     .build());
-        }else {
+        } else {
             p.sendMessage(Component.text("You no longer have access to this chat", NamedTextColor.RED));
             removePlayer(p);
         }
     }
 
-    public void addPlayer(CPlayer p){
-        ContinentalManagers.channelManager.putPlayer(p,this);
+    public void addPlayer(CPlayer p) {
+        ContinentalManagers.channelManager.putPlayer(p, this);
     }
 
-    public void removePlayer(CPlayer p){
+    public void removePlayer(CPlayer p) {
         ContinentalManagers.channelManager.removePlayer(p);
     }
 }

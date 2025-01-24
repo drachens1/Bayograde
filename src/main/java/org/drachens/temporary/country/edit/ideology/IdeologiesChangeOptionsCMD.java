@@ -18,23 +18,23 @@ public class IdeologiesChangeOptionsCMD extends Command {
     public IdeologiesChangeOptionsCMD() {
         super("change-options");
 
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            Ideology ideology = country .getIdeology();
+            Ideology ideology = country.getIdeology();
             List<Component> comps = new ArrayList<>();
             ideology.getIdeologies().forEach(((ideologyTypes, aFloat) -> comps.add(Component.text()
-                            .append(ideologyTypes.getName())
-                            .append(Component.text(" "))
-                            .append(Component.text(Math.round(aFloat)))
-                            .append(Component.text("%"))
-                        .append(Component.text()
-                                .append(Component.text(" [BOOST]",NamedTextColor.GOLD, TextDecoration.BOLD))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to boost the ideology", NamedTextColor.GRAY)))
-                                .clickEvent(ClickEvent.runCommand("/country edit ideologies boost "+ideologyTypes.getIdentifier())))
+                    .append(ideologyTypes.getName())
+                    .append(Component.text(" "))
+                    .append(Component.text(Math.round(aFloat)))
+                    .append(Component.text("%"))
+                    .append(Component.text()
+                            .append(Component.text(" [BOOST]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to boost the ideology", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country edit ideologies boost " + ideologyTypes.getIdentifier())))
                     .appendNewline()
                     .build())));
             p.sendMessage(Component.text()

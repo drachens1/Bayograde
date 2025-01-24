@@ -39,7 +39,7 @@ public class ResearchOption {
         descript = create.descript;
     }
 
-    public boolean canResearch(ResearchCountry country){
+    public boolean canResearch(ResearchCountry country) {
         return !country.isResearching() && country.hasResearchedAll(getRequires()) && !country.hasResearchedAny(getOr()) && !country.hasResearched(identifier);
     }
 
@@ -75,11 +75,11 @@ public class ResearchOption {
         this.researchCategory = researchCategory;
     }
 
-    public Component getName(){
+    public Component getName() {
         return name;
     }
 
-    public Component getDescript(){
+    public Component getDescript() {
         return descript;
     }
 
@@ -117,12 +117,12 @@ public class ResearchOption {
     }
 
     public static class Create {
-        private List<Component> description;
         private final String identifier;
         private final ItemStack item;
         private final List<String> requires = new ArrayList<>();
         private final List<String> or = new ArrayList<>();
         private final Payment cost;
+        private List<Component> description;
         private Modifier modifier;
         private Component name;
         private Component descript;
@@ -159,19 +159,19 @@ public class ResearchOption {
             return this;
         }
 
-        public Create setName(Component component){
-            this.name=component;
+        public Create setName(Component component) {
+            this.name = component;
             return this;
         }
 
         public ResearchOption build() {
             List<Component> comps = new ArrayList<>();
-            if (!requires.isEmpty()){
+            if (!requires.isEmpty()) {
                 comps.add(Component.text()
-                                .append(Component.text("Requires: "))
-                                .appendNewline()
+                        .append(Component.text("Requires: "))
+                        .appendNewline()
                         .build());
-                requires.forEach(require-> comps.add(Component.text()
+                requires.forEach(require -> comps.add(Component.text()
                         .append(Component.text(" - "))
                         .append(Component.text(require))
                         .appendNewline()
@@ -183,22 +183,22 @@ public class ResearchOption {
                         .appendNewline()
                         .build());
                 or.forEach(string -> comps.add(Component.text()
-                                .append(Component.text(" - "))
-                                .append(Component.text(string))
-                                .appendNewline()
+                        .append(Component.text(" - "))
+                        .append(Component.text(string))
+                        .appendNewline()
                         .build()));
             }
-            if (modifier!=null && !modifier.getBoostHashMap().isEmpty()){
+            if (modifier != null && !modifier.getBoostHashMap().isEmpty()) {
                 comps.add(Component.text()
                         .append(Component.text("Boosts: "))
                         .appendNewline().build());
                 modifier.getBoostHashMap().forEach((boostEnum, aFloat) -> {
-                    if (aFloat<0){
+                    if (aFloat < 0) {
                         comps.add(Component.text()
                                 .append(Component.text(aFloat))
                                 .append(boostEnum.getNegSymbol())
                                 .build());
-                    }else {
+                    } else {
                         comps.add(Component.text()
                                 .append(Component.text(aFloat))
                                 .append(boostEnum.getPosSymbol())
@@ -210,7 +210,7 @@ public class ResearchOption {
                     .append(comps)
                     .build();
             name = name.hoverEvent(HoverEvent.showText(descript));
-            name = name.clickEvent(ClickEvent.runCommand("/country research start "+identifier));
+            name = name.clickEvent(ClickEvent.runCommand("/country research start " + identifier));
             return new ResearchOption(this);
         }
     }

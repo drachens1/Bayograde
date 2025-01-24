@@ -26,11 +26,11 @@ public class Payments {
         payments.getPayments().forEach(this::addPayment);
     }
 
-    public void minusPayment(Payment payment){
-        payments.add(new Payment(payment.getCurrencyType(),-payment.getAmount()));
+    public void minusPayment(Payment payment) {
+        payments.add(new Payment(payment.getCurrencyType(), -payment.getAmount()));
     }
 
-    public void minusPayments(Payments payments){
+    public void minusPayments(Payments payments) {
         payments.getPayments().forEach(this::minusPayment);
     }
 
@@ -56,12 +56,12 @@ public class Payments {
                 .build();
     }
 
-    public void compress(){
+    public void compress() {
         HashMap<CurrencyTypes, Float> amountHashMap = new HashMap<>();
         payments.forEach((payment -> {
-            float current = amountHashMap.getOrDefault(payment.getCurrencyType(),0f);
-            current+=payment.getAmount();
-            amountHashMap.put(payment.getCurrencyType(),current);
+            float current = amountHashMap.getOrDefault(payment.getCurrencyType(), 0f);
+            current += payment.getAmount();
+            amountHashMap.put(payment.getCurrencyType(), current);
         }));
     }
 }

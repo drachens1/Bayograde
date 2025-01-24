@@ -18,11 +18,11 @@ public abstract class Factions {
     private final List<Country> invites;
     private final Modifier modifier;
     private final CountryDataManager countryDataManager;
+    private final FactionChat factionChat;
     private Country leader;
     private String name;
     private Component description;
     private Component nameComponent;
-    private final FactionChat factionChat;
 
     public Factions(Country leader, String name, Modifier modifier) {
         this.leader = leader;
@@ -116,7 +116,7 @@ public abstract class Factions {
         countryDataManager.removeFaction(this);
     }
 
-    public void addToInvites(Country country){
+    public void addToInvites(Country country) {
         invites.add(country);
     }
 
@@ -149,11 +149,11 @@ public abstract class Factions {
         return description;
     }
 
-    public boolean containsCountry(Country country){
+    public boolean containsCountry(Country country) {
         return members.contains(country);
     }
 
-    public FactionChat getFactionChat(){
+    public FactionChat getFactionChat() {
         return factionChat;
     }
 }

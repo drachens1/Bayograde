@@ -27,29 +27,29 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TroopCountry extends ResearchCountry {
+    private final List<Clientside> allyTroopClientsides = new ArrayList<>();
+    private final List<Troop> troops = new ArrayList<>();
+    private final List<DivisionDesign> divisionDesigns = new ArrayList<>();
+    private final HashMap<Building, DivisionTrainingQueue> divisionTrainingQueueHashMap = new HashMap<>();
     private CountryEnums.Type type;
     private CountryEnums.RelationsStyle relationsStyle;
     private CountryEnums.History history;
     private CountryEnums.Focuses focuses;
     private CountryEnums.PreviousWar previousWar;
-    private final List<Clientside> allyTroopClientsides = new ArrayList<>();
-    private final List<Troop> troops = new ArrayList<>();
-    private final List<DivisionDesign> divisionDesigns = new ArrayList<>();
-    private final HashMap<Building, DivisionTrainingQueue> divisionTrainingQueueHashMap = new HashMap<>();
 
     public TroopCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, HashMap<String, LawCategory> laws) {
         super(name, nameComponent, block, border, defaultIdeologies, election, instance, new ClicksVault(startingCurrencies), laws);
 
         HashMap<Integer, DivisionType> norm = new HashMap<>();
-        int[] slots = new int[]{12,13,14,21,22,23,30,31,32};
-        for (int i : slots){
+        int[] slots = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
+        for (int i : slots) {
             norm.put(i, DivisionTypeEnum.ww2_infantry.getDivisionType());
         }
-        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
-        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
-        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
-        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
-        divisionDesigns.add(new DivisionDesign("Womp",norm,this));
+        divisionDesigns.add(new DivisionDesign("Womp", norm, this));
+        divisionDesigns.add(new DivisionDesign("Womp", norm, this));
+        divisionDesigns.add(new DivisionDesign("Womp", norm, this));
+        divisionDesigns.add(new DivisionDesign("Womp", norm, this));
+        divisionDesigns.add(new DivisionDesign("Womp", norm, this));
 
     }
 
@@ -69,37 +69,37 @@ public class TroopCountry extends ResearchCountry {
     }
 
     @Override
-    public void newDay(NewDay newDay){
+    public void newDay(NewDay newDay) {
         new HashMap<>(divisionTrainingQueueHashMap).forEach(((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay()));
     }
 
     @Override
-    public void removeOccupied(Province province){
+    public void removeOccupied(Province province) {
         super.removeOccupied(province);
-        if (province.getBuilding()!=null){
+        if (province.getBuilding() != null) {
             divisionTrainingQueueHashMap.remove(province.getBuilding());
         }
     }
 
-    public DivisionTrainingQueue getBuildingsTraining(Building building){
-        DivisionTrainingQueue divisionTrainingQueue = divisionTrainingQueueHashMap.getOrDefault(building,new DivisionTrainingQueue(building));
-        divisionTrainingQueueHashMap.putIfAbsent(building,divisionTrainingQueue);
+    public DivisionTrainingQueue getBuildingsTraining(Building building) {
+        DivisionTrainingQueue divisionTrainingQueue = divisionTrainingQueueHashMap.getOrDefault(building, new DivisionTrainingQueue(building));
+        divisionTrainingQueueHashMap.putIfAbsent(building, divisionTrainingQueue);
         return divisionTrainingQueue;
     }
 
-    public void finishBuildingTraining(Building building){
+    public void finishBuildingTraining(Building building) {
         divisionTrainingQueueHashMap.remove(building);
     }
 
-    public void addDivisionDesign(DivisionDesign divisionDesign){
+    public void addDivisionDesign(DivisionDesign divisionDesign) {
         this.divisionDesigns.add(divisionDesign);
     }
 
-    public void removeDivisionDesign(DivisionDesign divisionDesign){
+    public void removeDivisionDesign(DivisionDesign divisionDesign) {
         this.divisionDesigns.remove(divisionDesign);
     }
 
-    public List<DivisionDesign> getDivisionDesigns(){
+    public List<DivisionDesign> getDivisionDesigns() {
         return divisionDesigns;
     }
 

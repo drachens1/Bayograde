@@ -20,7 +20,7 @@ public class YearManager {
         }
     }
 
-    public boolean contains(Instance instance){
+    public boolean contains(Instance instance) {
         return yearBars.containsKey(instance);
     }
 }

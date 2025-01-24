@@ -17,7 +17,6 @@ import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.*;
-import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
@@ -112,8 +111,8 @@ public class ServerUtil {
         if (serverPropertiesFile.isVelocity()) {
             VelocityProxy.enable(serverPropertiesFile.getSecret());
         }
-        else
-            MojangAuth.init();
+//        else
+//            MojangAuth.init();
         srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
     }
 
@@ -196,7 +195,7 @@ public class ServerUtil {
                 prefix = c.getPrefix();
             }
             Rank rank = playerRanks.get(p.getPlayerConnection()).getFirst();
-            if (rank!=null) {
+            if (rank != null) {
                 components.add(rank.prefix);
                 components.add(Component.text(" "));
                 components.add(prefix);
@@ -233,7 +232,7 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (p.getPosition().y()<0){
+            if (p.getPosition().y() < 0) {
                 p.teleport(ContinentalManagers.worldManager.getWorld(p.getInstance()).getSpawnPoint());
             }
         });
@@ -255,6 +254,10 @@ public class ServerUtil {
                 if (continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard) {
                     defaultCountryScoreboard.updateAll();
                 }
+            });
+            String time = e.getDay() + "/" + e.getMonth() + "|" + e.getYear();
+            ContinentalManagers.playerModsManager.getPlayers(e.getInstance()).forEach(player -> {
+                player.sendPluginMessage("continentalmod:time", time);
             });
             ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
         });
@@ -309,6 +312,7 @@ public class ServerUtil {
 
         commandManager.register(new AICmd());
         commandManager.register(new CheckNeighbours());
+        commandManager.register(new OpMeCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -332,8 +336,8 @@ public class ServerUtil {
         return worldClassesHashMap.get(instance);
     }
 
-    public static void putWorldClass(Instance instance,WorldClasses worldClasses){
-        worldClassesHashMap.put(instance,worldClasses);
+    public static void putWorldClass(Instance instance, WorldClasses worldClasses) {
+        worldClassesHashMap.put(instance, worldClasses);
     }
 
     public static Pos blockVecToPos(BlockVec blockVec) {

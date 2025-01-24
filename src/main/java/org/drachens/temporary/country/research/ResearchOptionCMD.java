@@ -21,43 +21,43 @@ public class ResearchOptionCMD extends Command {
         super("start");
 
         var choice = ArgumentType.String("choice")
-                .setSuggestionCallback((sender,context,suggestion)->{
+                .setSuggestionCallback((sender, context, suggestion) -> {
                     getSuggestionBasedOnInput(suggestion, getAvailable(sender));
                 });
 
-        setCondition((sender,s)->!notCountry(sender));
+        setCondition((sender, s) -> !notCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
-            if (notCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (notCountry(sender)) return;
             sender.sendMessage(Component.text("Proper usage: /country research option <choice>", NamedTextColor.RED));
         });
 
-        addSyntax((sender,context)->{
-            if (notCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             ResearchCountry country = (ResearchCountry) p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             ResearchOption researchOption = tree.getResearchOption(context.get(choice));
-            if (researchOption==null){
+            if (researchOption == null) {
                 return;
             }
-            if (researchOption.canResearch(country)){
+            if (researchOption.canResearch(country)) {
                 country.startResearching(researchOption);
-            }else {
-                p.sendMessage(Component.text("You cannot research this",NamedTextColor.RED));
+            } else {
+                p.sendMessage(Component.text("You cannot research this", NamedTextColor.RED));
             }
-        },choice);
+        }, choice);
     }
 
-    private boolean notCountry(CommandSender sender){
-        if (sender instanceof CPlayer p){
-            return p.getCountry()==null;
+    private boolean notCountry(CommandSender sender) {
+        if (sender instanceof CPlayer p) {
+            return p.getCountry() == null;
         }
         return true;
     }
 
-    private List<String> getAvailable(CommandSender sender){
-        if (notCountry(sender))return new ArrayList<>();
+    private List<String> getAvailable(CommandSender sender) {
+        if (notCountry(sender)) return new ArrayList<>();
         CPlayer p = (CPlayer) sender;
         ResearchCountry country = (ResearchCountry) p.getCountry();
         TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();

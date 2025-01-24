@@ -28,11 +28,11 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 public class TroopEditGUI extends InventoryGUI {
     private final DivisionDesign design;
     private final HashMap<Integer, DivisionType> divTypeHash;
-    private final int[] coords = new int[]{11,12,13,14,15,20,21,22,23,24,29,30,31,32,33,38,39,40,41,42};
+    private final int[] coords = new int[]{11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 29, 30, 31, 32, 33, 38, 39, 40, 41, 42};
 
     public TroopEditGUI(HashMap<Integer, DivisionType> dHashMap, DivisionDesign design) {
-        this.divTypeHash=dHashMap;
-        this.design=design;
+        this.divTypeHash = dHashMap;
+        this.design = design;
     }
 
     @Override
@@ -42,22 +42,22 @@ public class TroopEditGUI extends InventoryGUI {
 
     @Override
     public void decorate(@NotNull CPlayer player) {
-        outlineInventory(this,sideButtons());
-        for (int i : coords){
-            if (divTypeHash.containsKey(i)){
+        outlineInventory(this, sideButtons());
+        for (int i : coords) {
+            if (divTypeHash.containsKey(i)) {
                 addButton(i, selectDivisionType(divTypeHash.get(i)));
-            }else {
+            } else {
                 addButton(i, selectDivisionTypeEmpty());
 
             }
         }
-        for (int i = 16; i < 44; i += 9){
+        for (int i = 16; i < 44; i += 9) {
             addButton(i, sideButtons());
         }
-        for (int i = 10; i < 39; i += 9){
+        for (int i = 10; i < 39; i += 9) {
             addButton(i, sideButtons());
         }
-        addButton(4,viewStats());
+        addButton(4, viewStats());
         addButton(44, saveChanges());
         addExitButton(this);
         super.decorate(player);
@@ -70,26 +70,27 @@ public class TroopEditGUI extends InventoryGUI {
                         .build());
     }
 
-    protected InventoryButton selectDivisionTypeEmpty(){
+    protected InventoryButton selectDivisionTypeEmpty() {
         return new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.ORANGE_STAINED_GLASS_PANE)
                         .customName(Component.text("Something"))
                         .build())
                 .consumer(this::divTypeClick);
     }
-    protected InventoryButton selectDivisionType(DivisionType divisionTypeEnum){
+
+    protected InventoryButton selectDivisionType(DivisionType divisionTypeEnum) {
         return new InventoryButton()
                 .creator(player -> divisionTypeEnum.getIcon())
                 .consumer(this::divTypeClick);
     }
 
-    protected InventoryButton saveChanges(){
+    protected InventoryButton saveChanges() {
         return new InventoryButton()
-                .creator(player -> itemBuilder(Material.GREEN_CONCRETE,Component.text("Save Changes")))
+                .creator(player -> itemBuilder(Material.GREEN_CONCRETE, Component.text("Save Changes")))
                 .consumer(e -> design.setDesign(divTypeHash));
     }
 
-    protected InventoryButton viewStats(){
+    protected InventoryButton viewStats() {
         return new InventoryButton()
                 .creator(player -> {
                     float hp = 0f;
@@ -97,25 +98,25 @@ public class TroopEditGUI extends InventoryGUI {
                     float def = 0f;
                     float speed = 0f;
                     float org = 0f;
-                    Payments paymentList=new Payments();
-                    for (Map.Entry<Integer,DivisionType> e : divTypeHash.entrySet()){
+                    Payments paymentList = new Payments();
+                    for (Map.Entry<Integer, DivisionType> e : divTypeHash.entrySet()) {
                         DivisionType d = e.getValue();
-                        hp+=d.getHp();
-                        atk+=d.getAtk();
-                        def+=d.getDef();
-                        speed+=d.getSpeed();
-                        org+=d.getOrg();
+                        hp += d.getHp();
+                        atk += d.getAtk();
+                        def += d.getDef();
+                        speed += d.getSpeed();
+                        org += d.getOrg();
                         paymentList.addPayment(d.getCost());
                     }
                     paymentList.compress();
-                    return itemBuilder(Material.BOOK,Component.text("View Stats", NamedTextColor.GOLD, TextDecoration.BOLD,TextDecoration.UNDERLINED), new ComponentListBuilder()
+                    return itemBuilder(Material.BOOK, Component.text("View Stats", NamedTextColor.GOLD, TextDecoration.BOLD, TextDecoration.UNDERLINED), new ComponentListBuilder()
                             .addComponent(Component.text()
                                     .append(Component.text("Atk: "))
                                     .append(Component.text(atk))
                                     .build())
                             .addComponent(Component.text()
                                     .append(Component.text("HP: "))
-                                    .append(Component.text(hp   ))
+                                    .append(Component.text(hp))
                                     .build())
                             .addComponent(Component.text()
                                     .append(Component.text("Def: "))
@@ -134,7 +135,7 @@ public class TroopEditGUI extends InventoryGUI {
 
     }
 
-    private void divTypeClick(InventoryPreClickEvent e){
-        ContinentalManagers.guiManager.openGUI(new TroopTypeSelectionGUI(divTypeHash,design,e.getSlot()), (CPlayer) e.getPlayer());
+    private void divTypeClick(InventoryPreClickEvent e) {
+        ContinentalManagers.guiManager.openGUI(new TroopTypeSelectionGUI(divTypeHash, design, e.getSlot()), (CPlayer) e.getPlayer());
     }
 }

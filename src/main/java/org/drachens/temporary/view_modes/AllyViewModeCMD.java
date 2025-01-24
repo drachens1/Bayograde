@@ -20,17 +20,17 @@ public class AllyViewModeCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("off"));
                 });
 
-        setDefaultExecutor((sender,context)-> sender.sendMessage(Component.text("Proper usage /view-modes ally on/off", NamedTextColor.RED)));
+        setDefaultExecutor((sender, context) -> sender.sendMessage(Component.text("Proper usage /view-modes ally on/off", NamedTextColor.RED)));
 
         addSyntax((sender, context) -> {
-            if (!inCountry(sender)){
+            if (!inCountry(sender)) {
                 sender.sendMessage("Join a country first");
                 return;
             }
-            CPlayer p = (CPlayer)sender;
+            CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ImaginaryWorld world = country.getAllyWorld();
-            switch (context.get(on)){
+            switch (context.get(on)) {
                 case "on":
                     world.addPlayer(p);
                     break;
@@ -38,11 +38,11 @@ public class AllyViewModeCMD extends Command {
                     world.removePlayer(p);
                     break;
             }
-        },on);
+        }, on);
 
     }
 
-    private boolean inCountry(CommandSender sender){
+    private boolean inCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
             return country != null;

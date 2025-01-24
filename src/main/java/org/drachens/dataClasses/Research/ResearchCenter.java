@@ -40,7 +40,7 @@ public class ResearchCenter extends BuildTypes {
         if (province.getOccupier() != country) return false;
         if (province.getBuilding() != null) return false;
         if (!country.canMinusCosts(payments)) {
-            sendMessage(p,cantAffordMsg);
+            sendMessage(p, cantAffordMsg);
             return false;
         }
         return true;
@@ -61,7 +61,7 @@ public class ResearchCenter extends BuildTypes {
             if (province.getBuilding() == null) continue;
             if (province.getBuilding().getSynonyms().contains("research")) {
                 Building building1 = province.getBuilding();
-                if (!(building1.getBuildTypes().getBuildTypes() instanceof ResearchBuilding researchBuilding)){
+                if (!(building1.getBuildTypes().getBuildTypes() instanceof ResearchBuilding researchBuilding)) {
                     continue;
                 }
                 central.add(researchBuilding.generate(building1));

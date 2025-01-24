@@ -9,25 +9,25 @@ import org.drachens.temporary.troops.Combat;
 import java.util.HashMap;
 
 public class CombatManager {
-    private HashMap<Instance,HashMap<Province, Combat>> combatHash = new HashMap<>();
+    private HashMap<Instance, HashMap<Province, Combat>> combatHash = new HashMap<>();
 
-    public CombatManager(){
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e->{
+    public CombatManager() {
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
             HashMap<Province, Combat> a = combatHash.get(e.getInstance());
-            if (a==null)return;
-            a.forEach((province,combat)->{
+            if (a == null) return;
+            a.forEach((province, combat) -> {
                 combat.newDay();
             });
         });
     }
-    
-    public void addCombat(Combat combat){
+
+    public void addCombat(Combat combat) {
         HashMap<Province, Combat> e = combatHash.getOrDefault(combat.getProvince().getInstance(), new HashMap<>());
         e.put(combat.getProvince(), combat);
         combatHash.put(combat.getProvince().getInstance(), e);
     }
 
-    public void removeCombat(Combat combat){
+    public void removeCombat(Combat combat) {
         HashMap<Province, Combat> e = combatHash.getOrDefault(combat.getProvince().getInstance(), new HashMap<>());
         e.remove(combat.getProvince(), combat);
         combatHash.put(combat.getProvince().getInstance(), e);

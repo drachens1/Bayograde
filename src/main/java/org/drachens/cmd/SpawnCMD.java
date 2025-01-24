@@ -15,7 +15,7 @@ public class SpawnCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            if (p.getInstance()!=ContinentalManagers.worldManager.getDefaultWorld().getInstance()){
+            if (p.getInstance() != ContinentalManagers.worldManager.getDefaultWorld().getInstance()) {
                 p.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
 
             }

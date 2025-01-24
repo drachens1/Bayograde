@@ -14,10 +14,12 @@ public enum IdeologiesEnum {
     ww2_nationalist;
 
     private IdeologyTypes ideologyTypes;
-    public void setIdeologyTypes(IdeologyTypes ideologyTypes){
-        this.ideologyTypes=ideologyTypes;
-    }
-    public IdeologyTypes getIdeologyTypes(){
+
+    public IdeologyTypes getIdeologyTypes() {
         return ideologyTypes;
+    }
+
+    public void setIdeologyTypes(IdeologyTypes ideologyTypes) {
+        this.ideologyTypes = ideologyTypes;
     }
 }

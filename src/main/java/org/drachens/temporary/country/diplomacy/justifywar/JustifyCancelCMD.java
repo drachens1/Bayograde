@@ -14,7 +14,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class JustifyCancelCMD extends Command {
     public JustifyCancelCMD() {
         super("cancel");
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
         var countries = ArgumentType.String("War_justifications")
                 .setSuggestionCallback((sender, context, suggestion) -> {
@@ -24,19 +24,20 @@ public class JustifyCancelCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getWarJustifications());
                 });
 
-        setDefaultExecutor((sender,context)->{
-            if (isLeaderOfCountry(sender))return;
+        setDefaultExecutor((sender, context) -> {
+            if (isLeaderOfCountry(sender)) return;
             sender.sendMessage("Proper usage /country diplomacy justify_war <country> ");
-        });;
+        });
+        ;
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             WarJustification warJustification = country.getCreatingWarJustificationAgainst(context.get(countries));
-            if (warJustification==null)return;
-            EventDispatcher.call(new WarJustificationCancelEvent(warJustification,country));
-        },countries);
+            if (warJustification == null) return;
+            EventDispatcher.call(new WarJustificationCancelEvent(warJustification, country));
+        }, countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

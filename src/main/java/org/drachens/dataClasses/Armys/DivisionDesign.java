@@ -27,7 +27,7 @@ public class DivisionDesign {
     private float org;
     private Payments paymentList;
     private String name;
-    
+
     public DivisionDesign(String name, HashMap<Integer, DivisionType> design, TroopCountry country) {
         this.design = design;
         this.paymentList = new Payments();
@@ -38,27 +38,8 @@ public class DivisionDesign {
         this.org = 0f;
         this.country = country;
         this.name = name;
-        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(name)),this);
+        profile = new Profile(itemBuilder(Material.ORANGE_DYE, Component.text(name)), this);
         calculate();
-    }
-
-    public void calculate(){
-        this.hp = 0f;
-        this.atk = 0f;
-        this.def = 0f;
-        this.speed = 0f;
-        this.org = 0f;
-        paymentList=new Payments();
-        for (Map.Entry<Integer,DivisionType> e : design.entrySet()){
-            DivisionType d = e.getValue();
-            hp+=d.getHp();
-            atk+=d.getAtk();
-            def+=d.getDef();
-            speed+=d.getSpeed();
-            org+=d.getOrg();
-            paymentList.addPayment(d.getCost());
-        }
-        paymentList.compress();
     }
 
     public DivisionDesign(DivisionDesign design) {
@@ -69,10 +50,29 @@ public class DivisionDesign {
         this.paymentList = design.paymentList;
         this.country = design.country;
         this.name = design.name;
-        this.hp=design.hp;
-        this.org=design.org;
-        profile=new Profile(itemBuilder(Material.ORANGE_DYE,Component.text(design.name)),this);
+        this.hp = design.hp;
+        this.org = design.org;
+        profile = new Profile(itemBuilder(Material.ORANGE_DYE, Component.text(design.name)), this);
 
+    }
+
+    public void calculate() {
+        this.hp = 0f;
+        this.atk = 0f;
+        this.def = 0f;
+        this.speed = 0f;
+        this.org = 0f;
+        paymentList = new Payments();
+        for (Map.Entry<Integer, DivisionType> e : design.entrySet()) {
+            DivisionType d = e.getValue();
+            hp += d.getHp();
+            atk += d.getAtk();
+            def += d.getDef();
+            speed += d.getSpeed();
+            org += d.getOrg();
+            paymentList.addPayment(d.getCost());
+        }
+        paymentList.compress();
     }
 
     public HashMap<Integer, DivisionType> getDesign() {
@@ -124,7 +124,7 @@ public class DivisionDesign {
         this.hp = hp;
     }
 
-    public Payments getCost(){
+    public Payments getCost() {
         return paymentList;
     }
 
@@ -144,16 +144,15 @@ public class DivisionDesign {
         return country;
     }
 
-    public Profile getProfile(){
+    public Profile getProfile() {
         return profile;
     }
 
-    public float getOrg(){
+    public float getOrg() {
         return org;
     }
 
     public static class Profile {
-        private ItemStack face;
         private final InventoryButton train = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS)
                         .customName(Component.text("Train"))
@@ -163,37 +162,44 @@ public class DivisionDesign {
                 });
         private final InventoryButton edit;
         private final InventoryButton delete;
+        private ItemStack face;
 
-        public Profile(ItemStack face, DivisionDesign design){
-            this.face=face;
-            this.edit=new InventoryButton()
-            .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
-                    .customName(Component.text("Edit"))
-                    .build())
-            .consumer(e -> {
-                ContinentalManagers.guiManager.openGUI(new TroopEditGUI(new HashMap<>(design.getDesign()),design),(CPlayer) e.getPlayer());
-            });
-            delete= new InventoryButton()
+        public Profile(ItemStack face, DivisionDesign design) {
+            this.face = face;
+            this.edit = new InventoryButton()
+                    .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
+                            .customName(Component.text("Edit"))
+                            .build())
+                    .consumer(e -> {
+                        ContinentalManagers.guiManager.openGUI(new TroopEditGUI(new HashMap<>(design.getDesign()), design), (CPlayer) e.getPlayer());
+                    });
+            delete = new InventoryButton()
                     .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
                             .customName(Component.text("Delete"))
                             .build());
         }
-        public void rename(Component newName){
+
+        public void rename(Component newName) {
             face = face.withCustomName(newName);
         }
-        public void setLore(List<Component> lore){
+
+        public void setLore(List<Component> lore) {
             face = face.withLore(lore);
         }
-        public ItemStack getFace(){
+
+        public ItemStack getFace() {
             return face;
         }
-        public InventoryButton getTrain(){
+
+        public InventoryButton getTrain() {
             return train;
         }
-        public InventoryButton getEdit(){
+
+        public InventoryButton getEdit() {
             return edit;
         }
-        public InventoryButton getDelete(){
+
+        public InventoryButton getDelete() {
             return delete;
         }
     }

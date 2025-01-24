@@ -13,12 +13,12 @@ public class PeaceDealCMD extends Command {
 
         var countries = getCountriesArgExcludingPlayersCountry();
 
-        addSyntax((sender,context)->{
-            if (!isLeaderOfCountry(sender))return;
+        addSyntax((sender, context) -> {
+            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
 
-        },countries);
+        }, countries);
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

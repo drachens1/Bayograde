@@ -16,11 +16,11 @@ public enum TroopTypeEnum {
 
     private final TroopType troopTye;
 
-    TroopTypeEnum(TroopType troopType){
-        this.troopTye=troopType;
+    TroopTypeEnum(TroopType troopType) {
+        this.troopTye = troopType;
     }
 
-    public TroopType getTroopTye(){
+    public TroopType getTroopTye() {
         return troopTye;
     }
 }

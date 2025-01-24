@@ -8,10 +8,12 @@ public enum VotingWinner {
     ww2_troops;
 
     private VotingOption votingOption;
-    public void setVotingOption(VotingOption votingOption){
-        this.votingOption=votingOption;
-    }
-    public VotingOption getVotingOption(){
+
+    public VotingOption getVotingOption() {
         return votingOption;
+    }
+
+    public void setVotingOption(VotingOption votingOption) {
+        this.votingOption = votingOption;
     }
 }

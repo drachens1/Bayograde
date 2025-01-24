@@ -35,8 +35,8 @@ public class InviteCMD extends Command {
         var countryArg = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
-            if (leaderOfAFaction(sender)){
-                 sender.sendMessage("Proper usage /faction manage invite <faction name> <country name>");
+            if (leaderOfAFaction(sender)) {
+                sender.sendMessage("Proper usage /faction manage invite <faction name> <country name>");
             }
         }, factionsArg);
 

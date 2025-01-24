@@ -34,7 +34,7 @@ public class NewDay extends Event {
     }
 
     @Override
-    public String toString(){
-        return day+"/"+month+"/"+year;
+    public String toString() {
+        return day + "/" + month + "/" + year;
     }
 }

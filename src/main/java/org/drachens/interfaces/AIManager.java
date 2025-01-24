@@ -8,6 +8,6 @@ public interface AIManager {
     VotingWinner getIdentifier();
 
     AI createAIForCountry(Country country);
-    
+
     void tick(Instance instance);
 } 

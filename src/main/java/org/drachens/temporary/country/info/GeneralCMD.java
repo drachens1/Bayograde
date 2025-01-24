@@ -18,37 +18,37 @@ public class GeneralCMD extends Command {
 
         var countries = getCountriesArg();
 
-        setDefaultExecutor((sender,context)->{
-            if (!(sender instanceof CPlayer p)){
+        setDefaultExecutor((sender, context) -> {
+            if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country==null){
+            if (country == null) {
                 p.sendMessage("Join a country or do /country info general <country>");
                 return;
             }
-            sendPlayer(country,p);
+            sendPlayer(country, p);
         });
 
         addSyntax((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null){
+            if (country == null) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
-            sendPlayer(country,p);
+            sendPlayer(country, p);
         }, countries);
     }
 
-    private void sendPlayer(Country country, CPlayer p){
+    private void sendPlayer(Country country, CPlayer p) {
         Component c = country.getDescription();
-        if (country.getPlayerLeader()==null){
+        if (country.getPlayerLeader() == null) {
             p.sendMessage(c.appendNewline().append(Component.text("[JOIN]", NamedTextColor.GOLD, TextDecoration.BOLD)
                     .clickEvent(ClickEvent.runCommand("/country join " + country.getName()))
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))));
-        }else {
+        } else {
             p.sendMessage(c);
         }
     }

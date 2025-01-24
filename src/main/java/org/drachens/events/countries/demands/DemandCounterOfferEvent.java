@@ -13,7 +13,7 @@ public class DemandCounterOfferEvent extends Event {
         super(from.getInstance());
         this.to = to;
         this.from = from;
-        this.original=original;
+        this.original = original;
     }
 
     public Country getFrom() {
@@ -24,7 +24,7 @@ public class DemandCounterOfferEvent extends Event {
         return to;
     }
 
-    public Demand getOriginal(){
+    public Demand getOriginal() {
         return original;
     }
 }

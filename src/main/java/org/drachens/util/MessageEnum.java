@@ -47,10 +47,12 @@ public enum MessageEnum {
             .build());
 
     private final Component component;
-    MessageEnum(Component component){
-        this.component=component;
+
+    MessageEnum(Component component) {
+        this.component = component;
     }
-    public Component getComponent(){
+
+    public Component getComponent() {
         return component;
     }
 }
