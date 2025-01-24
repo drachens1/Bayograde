@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.0"
     kotlin("jvm")
+    application
     `java-library`
     `maven-publish`
 }
@@ -20,6 +21,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
+
+    implementation("org.javassist:javassist:3.30.2-GA")
+
 }
 
 java {
@@ -27,6 +31,11 @@ java {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
+
+application {
+    applicationDefaultJvmArgs = listOf("--add-opens=java.base/java.lang=ALL-UNNAMED")
+}
+
 
 tasks {
     jar {
@@ -43,3 +52,11 @@ tasks {
         archiveClassifier.set("")
     }
 }
+
+tasks.withType<JavaExec> {
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=net.minestom.server/net.minestom.server.network.player=ALL-UNNAMED"
+    )
+}
+

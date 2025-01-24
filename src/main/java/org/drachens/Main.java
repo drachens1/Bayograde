@@ -140,6 +140,8 @@ public class Main {
     }
 
     public static void completeStartup() {
+        NG5M.preServerHook();
+
         initSrv();
         MinecraftServer.getCommandManager().register(new ConfirmCMD());
 
