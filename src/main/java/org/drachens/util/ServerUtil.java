@@ -25,7 +25,6 @@ import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
-import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -166,7 +165,7 @@ public class ServerUtil {
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             GameProfile gameProfile = e.getGameProfile();
             Constants.BAN_MANAGER.isBanned(gameProfile.uuid());
-            if (ContinentalManagers.configFileManager.getWhitelist().active() && !ContinentalManagers.configFileManager.getWhitelist().getPlayers().contains(gameProfile.uuid())) {
+            if (ContinentalManagers.configFileManager.getWhitelistFile().isActive() && !ContinentalManagers.configFileManager.getWhitelistFile().whiteListContains(gameProfile.uuid().toString())) {
                 e.getConnection().kick(Component.text("You are not whitelisted"));
                 System.out.println(gameProfile.name() + " tried to join the game but isn't whitelisted");
                 return;
@@ -228,8 +227,6 @@ public class ServerUtil {
                 .addListener(InventoryOpenEvent.class, guiManager::handleOpen)
                 .addListener(InventoryCloseEvent.class, guiManager::handleClose);
 
-        WhitelistManager whitelistManager = new WhitelistManager();
-
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
             if (p.getPosition().y() < 0) {
@@ -256,9 +253,7 @@ public class ServerUtil {
                 }
             });
             String time = e.getDay() + "/" + e.getMonth() + "|" + e.getYear();
-            ContinentalManagers.playerModsManager.getPlayers(e.getInstance()).forEach(player -> {
-                player.sendPluginMessage("continentalmod:time", time);
-            });
+            ContinentalManagers.playerModsManager.getPlayers(e.getInstance()).forEach(player -> player.sendPluginMessage("continentalmod:time", time));
             ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
         });
 
@@ -276,7 +271,7 @@ public class ServerUtil {
         commandManager.register(new BanCMD());
         commandManager.register(new UnbanCMD());
         commandManager.register(new ListCMD());
-        commandManager.register(new WhitelistCMD(whitelistManager));
+        commandManager.register(new WhitelistCMD());
         commandManager.register(new killCMD());
         commandManager.register(new ReplyCMD());
         commandManager.register(new MsgCMD());

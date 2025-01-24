@@ -1,33 +1,27 @@
 package org.drachens.fileManagement;
 
-import net.minestom.server.MinecraftServer;
-import org.drachens.cmd.Dev.whitelist.Whitelist;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.fileManagement.customTypes.WhitelistFile;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
 public class ConfigFileManager {
-    private ConfigurationNode whitelistListNode;
-    private YamlConfigurationLoader whitelistLoader;    // contains all the whitelisted peoples as UUID's
     private ConfigurationNode permissionsNode;
     private YamlConfigurationLoader permissionsLoader;  // Has the permission groups that are created
     private String logMsg;
     private String logCmds;
-    private Whitelist whitelist;
     private ServerPropertiesFile serverPropertiesFile;
+    private WhitelistFile whitelistFile;
 
     public void startup() {
-        File playerData = new File("playerData");//Creates the parent directory
-        playerData.mkdir();
-
         serverPropertiesFile = new ServerPropertiesFile();
+        whitelistFile = new WhitelistFile();
 
         //To setup all the log stuff
         System.out.println("Creating logs");
@@ -56,44 +50,6 @@ public class ConfigFileManager {
             System.err.println("Unable to load permissions " + e.getMessage());
         }
         createDefaultsPermissionLoader(permissionsNode);
-        loadWhitelist();
-    }
-
-    private void loadWhitelist() {
-        System.out.println("Whitelist started loading...");
-        File whitelistFile = new File("whitelist.yml");
-        fileExists(whitelistFile);
-        whitelistLoader = YamlConfigurationLoader.builder()
-                .file(whitelistFile)
-                .build();
-        try {
-            whitelistListNode = whitelistLoader.load();
-        } catch (ConfigurateException e) {
-            System.out.println("Whitelist failed loading " + e.getMessage());
-        }
-        createDefaultsWhitelist(whitelistListNode);
-        try {
-            whitelistLoader.save(whitelistListNode);
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
-        ConfigurationNode whitelisted = whitelistListNode.node("whitelist");
-        ConfigurationNode actives = whitelisted.node("active");
-        ConfigurationNode player = whitelisted.node("players");
-
-        boolean active = actives.getBoolean();
-        try {
-            List<String> players = new ArrayList<>(Objects.requireNonNull(player.getList(String.class)));
-            List<UUID> playerID = new ArrayList<>();
-            for (String s : players) {
-                playerID.add(UUID.fromString(s));
-            }
-            whitelist = new Whitelist(playerID, active);
-            return;
-        } catch (SerializationException e) {
-            System.out.println("Players loading error " + e.getMessage());
-        }
-        whitelist = new Whitelist(new ArrayList<>(), false);
     }
 
     private void fileExists(File f) {
@@ -115,24 +71,13 @@ public class ConfigFileManager {
         return logCmds;
     }
 
-    public Whitelist getWhitelist() {
-        return whitelist;
-    }
-
-    public ConfigurationNode getWhitelistListNode() {
-        return whitelistListNode;
+    public WhitelistFile getWhitelistFile() {
+        return whitelistFile;
     }
 
     public void specificSave(String choice) {
         System.out.println("Specifically saving: " + choice);
         switch (choice) {
-            case "whitelist":
-                try {
-                    whitelistLoader.save(whitelistListNode);
-                } catch (ConfigurateException e) {
-                    System.err.println("Error saving whitelist: " + e.getMessage());
-                }
-                break;
             case "permissions":
                 try {
                     permissionsLoader.save(permissionsNode);
@@ -144,19 +89,6 @@ public class ConfigFileManager {
 
     public ServerPropertiesFile getServerPropertiesFile() {
         return serverPropertiesFile;
-    }
-
-    private void createDefaultsWhitelist(ConfigurationNode whitelist) {
-        try {
-            if (whitelist.node("whitelist", "active").isNull()) {
-                whitelist.node("whitelist", "active").set(false);
-            }
-            if (whitelist.node("whitelist", "players").isNull()) {
-                whitelist.node("whitelist", "players").set(new ArrayList<>());
-            }
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void createDefaultsPermissionLoader(ConfigurationNode permissionsNode) {
