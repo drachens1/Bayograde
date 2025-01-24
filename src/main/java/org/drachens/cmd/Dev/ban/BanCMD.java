@@ -1,4 +1,4 @@
-package org.drachens.cmd.ban;
+package org.drachens.cmd.Dev.ban;
 
 import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;

@@ -1,4 +1,4 @@
-package org.drachens.cmd.Dev.help;
+package org.drachens.cmd.help;
 
 import net.minestom.server.command.builder.Command;
 

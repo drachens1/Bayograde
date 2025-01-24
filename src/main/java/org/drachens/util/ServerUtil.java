@@ -38,18 +38,17 @@ import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.*;
-import org.drachens.cmd.Dev.Kill.killCMD;
 import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
-import org.drachens.cmd.Dev.help.HelpCMD;
+import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
 import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.ai.AICmd;
-import org.drachens.cmd.ban.BanCMD;
-import org.drachens.cmd.ban.UnbanCMD;
+import org.drachens.cmd.Dev.ban.BanCMD;
+import org.drachens.cmd.Dev.ban.UnbanCMD;
 import org.drachens.cmd.example.ExampleCMD;
 import org.drachens.cmd.minigames.MinigamesCMD;
 import org.drachens.cmd.vote.VoteCMD;
@@ -272,7 +271,6 @@ public class ServerUtil {
         commandManager.register(new UnbanCMD());
         commandManager.register(new ListCMD());
         commandManager.register(new WhitelistCMD());
-        commandManager.register(new killCMD());
         commandManager.register(new ReplyCMD());
         commandManager.register(new MsgCMD());
         commandManager.register(new GamemodeCMD());
@@ -293,11 +291,8 @@ public class ServerUtil {
         commandManager.register(new CosmeticsCMD());
         commandManager.register(new GoldCMD());
         commandManager.register(new PlaytimeCMD());
-        commandManager.register(new DemandCMD());
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
-
-        commandManager.register(new ViewBorderBlocks());
 
         commandManager.register(new PingCMD());
         commandManager.register(new TpsCMD());
@@ -305,7 +300,6 @@ public class ServerUtil {
         commandManager.register(new WhoisCMD());
 
         commandManager.register(new AICmd());
-        commandManager.register(new CheckNeighbours());
         commandManager.register(new OpMeCMD());
 
         for (Command command : cmd) {

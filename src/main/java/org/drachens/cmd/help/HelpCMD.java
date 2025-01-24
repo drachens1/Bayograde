@@ -1,4 +1,4 @@
-package org.drachens.cmd.Dev.help;
+package org.drachens.cmd.help;
 
 import net.minestom.server.command.builder.Command;
 
@@ -7,7 +7,6 @@ public class HelpCMD extends Command {
         super("help");
 
         //Subcommand
-        addSubcommand(new OperatorHelpCMD());
         addSubcommand(new CmdsHelpCMD());
         addSubcommand(new HelpPluginsCMD());
     }
