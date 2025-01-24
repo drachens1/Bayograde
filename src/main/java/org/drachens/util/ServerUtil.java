@@ -25,11 +25,10 @@ import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Main;
-import org.drachens.Manager.WhitelistManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.VotingWinner;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
 import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.per_instance.CountryDataManager;
@@ -39,18 +38,17 @@ import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.*;
-import org.drachens.cmd.Dev.Kill.killCMD;
 import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
-import org.drachens.cmd.Dev.help.HelpCMD;
+import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
 import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.ai.AICmd;
-import org.drachens.cmd.ban.BanCMD;
-import org.drachens.cmd.ban.UnbanCMD;
+import org.drachens.cmd.Dev.ban.BanCMD;
+import org.drachens.cmd.Dev.ban.UnbanCMD;
 import org.drachens.cmd.example.ExampleCMD;
 import org.drachens.cmd.minigames.MinigamesCMD;
 import org.drachens.cmd.vote.VoteCMD;
@@ -166,7 +164,7 @@ public class ServerUtil {
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             GameProfile gameProfile = e.getGameProfile();
             Constants.BAN_MANAGER.isBanned(gameProfile.uuid());
-            if (ContinentalManagers.configFileManager.getWhitelist().active() && !ContinentalManagers.configFileManager.getWhitelist().getPlayers().contains(gameProfile.uuid())) {
+            if (ContinentalManagers.configFileManager.getWhitelistFile().isActive() && !ContinentalManagers.configFileManager.getWhitelistFile().whiteListContains(gameProfile.uuid().toString())) {
                 e.getConnection().kick(Component.text("You are not whitelisted"));
                 System.out.println(gameProfile.name() + " tried to join the game but isn't whitelisted");
                 return;
@@ -228,8 +226,6 @@ public class ServerUtil {
                 .addListener(InventoryOpenEvent.class, guiManager::handleOpen)
                 .addListener(InventoryCloseEvent.class, guiManager::handleClose);
 
-        WhitelistManager whitelistManager = new WhitelistManager();
-
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
             if (p.getPosition().y() < 0) {
@@ -245,7 +241,7 @@ public class ServerUtil {
         schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
             if (!(e instanceof NewDay newDay)) return;
             ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(newDay));
-        }).setDelay(7).repeat().schedule());
+        }).setDelay(7).schedule());
 
 
         globEHandler.addListener(NewDay.class, e -> {
@@ -256,9 +252,7 @@ public class ServerUtil {
                 }
             });
             String time = e.getDay() + "/" + e.getMonth() + "|" + e.getYear();
-            ContinentalManagers.playerModsManager.getPlayers(e.getInstance()).forEach(player -> {
-                player.sendPluginMessage("continentalmod:time", time);
-            });
+            ContinentalManagers.playerModsManager.getPlayers(e.getInstance()).forEach(player -> player.sendPluginMessage("continentalmod:time", time));
             ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
         });
 
@@ -276,8 +270,7 @@ public class ServerUtil {
         commandManager.register(new BanCMD());
         commandManager.register(new UnbanCMD());
         commandManager.register(new ListCMD());
-        commandManager.register(new WhitelistCMD(whitelistManager));
-        commandManager.register(new killCMD());
+        commandManager.register(new WhitelistCMD());
         commandManager.register(new ReplyCMD());
         commandManager.register(new MsgCMD());
         commandManager.register(new GamemodeCMD());
@@ -298,12 +291,8 @@ public class ServerUtil {
         commandManager.register(new CosmeticsCMD());
         commandManager.register(new GoldCMD());
         commandManager.register(new PlaytimeCMD());
-        commandManager.register(new DemandCMD());
-        commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
-
-        commandManager.register(new ViewBorderBlocks());
 
         commandManager.register(new PingCMD());
         commandManager.register(new TpsCMD());
@@ -311,7 +300,6 @@ public class ServerUtil {
         commandManager.register(new WhoisCMD());
 
         commandManager.register(new AICmd());
-        commandManager.register(new CheckNeighbours());
         commandManager.register(new OpMeCMD());
 
         for (Command command : cmd) {

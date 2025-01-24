@@ -11,7 +11,6 @@ public class PacmanCMD extends Command {
             if (!(sender instanceof CPlayer p)) {
                 return;
             }
-
             new Pacman(p);
         });
     }

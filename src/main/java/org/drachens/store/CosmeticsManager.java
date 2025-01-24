@@ -13,10 +13,6 @@ public class CosmeticsManager {
         storeCategory.getStoreItems().forEach(storeItem -> storeItemHashMap.put(storeItem.getIdentifier(), storeItem));
     }
 
-    public StoreCategory getStoreCategory(String name) {
-        return storeCategoryHashMap.get(name);
-    }
-
     public HashMap<String, StoreCategory> getStoreCategories() {
         return storeCategoryHashMap;
     }

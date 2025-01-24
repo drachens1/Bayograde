@@ -3,7 +3,6 @@ package org.drachens.dataClasses.Research.tree;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -21,20 +20,15 @@ public class ResearchOption {
     private final List<String> orString;
     private final ItemStack item;
     private final Modifier modifier;
-    private final int[] comparedToLast; //[1]=x [0]=y
     private final Payment cost;
-    private final List<Component> description;
-    private ResearchCategory researchCategory;
 
     protected ResearchOption(Create create) {
         identifier = create.identifier;
         requiresString = create.requires;
         item = create.item;
         modifier = create.modifier;
-        comparedToLast = create.comparedToLast;
         orString = create.or;
         cost = create.cost;
-        description = create.description;
         name = create.name;
         descript = create.descript;
     }
@@ -63,16 +57,8 @@ public class ResearchOption {
         return item;
     }
 
-    public int[] getComparedToLast() {
-        return comparedToLast;
-    }
-
     public String getIdentifier() {
         return identifier;
-    }
-
-    public void setResearchCategory(ResearchCategory researchCategory) {
-        this.researchCategory = researchCategory;
     }
 
     public Component getName() {
@@ -83,50 +69,15 @@ public class ResearchOption {
         return descript;
     }
 
-    public List<Component> createLore(ResearchCountry country) {
-        List<Component> base = new ArrayList<>();
-        base.add(Component.text()
-                .append(Component.text(cost.getAmount()))
-                .append(cost.getCurrencyType().getSymbol())
-                .build());
-        if (!requiresString.isEmpty()) {
-            base.add(Component.text("Prequisites: ", NamedTextColor.BLUE));
-            requiresString.forEach(require -> {
-                if (country.hasResearched(require)) {
-                    base.add(Component.text("- " + require, NamedTextColor.GREEN));
-                } else {
-                    base.add(Component.text("- " + require, NamedTextColor.RED));
-                }
-            });
-        }
-        if (!orString.isEmpty()) {
-            base.add(Component.text("Or: ", NamedTextColor.BLUE));
-            orString.forEach(or -> {
-                if (country.hasResearched(or)) {
-                    base.add(Component.text("- " + or, NamedTextColor.RED));
-                } else {
-                    base.add(Component.text("- " + or, NamedTextColor.GREEN));
-                }
-            });
-        }
-        if (description != null)
-            base.addAll(description);
-        if (researchCategory != null)
-            base.add(researchCategory.getType());
-        return base;
-    }
-
     public static class Create {
         private final String identifier;
         private final ItemStack item;
         private final List<String> requires = new ArrayList<>();
         private final List<String> or = new ArrayList<>();
         private final Payment cost;
-        private List<Component> description;
         private Modifier modifier;
         private Component name;
         private Component descript;
-        private int[] comparedToLast;
 
         public Create(String identifier, ItemStack item, float cost) {
             this.identifier = identifier;
@@ -146,16 +97,6 @@ public class ResearchOption {
 
         public Create setModifier(Modifier modifier) {
             this.modifier = modifier;
-            return this;
-        }
-
-        public Create setComparedToLast(int y, int x) {
-            this.comparedToLast = new int[]{y, x};
-            return this;
-        }
-
-        public Create setDescription(List<Component> description) {
-            this.description = description;
             return this;
         }
 

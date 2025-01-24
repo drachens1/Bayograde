@@ -15,6 +15,7 @@ public class TeleportCMD extends Command {
         super("teleport", "tp");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /teleport <x> <y> <z>"));
         var x = ArgumentType.Integer("x");
+        var y = ArgumentType.Integer("y");
         var z = ArgumentType.Integer("z");
         addSyntax((sender, context) -> {
             if (!(sender instanceof Player p)) {
@@ -27,5 +28,17 @@ public class TeleportCMD extends Command {
             }
             p.teleport(ps);
         }, x, z);
+
+        addSyntax((sender, context) -> {
+            if (!(sender instanceof Player p)) {
+                return;
+            }
+            Pos ps = new Pos(context.get(x), context.get(y), context.get(z));
+            if (!getAllowedChunks().contains(p.getInstance().getChunk(ps.chunkX(), ps.chunkZ()))) {
+                p.sendMessage(Component.text().append(MessageEnum.system.getComponent(), Component.text("you cannot teleport out of bounds", NamedTextColor.RED)).build());
+                return;
+            }
+            p.teleport(ps);
+        }, x, y, z);
     }
 }

@@ -7,7 +7,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.Manager.defaults.VotingWinner;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.CountryEnums;
 import org.drachens.temporary.clicks.ClicksCountry;

@@ -17,7 +17,6 @@ public class ResearchCategory {
         this.researchCategoryEnum = create.researchCategoryEnum;
         this.type = create.type;
         this.researchOptionList = create.researchOptionList;
-        researchOptionList.forEach(researchOption -> researchOption.setResearchCategory(this));
     }
 
     public Component getDescription() {
