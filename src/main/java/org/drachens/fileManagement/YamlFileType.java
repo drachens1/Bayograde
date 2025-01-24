@@ -110,11 +110,6 @@ public abstract class YamlFileType {
         }
     }
 
-    protected List<String> stripEmpty(List<String> list) {
-        list.removeIf(String::isEmpty);
-        return list;
-    }
-
     protected abstract void initialLoad();
 
     protected abstract void setDefaults();

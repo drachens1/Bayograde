@@ -29,10 +29,6 @@ public class ConfigFileManager {
         File msg = new File(logMsg);
         fileExists(msg);
         System.out.println("Logs finished");
-
-        //Permissions
-        File permissions = new File("");
-        fileExists(permissions);
     }
 
     private void fileExists(File f) {

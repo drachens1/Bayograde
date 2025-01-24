@@ -8,8 +8,8 @@ import java.util.List;
 
 public abstract class MapGen {
     private final List<Instance> generating = new ArrayList<>();
-    private int sizeX;
-    private int sizeY;
+    private final int sizeX;
+    private final int sizeY;
 
     public MapGen(int sizeX, int sizeY) {
         this.sizeX = sizeX;
@@ -37,9 +37,5 @@ public abstract class MapGen {
 
     public boolean isGenerating(Instance instance) {
         return generating.contains(instance);
-    }
-
-    public List<Instance> getFinished() {
-        return generating;
     }
 }

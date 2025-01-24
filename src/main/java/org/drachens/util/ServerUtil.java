@@ -294,7 +294,6 @@ public class ServerUtil {
         commandManager.register(new GoldCMD());
         commandManager.register(new PlaytimeCMD());
         commandManager.register(new DemandCMD());
-        commandManager.register(new TechCMD());
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
 
