@@ -21,8 +21,8 @@ import static org.drachens.util.ServerUtil.blockVecToPos;
 
 
 public class ClickWarSystem implements War {
-    private final CurrencyTypes hits = CurrencyEnum.production.getCurrencyType();
-    private final Payment payment = new Payment(hits, 1);
+    private final CurrencyTypes cost = CurrencyEnum.production.getCurrencyType();
+    private final Payment payment = new Payment(cost, 1);
     int[][] directions = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
@@ -61,7 +61,7 @@ public class ClickWarSystem implements War {
         if (country == null) return;
         Instance instance = e.getInstance();
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
-        if (province == null || province.getOccupier() == null || !province.getOccupier().isAtWar(country)) return;
+        if (province == null || province.getOccupier() == null || !province.getOccupier().isAtWar(country.getName())) return;
         if (!country.canMinusCost(payment)) {
             p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;
@@ -70,5 +70,10 @@ public class ClickWarSystem implements War {
         if (atkFrom == null) return;
         country.removePayment(payment);
         province.capture(atkFrom.getOccupier());
+    }
+
+    public Province canCapture(Province province, Country country){
+        if (province == null || province.getOccupier() == null || !province.getOccupier().isAtWar(country.getName())||!country.canMinusCost(payment)) return null;
+        return AdjacentBlocks(province.getPos(), country, country.getInstance());
     }
 }

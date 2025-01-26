@@ -140,6 +140,7 @@ public class Main {
     public static void completeStartup() {
         NG5M.preServerHook();
 
+
         initSrv();
         MinecraftServer.getCommandManager().register(new ConfirmCMD());
 
@@ -165,7 +166,6 @@ public class Main {
                 new Hat("1", 1, Material.PURPLE_DYE, Component.text("item", NamedTextColor.AQUA), 1)
         ));
 
-        setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
 
         ServerPropertiesFile spf = ContinentalManagers.configFileManager.getServerPropertiesFile();
 
@@ -176,11 +176,12 @@ public class Main {
                 .addColumn("last_online", DataTypeEum.STRING)
                 .addColumn("first_joined", DataTypeEum.STRING)
                 .addColumn("playtime", DataTypeEum.LONG)
-                .addColumn("gold", DataTypeEum.INTEGER)
                 .addColumn("permissions", DataTypeEum.STRING)
-                .addColumn("cosmetics", DataTypeEum.STRING)
+                .addColumn("ranks", DataTypeEum.STRING)
                 .addColumn("event_count", DataTypeEum.STRING)
                 .build());
+
+        setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
     }
 
     private static void createAdvancements() {

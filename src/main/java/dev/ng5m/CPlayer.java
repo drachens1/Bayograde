@@ -12,24 +12,29 @@ import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.fileManagement.PlayerInfoEntry;
+import org.drachens.store.other.LoginMessage;
+import org.drachens.store.other.Rank;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
 import static org.drachens.util.OtherUtil.formatPlaytime;
 
 public class CPlayer extends Player {
-    private final List<String> ownedCosmetics = new ArrayList<>();
     private final List<String> permissions = new ArrayList<>();
+
+    private final List<Rank> ranks = new ArrayList<>();
+    private final List<LoginMessage> loginMessages = new ArrayList<>();
+    private final HashSet<String> ownedCosmetics = new HashSet<>();
     private Country country;
 
     private UUID lastMessenger;
 
-    private int gold = 0;
     private ItemStack headItem;
     private LocalTime joinTime;
     private Long playTime;
@@ -111,39 +116,30 @@ public class CPlayer extends Player {
         this.lastMessenger = player.getUuid();
     }
 
-    public int getGold() {
-        return gold;
+    public void addRank(Rank rank){
+        ranks.add(rank);
+        ownedCosmetics.addAll(rank.getCosmetics());
+        loginMessages.addAll(rank.getLoginMessages());
+        playerInfoEntry.addRank(rank.getIdentifier());
     }
 
-    public void setGold(int gold) {
-        this.gold = gold;
-        playerInfoEntry.setGold(gold);
+    public void removeRank(Rank rank){
+        ranks.remove(rank);
+        rank.getCosmetics().forEach(ownedCosmetics::remove);
+        rank.getLoginMessages().forEach(loginMessages::remove);
+        playerInfoEntry.removeRank(rank.getIdentifier());
     }
 
-    public void minusGold(int amount) {
-        gold -= amount;
-        playerInfoEntry.setGold(gold);
+    public boolean hasRank(Rank rank){
+        return ranks.contains(rank);
     }
 
-    public void addGold(int amount) {
-        gold += amount;
-        playerInfoEntry.setGold(gold);
+    public boolean hasCosmetic(String cosmetic){
+        return ownedCosmetics.contains(cosmetic);
     }
 
-    public void addCosmetic(String identifier) {
-        ownedCosmetics.add(identifier);
-    }
-
-    public void removeCosmetic(String identifier) {
-        ownedCosmetics.remove(identifier);
-    }
-
-    public boolean hasCosmetic(String identifier) {
-        return ownedCosmetics.contains(identifier);
-    }
-
-    public List<String> getOwnedCosmetics() {
-        return ownedCosmetics;
+    public List<LoginMessage> getLoginMessages(){
+        return loginMessages;
     }
 
     public ItemStack getPlayerHead() {
@@ -166,4 +162,11 @@ public class CPlayer extends Player {
         return permissions;
     }
 
+    public List<String> getCosmetics(){
+        return new ArrayList<>(ownedCosmetics);
+    }
+
+    public LoginMessage getActiveLoginMessage(){
+        return loginMessages.getFirst();
+    }
 }

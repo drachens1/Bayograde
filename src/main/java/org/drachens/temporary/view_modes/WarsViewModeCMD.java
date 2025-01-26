@@ -49,5 +49,4 @@ public class WarsViewModeCMD extends Command {
         }
         return true;
     }
-
 }

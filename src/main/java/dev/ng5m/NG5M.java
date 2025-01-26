@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
 import dev.ng5m.event.PurchaseEvent;
 import dev.ng5m.events.EventHandlerProviderManager;
-import dev.ng5m.greet.GreetEvents;
-//import dev.ng5m.protocol.ClientPurchaseSuccessPacket;
 import dev.ng5m.shop.PurchaseGson;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
@@ -23,22 +21,6 @@ public class NG5M {
         MinecraftServer.getConnectionManager().setPlayerProvider(CPlayer::new);
 
         EventHandlerProviderManager.registerProvider(FlappyBird.class);
-
-        new GreetEvents().hook(
-                new GreetEvents.GreetSettings(
-                        event ->
-                                Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
-                                        Util.colored("+", Constants.Colors.LIME).append(
-                                                Util.colored("] " + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
-                                        )
-                                ),
-                        event ->
-                                Util.colored("[", Constants.Colors.LIGHT_GRAY).append(
-                                        Util.colored("-", Constants.Colors.RED).append(
-                                                Util.colored("]" + event.getPlayer().getUsername(), Constants.Colors.LIGHT_GRAY)
-                                        )
-                                ))
-        );
 
         try {
 

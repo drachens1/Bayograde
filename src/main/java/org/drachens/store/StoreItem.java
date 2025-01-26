@@ -6,7 +6,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
@@ -15,15 +14,12 @@ import java.util.List;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public abstract class StoreItem {
-    private final Component boughtMessage;
     private final String identifier;
     private final int cost;
     private final Material material;
     private final Component name;
     private final Component description;
     private final int modelData;
-    private final Component canAfford = Component.text("Can afford", NamedTextColor.GREEN, TextDecoration.BOLD);
-    private final Component cantAfford = Component.text("Cant afford", NamedTextColor.RED, TextDecoration.BOLD);
     private final Component purchased = Component.text("purchased", NamedTextColor.GREEN, TextDecoration.BOLD);
 
     public StoreItem(String identifier, int cost, Material material, Component name, int modelData) {
@@ -33,13 +29,6 @@ public abstract class StoreItem {
         this.identifier = identifier;
         this.modelData = modelData;
         this.description = null;
-        boughtMessage = Component.text()
-                .append(MessageEnum.system.getComponent())
-                .append(Component.text("You have successfully bought "))
-                .append(name)
-                .append(Component.text(" for "))
-                .append(Component.text(cost))
-                .build();
     }
 
     public ItemStack getItem(CPlayer p) {
@@ -64,28 +53,9 @@ public abstract class StoreItem {
             comps.add(description);
         if (p.hasCosmetic(identifier)) {
             comps.add(purchased);
-        } else {
-            if (p.getGold() >= cost) {
-                comps.add(canAfford);
-            } else {
-                comps.add(cantAfford);
-            }
         }
         return comps;
     }
-
-    public boolean canBuy(CPlayer p) {
-        return p.getGold() >= cost;
-    }
-
-    public void purchase(CPlayer p) {
-        p.sendMessage(boughtMessage);
-        p.minusGold(cost);
-        ContinentalManagers.cosmeticsManager.addCosmetic(p, identifier);
-        onPurchase(p);
-    }
-
-    protected abstract void onPurchase(CPlayer p);
 
     public void clickAfterBought(CPlayer p) {
         p.sendMessage(Component.text()

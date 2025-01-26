@@ -1,8 +1,10 @@
 package org.drachens.fileManagement;
 
 import dev.ng5m.CPlayer;
+import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.fileManagement.databases.Entry;
 import org.drachens.fileManagement.databases.Table;
+import org.drachens.store.other.Rank;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,9 +20,8 @@ public class PlayerInfoEntry implements Entry {
     private final String name;
     private final HashMap<String, Integer> eventAchievementTrigger = new HashMap<>();
     private Long playtime;
-    private int gold;
     private List<String> permissions;
-    private List<String> cosmetics;
+    private List<String> ranks;
 
     public PlayerInfoEntry(CPlayer p, Table table) {
         this.p = p;
@@ -31,12 +32,12 @@ public class PlayerInfoEntry implements Entry {
         insert();
     }
 
-    public void addCosmetic(String toAdd) {
-        cosmetics.add(toAdd);
+    public void addRank(String toAdd) {
+        ranks.add(toAdd);
     }
 
-    public void removeCosmetic(String toAdd) {
-        cosmetics.remove(toAdd);
+    public void removeRank(String toAdd) {
+        ranks.remove(toAdd);
     }
 
     public HashMap<String, Integer> getEventAchievementTrigger() {
@@ -45,30 +46,6 @@ public class PlayerInfoEntry implements Entry {
 
     public void addAchievementEventTriggered(String identifier, int count) {
         eventAchievementTrigger.put(identifier, count);
-    }
-
-    public List<String> getCosmetics() {
-        return cosmetics;
-    }
-
-    public void setCosmetics(ArrayList<String> cosmetics) {
-        this.cosmetics = cosmetics;
-    }
-
-    public List<String> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(ArrayList<String> permissions) {
-        this.permissions = permissions;
-    }
-
-    public int getGold() {
-        return gold;
-    }
-
-    public void setGold(int gold) {
-        this.gold = gold;
     }
 
     public Long getPlaytime() {
@@ -107,27 +84,25 @@ public class PlayerInfoEntry implements Entry {
 
         if (insertRequired) {
             String insertSql = "INSERT INTO " + table.getTableName() +
-                    " (uuid, name, last_online, first_joined, playtime, gold, permissions, cosmetics, event_count) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    " (uuid, name, last_online, first_joined, playtime, permissions, ranks, event_count) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement insertStatement = table.getDatabase().getConnection().prepareStatement(insertSql)) {
                 insertStatement.setString(1, uuid);
                 insertStatement.setString(2, name);
                 insertStatement.setString(3, getTime());
                 insertStatement.setString(4, getTime());
                 insertStatement.setLong(5, 0);
-                insertStatement.setInt(6, 0);
+                insertStatement.setString(6, "");
                 insertStatement.setString(7, "");
                 insertStatement.setString(8, "");
                 insertStatement.setString(9, "");
-                insertStatement.setString(10, "");
                 insertStatement.executeUpdate();
             } catch (SQLException e) {
                 System.err.println("Error inserting the info " + e.getMessage());
             }
 
-            this.gold = 0;
             this.playtime = 0L;
-            this.cosmetics = new ArrayList<>();
+            this.ranks = new ArrayList<>();
             this.permissions = new ArrayList<>();
         } else {
             load();
@@ -145,17 +120,18 @@ public class PlayerInfoEntry implements Entry {
             if (resultSet.next()) {
                 this.playtime = resultSet.getLong("playtime");
                 p.setPlayTime(playtime);
-                this.gold = resultSet.getInt("gold");
-                p.setGold(gold);
 
                 String permissionsString = resultSet.getString("permissions");
                 this.permissions = new ArrayList<>(Arrays.asList(permissionsString.split(",")));
-                permissions.forEach(permission -> p.addPermission(permission));
+                permissions.forEach(p::addPermission);
 
-
-                String cosmeticsString = resultSet.getString("cosmetics");
-                this.cosmetics = new ArrayList<>(Arrays.asList(cosmeticsString.split(",")));
-                cosmetics.forEach(p::addCosmetic);
+                String rankString = resultSet.getString("ranks");
+                this.ranks = new ArrayList<>(Arrays.asList(rankString.split(",")));
+                new ArrayList<>(ranks).forEach(string -> {
+                    if (string.isBlank())return;
+                    Rank rank = RankEnum.valueOf(string).getRank();
+                    rank.addPlayer(p);
+                });
 
                 String achievementEventString = resultSet.getString("event_count");
                 if (achievementEventString != null) {
@@ -167,7 +143,6 @@ public class PlayerInfoEntry implements Entry {
                         }
                     }
                 }
-
 
                 table.getColumn("last_online").onlySetThisValue(getTime(), uuid);
             }
@@ -185,14 +160,13 @@ public class PlayerInfoEntry implements Entry {
     @Override
     public void applyChanges() {
         String updateSql = "UPDATE " + table.getTableName() +
-                " SET playtime = ?, gold = ?, permissions = ?, cosmetics = ? , event_count = ?" +
+                " SET playtime = ?, permissions = ?, ranks = ? , event_count = ?" +
                 "WHERE uuid = ?";
 
         try (PreparedStatement updateStatement = table.getDatabase().getConnection().prepareStatement(updateSql)) {
             updateStatement.setLong(1, playtime);
-            updateStatement.setInt(2, gold);
-            updateStatement.setString(3, String.join(",", permissions));
-            updateStatement.setString(4, String.join(",", cosmetics));
+            updateStatement.setString(2, String.join(",", permissions));
+            updateStatement.setString(3, String.join(",", ranks));
 
             StringBuilder eventCountBuilder = new StringBuilder();
             for (Map.Entry<String, Integer> entry : eventAchievementTrigger.entrySet()) {
@@ -202,8 +176,8 @@ public class PlayerInfoEntry implements Entry {
             if (eventCountString.endsWith(",")) {
                 eventCountString = eventCountString.substring(0, eventCountString.length() - 1);
             }
-            updateStatement.setString(5, eventCountString);
-            updateStatement.setString(6, uuid);
+            updateStatement.setString(4, eventCountString);
+            updateStatement.setString(5, uuid);
 
             updateStatement.executeUpdate();
         } catch (SQLException e) {

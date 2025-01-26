@@ -1,18 +1,24 @@
 package org.drachens.temporary.clicks;
 
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalTypeEnum;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Economics.BuildTypes;
+import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.events.NewDay;
+import org.drachens.events.countries.war.StartWarEvent;
+import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;
 import org.drachens.temporary.Factory;
@@ -22,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class ClicksAI implements AIManager {
     private final VotingWinner votingWinner;
@@ -29,9 +36,7 @@ public class ClicksAI implements AIManager {
 
     public ClicksAI(VotingWinner votingWinner) {
         this.votingWinner = votingWinner;
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
-            tick(e.getInstance());
-        });
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> tick(e.getInstance()));
     }
 
     @Override
@@ -41,7 +46,7 @@ public class ClicksAI implements AIManager {
 
     @Override
     public AI createAIForCountry(Country country) {
-        AI ai = new ResearchGrinder((ResearchCountry) country);
+        AI ai = new GlobalDominationAI(country,(ClickWarSystem) votingWinner.getVotingOption().getWar());
         ais.put(country, ai);
         return ai;
     }
@@ -169,23 +174,59 @@ public class ClicksAI implements AIManager {
     }
 
     static class GlobalDominationAI extends AI {
+        private final float aggression = 100;
+        private final Payment payment = new Payment(CurrencyEnum.production, 1);
         private final Country country;
+        private final Consumer<WarJustification> c;
+        private final ClickWarSystem clickWarSystem;
 
-        public GlobalDominationAI(Country country) {
+        public GlobalDominationAI(Country country, ClickWarSystem clickWarSystem) {
+            this.clickWarSystem = clickWarSystem;
             this.country = country;
+            c = warJust -> EventDispatcher.call(new StartWarEvent(country, warJust.getAgainstCountry(), warJust));
         }
 
         @Override
         public void tick() {
-
+            if (!country.getBordersWars().isEmpty()){
+                conquerCountry(new ArrayList<>(country.getBordersWars()));
+            } else if (country.getWarJustifications().isEmpty()){
+                startAWar();
+            }
         }
 
         public void startAWar() {
-
+            List<String> s = country.getBorders().stream().toList();
+            String count = s.get(new Random().nextInt(0,s.size()));
+            Country atk = ContinentalManagers.world(country.getInstance()).countryDataManager().getCountryFromName(count);
+            if (!country.canFight(atk) || country.isAtWar(atk.getName())){
+                return;
+            }
+            WarJustification warJustification = new WarJustification(WarGoalTypeEnum.surprise.getWarGoalType(), atk, c);
+            EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
         }
 
-        public void conquerCountry() {
+        public void conquerCountry(List<String> s) {
+            Country atk = ContinentalManagers.world(country.getInstance()).countryDataManager().getCountryFromName(s.getFirst());
+            List<Province> provinces = country.getBordersCountry(s.getFirst());
+            if (provinces==null){
+                s.remove(atk.getName());
+                if (s.isEmpty())return;
+                conquerCountry(s);
+                return;
+            }
 
+            for (Province province : new ArrayList<>(provinces)){
+                Province from = clickWarSystem.canCapture(province,country);
+                if (from!=null){
+                    country.removePayment(payment);
+                    province.capture(from.getOccupier());
+                }
+                return;
+            }
+            s.remove(atk.getName());
+            if (s.isEmpty())return;
+            conquerCountry(s);
         }
     }
 }

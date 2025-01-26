@@ -3,6 +3,7 @@ package dev.ng5m;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
+import org.drachens.Manager.defaults.enums.ColoursEnum;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -55,8 +56,8 @@ public class Util {
         }
     }
 
-    public static Component colored(String text, Constants.Colors color) {
-        return Component.text(text).color(color.color);
+    public static Component colored(String text, ColoursEnum color) {
+        return Component.text(text).color(color.getTextColor());
     }
 
     public static Class<?>[] toTypes(Object... o) {

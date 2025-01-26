@@ -88,10 +88,12 @@ public class Factory extends BuildTypes {
             sendMessage(p, cantAffordToUpgrade);
             return false;
         }
-        int maxLvl = materialLvls.get(province.getMaterial());
+        int min = materialLvls.get(province.getMaterial());
+        int maxLvl = min;
         maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
+        if (maxLvl<min)maxLvl=min;
         if (lvlsModelData.length < maxLvl) return false;
-        if (!(building.getCurrentLvl() + add <= maxLvl)) {
+        if (building.getCurrentLvl() + add > maxLvl) {
             sendMessage(p, maxCapacityReached);
             return false;
         } else

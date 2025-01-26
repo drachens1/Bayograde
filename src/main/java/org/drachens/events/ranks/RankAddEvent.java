@@ -1,8 +1,8 @@
 package org.drachens.events.ranks;
 
-import dev.ng5m.Rank;
 import net.minestom.server.entity.Player;
 import org.drachens.interfaces.Event;
+import org.drachens.store.other.Rank;
 
 public class RankAddEvent extends Event {
     private final Player player;

@@ -17,12 +17,12 @@ public class DeclareWarCMD extends Command {
         super("declare-war");
         var countries = getCountriesArgExcludingPlayersCountry();
         setDefaultExecutor((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
+            if (notIsLeaderOfCountry(sender)) return;
             sender.sendMessage("Proper usage /country diplomacy declare_war <country> ");
         });
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) {
+            if (notIsLeaderOfCountry(sender)) {
                 sender.sendMessage("You are not the leader of a country");
                 return;
             }
@@ -42,12 +42,12 @@ public class DeclareWarCMD extends Command {
         }, countries);
     }
 
-    private boolean isLeaderOfCountry(CommandSender sender) {
+    private boolean notIsLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            if (country == null) return true;
+            return !country.isPlayerLeader(p);
         }
-        return false;
+        return true;
     }
 }

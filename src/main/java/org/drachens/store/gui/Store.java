@@ -3,7 +3,6 @@ package org.drachens.store.gui;
 import dev.ng5m.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
@@ -36,18 +35,7 @@ public class Store extends InventoryGUI {
         outlineInventory(this, outline(itemBuilder(Material.BLUE_STAINED_GLASS_PANE, Component.text("", NamedTextColor.AQUA))));
         addExitButton(this);
         addPlayerHeadAtSlot(this, 4);
-        this.addButton(3, addGoldView());
         super.decorate(player);
-    }
-
-    private InventoryButton addGoldView() {
-        return new InventoryButton()
-                .creator(player -> ItemStack.builder(Material.GOLD_INGOT)
-                        .customName(Component.text(player.getGold() + "", NamedTextColor.GOLD, TextDecoration.BOLD))
-                        .build())
-                .consumer(e -> {
-
-                });
     }
 
     private InventoryButton category(StoreCategory storeCategory) {

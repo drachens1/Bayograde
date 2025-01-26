@@ -154,56 +154,41 @@ public class CentralEventManager {
             List<Country> atks = new ArrayList<>();
             atks.add(attacker);
             if (attacker.hasPuppets()) {
-                attacker.getPuppets().forEach(country -> {
-                    atks.add(country);
-                    warsWith.add(country.getNameComponent());
-                    warsWith.add(Component.text(","));
-                });
+                atks.addAll(attacker.getPuppets());
                 warsWith.removeLast();
             } else if (attacker.hasOverlord()) {
-                attacker.getOverlord().getPuppets().forEach(country -> {
-                    atks.add(country);
-                    warsWith.add(country.getNameComponent());
-                    warsWith.add(Component.text(","));
-                });
+                atks.addAll(attacker.getOverlord().getPuppets());
                 atks.add(attacker.getOverlord());
-                attacker.getOverlord().addCountryWar(defender);
-                warsWith.add(attacker.getOverlord().getNameComponent());
-                warsWith.add(Component.text(","));
-            } else {
-                attacker.addCountryWar(defender);
             }
 
             List<Component> warsAgainst = new ArrayList<>();
             List<Country> defs = new ArrayList<>();
             defs.add(defender);
             if (defender.hasPuppets()) {
-                defender.getPuppets().forEach(country -> {
-                    defs.add(country);
-                    warsAgainst.add(country.getNameComponent());
-                    warsAgainst.add(Component.text(","));
-                });
-                warsAgainst.removeLast();
+                defs.addAll(defender.getPuppets());
             } else if (defender.hasOverlord()) {
-                defender.getOverlord().getPuppets().forEach(country -> {
-                    defs.add(country);
-                    warsAgainst.add(country.getNameComponent());
-                    warsAgainst.add(Component.text(","));
-                });
+                defs.addAll(defender.getOverlord().getPuppets());
                 defs.add(defender.getOverlord());
-                warsAgainst.add(defender.getOverlord().getNameComponent());
-                warsAgainst.add(defender.getOverlord().getNameComponent());
-                warsAgainst.add(Component.text(","));
-
             } else {
                 defender.addCountryWar(attacker);
-                warsAgainst.add(defender.getNameComponent());
             }
 
             defs.forEach(country -> atks.forEach(country1 -> {
                 country.addCountryWar(country1);
                 country1.addCountryWar(country);
             }));
+
+            atks.forEach(country -> {
+                warsWith.add(country.getNameComponent());
+                warsWith.add(Component.text(", "));
+            });
+            warsWith.removeLast();
+
+            defs.forEach(country -> {
+                warsAgainst.add(country.getNameComponent());
+                warsAgainst.add(Component.text(", "));
+            });
+            warsAgainst.removeLast();
 
             broadcast(Component.text()
                     .append(MessageEnum.system.getComponent())

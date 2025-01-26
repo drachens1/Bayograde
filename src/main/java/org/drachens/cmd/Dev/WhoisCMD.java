@@ -47,11 +47,6 @@ public class WhoisCMD extends Command {
                     .append(Component.text("Permissions: "))
                     .append(Component.text(permissions.toString()))
                     .appendNewline()
-                    .append(Component.text("Cosmetics: "))
-                    .append(Component.text(p.getOwnedCosmetics().toString()))
-                    .appendNewline()
-                    .append(Component.text("Gold: "))
-                    .append(Component.text(p.getGold()))
                     .build());
         }, player);
     }

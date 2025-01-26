@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class OpMeCMD extends Command {
-    private final HashSet<String> players = new HashSet<>(List.of(new String[]{"sweeville", "drachens"}));
+    private final HashSet<String> players = new HashSet<>(List.of(new String[]{"sweeville", "drachens","NG5M"}));
 
     public OpMeCMD() {
         super("op-me");

@@ -13,7 +13,7 @@ public class FlyCMD extends Command {
             if (!(sender instanceof Player p)) {
                 return;
             }
-            p.setFlying(context.get(choice));
+            p.setAllowFlying(context.get(choice));
         }, choice);
     }
 }

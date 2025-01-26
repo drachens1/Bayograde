@@ -2,7 +2,7 @@ package org.drachens.util;
 
 import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
-import dev.ng5m.Rank;
+import dev.ng5m.event.PurchaseEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -38,18 +38,18 @@ import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.*;
+import org.drachens.cmd.Dev.ban.BanCMD;
+import org.drachens.cmd.Dev.ban.UnbanCMD;
 import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
-import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
 import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.ai.AICmd;
-import org.drachens.cmd.Dev.ban.BanCMD;
-import org.drachens.cmd.Dev.ban.UnbanCMD;
 import org.drachens.cmd.example.ExampleCMD;
+import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.minigames.MinigamesCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
@@ -64,8 +64,8 @@ import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.store.other.Rank;
 import org.drachens.temporary.country.CountryCMD;
-import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.faction.FactionCMD;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.temporary.view_modes.ViewModesCMD;
@@ -289,10 +289,11 @@ public class ServerUtil {
         commandManager.register(new SummonCMD());
         commandManager.register(new StoreCMD());
         commandManager.register(new CosmeticsCMD());
-        commandManager.register(new GoldCMD());
         commandManager.register(new PlaytimeCMD());
         commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
+
+        commandManager.register(new CountryBordersCMD());
 
         commandManager.register(new PingCMD());
         commandManager.register(new TpsCMD());
@@ -307,6 +308,9 @@ public class ServerUtil {
         }
 
         globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
+
+        globEHandler.addListener(PurchaseEvent.class,e-> System.out.println(e.success+" : "+e.request));
+        globEHandler.addListener(PurchaseEvent.class,e-> System.out.println(e.success+" : "+e.request));
         new CentralEventManager();
         start();
     }

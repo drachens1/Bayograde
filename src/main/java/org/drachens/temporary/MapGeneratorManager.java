@@ -382,7 +382,6 @@ public class MapGeneratorManager extends MapGen {
             Province province = new Province(new Pos(flatPos.x(), 0, flatPos.z()), instance, country, new ArrayList<>());
             province.initialOccupier(country);
             province.setCore(country);
-            country.addCore(province);
             provinceManager.registerProvince(flatPos.x(), flatPos.z(), province);
         }));
         countryHashMap.forEach(((flatPos, country) -> {

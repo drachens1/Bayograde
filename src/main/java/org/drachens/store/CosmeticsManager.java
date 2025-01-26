@@ -1,7 +1,5 @@
 package org.drachens.store;
 
-import dev.ng5m.CPlayer;
-
 import java.util.HashMap;
 
 public class CosmeticsManager {
@@ -15,16 +13,6 @@ public class CosmeticsManager {
 
     public HashMap<String, StoreCategory> getStoreCategories() {
         return storeCategoryHashMap;
-    }
-
-    public void addCosmetic(CPlayer p, String identifier) {
-        p.getPlayerInfoEntry().addCosmetic(identifier);
-        p.addCosmetic(identifier);
-    }
-
-    public void removeCosmetic(CPlayer p, String identifier) {
-        p.getPlayerInfoEntry().removeCosmetic(identifier);
-        p.removeCosmetic(identifier);
     }
 
     public StoreItem getStoreItem(String identifier) {

@@ -2,13 +2,9 @@ package org.drachens.Manager.defaults.enums;
 
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.NoneCustomisableInventory;
-import org.drachens.interfaces.inventories.BuildItem;
-import org.drachens.interfaces.inventories.ChangeInventoryButton;
-import org.drachens.interfaces.inventories.HotbarInventory;
-import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.drachens.interfaces.inventories.*;
 import org.drachens.temporary.demand.*;
 import org.drachens.temporary.invasions.NavalInvasionClicksItem;
-import org.drachens.temporary.inventories.ExitItem;
 import org.drachens.temporary.scoreboards.items.ShowDiplomacy;
 import org.drachens.temporary.scoreboards.items.ShowEconomy;
 import org.drachens.temporary.scoreboards.items.ShowGeneralInfo;
