@@ -2,13 +2,12 @@ package dev.ng5m;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
+import dev.ng5m.bansystem.BanSystemEvents;
 import dev.ng5m.event.CancelPurchaseEvent;
 import dev.ng5m.event.PurchaseEvent;
-import dev.ng5m.events.EventHandlerProviderManager;
 import dev.ng5m.shop.PurchaseGson;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
-import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.miniGameSystem.minigames.FlappyBird;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class NG5M {
     public void hook() {
         MinecraftServer.getConnectionManager().setPlayerProvider(CPlayer::new);
 
-        EventHandlerProviderManager.registerProvider(FlappyBird.class);
+        new BanSystemEvents();
 
         try {
             if (!FlappyBird.db.exists()) {

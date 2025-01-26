@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Random;
 
 public class Util {
-
     public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static List<Player> getAllOnlinePlayers() {

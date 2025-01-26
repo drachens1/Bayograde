@@ -1,7 +1,6 @@
 package org.drachens;
 
 import dev.ng5m.NG5M;
-import dev.ng5m.events.EventHandlerProviderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -158,8 +157,6 @@ public class Main {
         BuildingEnum.barracks.setBuildType(new Barracks());
 
         createAdvancements();
-
-        EventHandlerProviderManager.hook();
 
         ContinentalManagers.cosmeticsManager.register(new StoreCategory("Something",
                 Component.text("example", NamedTextColor.AQUA),

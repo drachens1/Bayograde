@@ -5,7 +5,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import dev.ng5m.CPlayer;
 import dev.ng5m.Util;
-import dev.ng5m.events.EventHandlerProvider;
 import dev.ng5m.util.MiniGameUtil;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -27,15 +26,13 @@ import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
 
-public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
-        implements EventHandlerProvider {
+public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
     public static final File db = new File("flappy.json");
     private static final double gravity = 0.5;
     private static final String SID_BIRD = "bird";
     private static final String SID_PIPE = "flappyPipe";
     private final Sprite bird;
     private final double realX;
-    private final int xMax;
     private final int yMax;
     private final FlappyBar flappyBar;
     private final List<PipeSprite> pipes = new ArrayList<>();
@@ -47,7 +44,6 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld>
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
         super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(xMax, yMax));
-        this.xMax = xMax;
         this.yMax = yMax;
         this.player = p;
 
