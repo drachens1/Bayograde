@@ -1,5 +1,7 @@
 package org.drachens.Manager.defaults;
 
+import com.sun.net.httpserver.HttpServer;
+import dev.ng5m.NG5M;
 import net.minestom.server.instance.Instance;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.*;
@@ -10,6 +12,9 @@ import org.drachens.dataClasses.WorldClasses;
 import org.drachens.fileManagement.ConfigFileManager;
 import org.drachens.fileManagement.databases.Database;
 import org.drachens.store.CosmeticsManager;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
 
 import static org.drachens.util.ServerUtil.getWorldClasses;
 
@@ -31,9 +36,9 @@ public class ContinentalManagers {
     public static final ChannelManager channelManager = new ChannelManager();
     public static final ServerHealthManager serverHealthManager = new ServerHealthManager();
     public static final CentralAIManager centralAIManager = new CentralAIManager();
-    public static final PlayerSettingsManager playerSettingsManager = new PlayerSettingsManager();
     public static Database database;
 
+    //todo add settings
     public static WorldClasses world(Instance instance) {
         return getWorldClasses(instance);
     }

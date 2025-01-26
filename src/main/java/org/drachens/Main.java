@@ -138,10 +138,11 @@ public class Main {
     }
 
     public static void completeStartup() {
-        NG5M.preServerHook();
-
+        NG5M ng5m = new NG5M();
+        ng5m.preHook();
 
         initSrv();
+
         MinecraftServer.getCommandManager().register(new ConfirmCMD());
 
         ContinentalManagers.centralAIManager.registerEventManager(new ClicksAI(VotingWinner.ww2_clicks));
@@ -182,6 +183,7 @@ public class Main {
                 .build());
 
         setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
+        ng5m.hook();
     }
 
     private static void createAdvancements() {
@@ -443,9 +445,4 @@ public class Main {
     private static String getName() {
         return firstName[new Random().nextInt(0, firstName.length)] + " " + lastName[new Random().nextInt(0, lastName.length)];
     }
-
-    public static void initHooks() {
-        NG5M.hook();
-    }
-
 }

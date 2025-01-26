@@ -2,6 +2,7 @@ package org.drachens.util;
 
 import dev.ng5m.CPlayer;
 import dev.ng5m.Constants;
+import dev.ng5m.event.CancelPurchaseEvent;
 import dev.ng5m.event.PurchaseEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -97,8 +98,6 @@ public class ServerUtil {
             return;
         }
         srv = MinecraftServer.init();
-
-        Main.initHooks();
     }
 
     public static void startSrv() {
@@ -309,8 +308,9 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
 
-        globEHandler.addListener(PurchaseEvent.class,e-> System.out.println(e.success+" : "+e.request));
-        globEHandler.addListener(PurchaseEvent.class,e-> System.out.println(e.success+" : "+e.request));
+        globEHandler.addListener(PurchaseEvent.class,e-> System.out.println(e.success() +" : "+ e.request()));
+        globEHandler.addListener(CancelPurchaseEvent.class, e-> System.out.println(e.success() +" : "+ e.request()));
+
         new CentralEventManager();
         start();
     }
