@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
+import org.drachens.Manager.ChatCensor;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.*;
 import org.drachens.advancement.Advancement;
@@ -178,6 +179,8 @@ public class Main {
                 .addColumn("ranks", DataTypeEum.STRING)
                 .addColumn("event_count", DataTypeEum.STRING)
                 .build());
+
+        new ChatCensor();
 
         setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);
         ng5m.hook();

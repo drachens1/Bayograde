@@ -1,6 +1,6 @@
 package org.drachens.interfaces.inventories;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.ContinentalManagers;

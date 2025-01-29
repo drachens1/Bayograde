@@ -1,6 +1,6 @@
 package org.drachens.store.other;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import dev.ng5m.ImmutableList;
 import dev.ng5m.Util;
 import net.kyori.adventure.text.Component;

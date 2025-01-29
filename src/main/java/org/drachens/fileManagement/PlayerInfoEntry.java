@@ -1,6 +1,6 @@
 package org.drachens.fileManagement;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.fileManagement.databases.Entry;
 import org.drachens.fileManagement.databases.Table;

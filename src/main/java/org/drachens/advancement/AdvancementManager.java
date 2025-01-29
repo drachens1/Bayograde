@@ -1,6 +1,6 @@
 package org.drachens.advancement;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import kotlin.Pair;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.AdvancementRoot;

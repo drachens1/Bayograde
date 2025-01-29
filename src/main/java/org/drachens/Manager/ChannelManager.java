@@ -1,6 +1,6 @@
 package org.drachens.Manager;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.interfaces.Channel;

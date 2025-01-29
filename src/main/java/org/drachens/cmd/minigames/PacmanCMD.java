@@ -1,6 +1,6 @@
 package org.drachens.cmd.minigames;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
 import org.drachens.miniGameSystem.minigames.Pacman;
 

@@ -1,6 +1,6 @@
 package org.drachens.miniGameSystem;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;

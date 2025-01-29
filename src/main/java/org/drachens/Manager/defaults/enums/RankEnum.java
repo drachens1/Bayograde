@@ -8,7 +8,10 @@ import org.drachens.store.other.Rank;
 public enum RankEnum {
     default_rank(new Rank.Create(Player::getName, Component.text(""),Component.text(""), NamedTextColor.GRAY,"default_rank")
             .addLoginMessage(LoginMessageEnum.default_login_message)
-            .build());
+            .build()),
+//    Legatus(),
+//    deratus()
+    ;
 
     private final Rank rank;
     RankEnum(Rank rank){

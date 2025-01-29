@@ -1,6 +1,6 @@
 package org.drachens.temporary.troops;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;

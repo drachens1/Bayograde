@@ -232,11 +232,11 @@ public class MapGeneratorManager extends MapGen {
                 .scale(new Random().nextDouble(0.03, 0.04))
                 .build();
 
+        instance.enableAutoChunkLoad(true);
         for (int x = -getSizeX(); x < getSizeX(); x++) {
             for (int y = -getSizeY(); y < getSizeY(); y++) {
                 double noiseValue = noisePipeline.evaluateNoise(x, y);
                 Pos pos = new Pos(x, 0, y);
-                instance.loadChunk(pos.chunkX(), pos.chunkZ());
                 if (noiseValue < 0.01) {
                     instance.setBlock(pos, Material.BLUE_STAINED_GLASS.block());
                 } else {

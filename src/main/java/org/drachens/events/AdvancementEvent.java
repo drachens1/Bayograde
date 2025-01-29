@@ -1,6 +1,6 @@
 package org.drachens.events;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import org.drachens.interfaces.Event;
 
 public class AdvancementEvent extends Event {

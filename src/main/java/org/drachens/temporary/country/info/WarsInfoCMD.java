@@ -1,6 +1,6 @@
 package org.drachens.temporary.country.info;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;

@@ -1,4 +1,4 @@
-package dev.ng5m;
+package org.drachens.player_types;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

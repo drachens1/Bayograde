@@ -1,6 +1,6 @@
 package org.drachens.temporary.troops.inventory;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;

@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.additional;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.suggestion.Suggestion;
 

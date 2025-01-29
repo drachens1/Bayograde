@@ -1,6 +1,6 @@
 package org.drachens.Manager.scoreboards;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.entity.Player;
 
 import java.util.HashMap;

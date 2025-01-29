@@ -9,6 +9,7 @@ import dev.ng5m.shop.PurchaseGson;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.miniGameSystem.minigames.FlappyBird;
+import org.drachens.player_types.CPlayer;
 
 import java.io.IOException;
 import java.io.InputStream;

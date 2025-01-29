@@ -1,6 +1,6 @@
 package org.drachens.miniGameSystem.minigames;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.util.Direction;
 import dev.ng5m.util.MiniGameUtil;

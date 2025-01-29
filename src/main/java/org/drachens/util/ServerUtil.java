@@ -1,6 +1,6 @@
 package org.drachens.util;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.event.CancelPurchaseEvent;
 import dev.ng5m.event.PurchaseEvent;
@@ -25,7 +25,6 @@ import net.minestom.server.instance.Weather;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
-import org.drachens.Main;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;

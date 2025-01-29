@@ -1,6 +1,6 @@
 package org.drachens.Manager.defaults;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ public class PermissionsUtil {
         operator.add("restart");
         operator.add("summon");
         operator.add("cheat");
+        operator.add("admin");
     }
 
     public void playerOp(CPlayer p) {

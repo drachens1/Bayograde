@@ -1,6 +1,6 @@
 package org.drachens.util;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.MinecraftServer;

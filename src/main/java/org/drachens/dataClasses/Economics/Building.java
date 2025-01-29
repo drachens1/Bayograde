@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.Economics;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;

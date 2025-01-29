@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.other;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.instance.Instance;
 
 import java.util.ArrayList;

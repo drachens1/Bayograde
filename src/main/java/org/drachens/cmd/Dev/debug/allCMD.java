@@ -1,6 +1,6 @@
 package org.drachens.cmd.Dev.debug;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
 import org.drachens.cmd.Dev.debug.CountryTypes.CountryHistoryCMD;
 import org.drachens.cmd.Dev.debug.CountryTypes.CountryTypesCMD;

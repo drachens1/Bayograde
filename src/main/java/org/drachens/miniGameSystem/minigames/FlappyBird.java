@@ -3,7 +3,7 @@ package org.drachens.miniGameSystem.minigames;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.util.MiniGameUtil;
 import net.kyori.adventure.bossbar.BossBar;

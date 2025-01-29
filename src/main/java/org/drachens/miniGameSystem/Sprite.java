@@ -115,11 +115,6 @@ public class Sprite {
             return setCollisionFunction((collided, pos) -> function.apply(collided));
         }
 
-        public Builder setWeight(int weight) {
-            this.weight = weight;
-            return this;
-        }
-
         public Sprite build(Pos pos, Monitor monitor) {
             Preconditions.assertNotNull(s, "Layout cannot be null");
 

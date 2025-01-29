@@ -1,6 +1,6 @@
 package org.drachens.cmd.Dev.ban;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import dev.ng5m.Constants;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;

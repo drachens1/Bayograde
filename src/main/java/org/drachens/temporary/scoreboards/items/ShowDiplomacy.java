@@ -1,6 +1,6 @@
 package org.drachens.temporary.scoreboards.items;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.item.Material;

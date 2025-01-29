@@ -36,8 +36,4 @@ public class DynamicPixel {
     public void setLocation(Pixel pixel) {
         this.location = pixel;
     }
-
-    public String toString() {
-        return location + " weight:" + weight + "material:" + material;
-    }
 }

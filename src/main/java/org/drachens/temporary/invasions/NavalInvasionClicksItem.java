@@ -1,6 +1,6 @@
 package org.drachens.temporary.invasions;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import kotlin.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;

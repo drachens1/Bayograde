@@ -1,6 +1,6 @@
 package org.drachens.Manager;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
@@ -77,6 +77,9 @@ public class WorldManager {
         p.setHead();
         sendResourcePack(p);
         broadcast(p.getActiveLoginMessage().onPlayerJoin(p),p.getInstance());
+        if (p.hasPermission("admin")){
+            ContinentalManagers.adminManager.addAdmin(p);
+        }
         //p.sendPluginMessage("continentalmod", "joined");
     }
 

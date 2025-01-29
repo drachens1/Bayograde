@@ -1,6 +1,6 @@
 package org.drachens.events.countries;
 
-import dev.ng5m.CPlayer;
+import org.drachens.player_types.CPlayer;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.interfaces.Event;
 
