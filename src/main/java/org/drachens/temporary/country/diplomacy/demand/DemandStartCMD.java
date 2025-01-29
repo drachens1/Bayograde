@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy.demand;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -11,6 +10,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 

@@ -1,12 +1,12 @@
 package org.drachens.dataClasses.Armys;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopEditGUI;
 

@@ -1,6 +1,5 @@
 package org.drachens.store.other;
 
-import org.drachens.player_types.CPlayer;
 import dev.ng5m.ImmutableList;
 import dev.ng5m.Util;
 import net.kyori.adventure.text.Component;
@@ -11,6 +10,7 @@ import net.minestom.server.network.packet.server.play.TeamsPacket;
 import org.drachens.Manager.defaults.enums.LoginMessageEnum;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

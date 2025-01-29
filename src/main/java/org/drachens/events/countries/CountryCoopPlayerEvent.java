@@ -1,8 +1,8 @@
 package org.drachens.events.countries;
 
-import org.drachens.player_types.CPlayer;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.interfaces.Event;
+import org.drachens.player_types.CPlayer;
 
 public class CountryCoopPlayerEvent extends Event {
     private final Country inviter;

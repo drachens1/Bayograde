@@ -1,9 +1,9 @@
 package org.drachens.cmd;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import org.drachens.player_types.CPlayer;
 
 public class PingCMD extends Command {
     public PingCMD() {

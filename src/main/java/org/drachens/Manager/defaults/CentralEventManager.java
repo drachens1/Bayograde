@@ -1,6 +1,5 @@
 package org.drachens.Manager.defaults;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -46,6 +45,7 @@ import org.drachens.events.research.ResearchCompletionEvent;
 import org.drachens.events.research.ResearchStartEvent;
 import org.drachens.events.system.ResetEvent;
 import org.drachens.events.system.StartGameEvent;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 

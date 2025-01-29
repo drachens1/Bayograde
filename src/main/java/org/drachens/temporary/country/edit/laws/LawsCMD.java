@@ -1,9 +1,9 @@
 package org.drachens.temporary.country.edit.laws;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.country.info.LawsInfo;
 
 public class LawsCMD extends Command {

@@ -1,6 +1,5 @@
 package org.drachens.util;
 
-import org.drachens.player_types.CPlayer;
 import dev.ng5m.Constants;
 import dev.ng5m.event.CancelPurchaseEvent;
 import dev.ng5m.event.PurchaseEvent;
@@ -25,12 +24,12 @@ import net.minestom.server.instance.Weather;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
+import org.drachens.Manager.ChatCensor;
+import org.drachens.Manager.ExtraPacketsManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.VotingWinner;
-import org.drachens.Manager.defaults.scheduler.ContinentalScheduler;
-import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
@@ -64,6 +63,7 @@ import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.faction.FactionCMD;
@@ -76,6 +76,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static org.drachens.util.Messages.globalBroadcast;
@@ -125,6 +126,8 @@ public class ServerUtil {
         worldManager.registerWorld(continentalWorld);
         worldManager.setDefaultWorld(continentalWorld);
 
+        new ChatCensor();
+        new ExtraPacketsManager();
 
         List<VotingOption> votingOptions = new ArrayList<>();
         votingOptions.add(VotingWinner.ww2_troops.getVotingOption());
@@ -235,11 +238,14 @@ public class ServerUtil {
         globEHandler.addListener(CountryJoinEvent.class, e -> e.getP().setCountry(e.getJoined()));
         globEHandler.addListener(CountryChangeEvent.class, e -> e.getPlayer().setCountry(e.getJoined()));
 
-        ContinentalSchedulerManager schedulerManager = ContinentalManagers.schedulerManager;
-        schedulerManager.register(new ContinentalScheduler.Create(NewDay.class, e -> {
-            if (!(e instanceof NewDay newDay)) return;
-            ContinentalManagers.world(newDay.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(newDay));
-        }).setDelay(7).schedule());
+        AtomicInteger i = new AtomicInteger();
+        globEHandler.addListener(NewDay.class,e->{
+            if (i.get() ==7){
+                ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(e));
+                i.set(0);
+            }
+            i.getAndIncrement();
+        });
 
 
         globEHandler.addListener(NewDay.class, e -> {

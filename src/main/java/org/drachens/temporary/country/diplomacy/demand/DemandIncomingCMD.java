@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy.demand;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
@@ -14,6 +13,7 @@ import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.events.countries.demands.DemandAcceptedEvent;
 import org.drachens.events.countries.demands.DemandCounterOfferEvent;
 import org.drachens.events.countries.demands.DemandDeniedEvent;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 

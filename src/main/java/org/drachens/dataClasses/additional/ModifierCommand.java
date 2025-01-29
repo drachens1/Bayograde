@@ -1,8 +1,8 @@
 package org.drachens.dataClasses.additional;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.suggestion.Suggestion;
+import org.drachens.player_types.CPlayer;
 
 public interface ModifierCommand {
     void getSuggestion(CPlayer p, CommandContext context, Suggestion suggestion);

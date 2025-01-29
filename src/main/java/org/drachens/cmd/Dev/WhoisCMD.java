@@ -1,11 +1,11 @@
 package org.drachens.cmd.Dev;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
 package org.drachens.temporary.clicks;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.coordinate.Pos;
@@ -15,6 +14,7 @@ import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.War;
+import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import static org.drachens.util.ServerUtil.blockVecToPos;

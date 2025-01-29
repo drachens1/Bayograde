@@ -1,6 +1,5 @@
-package org.drachens.temporary;
+package org.drachens.temporary.factory;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -19,6 +18,7 @@ import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
+import org.drachens.player_types.CPlayer;
 
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -88,16 +88,23 @@ public class Factory extends BuildTypes {
             sendMessage(p, cantAffordToUpgrade);
             return false;
         }
-        int min = materialLvls.get(province.getMaterial());
-        int maxLvl = min;
-        maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
-        if (maxLvl<min)maxLvl=min;
+        int maxLvl = getMaxLvl(building);
         if (lvlsModelData.length < maxLvl) return false;
         if (building.getCurrentLvl() + add > maxLvl) {
             sendMessage(p, maxCapacityReached);
             return false;
         } else
             return true;
+    }
+
+    public int getMaxLvl(Building building){
+        Province province = building.getProvince();
+        Country country = building.getCountry();
+        int maxLvl = materialLvls.get(province.getMaterial());
+        maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
+        int min = materialLvls.get(province.getMaterial());
+        if (maxLvl<min)maxLvl=min;
+        return maxLvl;
     }
 
     @Override

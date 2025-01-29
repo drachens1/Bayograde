@@ -1,6 +1,5 @@
 package org.drachens.temporary.invasions;
 
-import org.drachens.player_types.CPlayer;
 import kotlin.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -19,6 +18,7 @@ import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     };
 
     public NavalInvasionClicksItem() {
-        super(1, itemBuilder(Material.SPRUCE_BOAT, 1));
+        super(itemBuilder(Material.SPRUCE_BOAT, 1));
         confirm = (ConfirmCMD) MinecraftServer.getCommandManager().getCommand("confirm");
     }
 

@@ -1,6 +1,5 @@
 package org.drachens.temporary.country;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
@@ -10,6 +9,7 @@ import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import java.util.List;

@@ -25,9 +25,7 @@ public class ServerHealthManager {
             tps = calculateTPS(tickDuration);
         });
 
-        MinecraftServer.getSchedulerManager().buildTask(() -> {
-            logTPS(tps);
-        }).repeat(1, ChronoUnit.SECONDS).schedule();
+        MinecraftServer.getSchedulerManager().buildTask(() -> logTPS(tps)).repeat(1, ChronoUnit.SECONDS).schedule();
     }
 
     private double calculateTPS(long tickDuration) {

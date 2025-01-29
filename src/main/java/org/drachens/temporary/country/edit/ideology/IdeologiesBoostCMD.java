@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.edit.ideology;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -9,6 +8,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.IdeologyGain;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import java.util.HashMap;

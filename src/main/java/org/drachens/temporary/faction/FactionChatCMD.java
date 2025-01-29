@@ -1,6 +1,5 @@
 package org.drachens.temporary.faction;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
@@ -10,6 +9,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.FactionChat;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import java.util.HashMap;

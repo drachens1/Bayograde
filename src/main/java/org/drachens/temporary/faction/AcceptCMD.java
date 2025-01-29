@@ -1,6 +1,5 @@
 package org.drachens.temporary.faction;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -9,6 +8,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.events.factions.FactionJoinEvent;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 

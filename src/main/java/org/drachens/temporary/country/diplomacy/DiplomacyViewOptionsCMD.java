@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -12,6 +11,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

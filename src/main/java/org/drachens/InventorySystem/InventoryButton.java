@@ -1,8 +1,8 @@
 package org.drachens.InventorySystem;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.item.ItemStack;
+import org.drachens.player_types.CPlayer;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

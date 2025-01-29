@@ -1,6 +1,5 @@
 package org.drachens.store.gui;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.inventory.Inventory;
@@ -9,6 +8,7 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.InventorySystem.InventoryGUI;
+import org.drachens.player_types.CPlayer;
 import org.drachens.store.StoreCategory;
 import org.drachens.store.StoreItem;
 import org.jetbrains.annotations.NotNull;

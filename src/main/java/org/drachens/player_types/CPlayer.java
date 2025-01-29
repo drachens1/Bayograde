@@ -10,7 +10,9 @@ import net.minestom.server.item.Material;
 import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
+import org.drachens.Manager.defaults.enums.ClientSideExtras;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.other.Clientside;
 import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.store.other.LoginMessage;
 import org.drachens.store.other.Rank;
@@ -18,16 +20,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.drachens.util.OtherUtil.formatPlaytime;
 
 public class CPlayer extends Player {
     private final List<String> permissions = new ArrayList<>();
 
+    private final HashMap<ClientSideExtras, List<Clientside>> clientSides = new HashMap<>();
     private final List<Rank> ranks = new ArrayList<>();
     private final List<LoginMessage> loginMessages = new ArrayList<>();
     private final HashSet<String> ownedCosmetics = new HashSet<>();
@@ -168,5 +168,40 @@ public class CPlayer extends Player {
 
     public LoginMessage getActiveLoginMessage(){
         return loginMessages.getFirst();
+    }
+
+    public void addClientSide(ClientSideExtras clientSideExtras, Clientside clientSide){
+        List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
+        clientsides.add(clientSide);
+        clientSides.put(clientSideExtras,clientsides);
+    }
+
+    public void removeClientSide(ClientSideExtras clientSideExtras, Clientside clientSide){
+        List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
+        if (clientsides.remove(clientSide)){
+            clientSides.put(clientSideExtras,clientsides);
+        }else {
+            clientSides.remove(clientSideExtras);
+        }
+    }
+
+    public void addClientSides(ClientSideExtras clientSideExtras, List<Clientside> toAdd){
+        List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
+        clientsides.addAll(toAdd);
+        clientSides.put(clientSideExtras,clientsides);
+    }
+
+    public void removeClientSides(ClientSideExtras clientSideExtras, List<Clientside> toRemove){
+        List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
+        clientsides.removeAll(toRemove);
+        if (clientsides.isEmpty()){
+            clientSides.remove(clientSideExtras);
+        }else {
+            clientSides.put(clientSideExtras,clientsides);
+        }
+    }
+
+    public List<Clientside> getClientSideExtras(ClientSideExtras clientSideExtras){
+        return clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
     }
 }

@@ -1,10 +1,10 @@
 package org.drachens.dataClasses.Economics;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
+import org.drachens.player_types.CPlayer;
 
 import java.util.HashSet;
 

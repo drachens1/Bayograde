@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.edit.ideology;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -10,6 +9,7 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.Ideology;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

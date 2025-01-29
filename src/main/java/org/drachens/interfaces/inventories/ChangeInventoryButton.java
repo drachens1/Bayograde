@@ -11,8 +11,8 @@ public class ChangeInventoryButton extends HotbarItemButton {
     private final InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
     private final InventoryEnum inventoryEnum;
 
-    public ChangeInventoryButton(int modelData, ItemStack item, InventoryEnum inventoryEnum) {
-        super(modelData, item);
+    public ChangeInventoryButton(ItemStack item, InventoryEnum inventoryEnum) {
+        super(item);
         this.inventoryEnum = inventoryEnum;
     }
 

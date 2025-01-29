@@ -1,6 +1,5 @@
 package org.drachens.cmd.Msg;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,6 +9,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.sound.SoundEvent;
+import org.drachens.player_types.CPlayer;
 
 public class ReplyCMD extends Command {
     public ReplyCMD() {

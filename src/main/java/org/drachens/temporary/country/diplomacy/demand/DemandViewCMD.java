@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy.demand;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -10,6 +9,7 @@ import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.demand.WW2Demands;
 
 public class DemandViewCMD extends Command {

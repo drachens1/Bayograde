@@ -1,7 +1,7 @@
 package org.drachens.cmd.Dev.whitelist;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
+import org.drachens.player_types.CPlayer;
 
 public class WhitelistCMD extends Command {
     public WhitelistCMD() {

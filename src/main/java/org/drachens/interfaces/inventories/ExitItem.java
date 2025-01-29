@@ -12,7 +12,7 @@ public class ExitItem extends HotbarItemButton {
     private final InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
 
     public ExitItem() {
-        super(10, itemBuilder(Material.BARRIER, 10));
+        super(itemBuilder(Material.BARRIER, 10));
     }
 
     @Override

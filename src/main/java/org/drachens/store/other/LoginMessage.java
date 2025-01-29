@@ -1,7 +1,7 @@
 package org.drachens.store.other;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
+import org.drachens.player_types.CPlayer;
 
 import java.util.function.Function;
 

@@ -1,12 +1,12 @@
 package org.drachens.dataClasses.Diplomacy;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.interfaces.Channel;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 public class PuppetChat implements Channel {

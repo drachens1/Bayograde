@@ -1,9 +1,9 @@
 package org.drachens.store.items;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import org.drachens.player_types.CPlayer;
 import org.drachens.store.StoreItem;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;

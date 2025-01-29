@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.other;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.instance.Instance;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

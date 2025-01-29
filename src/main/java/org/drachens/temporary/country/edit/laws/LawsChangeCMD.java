@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.edit.laws;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -10,6 +9,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.laws.Law;
 import org.drachens.dataClasses.laws.LawCategory;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 

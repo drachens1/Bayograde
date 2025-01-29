@@ -1,11 +1,11 @@
 package org.drachens.InventorySystem;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.inventory.AbstractInventory;
 import net.minestom.server.inventory.Inventory;
+import org.drachens.player_types.CPlayer;
 
 import java.util.HashMap;
 import java.util.Map;

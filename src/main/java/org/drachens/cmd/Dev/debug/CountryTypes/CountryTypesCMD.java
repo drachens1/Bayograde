@@ -1,6 +1,5 @@
 package org.drachens.cmd.Dev.debug.CountryTypes;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
@@ -10,6 +9,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.CountryEnums;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.clicks.ClicksCountry;
 import org.drachens.temporary.troops.TroopCountry;
 

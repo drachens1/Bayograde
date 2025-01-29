@@ -1,11 +1,11 @@
 package org.drachens.temporary.country.modifiers;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.ModifierCommand;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 

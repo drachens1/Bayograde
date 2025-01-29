@@ -1,8 +1,8 @@
 package org.drachens.cmd.minigames;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
 import org.drachens.miniGameSystem.minigames.FlappyBird;
+import org.drachens.player_types.CPlayer;
 
 public class FlappyCMD extends Command {
     public FlappyCMD() {

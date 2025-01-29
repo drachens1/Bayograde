@@ -1,7 +1,7 @@
 package org.drachens.Manager.scoreboards;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.entity.Player;
+import org.drachens.player_types.CPlayer;
 
 import java.util.HashMap;
 

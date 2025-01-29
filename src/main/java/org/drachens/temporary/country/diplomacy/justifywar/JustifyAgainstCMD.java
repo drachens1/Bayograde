@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy.justifywar;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -13,6 +12,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalTypeEnum;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
+import org.drachens.player_types.CPlayer;
 
 import java.util.Arrays;
 import java.util.HashSet;

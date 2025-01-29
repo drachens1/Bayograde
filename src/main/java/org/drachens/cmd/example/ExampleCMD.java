@@ -1,8 +1,8 @@
 package org.drachens.cmd.example;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.player_types.CPlayer;
 
 public class ExampleCMD extends Command {
     public ExampleCMD() {

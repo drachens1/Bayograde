@@ -1,12 +1,12 @@
 package org.drachens.util;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.player_types.CPlayer;
 
 import java.io.FileWriter;
 import java.io.IOException;

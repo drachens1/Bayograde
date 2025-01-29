@@ -1,12 +1,12 @@
 package org.drachens.temporary.scoreboards;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardBuilder;
+import org.drachens.player_types.CPlayer;
 
 public class DefaultScoreboard extends ContinentalScoreboards {
     private final Sidebar scoreboard = new ScoreboardBuilder(Component.text("Default", NamedTextColor.GOLD, TextDecoration.BOLD))

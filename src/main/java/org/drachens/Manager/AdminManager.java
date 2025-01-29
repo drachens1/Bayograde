@@ -1,9 +1,9 @@
 package org.drachens.Manager;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.enums.AdminMessageType;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

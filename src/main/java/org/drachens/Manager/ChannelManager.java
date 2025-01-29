@@ -1,9 +1,9 @@
 package org.drachens.Manager;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.interfaces.Channel;
+import org.drachens.player_types.CPlayer;
 
 import java.util.HashMap;
 

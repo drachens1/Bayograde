@@ -1,0 +1,54 @@
+package org.drachens.temporary.factory;
+
+import net.kyori.adventure.text.Component;
+import net.minestom.server.item.Material;
+import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.Manager.defaults.enums.ClientSideExtras;
+import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.other.Clientside;
+import org.drachens.dataClasses.other.TextDisplay;
+import org.drachens.events.other.PlayerChangeActiveItemEvent;
+import org.drachens.interfaces.inventories.BuildItem;
+import org.drachens.player_types.CPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.drachens.util.ItemStackUtil.itemBuilder;
+
+public class FactoryButton extends BuildItem {
+    public FactoryButton() {
+        super(itemBuilder(Material.CYAN_DYE, 1), BuildingEnum.factory);
+    }
+
+    @Override
+    public void onSwapFrom(PlayerChangeActiveItemEvent e) {
+        CPlayer p = (CPlayer) e.player();
+        Country country = p.getCountry();
+        if (country==null)return;
+        List<Clientside> clientsides = new ArrayList<>();
+        p.getClientSideExtras(ClientSideExtras.factory_built).forEach(Clientside::dispose);
+        p.removeClientSides(ClientSideExtras.factory_built,clientsides);
+    }
+
+    @Override
+    public void onSwapTo(PlayerChangeActiveItemEvent e) {
+        CPlayer p = (CPlayer) e.player();
+        Country country = p.getCountry();
+        if (country==null)return;
+        List<Clientside> newClientSides = new ArrayList<>();
+        Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
+        List<Building> facs = country.getBuildings(BuildingEnum.factory);
+        if (facs==null)return;
+        facs.forEach(factor-> newClientSides.add(new TextDisplay.create(factor.getProvince().getPos().add(0.5,2,0.5),
+                factor.getCountry().getInstance(), Component.text()
+                .append(Component.text(factor.getCurrentLvl()))
+                .append(Component.text("/"))
+                .append(Component.text(factory.getMaxLvl(factor)))
+                .build()).setFollowPlayer(true).build()));
+
+        newClientSides.forEach(newClientSide-> newClientSide.addViewer(p));
+        p.addClientSides(ClientSideExtras.factory_built,newClientSides);
+    }
+}

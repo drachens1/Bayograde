@@ -1,6 +1,5 @@
 package org.drachens.temporary.troops;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
@@ -9,6 +8,7 @@ import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.War;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.troops.buildings.Barracks;
 
 public class TroopWarSystem implements War {

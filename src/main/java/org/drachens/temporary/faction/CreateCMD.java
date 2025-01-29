@@ -1,6 +1,5 @@
 package org.drachens.temporary.faction;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -15,6 +14,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.events.factions.FactionCreateEvent;
+import org.drachens.player_types.CPlayer;
 
 public class CreateCMD extends Command {
 

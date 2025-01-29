@@ -1,11 +1,11 @@
 package org.drachens.dataClasses;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.*;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.LightingChunk;
+import org.drachens.player_types.CPlayer;
 
 public abstract class World {
     private final Instance instance;

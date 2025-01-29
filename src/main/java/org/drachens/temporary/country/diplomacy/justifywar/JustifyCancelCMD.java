@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy.justifywar;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -8,6 +7,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.events.countries.warjustification.WarJustificationCancelEvent;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 

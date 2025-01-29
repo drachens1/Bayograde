@@ -1,6 +1,5 @@
 package org.drachens.temporary.view_modes;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -9,6 +8,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.ImaginaryWorld;
+import org.drachens.player_types.CPlayer;
 
 public class AllyViewModeCMD extends Command {
     public AllyViewModeCMD() {

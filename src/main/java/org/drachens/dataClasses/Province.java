@@ -1,6 +1,5 @@
 package org.drachens.dataClasses;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -16,6 +15,7 @@ import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.troops.Combat;
 
 import java.util.ArrayList;

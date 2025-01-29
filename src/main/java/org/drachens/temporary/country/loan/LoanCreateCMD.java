@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.loan;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -11,6 +10,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Loan;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.events.loan.LoanSendEvent;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 

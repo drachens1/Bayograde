@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.diplomacy.justifywar;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -11,6 +10,7 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCountry;
 

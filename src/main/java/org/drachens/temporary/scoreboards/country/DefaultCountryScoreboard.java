@@ -1,6 +1,5 @@
 package org.drachens.temporary.scoreboards.country;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -12,6 +11,7 @@ import org.drachens.Manager.scoreboards.ScoreboardBuilder;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Economics.currency.Currencies;
+import org.drachens.player_types.CPlayer;
 
 import java.util.List;
 import java.util.Map;

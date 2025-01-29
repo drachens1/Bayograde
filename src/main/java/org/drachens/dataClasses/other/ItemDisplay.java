@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.other;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
@@ -15,6 +14,7 @@ import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -244,7 +244,5 @@ public class ItemDisplay extends Clientside {
         public byte getSerialized() {
             return this.serialized;
         }
-
     }
-
 }

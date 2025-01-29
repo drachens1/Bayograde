@@ -1,6 +1,5 @@
 package org.drachens.dataClasses;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Chunk;
@@ -9,6 +8,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.network.packet.server.play.BlockChangePacket;
 import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.player_types.CPlayer;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +32,7 @@ public class ImaginaryWorld {
 
     public void removePlayer(CPlayer p) {
         players.remove(p);
-        ContinentalManagers.imaginaryWorldManager.removePlayers(p, this);
+        ContinentalManagers.imaginaryWorldManager.removePlayers(p);
         ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos, block) -> PacketSendingUtils.sendPacket(p, new BlockChangePacket(pos, instance.getBlock(pos)))));
     }
 

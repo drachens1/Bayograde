@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.research;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -9,6 +8,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;

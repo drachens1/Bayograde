@@ -1,7 +1,7 @@
 package org.drachens.events;
 
-import org.drachens.player_types.CPlayer;
 import org.drachens.interfaces.Event;
+import org.drachens.player_types.CPlayer;
 
 public class AdvancementEvent extends Event {
     private final String name;

@@ -10,15 +10,15 @@ public class PurchaseGson {
 
     public int productID;
     public String username;
-    public String nonce;
+    public String randomBytes;
     public int[] signature;
 
-    private byte[] generateHMAC(String nonce) {
+    private byte[] generateHMAC(String randomBytes) {
         try {
             Mac hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             hmac.init(secretKey);
-            return hmac.doFinal(nonce.getBytes(StandardCharsets.UTF_8));
+            return hmac.doFinal(randomBytes.getBytes(StandardCharsets.UTF_8));
         } catch (Exception x) {
             throw new RuntimeException(x);
         }
@@ -36,7 +36,7 @@ public class PurchaseGson {
 
     public boolean verify() {
         byte[] received = iToB();
-        byte[] expected = generateHMAC(nonce);
+        byte[] expected = generateHMAC(randomBytes);
 
         return Arrays.equals(received, expected);
     }

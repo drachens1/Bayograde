@@ -8,7 +8,9 @@ import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
+import org.drachens.events.other.PlayerChangeActiveItemEvent;
 import org.drachens.interfaces.inventories.HotbarInventory;
+import org.drachens.interfaces.inventories.HotbarItemButton;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.List;
 
 public class InventoryManager {
     private final HashMap<Player, HotbarInventory> activeHotBar = new HashMap<>();
+    private final HashMap<Player, HotbarItemButton> lastButton = new HashMap<>();
     private final List<Player> playersCooldown = new ArrayList<>();
 
     public InventoryManager() {
@@ -52,8 +55,23 @@ public class InventoryManager {
                 activeHotBar.get(p).getItems().get(p.getHeldSlot()).onUse(e);
             }
         });
-    }
 
+        globEHandler.addListener(PlayerChangeActiveItemEvent.class, e->{
+            Player p = e.player();
+            if (!p.getItemInMainHand().isAir()) {
+                HotbarItemButton last = lastButton.get(p);
+                List<HotbarItemButton> bs = activeHotBar.get(p).getItems();
+                if (bs.size()<e.slot())return;
+                HotbarItemButton b = bs.get(e.slot());
+                if (b==last)return;
+                if (last!=null){
+                    last.onSwapFrom(e);
+                }
+                b.onSwapTo(e);
+                lastButton.put(p,b);
+            }
+        });
+    }
 
     public void assignInventory(Player p, InventoryEnum inventory) {
         changeInventory(p, inventory.getHotbarInventory());

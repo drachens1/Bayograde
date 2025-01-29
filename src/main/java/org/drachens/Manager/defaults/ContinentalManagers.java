@@ -3,7 +3,6 @@ package org.drachens.Manager.defaults;
 import net.minestom.server.instance.Instance;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.*;
-import org.drachens.Manager.defaults.scheduler.ContinentalSchedulerManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.advancement.AdvancementManager;
 import org.drachens.dataClasses.WorldClasses;
@@ -22,7 +21,6 @@ public class ContinentalManagers {
     public static final GUIManager guiManager = new GUIManager();
     public static final DemandManager demandManager = new DemandManager();
     public static final CosmeticsManager cosmeticsManager = new CosmeticsManager();
-    public static final ContinentalSchedulerManager schedulerManager = new ContinentalSchedulerManager();
     public static final ScoreboardManager scoreboardManager = new ScoreboardManager();
     public static final AdvancementManager advancementManager = new AdvancementManager();
     public static final WorldManager worldManager = new WorldManager();

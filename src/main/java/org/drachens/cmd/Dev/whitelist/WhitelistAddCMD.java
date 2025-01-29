@@ -1,12 +1,12 @@
 package org.drachens.cmd.Dev.whitelist;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.fileManagement.customTypes.WhitelistFile;
+import org.drachens.player_types.CPlayer;
 
 import java.util.UUID;
 

@@ -1,8 +1,8 @@
 package org.drachens.temporary.country.research;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.research.ResearchCountry;
 
 public class ResearchActiveCMD extends Command {

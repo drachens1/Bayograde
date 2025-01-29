@@ -1,6 +1,5 @@
 package org.drachens.temporary.demand;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
@@ -12,6 +11,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
@@ -19,7 +19,7 @@ public class OfferAnnexation extends HotbarItemButton {
     private final DemandManager demandManager = ContinentalManagers.demandManager;
 
     public OfferAnnexation() {
-        super(3, itemBuilder(Material.IRON_SWORD, Component.text("Offer Annexation", NamedTextColor.AQUA)));
+        super(itemBuilder(Material.IRON_SWORD, Component.text("Offer Annexation", NamedTextColor.AQUA)));
     }
 
     @Override

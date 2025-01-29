@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.other;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -15,6 +14,7 @@ import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
+import org.drachens.player_types.CPlayer;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;

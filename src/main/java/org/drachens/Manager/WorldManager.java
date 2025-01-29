@@ -1,6 +1,5 @@
 package org.drachens.Manager;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
@@ -13,6 +12,7 @@ import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.World;
 import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.databases.Table;
+import org.drachens.player_types.CPlayer;
 
 import java.net.URI;
 import java.time.LocalTime;

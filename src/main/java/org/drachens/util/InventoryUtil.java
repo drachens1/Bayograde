@@ -1,12 +1,12 @@
 package org.drachens.util;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.item.Material;
 import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.InventorySystem.InventoryGUI;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 

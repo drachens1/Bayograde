@@ -1,18 +1,18 @@
 package org.drachens.interfaces.inventories;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
+import org.drachens.player_types.CPlayer;
 
 public class BuildItem extends HotbarItemButton {
     private final BuildingEnum buildingEnum;
 
-    public BuildItem(int modelData, ItemStack item, BuildingEnum buildingEnum) {
-        super(modelData, item);
+    public BuildItem(ItemStack item, BuildingEnum buildingEnum) {
+        super(item);
         this.buildingEnum = buildingEnum;
     }
 

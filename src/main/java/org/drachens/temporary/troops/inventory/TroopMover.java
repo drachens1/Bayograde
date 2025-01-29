@@ -18,7 +18,7 @@ public class TroopMover extends HotbarItemButton {
     private final HashMap<Player, Troop> nextProv = new HashMap<>();
 
     public TroopMover() {
-        super(0, itemBuilder(Material.CYAN_DYE, "Hi", NamedTextColor.GOLD));
+        super(itemBuilder(Material.CYAN_DYE, "Hi", NamedTextColor.GOLD));
     }
 
     @Override

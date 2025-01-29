@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.Countries;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -50,6 +49,7 @@ import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
 import org.drachens.interfaces.MapGen;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.util.AStarPathfinderXZ;
 import org.drachens.util.MessageEnum;
@@ -798,23 +798,19 @@ public abstract class Country implements Cloneable {
     public void addBuilding(Building building) {
         clientsides.add(building.getItemDisplay());
         building.getItemDisplay().addCountry(this);
-        if (buildTypesListHashMap.containsKey(building.getBuildTypes())) {
-            List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
-            buildings.add(building);
-            buildTypesListHashMap.put(building.getBuildTypes(), buildings);
-            return;
-        }
-        List<Building> buildings = new ArrayList<>();
+        List<Building> buildings = buildTypesListHashMap.getOrDefault(building.getBuildTypes(),new ArrayList<>());
         buildings.add(building);
         buildTypesListHashMap.put(building.getBuildTypes(), buildings);
     }
 
     public void removeBuilding(Building building) {
+        clientsides.remove(building.getItemDisplay());
         players.forEach(player -> building.getItemDisplay().removeViewer(player));
-        if (buildTypesListHashMap.containsKey(building.getBuildTypes())) {
-            List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
-            buildings.remove(building);
+        List<Building> buildings = buildTypesListHashMap.getOrDefault(building.getBuildTypes(),new ArrayList<>());
+        if (buildings.remove(building)){
             buildTypesListHashMap.put(building.getBuildTypes(), buildings);
+        }else {
+            buildTypesListHashMap.remove(building.getBuildTypes());
         }
         clientsides.remove(building.getItemDisplay());
     }

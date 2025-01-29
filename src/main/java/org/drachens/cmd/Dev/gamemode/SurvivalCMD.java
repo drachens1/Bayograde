@@ -1,8 +1,8 @@
 package org.drachens.cmd.Dev.gamemode;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.GameMode;
+import org.drachens.player_types.CPlayer;
 
 public class SurvivalCMD extends Command {
     public SurvivalCMD() {

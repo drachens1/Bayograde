@@ -1,11 +1,11 @@
 package org.drachens.temporary.country.puppets;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.PuppetChat;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import java.util.HashMap;

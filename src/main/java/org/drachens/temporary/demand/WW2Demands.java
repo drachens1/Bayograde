@@ -1,6 +1,5 @@
 package org.drachens.temporary.demand;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -13,6 +12,7 @@ import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.Province;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

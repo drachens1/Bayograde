@@ -1,7 +1,7 @@
 package org.drachens.Manager.scoreboards;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.scoreboard.Sidebar;
+import org.drachens.player_types.CPlayer;
 
 public abstract class ContinentalScoreboards {
     private Sidebar sidebar;

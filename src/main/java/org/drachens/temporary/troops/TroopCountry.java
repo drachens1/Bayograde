@@ -1,6 +1,5 @@
 package org.drachens.temporary.troops;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -19,6 +18,7 @@ import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.events.NewDay;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.clicks.ClicksVault;
 import org.drachens.temporary.research.ResearchCountry;
 

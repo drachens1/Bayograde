@@ -9,7 +9,7 @@ import org.drachens.dataClasses.Province;
 import org.drachens.events.NewDay;
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;
-import org.drachens.temporary.Factory;
+import org.drachens.temporary.factory.Factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

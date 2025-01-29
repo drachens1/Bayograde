@@ -1,6 +1,5 @@
 package org.drachens.temporary.country;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
@@ -9,6 +8,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.events.countries.CountryJoinEvent;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import static org.drachens.util.CommandsUtil.*;

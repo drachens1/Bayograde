@@ -1,12 +1,12 @@
 package org.drachens.miniGameSystem;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.World;
+import org.drachens.player_types.CPlayer;
 
 public abstract class MiniGame<W extends World> {
     private final Monitor monitor;

@@ -1,10 +1,12 @@
 package org.drachens.Manager;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.network.ConnectionState;
 import net.minestom.server.network.packet.client.common.ClientPluginMessagePacket;
 import org.drachens.dataClasses.packets.PacketReader;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +16,9 @@ public class PlayerModsManager {
     private final HashMap<Instance, List<CPlayer>> players = new HashMap<>();
 
     public PlayerModsManager() {
-        MinecraftServer.getPacketListenerManager().setListener(ClientPluginMessagePacket.class, ((packet, p) -> {
+        MinecraftServer.getPacketListenerManager().setListener(ConnectionState.PLAY,ClientPluginMessagePacket.class, ((packet, playerConnection) -> {
             PacketReader packetReader = new PacketReader(packet);
+            Player p = playerConnection.getPlayer();
             if ("continentalmod:valid".equals(packetReader.getChannel())) {
                 p.sendPluginMessage(packet.channel(), packet.data());
                 CPlayer player = (CPlayer) p;

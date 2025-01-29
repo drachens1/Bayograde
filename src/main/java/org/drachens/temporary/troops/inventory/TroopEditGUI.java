@@ -1,6 +1,5 @@
 package org.drachens.temporary.troops.inventory;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,6 +15,7 @@ import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Armys.DivisionType;
 import org.drachens.dataClasses.ComponentListBuilder;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

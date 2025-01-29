@@ -1,9 +1,9 @@
 package org.drachens.temporary.country.diplomacy;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.country.diplomacy.demand.DemandCMD;
 import org.drachens.temporary.country.diplomacy.justifywar.DeclareWarCMD;
 import org.drachens.temporary.country.diplomacy.justifywar.JustifyWarCMD;

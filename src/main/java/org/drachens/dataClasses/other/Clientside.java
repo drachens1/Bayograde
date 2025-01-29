@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.other;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
@@ -10,6 +9,7 @@ import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import org.drachens.animation.AnimationType;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

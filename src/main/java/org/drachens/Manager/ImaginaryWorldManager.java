@@ -40,7 +40,7 @@ public class ImaginaryWorldManager {
         instanceImaginaryWorldHashMap.put(player, imaginaryWorld);
     }
 
-    public void removePlayers(Player player, ImaginaryWorld imaginaryWorld) {
+    public void removePlayers(Player player) {
         instanceImaginaryWorldHashMap.remove(player);
     }
 }

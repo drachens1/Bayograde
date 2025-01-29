@@ -1,6 +1,5 @@
 package org.drachens.temporary.worlds;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -20,6 +19,7 @@ import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.World;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
 import java.util.List;

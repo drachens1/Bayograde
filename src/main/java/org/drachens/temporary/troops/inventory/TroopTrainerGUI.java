@@ -1,6 +1,5 @@
 package org.drachens.temporary.troops.inventory;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
@@ -11,6 +10,7 @@ import org.drachens.InventorySystem.InventoryGUI;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.DivisionDesign;
 import org.drachens.dataClasses.Economics.Building;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.buildings.Barracks;
 import org.jetbrains.annotations.NotNull;

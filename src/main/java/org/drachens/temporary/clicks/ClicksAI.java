@@ -21,7 +21,7 @@ import org.drachens.events.countries.war.StartWarEvent;
 import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;
-import org.drachens.temporary.Factory;
+import org.drachens.temporary.factory.Factory;
 import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;

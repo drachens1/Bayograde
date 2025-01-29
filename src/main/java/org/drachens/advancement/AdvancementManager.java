@@ -1,6 +1,5 @@
 package org.drachens.advancement;
 
-import org.drachens.player_types.CPlayer;
 import kotlin.Pair;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.AdvancementRoot;
@@ -8,6 +7,7 @@ import net.minestom.server.advancements.AdvancementTab;
 import net.minestom.server.advancements.Notification;
 import org.drachens.events.AdvancementEvent;
 import org.drachens.fileManagement.PlayerInfoEntry;
+import org.drachens.player_types.CPlayer;
 
 import java.util.*;
 

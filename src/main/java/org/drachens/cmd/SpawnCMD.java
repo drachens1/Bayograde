@@ -1,12 +1,12 @@
 package org.drachens.cmd;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.events.AdvancementEvent;
+import org.drachens.player_types.CPlayer;
 
 public class SpawnCMD extends Command {
     public SpawnCMD() {

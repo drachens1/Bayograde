@@ -1,6 +1,5 @@
 package org.drachens.temporary.scoreboards.items;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.item.Material;
@@ -8,6 +7,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
@@ -16,7 +16,7 @@ public class ShowGeneralInfo extends HotbarItemButton {
     ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
 
     public ShowGeneralInfo() {
-        super(5, itemBuilder(Material.BOOK, Component.text("Show General Info"), 5));
+        super(itemBuilder(Material.BOOK, Component.text("Show General Info"), 5));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.additional.greatDepression;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -11,6 +10,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.additional.ModifierCommand;
+import org.drachens.player_types.CPlayer;
 
 public class GreatDepression implements ModifierCommand {
     private final Component notEnoughTime = Component.text("It has not been 70 days since the last decision", NamedTextColor.RED);

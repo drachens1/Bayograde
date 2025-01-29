@@ -1,6 +1,5 @@
 package org.drachens.miniGameSystem.minigames;
 
-import org.drachens.player_types.CPlayer;
 import dev.ng5m.Util;
 import dev.ng5m.util.Direction;
 import dev.ng5m.util.MiniGameUtil;
@@ -16,6 +15,7 @@ import org.drachens.miniGameSystem.DynamicPixel;
 import org.drachens.miniGameSystem.MiniGame;
 import org.drachens.miniGameSystem.RelativePos;
 import org.drachens.miniGameSystem.Sprite;
+import org.drachens.player_types.CPlayer;
 
 import java.util.Arrays;
 import java.util.List;

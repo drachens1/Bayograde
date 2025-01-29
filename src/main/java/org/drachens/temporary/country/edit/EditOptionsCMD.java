@@ -1,6 +1,5 @@
 package org.drachens.temporary.country.edit;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -9,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 
 public class EditOptionsCMD extends Command {
     public EditOptionsCMD() {

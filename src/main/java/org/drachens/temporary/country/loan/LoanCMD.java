@@ -1,9 +1,9 @@
 package org.drachens.temporary.country.loan;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.player_types.CPlayer;
 
 public class LoanCMD extends Command {
     public LoanCMD() {

@@ -1,6 +1,5 @@
 package org.drachens.temporary.faction;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
@@ -13,6 +12,7 @@ import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.events.factions.FactionJoinEvent;
+import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getFactionNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;

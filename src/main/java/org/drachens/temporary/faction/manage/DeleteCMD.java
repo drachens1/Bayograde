@@ -1,6 +1,5 @@
 package org.drachens.temporary.faction.manage;
 
-import org.drachens.player_types.CPlayer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
@@ -8,6 +7,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.player_types.CPlayer;
 
 public class DeleteCMD extends Command {
     public DeleteCMD() {

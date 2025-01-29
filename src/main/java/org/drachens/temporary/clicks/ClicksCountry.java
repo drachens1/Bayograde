@@ -1,6 +1,5 @@
 package org.drachens.temporary.clicks;
 
-import org.drachens.player_types.CPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -11,6 +10,7 @@ import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.events.NewDay;
+import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.HashMap;

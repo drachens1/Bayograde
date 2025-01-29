@@ -1,9 +1,9 @@
 package org.drachens.fileManagement;
 
-import org.drachens.player_types.CPlayer;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.fileManagement.databases.Entry;
 import org.drachens.fileManagement.databases.Table;
+import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
 
 import java.sql.PreparedStatement;
