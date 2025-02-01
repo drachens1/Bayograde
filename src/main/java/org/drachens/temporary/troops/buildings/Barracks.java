@@ -22,14 +22,13 @@ import java.util.HashMap;
 import static org.drachens.util.Messages.sendMessage;
 
 public class Barracks extends BuildTypes {
-    private final HashMap<Building, DivisionTrainingQueue> trainingHashMap = new HashMap<>();
     private final Payment payment = new Payment(CurrencyEnum.production, 10f);
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the barracks : 5 Production", NamedTextColor.RED))
             .build();
 
     public Barracks() {
-        super(new int[]{16}, Material.ORANGE_DYE, BuildingEnum.barracks);
+        super(new int[]{16}, Material.ORANGE_DYE, BuildingEnum.barracks,21,22);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class Barracks extends BuildTypes {
     public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
         if (!country.canMinusCost(payment)) {
-            p.sendMessage(cantAffordMsg);
+            if (p!=null) p.sendMessage(cantAffordMsg);
             return false;
         }
         return true;

@@ -30,7 +30,7 @@ public enum InventoryEnum {
 
     troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),
             new TroopMover(), new ChangeInventoryButton(itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),
-            new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research), new BuildItem(itemBuilder(Material.ACACIA_BOAT), BuildingEnum.barracks)}));
+            new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research), new BuildItem(itemBuilder(Material.GOLD_INGOT), BuildingEnum.barracks)}));
 
     private final HotbarInventory hotbarInventory;
 

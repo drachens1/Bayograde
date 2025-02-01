@@ -10,6 +10,7 @@ import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.temporary.troops.Combat;
 import org.drachens.temporary.troops.TroopCountry;
+import org.drachens.util.AStarPathfinderXZ;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -32,6 +33,7 @@ public class Troop {
     private float speed;
     private float organisation;
     private DivisionDesign design;
+    private Task t;
 
     public Troop(Province province, TrainedTroop trainedTroop, AStarPathfinderVoids troopPathing) {
         this.troopPathing = troopPathing;
@@ -51,7 +53,7 @@ public class Troop {
         this.country.addTroop(this);
         this.organisation = trainedTroop.getDesign().getOrg();
         province.addTroop(this);
-        //MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(troop::addViewer);
+        cull();
     }
 
     public float getOrg() {
@@ -86,7 +88,7 @@ public class Troop {
         if (task != null && task.isAlive()) task.cancel();
         troopType.getMoveAnimation().start(troop, true).onFinish(troop, () -> troop.setItem(troopType.getOwnTroop()));
         task = scheduler.buildTask(new Runnable() {
-            final List<Province> path = country.getaStarPathfinder().findPath(province, to, country, troopPathing);
+            final List<AStarPathfinderXZ.Node> path = country.getaStarPathfinder().findPath(province, to, country, troopPathing);
             int current = 0;
 
             @Override
@@ -96,7 +98,7 @@ public class Troop {
                     troopType.getMoveAnimation().stop(troop);
                     return;
                 }
-                moveBlock(path.get(current));
+                moveBlock(path.get(current).province);
                 current++;
             }
         }).repeat(1200, ChronoUnit.MILLIS).schedule();
@@ -110,7 +112,6 @@ public class Troop {
         } else
             moveToEnemy(to);
 
-
     }
 
     public boolean canMove(Province province) {
@@ -119,6 +120,8 @@ public class Troop {
 
     public void moveToFriendly(Province to) {
         move(to, province);
+        if (t!=null)t.cancel();
+        t = scheduler.buildTask(this::cull).delay(600,ChronoUnit.MILLIS).schedule();
         troop.moveSmooth(to, 20);
         province = to;
     }
@@ -200,5 +203,13 @@ public class Troop {
 
     public TroopCountry getCountry() {
         return country;
+    }
+
+    private void cull(){
+        if (province.getTroops().size()>=2){
+            if (province.getTroops().getFirst()!=this) troop.hide();
+        }else {
+            troop.show();
+        }
     }
 }

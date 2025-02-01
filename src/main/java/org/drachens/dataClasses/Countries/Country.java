@@ -100,6 +100,8 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, LawCategory> laws = new HashMap<>();
     private final HashMap<String, List<Province>> bordersProvince = new HashMap<>();
     private final HashSet<String> bordersWars = new HashSet<>();
+    private final HashMap<String, Integer> diplomacy = new HashMap<>();
+    //1 = war 2 = neutral 3 = eco ally 4 = non aggression 5 = puppet/overlord 6 = mil ally
     private CompletionBarTextDisplay capitulationTextBar;
     private Player playerLeader;
     private Leader leader;
@@ -150,6 +152,7 @@ public abstract class Country implements Cloneable {
         countries.forEach(country -> country.getOccupies().forEach(province -> {
             warsWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
             allyWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
+            diplomacy.put(country.getName(), 2);
         }));
     }
 
@@ -336,7 +339,7 @@ public abstract class Country implements Cloneable {
     public void setCapital(Province capital) {
         this.capital = capital;
         if (capitulationTextBar != null) capitulationTextBar.getTextDisplay().dispose();
-        this.capitulationTextBar = new CompletionBarTextDisplay(capital.getPos().add(0, 3, 0), capital.getInstance(), TextColor.color(0, 255, 0));
+        this.capitulationTextBar = new CompletionBarTextDisplay(capital.getPos().add(0, 3, 0), capital.getInstance(), TextColor.color(0, 255, 0),Component.text(""));
     }
 
     public void addPlayer(CPlayer p) {
@@ -497,12 +500,8 @@ public abstract class Country implements Cloneable {
     }
 
     @Override
-    protected Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public List<String> getCountryWars() {
@@ -512,6 +511,7 @@ public abstract class Country implements Cloneable {
     public void addCountryWar(Country country) {
         String name = country.getName();
         countryWars.add(name);
+        diplomacy.put(name,1);
         country.getOccupies().forEach(province -> warsWorld.removeGhostBlock(province.getPos()));
         addClientside(country.getCapitulationTextBar().getTextDisplay());
         if (bordersProvince.containsKey(name)){
@@ -527,6 +527,7 @@ public abstract class Country implements Cloneable {
         if (bordersProvince.containsKey(name)){
             bordersWars.remove(name);
         }
+        loadCountriesDiplomacy(country);
     }
 
     public Component getPrefix() {
@@ -671,6 +672,7 @@ public abstract class Country implements Cloneable {
     }
 
     public void addPuppet(Country country) {
+        diplomacy.put(country.getName(),5);
         if (hasOverlord()) {
             country.setOverlord(overlord);
             overlord.addPuppet(country);
@@ -708,6 +710,7 @@ public abstract class Country implements Cloneable {
 
     public void setOverlord(Country country) {
         this.overlord = country;
+        diplomacy.put(country.getName(),5);
     }
 
     public void endGame() {
@@ -768,15 +771,16 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean isMilitaryAlly(Country country) {
-        return militaryFactionType != null && militaryFactionType.getMembers().contains(country);
+        return diplomacy.get(country.getName())==6;
     }
 
     public boolean isEconomicAlly(Country country) {
-        return economyFactionType != null && economyFactionType.getMembers().contains(country);
+        return diplomacy.get(country.getName())==4;
     }
 
     public boolean isAlly(Country country) {
-        return isMilitaryAlly(country) || isEconomicAlly(country);
+        int c = diplomacy.get(country.getName());
+        return c==2||c==6;
     }
 
     public boolean isInAFaction() {
@@ -1034,10 +1038,12 @@ public abstract class Country implements Cloneable {
 
     public void addNonAggressionPact(NonAggressionPact nonAggressionPact, Country other) {
         nonAggressionPactHashMap.put(other.name, nonAggressionPact);
+        loadCountriesDiplomacy(other);
     }
 
     public void removeNonAggressionPact(Country other) {
         nonAggressionPactHashMap.remove(other.name);
+        loadCountriesDiplomacy(other);
     }
 
     public List<String> getNonAggressionPacts() {
@@ -1057,11 +1063,11 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean isMilitaryFriend(Country country) {
-        return isPuppet(country) || isMilitaryAlly(country) || country == this || (hasOverlord() && (overlord == country || overlord.isPuppet(country)));
+        return country.getDiplomacy(country.getName())>3;
     }
 
     public boolean cantStartAWarWith(Country country) {
-        return isMilitaryFriend(country) || hasNonAggressionPact(country.getName()) || isEconomicAlly(country);
+        return country.getDiplomacy(country.getName())>2;
     }
 
     public boolean isInAWar() {
@@ -1215,5 +1221,37 @@ public abstract class Country implements Cloneable {
 
     public HashSet<String> getBordersWars(){
         return bordersWars;
+    }
+
+    public void loadCountriesDiplomacy(Country country){
+        String name = country.getName();
+        if (country.hasPuppets()){
+            if (puppets.contains(country)){
+                diplomacy.put(name,5);
+                return;
+            }
+        }
+        if (country.hasOverlord()){
+            if (Objects.equals(name, overlord.getName())){
+                diplomacy.put(name,5);
+            }
+        }
+        if (isMilitaryAlly(country)){
+            diplomacy.put(name,6);
+            return;
+        }
+        if (isEconomicAlly(country)){
+            diplomacy.put(name,3);
+            return;
+        }
+        if (nonAggressionPactHashMap.containsKey(name)){
+            diplomacy.put(name,2);
+            return;
+        }
+        diplomacy.put(name,1);
+    }
+
+    public int getDiplomacy(String country){
+        return diplomacy.getOrDefault(country,-1);
     }
 }

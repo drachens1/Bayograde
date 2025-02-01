@@ -25,4 +25,6 @@ public abstract class HotbarItemButton {
     public void onSwapTo(PlayerChangeHeldSlotEvent e){}
 
     public void onSwapFrom(PlayerChangeHeldSlotEvent e){}
+
+    public void onMove(PlayerMoveEvent e) {}
 }

@@ -204,4 +204,10 @@ public class CPlayer extends Player {
     public List<Clientside> getClientSideExtras(ClientSideExtras clientSideExtras){
         return clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
     }
+
+    public void removeClientSideExtras(ClientSideExtras clientSideExtras){
+        List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
+        clientsides.forEach(Clientside::dispose);
+        this.clientSides.remove(clientSideExtras);
+    }
 }

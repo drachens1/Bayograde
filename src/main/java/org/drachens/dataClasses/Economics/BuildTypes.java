@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Economics;
 
+import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
@@ -8,15 +9,30 @@ import org.drachens.player_types.CPlayer;
 
 import java.util.HashSet;
 
+import static org.drachens.util.ItemStackUtil.itemBuilder;
+
 public abstract class BuildTypes {
     protected final int[] lvlsModelData;
     private final Material material;
     private final BuildingEnum identifier;
+    private final ItemStack can;
+    private final ItemStack cant;
 
     public BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
+        ItemStack i = itemBuilder(material,lvls[0]);
+        this.can=i;
+        this.cant=i;
+    }
+
+    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, int can, int cant) {
+        this.lvlsModelData = lvls;
+        this.material = material;
+        this.identifier = identifier;
+        this.can = itemBuilder(material,can);
+        this.cant = itemBuilder(material,cant);
     }
 
     public void forceBuild(Country country, Province province, CPlayer p) {
@@ -91,5 +107,13 @@ public abstract class BuildTypes {
 
     public HashSet<String> getSynonyms() {
         return identifier.getSynonyms();
+    }
+
+    public ItemStack getCan(){
+        return can;
+    }
+
+    public ItemStack getCant(){
+        return cant;
     }
 }

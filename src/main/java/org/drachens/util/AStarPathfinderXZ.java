@@ -1,5 +1,6 @@
 package org.drachens.util;
 
+import net.minestom.server.coordinate.Pos;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
@@ -8,173 +9,93 @@ import org.drachens.dataClasses.Province;
 import java.util.*;
 
 public class AStarPathfinderXZ {
+    private final int[][] DIRECTIONS = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     private final ProvinceManager provinceManager;
 
-    public AStarPathfinderXZ(ProvinceManager provinceManager) {
-        this.provinceManager = provinceManager;
+    public AStarPathfinderXZ(ProvinceManager provinceManager){
+        this.provinceManager=provinceManager;
     }
 
-    public List<Province> findPath(Province start, Province goal, Country country, AStarPathfinderVoids pathfinderVoids) {
-        Set<ProvinceKey> closedSet = new HashSet<>();
-        PriorityQueue<Node> openSet = new PriorityQueue<>((n1, n2) -> {
-            if (n1.getPriority() != n2.getPriority()) {
-                return Double.compare(n1.getPriority(), n2.getPriority());
-            } else {
-                return Double.compare(n1.getF(), n2.getF());
-            }
-        });
-        Map<ProvinceKey, Node> allNodes = new HashMap<>();
+    public List<Node> findPath(Province start, Province end, Country country, AStarPathfinderVoids aStarPathfinderVoids) {
+        PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingInt(n -> n.fCost));
+        Map<String, Node> allNodes = new HashMap<>();
+        Pos s = start.getPos();
+        Pos e = end.getPos();
+        int startX = s.blockX();
+        int startZ = s.blockZ();
+        int goalX = e.blockX();
+        int goalZ = e.blockZ();
 
-        ProvinceKey startKey = new ProvinceKey(start);
-        Node startNode = new Node(start, null, 0, estimateDistance(start, goal), pathfinderVoids.calcPrio(start));
+        Node startNode = new Node(startX, startZ, null, 0, heuristic(startX, startZ, goalX, goalZ), provinceManager);
         openSet.add(startNode);
-        allNodes.put(startKey, startNode);
+        allNodes.put(hashKey(startX, startZ), startNode);
 
         while (!openSet.isEmpty()) {
-            Node currentNode = openSet.poll();
-            Province currentProvince = currentNode.getProvince();
-            ProvinceKey currentKey = new ProvinceKey(currentProvince);
+            Node current = openSet.poll();
 
-            if (currentProvince.equals(goal)) {
-                return reconstructPath(currentNode);
+            if (current.x == goalX && current.z == goalZ) {
+                return reconstructPath(current);
             }
 
-            closedSet.add(currentKey);
+            for (int[] dir : DIRECTIONS) {
+                int newX = current.x + dir[0];
+                int newZ = current.z + dir[1];
 
-            for (Province neighbor : getNeighbors(currentProvince, country, pathfinderVoids)) {
-                ProvinceKey neighborKey = new ProvinceKey(neighbor);
-                if (closedSet.contains(neighborKey)) continue;
+                if (!isValid(newX, newZ, country, aStarPathfinderVoids)) continue;
 
-                double tentativeG = currentNode.getG() + currentProvince.distance(neighbor);
-                Node neighborNode = allNodes.getOrDefault(neighborKey, new Node(neighbor, null, Double.MAX_VALUE, estimateDistance(neighbor, goal), pathfinderVoids.calcPrio(neighbor)));
+                int newG = current.gCost + 1;
+                String key = hashKey(newX, newZ);
+                Node neighbor = allNodes.getOrDefault(key, new Node(newX, newZ, null, Integer.MAX_VALUE, 0, provinceManager));
 
-                if (tentativeG < neighborNode.getG()) {
-                    neighborNode.setPrevious(currentNode);
-                    neighborNode.setG(tentativeG);
-                    neighborNode.setF(tentativeG + neighborNode.getH());
-                    neighborNode.setPriority(pathfinderVoids.calcPrio(neighbor));
+                if (newG < neighbor.gCost) {
+                    neighbor.gCost = newG;
+                    neighbor.fCost = newG + heuristic(newX, newZ, goalX, goalZ);
+                    neighbor.parent = current;
 
-                    if (!openSet.contains(neighborNode)) {
-                        openSet.add(neighborNode);
+                    if (!allNodes.containsKey(key)) {
+                        openSet.add(neighbor);
+                        allNodes.put(key, neighbor);
                     }
-                    allNodes.put(neighborKey, neighborNode);
                 }
             }
         }
-
         return Collections.emptyList();
     }
 
-    private List<Province> reconstructPath(Node node) {
-        List<Province> path = new ArrayList<>();
+    private boolean isValid(int x, int z, Country country, AStarPathfinderVoids aStarPathfinderVoids) {
+        Province p = provinceManager.getProvince(x,z);
+        return p != null && aStarPathfinderVoids.isWalkable(p, country);
+    }
+
+    private int heuristic(int x, int z, int goalX, int goalZ) {
+        return Math.abs(x - goalX) + Math.abs(z - goalZ);
+    }
+
+    private String hashKey(int x, int z) {
+        return x + "," + z;
+    }
+    private List<Node> reconstructPath(Node node) {
+        List<Node> path = new ArrayList<>();
         while (node != null) {
-            path.add(node.getProvince());
-            node = node.getPrevious();
+            path.add(node);
+            node = node.parent;
         }
         Collections.reverse(path);
         return path;
     }
 
-    private double estimateDistance(Province start, Province goal) {
-        return start.distance(goal);
-    }
+    public static class Node {
+        public Province province;
+        int x, z, gCost, fCost;
+        Node parent;
 
-    private List<Province> getNeighbors(Province province, Country country, AStarPathfinderVoids pathfinderVoids) {
-        List<Province> neighbors = new ArrayList<>();
-        int[] deltas = {-1, 0, 1};
-
-        for (int dx : deltas) {
-            for (int dz : deltas) {
-                if (dx == 0 && dz == 0) continue;
-                Province check = provinceManager.getProvince(province.getPos().add(dx, 0, dz));
-                if (pathfinderVoids.isWalkable(check, country)) {
-                    neighbors.add(check);
-                }
-            }
-        }
-        return neighbors;
-    }
-
-    private static class Node {
-        private final Province Province;
-        private final double h;
-        private Node previous;
-        private double g;
-        private double f;
-        private double priority;
-
-        public Node(Province Province, Node previous, double g, double h, double priority) {
-            this.Province = Province;
-            this.previous = previous;
-            this.g = g;
-            this.h = h;
-            this.f = g + h;
-            this.priority = priority;
-        }
-
-        public Province getProvince() {
-            return Province;
-        }
-
-        public Node getPrevious() {
-            return previous;
-        }
-
-        public void setPrevious(Node previous) {
-            this.previous = previous;
-        }
-
-        public double getG() {
-            return g;
-        }
-
-        public void setG(double g) {
-            this.g = g;
-        }
-
-        public double getH() {
-            return h;
-        }
-
-        public double getF() {
-            return f;
-        }
-
-        public void setF(double f) {
-            this.f = f;
-        }
-
-        public double getPriority() {
-            return priority;
-        }
-
-        public void setPriority(double priority) {
-            this.priority = priority;
-        }
-    }
-
-    private static class ProvinceKey {
-        private final int x, y, z;
-        private final String world;
-
-        public ProvinceKey(Province Province) {
-            this.x = Province.getPos().blockX();
-            this.y = Province.getPos().blockY();
-            this.z = Province.getPos().blockZ();
-            this.world = Province.getInstance().getDimensionName();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ProvinceKey that = (ProvinceKey) o;
-            return x == that.x && y == that.y && z == that.z && Objects.equals(world, that.world);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(x, y, z, world);
+        public Node(int x, int z, Node parent, int gCost, int fCost, ProvinceManager provinceManager) {
+            this.x = x;
+            this.z = z;
+            this.parent = parent;
+            this.gCost = gCost;
+            this.fCost = fCost;
+            this.province= provinceManager.getProvince(x,z);
         }
     }
 }

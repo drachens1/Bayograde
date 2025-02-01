@@ -29,6 +29,8 @@ public class ItemDisplay extends Clientside {
     private AnimationType active;
     private EntityTeleportPacket entityTeleportPacket;
     private boolean glowing = false;
+    private boolean hidden = false;
+    private float yaw = 0f;
 
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
         super(storeViewers, instance, pos);
@@ -63,9 +65,18 @@ public class ItemDisplay extends Clientside {
     }
 
     public void setPos(Pos pos) {
+        pos = pos.withYaw(yaw);
         this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
+    }
+
+    public void addYaw(float yaw){
+        this.yaw+=yaw;
+        setPos(getPos().withYaw(this.yaw));
+        if (this.yaw>360f){
+            this.yaw-=360f;
+        }
     }
 
     public void setActive(AnimationType active) {
@@ -222,6 +233,18 @@ public class ItemDisplay extends Clientside {
         return new DestroyEntitiesPacket(
                 this.entityId
         );
+    }
+
+    public void hide(){
+        if (hidden)return;
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(),getDestroyPacket());
+        hidden=true;
+    }
+
+    public void show(){
+        if (!hidden)return;
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(),getSpawnPacket());
+        hidden=false;
     }
 
     public enum DisplayType {

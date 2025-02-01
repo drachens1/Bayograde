@@ -98,7 +98,7 @@ public class ContinentalWorld extends World {
                 return;
             }
             if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == VotingWinner.ww2_troops) {
-                if (province.getTroops() != null && (province.getOccupier() == p.getCountry() || province.getOccupier().isAlly(p.getCountry()))) {
+                if (province.getTroops() != null && province.getOccupier() != null && p.getCountry() != null && (province.getOccupier() == p.getCountry() || province.getOccupier().isAlly(p.getCountry()))) {
                     List<Troop> troops = province.getTroops();
                     float meanHp = 0f;
                     float meanOrg = 0f;

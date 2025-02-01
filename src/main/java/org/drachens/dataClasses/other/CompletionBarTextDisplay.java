@@ -10,15 +10,21 @@ import java.util.ArrayList;
 public class CompletionBarTextDisplay {
     private final TextDisplay textDisplay;
     private final String fullBar = "||||||||||||||||||||||||||";
+    private Component additional;
     private final TextColor colour;
     private float progress = 1f;
 
-    public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour) {
+    public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour, Component additional) {
         pos = pos.add(0.5, 0, 0.5);
         textDisplay = new TextDisplay.create(pos, instance, Component.text(fullBar, colour))
                 .setFollowPlayer(true)
                 .build();
         this.colour = colour;
+        this.additional=additional;
+    }
+
+    public void setAdditional(Component additional){
+        this.additional=additional;
     }
 
     public TextDisplay getTextDisplay() {
@@ -49,6 +55,7 @@ public class CompletionBarTextDisplay {
         textDisplay.setText(Component.text()
                 .append(Component.text(bar, colour))
                 .append(Component.text(second, TextColor.color(0, 0, 0)))
+                .append(additional)
                 .build());
     }
 }

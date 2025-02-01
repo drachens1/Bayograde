@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.TroopTypeEnum;
@@ -23,15 +24,18 @@ public class DivisionTrainingQueue {
     private final List<TrainedTroop> divisionDesign = new ArrayList<>();
     private final Building building;
     private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE, new int[]{17, 18, 19, 20});
+    private int count = 0;
     private TrainedTroop trainedTroop;
     private float time;
 
     public DivisionTrainingQueue(Building building) {
         this.building = building;
-        completionBarTextDisplay = new CompletionBarTextDisplay(building.getProvince().getPos().add(0, 2, 0), building.getCountry().getInstance(), TextColor.color(0, 100, 0));
+        completionBarTextDisplay = new CompletionBarTextDisplay(building.getProvince().getPos().add(0, 2, 0), building.getCountry().getInstance(), TextColor.color(0, 100, 0), Component.text(""));
     }
 
     public void addToQueue(DivisionDesign design) {
+        count++;
+        updateX();
         float total = 0f;
         for (Map.Entry<Integer, DivisionType> e : design.getDesign().entrySet()) {
             total += e.getValue().getTrainingTime();
@@ -48,6 +52,15 @@ public class DivisionTrainingQueue {
 
     public void removeFromQueue(TrainedTroop design) {
         divisionDesign.remove(design);
+        count--;
+        updateX();
+    }
+
+    public void updateX(){
+        completionBarTextDisplay.setAdditional(Component.text()
+                        .append(Component.text("x"))
+                        .append(Component.text(count))
+                .build());
     }
 
     public void newDay() {
@@ -61,7 +74,6 @@ public class DivisionTrainingQueue {
     }
 
     private void finishTrainedTroop(TrainedTroop trainedTroop) {
-        System.out.println("3");
         Province province = building.getProvince();
         Troop troop = new Troop(province, trainedTroop, new TroopPathing());
         removeFromQueue(trainedTroop);
@@ -71,7 +83,7 @@ public class DivisionTrainingQueue {
             completionBarTextDisplay.getTextDisplay().dispose();
             troopCountry.finishBuildingTraining(building);
             trainingAnimation.stop(building.getItemDisplay());
-            building.getItemDisplay().setItem(itemBuilder(Material.ORANGE_DYE, 22));
+            building.getItemDisplay().setItem(itemBuilder(Material.ORANGE_DYE, 16));
         } else {
             completionBarTextDisplay.setProgress(1f);
             TrainedTroop next = divisionDesign.getFirst();

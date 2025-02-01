@@ -76,18 +76,26 @@ public abstract class Factions {
 
     public void addCountry(Country country) {
         if (members.contains(country)) return;
-        members.add(country);
         if (hasInvited(country)) removeInvite(country);
         country.addModifier(modifier);
-        createDescription();
         addMember(country);
+        members.forEach(member-> {
+            member.loadCountriesDiplomacy(country);
+            country.loadCountriesDiplomacy(member);
+        });
+        members.add(country);
+        createDescription();
     }
 
     public void removeCountry(Country country) {
         if (!members.contains(country)) return;
-        members.remove(country);
         country.removeModifier(modifier);
         removeMember(country);
+        members.forEach(member-> {
+            member.loadCountriesDiplomacy(country);
+            country.loadCountriesDiplomacy(member);
+        });
+        members.remove(country);
         createDescription();
     }
 
@@ -131,10 +139,6 @@ public abstract class Factions {
 
     public void sendMessage(Component message) {
         members.forEach(member -> member.sendMessage(message));
-    }
-
-    public void sendActionBar(Component message) {
-        members.forEach(member -> member.sendActionBar(message));
     }
 
     public boolean isLeader(Country country) {
