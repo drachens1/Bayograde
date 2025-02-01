@@ -1,6 +1,7 @@
 package org.drachens.temporary.factory;
 
 import net.kyori.adventure.text.Component;
+import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
@@ -8,7 +9,6 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;
-import org.drachens.events.other.PlayerChangeActiveItemEvent;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.player_types.CPlayer;
 
@@ -23,8 +23,8 @@ public class FactoryButton extends BuildItem {
     }
 
     @Override
-    public void onSwapFrom(PlayerChangeActiveItemEvent e) {
-        CPlayer p = (CPlayer) e.player();
+    public void onSwapFrom(PlayerChangeHeldSlotEvent e) {
+        CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
         if (country==null)return;
         List<Clientside> clientsides = new ArrayList<>();
@@ -33,8 +33,8 @@ public class FactoryButton extends BuildItem {
     }
 
     @Override
-    public void onSwapTo(PlayerChangeActiveItemEvent e) {
-        CPlayer p = (CPlayer) e.player();
+    public void onSwapTo(PlayerChangeHeldSlotEvent e) {
+        CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
         if (country==null)return;
         List<Clientside> newClientSides = new ArrayList<>();

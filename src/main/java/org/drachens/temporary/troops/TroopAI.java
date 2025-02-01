@@ -23,7 +23,7 @@ public class TroopAI implements AIManager {
     public TroopAI(VotingWinner votingWinner) {
         this.votingWinner = votingWinner;
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
-            tick(e.getInstance());
+            tick(e.world());
         });
     }
 

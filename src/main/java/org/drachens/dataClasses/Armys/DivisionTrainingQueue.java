@@ -22,7 +22,7 @@ public class DivisionTrainingQueue {
     private final CompletionBarTextDisplay completionBarTextDisplay;
     private final List<TrainedTroop> divisionDesign = new ArrayList<>();
     private final Building building;
-    private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE, new int[]{23, 24, 25, 26});
+    private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE, new int[]{17, 18, 19, 20});
     private TrainedTroop trainedTroop;
     private float time;
 

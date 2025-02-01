@@ -1,24 +1,8 @@
 package org.drachens.events.countries;
 
+import net.minestom.server.event.Event;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.interfaces.Event;
 import org.drachens.player_types.CPlayer;
 
-public class CountryJoinEvent extends Event {
-    private final Country joined;
-    private final CPlayer p;
-
-    public CountryJoinEvent(Country joined, CPlayer p) {
-        super(p.getInstance());
-        this.joined = joined;
-        this.p = p;
-    }
-
-    public CPlayer getP() {
-        return p;
-    }
-
-    public Country getJoined() {
-        return joined;
-    }
+public record CountryJoinEvent(Country joined, CPlayer p) implements Event {
 }

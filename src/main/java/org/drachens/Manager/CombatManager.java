@@ -9,11 +9,11 @@ import org.drachens.temporary.troops.Combat;
 import java.util.HashMap;
 
 public class CombatManager {
-    private HashMap<Instance, HashMap<Province, Combat>> combatHash = new HashMap<>();
+    private final HashMap<Instance, HashMap<Province, Combat>> combatHash = new HashMap<>();
 
     public CombatManager() {
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
-            HashMap<Province, Combat> a = combatHash.get(e.getInstance());
+            HashMap<Province, Combat> a = combatHash.get(e.world());
             if (a == null) return;
             a.forEach((province, combat) -> {
                 combat.newDay();

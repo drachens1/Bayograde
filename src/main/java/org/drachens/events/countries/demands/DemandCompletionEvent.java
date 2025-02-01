@@ -1,30 +1,8 @@
 package org.drachens.events.countries.demands;
 
+import net.minestom.server.event.Event;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
-import org.drachens.interfaces.Event;
 
-public class DemandCompletionEvent extends Event {
-    private final Demand demand;
-    private final Country from;
-    private final Country to;
-
-    public DemandCompletionEvent(Demand demand, Country from, Country to) {
-        super(from.getInstance());
-        this.demand = demand;
-        this.from = from;
-        this.to = to;
-    }
-
-    public Demand getDemand() {
-        return demand;
-    }
-
-    public Country getFrom() {
-        return from;
-    }
-
-    public Country getTo() {
-        return to;
-    }
+public record DemandCompletionEvent(Demand demand, Country from, Country to) implements Event {
 }

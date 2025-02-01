@@ -1,24 +1,8 @@
 package org.drachens.events.countries;
 
+import net.minestom.server.event.Event;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.interfaces.Event;
 import org.drachens.player_types.CPlayer;
 
-public class CountrySetLeaderEvent extends Event {
-    private final Country country;
-    private final CPlayer newLeader;
-
-    public CountrySetLeaderEvent(Country country, CPlayer newLeader) {
-        super(newLeader.getInstance());
-        this.country = country;
-        this.newLeader = newLeader;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public CPlayer getNewLeader() {
-        return newLeader;
-    }
+public record CountrySetLeaderEvent(Country country, CPlayer newLeader) implements Event {
 }

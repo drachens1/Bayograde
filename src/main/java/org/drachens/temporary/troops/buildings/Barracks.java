@@ -29,7 +29,7 @@ public class Barracks extends BuildTypes {
             .build();
 
     public Barracks() {
-        super(new int[]{22}, Material.ORANGE_DYE, BuildingEnum.barracks);
+        super(new int[]{16}, Material.ORANGE_DYE, BuildingEnum.barracks);
     }
 
     @Override

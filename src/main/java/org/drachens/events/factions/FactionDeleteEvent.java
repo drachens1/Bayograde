@@ -1,24 +1,8 @@
 package org.drachens.events.factions;
 
+import net.minestom.server.event.Event;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
-import org.drachens.interfaces.Event;
 
-public class FactionDeleteEvent extends Event {
-    private final Country deleter;
-    private final Factions deletedFaction;
-
-    public FactionDeleteEvent(Country deleter, Factions deletedFaction) {
-        super(deleter.getInstance());
-        this.deleter = deleter;
-        this.deletedFaction = deletedFaction;
-    }
-
-    public Country getDeleter() {
-        return deleter;
-    }
-
-    public Factions getDeletedFaction() {
-        return deletedFaction;
-    }
+public record FactionDeleteEvent(Country deleter, Factions deletedFaction) implements Event {
 }

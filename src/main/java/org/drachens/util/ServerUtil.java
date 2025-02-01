@@ -17,6 +17,7 @@ import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.*;
+import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
@@ -25,7 +26,6 @@ import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.ChatCensor;
-import org.drachens.Manager.ExtraPacketsManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -108,8 +108,8 @@ public class ServerUtil {
         if (serverPropertiesFile.isVelocity()) {
             VelocityProxy.enable(serverPropertiesFile.getSecret());
         }
-//        else
-//            MojangAuth.init();
+        else
+            MojangAuth.init();
         srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
     }
 
@@ -127,7 +127,6 @@ public class ServerUtil {
         worldManager.setDefaultWorld(continentalWorld);
 
         new ChatCensor();
-        new ExtraPacketsManager();
 
         List<VotingOption> votingOptions = new ArrayList<>();
         votingOptions.add(VotingWinner.ww2_troops.getVotingOption());
@@ -141,7 +140,7 @@ public class ServerUtil {
             worldClassesHashMap.put(instance, new WorldClasses(
                             new CountryDataManager(instance, new ArrayList<>()),
                             new ClientEntsToLoad(),
-                            new VotingManager(votingOptions, instance),
+                            new VotingManager(instance),
                             new ProvinceManager(),
                             new DataStorer()
                     )
@@ -159,8 +158,8 @@ public class ServerUtil {
             p.setRespawnPoint(new Pos(0, 1, 0));
         });
 
-        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.getPlayer().getPlayerConnection()).add(e.getRank()));
-        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.getPlayer().getPlayerConnection()).remove(e.getRank()));
+        globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.player().getPlayerConnection()).add(e.rank()));
+        globEHandler.addListener(RankRemoveEvent.class, e -> playerRanks.get(e.player().getPlayerConnection()).remove(e.rank()));
 
         globEHandler.addListener(AsyncPlayerPreLoginEvent.class, e -> {
             GameProfile gameProfile = e.getGameProfile();
@@ -235,13 +234,13 @@ public class ServerUtil {
         });
 
 
-        globEHandler.addListener(CountryJoinEvent.class, e -> e.getP().setCountry(e.getJoined()));
-        globEHandler.addListener(CountryChangeEvent.class, e -> e.getPlayer().setCountry(e.getJoined()));
+        globEHandler.addListener(CountryJoinEvent.class, e -> e.p().setCountry(e.joined()));
+        globEHandler.addListener(CountryChangeEvent.class, e -> e.p().setCountry(e.joined()));
 
         AtomicInteger i = new AtomicInteger();
         globEHandler.addListener(NewDay.class,e->{
             if (i.get() ==7){
-                ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextWeek(e));
+                ContinentalManagers.world(e.world()).countryDataManager().getCountries().forEach(country -> country.nextWeek(e));
                 i.set(0);
             }
             i.getAndIncrement();
@@ -249,15 +248,15 @@ public class ServerUtil {
 
 
         globEHandler.addListener(NewDay.class, e -> {
-            e.getInstance().getPlayers().forEach(player -> {
+            e.world().getPlayers().forEach(player -> {
                 ContinentalScoreboards continentalScoreboards = scoreboardManager.getScoreboard(player);
                 if (continentalScoreboards instanceof DefaultCountryScoreboard defaultCountryScoreboard) {
                     defaultCountryScoreboard.updateAll();
                 }
             });
-            String time = e.getDay() + "/" + e.getMonth() + "|" + e.getYear();
-            ContinentalManagers.playerModsManager.getPlayers(e.getInstance()).forEach(player -> player.sendPluginMessage("continentalmod:time", time));
-            ContinentalManagers.world(e.getInstance()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
+            String time = e.day() + "/" + e.month() + "|" + e.year();
+            ContinentalManagers.playerModsManager.getPlayers(e.world()).forEach(player -> player.sendPluginMessage("continentalmod:time", time));
+            ContinentalManagers.world(e.world()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
         });
 
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(true));

@@ -3,12 +3,8 @@ package org.drachens.Manager;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
-import net.minestom.server.event.player.PlayerHandAnimationEvent;
-import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemEvent;
-import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
+import net.minestom.server.event.player.*;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
-import org.drachens.events.other.PlayerChangeActiveItemEvent;
 import org.drachens.interfaces.inventories.HotbarInventory;
 import org.drachens.interfaces.inventories.HotbarItemButton;
 
@@ -56,13 +52,13 @@ public class InventoryManager {
             }
         });
 
-        globEHandler.addListener(PlayerChangeActiveItemEvent.class, e->{
-            Player p = e.player();
+        globEHandler.addListener(PlayerChangeHeldSlotEvent.class, e->{
+            Player p = e.getPlayer();
             if (!p.getItemInMainHand().isAir()) {
                 HotbarItemButton last = lastButton.get(p);
                 List<HotbarItemButton> bs = activeHotBar.get(p).getItems();
-                if (bs.size()<e.slot())return;
-                HotbarItemButton b = bs.get(e.slot());
+                if (bs.size()<=e.getSlot())return;
+                HotbarItemButton b = bs.get(e.getSlot());
                 if (b==last)return;
                 if (last!=null){
                     last.onSwapFrom(e);

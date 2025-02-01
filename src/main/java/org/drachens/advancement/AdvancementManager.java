@@ -19,8 +19,8 @@ public class AdvancementManager {
 
     public AdvancementManager() {
         MinecraftServer.getGlobalEventHandler().addListener(AdvancementEvent.class, e -> {
-            CPlayer player = e.getPlayer();
-            String eventName = e.getName();
+            CPlayer player = e.p();
+            String eventName = e.identifier();
             HashMap<String, Pair<Integer, List<Pair<Advancement, net.minestom.server.advancements.Advancement>>>> playerEvents = playersAdvancementHashMap.get(player.getUuid());
             if (playerEvents == null) return;
             Pair<Integer, List<Pair<Advancement, net.minestom.server.advancements.Advancement>>> pair = playerEvents.get(eventName);

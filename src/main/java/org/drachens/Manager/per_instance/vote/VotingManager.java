@@ -15,25 +15,20 @@ import org.drachens.events.system.StartGameEvent;
 import org.drachens.util.MessageEnum;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.drachens.util.Messages.broadcast;
 
 public class VotingManager {
-    private final HashMap<VotingOption, List<Player>> votes = new HashMap<>();
+    private final HashMap<Player, VotingOption> votes = new HashMap<>();
     private final VoteBar voteBar;
     private final Instance instance;
     private boolean voted = false;
     private Task task;
     private VotingOption winner;
 
-    public VotingManager(List<VotingOption> votingOptions, Instance instance) {
-        for (VotingOption votingOption : votingOptions) {
-            votes.put(votingOption, new ArrayList<>());
-        }
+    public VotingManager(Instance instance) {
         this.instance = instance;
         voteEventListener();
         voteBar = new VoteBar(instance);
@@ -41,30 +36,37 @@ public class VotingManager {
     }
 
     public void vote(VotingOption votingOption, Player p) {
-        votes.get(votingOption).add(p);
+        votes.put(p,votingOption);
         voted = true;
     }
 
     public void setWinner() {
-        winner = votes.keySet().stream().toList().getFirst();
-        for (Map.Entry<VotingOption, List<Player>> e : votes.entrySet()) {
-            if (votes.get(winner).size() < e.getValue().size()) {
-                winner = e.getKey();
-            }
+        int wc = 0;
+        winner = null;
+        HashMap<VotingOption, Integer> count = new HashMap<>();
+        for (Map.Entry<Player, VotingOption> e : votes.entrySet()) {
+            int c = count.getOrDefault(e.getValue(),0);
+            c++;
+            count.put(e.getValue(),c);
         }
+        count.forEach((votingOption, integer) -> {
+            if (wc<integer){
+                winner=votingOption;
+            }
+        });
     }
 
     public void voteEventListener() {
         MinecraftServer.getGlobalEventHandler().addListener(VoteEvent.class, e -> {
             broadcast(Component.text()
                             .append(MessageEnum.vote.getComponent())
-                            .append(e.getPlayer().getName())
+                            .append(e.p().getName())
                             .append(Component.text(" has voted for ", NamedTextColor.GREEN))
-                            .append(Component.text(e.getVoted().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
+                            .append(Component.text(e.voted().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
                             .build()
-                    , e.getPlayer().getInstance()
+                    , e.p().getInstance()
             );
-            ContinentalManagers.world(e.getPlayer().getInstance()).votingManager().vote(e.getVoted(), e.getPlayer());
+            ContinentalManagers.world(e.p().getInstance()).votingManager().vote(e.voted(), e.p());
         });
     }
 
@@ -74,7 +76,7 @@ public class VotingManager {
 
     public void reset() {
         voted = false;
-        votes.forEach((voteOption, players) -> votes.put(voteOption, new ArrayList<>()));
+        votes.clear();
         voteBar.start();
         if (task != null) task.cancel();
         task = MinecraftServer.getSchedulerManager().buildTask(() -> {

@@ -36,7 +36,7 @@ public class ClicksAI implements AIManager {
 
     public ClicksAI(VotingWinner votingWinner) {
         this.votingWinner = votingWinner;
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> tick(e.getInstance()));
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> tick(e.world()));
     }
 
     @Override

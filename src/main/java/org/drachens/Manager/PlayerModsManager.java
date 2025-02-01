@@ -2,10 +2,8 @@ package org.drachens.Manager;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.player.PlayerPluginMessageEvent;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.network.ConnectionState;
-import net.minestom.server.network.packet.client.common.ClientPluginMessagePacket;
-import org.drachens.dataClasses.packets.PacketReader;
 import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
@@ -16,17 +14,17 @@ public class PlayerModsManager {
     private final HashMap<Instance, List<CPlayer>> players = new HashMap<>();
 
     public PlayerModsManager() {
-        MinecraftServer.getPacketListenerManager().setListener(ConnectionState.PLAY,ClientPluginMessagePacket.class, ((packet, playerConnection) -> {
-            PacketReader packetReader = new PacketReader(packet);
-            Player p = playerConnection.getPlayer();
-            if ("continentalmod:valid".equals(packetReader.getChannel())) {
-                p.sendPluginMessage(packet.channel(), packet.data());
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerPluginMessageEvent.class, e->{
+            Player p = e.getPlayer();
+            String channel = e.getIdentifier()+e.getMessageString();
+            if ("continentalmod:valid".equals(channel)) {
+                p.sendPluginMessage(e.getIdentifier(), e.getMessage());
                 CPlayer player = (CPlayer) p;
                 player.setIsUsingMod(true);
-                System.out.println("Is using mod : " + packetReader.getChannel());
+                System.out.println("Is using mod : " + player);
                 putPlayer(player, p.getInstance());
             }
-        }));
+        });
     }
 
     public List<CPlayer> getPlayers(Instance instance) {
