@@ -21,6 +21,7 @@ import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.player_types.CPlayer;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -46,7 +47,21 @@ public class Factory extends BuildTypes {
     private final Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, smokeFrames);
 
     public Factory() {
-        super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory);
+        super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory,
+                province -> {
+            Building building = province.getBuilding();
+            if (building==null){
+                return itemBuilder(Material.CYAN_DYE,22);
+            }
+            return itemBuilder(Material.CYAN_DYE,building.getCurrentLvl()*2+22);
+                },
+                province -> {
+            Building building = province.getBuilding();
+            if (building==null){
+                return itemBuilder(Material.CYAN_DYE,23);
+            }
+            return itemBuilder(Material.CYAN_DYE,building.getCurrentLvl()*2+23);
+                });
         produces = new Payments(new Payment(CurrencyEnum.production, 1000f));
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);
@@ -62,7 +77,16 @@ public class Factory extends BuildTypes {
         country.removePayments(payments);
         Building factory = new Building(this, province);
         ItemDisplay itemDisplay = factory.getItemDisplay();
-        smokeAnimation.start(itemDisplay, true, 1000L);
+        smokeAnimation.start(itemDisplay, true);
+    }
+
+    @Override
+    public void onBuild(Country country, Province province, CPlayer p, float yaw) {
+        country.removePayments(payments);
+        Building factory = new Building(this, province);
+        ItemDisplay itemDisplay = factory.getItemDisplay();
+        itemDisplay.addYaw(yaw);
+        smokeAnimation.start(itemDisplay, true);
     }
 
     @Override
@@ -130,6 +154,7 @@ public class Factory extends BuildTypes {
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));
         int add = (num - 1) * 2;
         int[] newFrames = new int[]{2 + add, 3 + add};
+        System.out.println(Arrays.toString(newFrames) +" : "+building.getCurrentLvl());
         Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, newFrames);
         smokeAnimation.start(itemDisplay, true);
     }

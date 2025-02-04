@@ -18,6 +18,18 @@ public class Animation extends AnimationType {
         this.frames = frames;
     }
 
+    public Material getItem(){
+        return item;
+    }
+
+    public int[] getFrames(){
+        return frames;
+    }
+
+    public long getDelayBetween(){
+        return delayBetween;
+    }
+
     public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
         if (itemDisplay.getAnimation() != null) itemDisplay.getAnimation().stop(itemDisplay);
         itemDisplay.setAnimation(this);

@@ -1,6 +1,7 @@
 package org.drachens.interfaces.inventories;
 
-import net.minestom.server.event.player.*;
+import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
+import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.item.ItemStack;
 
 public abstract class HotbarItemButton {
@@ -14,13 +15,16 @@ public abstract class HotbarItemButton {
         return item;
     }
 
-    public void onUse(PlayerUseItemEvent e) {}
+    // So player start digging event
+    public void onLeftClickOnBlock(OnUse onUse){}
 
-    public void onUse(PlayerUseItemOnBlockEvent e) {}
+    public void onLeftClick(OnUse onUse){}
 
-    public void onUse(PlayerStartDiggingEvent e) {}
+    // playerUseItemEvent
+    public void onRightClick(OnUse onUse){}
 
-    public void onUse(PlayerHandAnimationEvent e) {}
+    // playerUseItemOnBlockEvent
+    public void onRightClickOnBlock(OnUse onUse){}
 
     public void onSwapTo(PlayerChangeHeldSlotEvent e){}
 

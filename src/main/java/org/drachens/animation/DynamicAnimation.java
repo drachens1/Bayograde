@@ -22,6 +22,14 @@ public class DynamicAnimation extends AnimationType {
         this.frames = frames;
     }
 
+    public Material getItem(){
+        return item;
+    }
+
+    public int[][] getFrames(){
+        return frames;
+    }
+
     public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
         if (itemDisplay.getAnimation() != null) itemDisplay.getAnimation().stop(itemDisplay);
         itemDisplay.setAnimation(this);

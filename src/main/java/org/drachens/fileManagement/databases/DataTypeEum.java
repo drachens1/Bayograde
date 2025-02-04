@@ -2,6 +2,7 @@ package org.drachens.fileManagement.databases;
 
 public enum DataTypeEum {
     LONG("bigint"),
+    BIGSTRING("TEXT"),
     STRING("varchar(255)"),
     INTEGER("int");
 

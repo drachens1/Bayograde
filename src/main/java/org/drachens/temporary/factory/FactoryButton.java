@@ -23,7 +23,7 @@ public class FactoryButton extends BuildItem {
     }
 
     @Override
-    public void onSwapFrom(PlayerChangeHeldSlotEvent e) {
+    public void additionalOnSwapFrom(PlayerChangeHeldSlotEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
         if (country==null)return;
@@ -33,7 +33,7 @@ public class FactoryButton extends BuildItem {
     }
 
     @Override
-    public void onSwapTo(PlayerChangeHeldSlotEvent e) {
+    public void additionalOnSwapTo(PlayerChangeHeldSlotEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
         if (country==null)return;

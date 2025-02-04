@@ -2,8 +2,6 @@ package org.drachens.temporary.demand;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -11,6 +9,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.drachens.interfaces.inventories.OnUse;
 import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
@@ -23,9 +22,9 @@ public class OfferProvince extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerUseItemOnBlockEvent e) {
-        CPlayer p = (CPlayer) e.getPlayer();
-        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getPosition());
+    public void onRightClickOnBlock(OnUse onUse) {
+        CPlayer p = onUse.player();
+        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
         if (province == null) return;
         Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
@@ -39,9 +38,9 @@ public class OfferProvince extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerStartDiggingEvent e) {
-        CPlayer p = (CPlayer) e.getPlayer();
-        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getBlockPosition());
+    public void onLeftClickOnBlock(OnUse onUse) {
+        CPlayer p = onUse.player();
+        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
         if (province == null) return;
         Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();

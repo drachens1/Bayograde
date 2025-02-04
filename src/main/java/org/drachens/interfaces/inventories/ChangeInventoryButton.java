@@ -1,7 +1,5 @@
 package org.drachens.interfaces.inventories;
 
-import net.minestom.server.event.player.PlayerUseItemEvent;
-import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -17,12 +15,12 @@ public class ChangeInventoryButton extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerUseItemEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(), inventoryEnum);
+    public void onRightClick(OnUse onUse) {
+        inventoryManager.assignInventory(onUse.player(), inventoryEnum);
     }
 
     @Override
-    public void onUse(PlayerUseItemOnBlockEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(), inventoryEnum);
+    public void onRightClickOnBlock(OnUse onUse) {
+        inventoryManager.assignInventory(onUse.player(), inventoryEnum);
     }
 }

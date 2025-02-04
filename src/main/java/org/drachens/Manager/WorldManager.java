@@ -10,8 +10,6 @@ import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.World;
-import org.drachens.fileManagement.PlayerInfoEntry;
-import org.drachens.fileManagement.databases.Table;
 import org.drachens.player_types.CPlayer;
 
 import java.net.URI;
@@ -42,7 +40,10 @@ public class WorldManager {
                 CPlayer p = (CPlayer) e.getPlayer();
                 broadcast(p.getActiveLoginMessage().onPlayerLeave(p),p.getInstance());
                 if (p.isUsingMod()) playerModsManager.removePlayer(p, e.getInstance());
+                p.addPlayTime(LocalTime.now());
+                p.getPlayerInfoEntry().applyChanges();
             }
+
         });
         globEHandler.addListener(PlayerHandAnimationEvent.class, e -> worldHashMap.get(e.getInstance()).playerAnimationEvent(e));
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
@@ -63,8 +64,8 @@ public class WorldManager {
     }
 
     public void initialJoin(CPlayer p) {
-        Table table = ContinentalManagers.database.getTable("player_info");
-        new PlayerInfoEntry(p, table);
+        p.setHead();
+        sendResourcePack(p);
         ContinentalManagers.permissions.playerOp(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
@@ -74,8 +75,6 @@ public class WorldManager {
         p.refreshCommands();
         ContinentalManagers.advancementManager.addPlayer(p);
         p.setJoinTime(LocalTime.now());
-        p.setHead();
-        sendResourcePack(p);
         broadcast(p.getActiveLoginMessage().onPlayerJoin(p),p.getInstance());
         if (p.hasPermission("admin")){
             ContinentalManagers.adminManager.addAdmin(p);

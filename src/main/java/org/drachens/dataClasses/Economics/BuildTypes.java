@@ -8,6 +8,7 @@ import org.drachens.dataClasses.Province;
 import org.drachens.player_types.CPlayer;
 
 import java.util.HashSet;
+import java.util.function.Function;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
@@ -15,24 +16,24 @@ public abstract class BuildTypes {
     protected final int[] lvlsModelData;
     private final Material material;
     private final BuildingEnum identifier;
-    private final ItemStack can;
-    private final ItemStack cant;
+    private final Function<Province, ItemStack> canItem;
+    private final Function<Province, ItemStack> cantItem;
 
     public BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
         ItemStack i = itemBuilder(material,lvls[0]);
-        this.can=i;
-        this.cant=i;
+        canItem = integer -> i;
+        cantItem = integer -> i;
     }
 
-    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, int can, int cant) {
+    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, Function<Province, ItemStack> canItem, Function<Province, ItemStack> cantItem) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
-        this.can = itemBuilder(material,can);
-        this.cant = itemBuilder(material,cant);
+        this.canItem = canItem;
+        this.cantItem = cantItem;
     }
 
     public void forceBuild(Country country, Province province, CPlayer p) {
@@ -43,9 +44,13 @@ public abstract class BuildTypes {
         if (canBuild(country, province, p)) onBuild(country, province, p);
     }
 
-    public void onBuild(Country country, Province province, CPlayer p) {
-
+    public void build(Country country, Province province, CPlayer p, float yaw) {
+        if (canBuild(country, province, p)) onBuild(country, province, p, yaw);
     }
+
+    public void onBuild(Country country, Province province, CPlayer p) {}
+
+    public void onBuild(Country country, Province province, CPlayer p, float yaw) {}
 
     public boolean canBuild(Country country, Province province, CPlayer p) {
         return false;
@@ -79,9 +84,7 @@ public abstract class BuildTypes {
         onDestroyed(building);
     }
 
-    protected void onDestroyed(Building building) {
-
-    }
+    protected void onDestroyed(Building building) {}
 
     public void upgrade(int amount, Building building, Country country, CPlayer p) {
         if (requirementsToUpgrade(building, country, amount, p)) {
@@ -89,9 +92,7 @@ public abstract class BuildTypes {
         }
     }
 
-    protected void onUpgrade(int amount, Building building) {
-
-    }
+    protected void onUpgrade(int amount, Building building) {}
 
     public int getLvl(int current) {
         return lvlsModelData[current];
@@ -109,11 +110,11 @@ public abstract class BuildTypes {
         return identifier.getSynonyms();
     }
 
-    public ItemStack getCan(){
-        return can;
+    public ItemStack getCanItem(Province province){
+        return canItem.apply(province);
     }
 
-    public ItemStack getCant(){
-        return cant;
+    public ItemStack getCantItem(Province province){
+        return cantItem.apply(province);
     }
 }

@@ -17,11 +17,13 @@ import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.World;
 import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.scoreboards.DefaultScoreboard;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public class ContinentalWorld extends World {
@@ -59,6 +61,9 @@ public class ContinentalWorld extends World {
         if (p.getCountry() != null) {
             p.getCountry().removePlayer(p, true);
         }
+        p.addPlayTime(LocalTime.now());
+        Country country = p.getCountry();
+        if (country != null) country.removePlayer(p, true);
     }
 
     @Override
@@ -98,7 +103,7 @@ public class ContinentalWorld extends World {
                 return;
             }
             if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == VotingWinner.ww2_troops) {
-                if (province.getTroops() != null && province.getOccupier() != null && p.getCountry() != null && (province.getOccupier() == p.getCountry() || province.getOccupier().isAlly(p.getCountry()))) {
+                if (province.getTroops() != null && province.getOccupier() != null && p.getCountry() != null && (province.getOccupier().isMilitaryAlly(p.getCountry())||p.getCountry()==province.getOccupier())) {
                     List<Troop> troops = province.getTroops();
                     float meanHp = 0f;
                     float meanOrg = 0f;
@@ -119,12 +124,6 @@ public class ContinentalWorld extends World {
                         meanOrg += troop.getOrg();
                         meanStrength += troop.getStrength();
                     }
-                    meanHp /= troopCount;
-                    meanDmg /= troopCount;
-                    meanDef /= troopCount;
-                    meanSped /= troopCount;
-                    meanOrg /= troopCount;
-                    meanStrength /= troopCount;
 
                     p.sendActionBar(Component.text()
                             .append(Component.text("Divs: "))

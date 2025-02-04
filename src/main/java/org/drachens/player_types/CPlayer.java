@@ -14,6 +14,7 @@ import org.drachens.Manager.defaults.enums.ClientSideExtras;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.fileManagement.PlayerInfoEntry;
+import org.drachens.fileManagement.customTypes.PlayerJson;
 import org.drachens.store.other.LoginMessage;
 import org.drachens.store.other.Rank;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +40,7 @@ public class CPlayer extends Player {
     private LocalTime joinTime;
     private Long playTime;
     private LocalTime lastCheck;
+    private PlayerJson playerJson;
     private PlayerInfoEntry playerInfoEntry;
     private boolean isUsingMod = false;
 
@@ -61,10 +63,13 @@ public class CPlayer extends Player {
     public void setPlayerDataFile(PlayerInfoEntry playerInfoEntry) {
         this.playerInfoEntry = playerInfoEntry;
     }
+    
+    public void setPlayerJson(PlayerJson playerJson){
+        this.playerJson=playerJson;
+    }
 
-    public void setPlayTime(Long pt) {
+    public void setOriginalPlayTime(Long pt) {
         this.playTime = pt;
-        playerInfoEntry.setPlaytime(playTime);
     }
 
     public void addPlayTime(LocalTime localTime) {
@@ -78,7 +83,7 @@ public class CPlayer extends Player {
             playTime += Duration.between(lastCheck, localTime).toSeconds();
             lastCheck = localTime;
         }
-        playerInfoEntry.setPlaytime(playTime);
+        playerJson.setPlaytime(playTime);
     }
 
     public void setJoinTime(LocalTime instant) {
@@ -120,14 +125,14 @@ public class CPlayer extends Player {
         ranks.add(rank);
         ownedCosmetics.addAll(rank.getCosmetics());
         loginMessages.addAll(rank.getLoginMessages());
-        playerInfoEntry.addRank(rank.getIdentifier());
+        playerJson.addRank(rank.getIdentifier());
     }
 
     public void removeRank(Rank rank){
         ranks.remove(rank);
         rank.getCosmetics().forEach(ownedCosmetics::remove);
         rank.getLoginMessages().forEach(loginMessages::remove);
-        playerInfoEntry.removeRank(rank.getIdentifier());
+        playerJson.removeRank(rank.getIdentifier());
     }
 
     public boolean hasRank(Rank rank){
@@ -209,5 +214,9 @@ public class CPlayer extends Player {
         List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
         clientsides.forEach(Clientside::dispose);
         this.clientSides.remove(clientSideExtras);
+    }
+
+    public PlayerJson getPlayerJson(){
+        return playerJson;
     }
 }

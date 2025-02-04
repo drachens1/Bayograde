@@ -1,6 +1,6 @@
 package org.drachens.fileManagement.customTypes;
 
-import org.drachens.fileManagement.YamlFileType;
+import org.drachens.fileManagement.filetypes.YamlFileType;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;

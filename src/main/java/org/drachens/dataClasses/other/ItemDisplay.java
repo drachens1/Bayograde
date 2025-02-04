@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.other;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
@@ -16,6 +17,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.player_types.CPlayer;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,7 @@ public class ItemDisplay extends Clientside {
     private EntityTeleportPacket entityTeleportPacket;
     private boolean glowing = false;
     private boolean hidden = false;
+    private EntityMetaDataPacket interpolation;
     private float yaw = 0f;
 
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
@@ -56,6 +59,10 @@ public class ItemDisplay extends Clientside {
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
     }
 
+    public float getYaw(){
+        return yaw;
+    }
+
     public void delete() {
         this.dispose();
     }
@@ -69,6 +76,11 @@ public class ItemDisplay extends Clientside {
         this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
+    }
+
+    public void setGhostPos(Pos pos){
+        pos = pos.withYaw(yaw);
+        this.pos=pos;
     }
 
     public void addYaw(float yaw){
@@ -111,7 +123,6 @@ public class ItemDisplay extends Clientside {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
         to = to.add(0.5, 0, 0.5);
         double yaw = Math.atan2(to.x() - pos.x(), to.z() - pos.z()) * (180 / Math.PI);
-
         float[] quart = yawToQuat(yaw);
 
         map.put(8, Metadata.VarInt(0));
@@ -122,6 +133,8 @@ public class ItemDisplay extends Clientside {
 
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
+        interpolation=entityMetaDataPacket1;
+        MinecraftServer.getSchedulerManager().buildTask(()-> interpolation=null).delay(time * 50L,ChronoUnit.MILLIS).schedule();
     }
 
     public void setGlowing(boolean glowing) {
@@ -174,6 +187,10 @@ public class ItemDisplay extends Clientside {
         PacketSendingUtils.sendGroupedPacket(players1, getEntityMetaDataPacket());
 
         PacketSendingUtils.sendGroupedPacket(players1, entityTeleportPacket);
+
+        if (interpolation!=null){
+            PacketSendingUtils.sendGroupedPacket(players1,interpolation);
+        }
     }
 
     @Override
@@ -205,6 +222,9 @@ public class ItemDisplay extends Clientside {
 
         PacketSendingUtils.sendPacket(p, entityTeleportPacket);
 
+        if (interpolation!=null){
+            PacketSendingUtils.sendPacket(p,interpolation);
+        }
     }
 
     @Override

@@ -132,7 +132,6 @@ public class Main {
     };
 
     public static void main(String[] args) {
-        System.setProperty("minestom.max-packet-size", "2963852");//see server flags
         completeStartup();
     }
 
@@ -170,13 +169,7 @@ public class Main {
         ContinentalManagers.database = new Database("server", spf.getDatabaseHost(), spf.getDatabasePort(), spf.getDatabaseUser(), spf.getDatabasePassword());
         ContinentalManagers.database.createTable(new Table.Create("player_info")
                 .addColumn("uuid", DataTypeEum.STRING, true, true)
-                .addColumn("name", DataTypeEum.STRING)
-                .addColumn("last_online", DataTypeEum.STRING)
-                .addColumn("first_joined", DataTypeEum.STRING)
-                .addColumn("playtime", DataTypeEum.LONG)
-                .addColumn("permissions", DataTypeEum.STRING)
-                .addColumn("ranks", DataTypeEum.STRING)
-                .addColumn("event_count", DataTypeEum.STRING)
+                .addColumn("data", DataTypeEum.BIGSTRING)
                 .build());
 
         setupAll(new ArrayList<>(), ContinentalManagers.scoreboardManager);

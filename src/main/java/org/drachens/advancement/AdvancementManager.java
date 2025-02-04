@@ -6,7 +6,7 @@ import net.minestom.server.advancements.AdvancementRoot;
 import net.minestom.server.advancements.AdvancementTab;
 import net.minestom.server.advancements.Notification;
 import org.drachens.events.AdvancementEvent;
-import org.drachens.fileManagement.PlayerInfoEntry;
+import org.drachens.fileManagement.customTypes.PlayerJson;
 import org.drachens.player_types.CPlayer;
 
 import java.util.*;
@@ -26,7 +26,7 @@ public class AdvancementManager {
             Pair<Integer, List<Pair<Advancement, net.minestom.server.advancements.Advancement>>> pair = playerEvents.get(eventName);
             if (pair == null) return;
             int count = pair.component1() + 1;
-            player.getPlayerInfoEntry().addAchievementEventTriggered(eventName, count);
+            player.getPlayerJson().addAchievementEventTriggered(eventName, count);
             List<Pair<Advancement, net.minestom.server.advancements.Advancement>> advancements = pair.component2();
             playerEvents.put(eventName, new Pair<>(count, advancements));
             advancements.removeIf(advancement -> {
@@ -53,8 +53,8 @@ public class AdvancementManager {
     }
 
     public void addPlayer(CPlayer p) {
-        PlayerInfoEntry playerInfoEntry = p.getPlayerInfoEntry();
-        HashMap<String, Integer> eventCountHashmap = playerInfoEntry.getEventAchievementTrigger();
+        PlayerJson playerJson = p.getPlayerJson();
+        HashMap<String, Integer> eventCountHashmap = playerJson.getEventAchievementTrigger();
         advancementSections.forEach(advancementSection -> {
             String name = advancementSection.getIdentifier() + p.getUuid();
             if (advancementManager.getTab(name) != null) {
@@ -85,7 +85,7 @@ public class AdvancementManager {
                 }
                 List<Pair<Advancement, net.minestom.server.advancements.Advancement>> events = eventsLists.getOrDefault(advancement.event(), new Pair<>(0, new ArrayList<>())).component2();
                 events.add(new Pair<>(advancement, advancement1));
-                eventsLists.put(advancement.event(), new Pair<>(playerInfoEntry.getEventAchievementTrigger().getOrDefault(advancement.event(), 0), events));
+                eventsLists.put(advancement.event(), new Pair<>(playerJson.getEventAchievementTrigger().getOrDefault(advancement.event(), 0), events));
             });
 
             playersAdvancementHashMap.put(p.getUuid(), eventsLists);

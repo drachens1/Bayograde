@@ -16,7 +16,6 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
-import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.velocity.VelocityProxy;
@@ -36,21 +35,21 @@ import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
-import org.drachens.cmd.*;
-import org.drachens.cmd.Dev.*;
-import org.drachens.cmd.Dev.ban.BanCMD;
-import org.drachens.cmd.Dev.ban.UnbanCMD;
-import org.drachens.cmd.Dev.debug.debugCMD;
-import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
-import org.drachens.cmd.Dev.whitelist.WhitelistCMD;
+import org.drachens.cmd.CosmeticsCMD;
+import org.drachens.cmd.Dev.DevCMD;
+import org.drachens.cmd.Dev.OpMeCMD;
+import org.drachens.cmd.Dev.WhoisCMD;
 import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
-import org.drachens.cmd.ai.AICmd;
-import org.drachens.cmd.example.ExampleCMD;
+import org.drachens.cmd.SpawnCMD;
+import org.drachens.cmd.StoreCMD;
+import org.drachens.cmd.TeleportCMD;
 import org.drachens.cmd.help.HelpCMD;
+import org.drachens.cmd.info.PlaytimeCMD;
 import org.drachens.cmd.minigames.MinigamesCMD;
+import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
@@ -63,7 +62,9 @@ import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
+import org.drachens.fileManagement.PlayerInfoEntry;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.fileManagement.databases.Table;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
 import org.drachens.temporary.country.CountryCMD;
@@ -72,7 +73,6 @@ import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
 import org.drachens.temporary.view_modes.ViewModesCMD;
 import org.drachens.temporary.worlds.ContinentalWorld;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,7 +80,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import static org.drachens.util.Messages.globalBroadcast;
 import static org.drachens.util.Messages.logCmd;
 
 public class ServerUtil {
@@ -149,14 +148,14 @@ public class ServerUtil {
         }
         GlobalEventHandler globEHandler = getEventHandler();
 
-        //VELOCITAY
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
 
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
-            //Gets the player
             final Player p = e.getPlayer();
             e.setSpawningInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
             p.setRespawnPoint(new Pos(0, 1, 0));
+            Table table = ContinentalManagers.database.getTable("player_info");
+            new PlayerInfoEntry((CPlayer) p, table);
         });
 
         globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.player().getPlayerConnection()).add(e.rank()));
@@ -171,15 +170,6 @@ public class ServerUtil {
                 return;
             }
             playerRanks.put(e.getConnection(), new ArrayList<>());
-        });
-
-        globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
-            final CPlayer p = (CPlayer) e.getPlayer();
-            p.addPlayTime(LocalTime.now());
-            p.getPlayerInfoEntry().applyChanges();
-            Country country = p.getCountry();
-            if (country != null) country.removePlayer(p, true);
-            globalBroadcast(p.getUsername() + " has left the game");
         });
 
         Function<PlayerChatEvent, Component> chatEvent = e -> {
@@ -269,14 +259,8 @@ public class ServerUtil {
 
         //Register cmds
         commandManager.register(new HelpCMD());
-        commandManager.register(new operator());
-        commandManager.register(new BanCMD());
-        commandManager.register(new UnbanCMD());
-        commandManager.register(new ListCMD());
-        commandManager.register(new WhitelistCMD());
         commandManager.register(new ReplyCMD());
         commandManager.register(new MsgCMD());
-        commandManager.register(new GamemodeCMD());
         commandManager.register(new FlyCMD());
 
         commandManager.register(new MinigamesCMD());
@@ -285,26 +269,20 @@ public class ServerUtil {
         commandManager.register(new CountryCMD());
         commandManager.register(new TeleportCMD());
         commandManager.register(new VoteCMD(votingOptionsCMD));
-        commandManager.register(new ResetCMD());
         commandManager.register(new SpawnCMD());
-        commandManager.register(new debugCMD());
         commandManager.register(new FactionCMD());
-        commandManager.register(new SummonCMD());
         commandManager.register(new StoreCMD());
         commandManager.register(new CosmeticsCMD());
-        commandManager.register(new PlaytimeCMD());
-        commandManager.register(new ExampleCMD());
         commandManager.register(new ViewModesCMD());
+        commandManager.register(new DevCMD());
 
-        commandManager.register(new CountryBordersCMD());
-
-        commandManager.register(new PingCMD());
-        commandManager.register(new TpsCMD());
+        commandManager.register(new PlaytimeCMD());
 
         commandManager.register(new WhoisCMD());
 
-        commandManager.register(new AICmd());
         commandManager.register(new OpMeCMD());
+
+        commandManager.register(new SettingsCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

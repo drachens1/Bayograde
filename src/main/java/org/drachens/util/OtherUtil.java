@@ -2,10 +2,6 @@ package org.drachens.util;
 
 import net.minestom.server.coordinate.Pos;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class OtherUtil {
     public static String posToString(Pos pos) {
         return pos.x() + ", " + pos.z();

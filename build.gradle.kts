@@ -21,9 +21,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
-
     implementation("org.javassist:javassist:3.30.2-GA")
-
 }
 
 java {

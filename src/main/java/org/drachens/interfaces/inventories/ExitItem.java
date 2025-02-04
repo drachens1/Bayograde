@@ -1,7 +1,5 @@
 package org.drachens.interfaces.inventories;
 
-import net.minestom.server.event.player.PlayerUseItemEvent;
-import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -16,12 +14,12 @@ public class ExitItem extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerUseItemEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(), ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getDefaultInventory());
+    public void onRightClick(OnUse onUse) {
+        inventoryManager.assignInventory(onUse.player(), ContinentalManagers.world(onUse.instance()).dataStorer().votingOption.getDefaultInventory());
     }
 
     @Override
-    public void onUse(PlayerUseItemOnBlockEvent e) {
-        inventoryManager.assignInventory(e.getPlayer(), ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getDefaultInventory());
+    public void onRightClickOnBlock(OnUse onUse) {
+        inventoryManager.assignInventory(onUse.player(), ContinentalManagers.world(onUse.instance()).dataStorer().votingOption.getDefaultInventory());
     }
 }

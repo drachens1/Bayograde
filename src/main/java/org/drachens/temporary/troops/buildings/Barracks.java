@@ -7,7 +7,6 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Armys.DivisionDesign;
-import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
@@ -17,8 +16,7 @@ import org.drachens.player_types.CPlayer;
 import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.temporary.troops.inventory.TroopTrainerGUI;
 
-import java.util.HashMap;
-
+import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.Messages.sendMessage;
 
 public class Barracks extends BuildTypes {
@@ -28,12 +26,19 @@ public class Barracks extends BuildTypes {
             .build();
 
     public Barracks() {
-        super(new int[]{16}, Material.ORANGE_DYE, BuildingEnum.barracks,21,22);
+        super(new int[]{16}, Material.ORANGE_DYE, BuildingEnum.barracks,
+                province -> itemBuilder(Material.ORANGE_DYE,21),
+                province -> itemBuilder(Material.ORANGE_DYE,22));
     }
 
     @Override
     public void onBuild(Country country, Province province, CPlayer p) {
         new Building(this, province);
+    }
+
+    @Override
+    public void onBuild(Country country, Province province, CPlayer p, float yaw) {
+        new Building(this, province).getItemDisplay().addYaw(yaw);
     }
 
     @Override

@@ -1,15 +1,15 @@
 package org.drachens.temporary.troops.inventory;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
-import org.drachens.temporary.troops.buildings.Barracks;
+import org.drachens.interfaces.inventories.OnUse;
+import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,22 +25,24 @@ public class TroopMover extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerUseItemOnBlockEvent e) {
-        Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getPosition());
-        Player p = e.getPlayer();
+    public void onRightClickOnBlock(OnUse onUse) {
+        Province province = ContinentalManagers.world(onUse.instance()).provinceManager().getProvince(onUse.pos());
+        CPlayer p = onUse.player();
         if (province == null) return;
         if (nextProv.containsKey(p)) {
+            p.sendActionBar(Component.text("Moved"));
             List<Troop> troops = nextProv.getOrDefault(p, new ArrayList<>());
             troops.forEach(troop -> troop.move(province));
         }
     }
 
     @Override
-    public void onUse(PlayerStartDiggingEvent e) {
-        Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getBlockPosition());
-        Player p = e.getPlayer();
+    public void onLeftClickOnBlock(OnUse onUse) {
+        Province province = ContinentalManagers.world(onUse.instance()).provinceManager().getProvince(onUse.pos());
+        CPlayer p = onUse.player();
         if (province.getTroops().isEmpty()) return;
         List<Troop> selected = province.getTroops();
+        p.sendActionBar(Component.text("Selected"));
         if (p.isSneaking()){
             List<Troop> troops = nextProv.getOrDefault(p, new ArrayList<>());
             troops.addAll(selected);
@@ -54,6 +56,5 @@ public class TroopMover extends HotbarItemButton {
             selected.forEach(troop -> troop.getTroop().setGlowing(true));
             nextProv.put(p, selected);
         }
-
     }
 }

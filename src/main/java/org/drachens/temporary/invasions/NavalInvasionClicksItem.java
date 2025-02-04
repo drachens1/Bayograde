@@ -8,8 +8,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
@@ -18,6 +16,7 @@ import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
+import org.drachens.interfaces.inventories.OnUse;
 import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,14 +50,14 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerStartDiggingEvent e) {
-        CPlayer p = (CPlayer) e.getPlayer();
+    public void onLeftClickOnBlock(OnUse onUse) {
+        CPlayer p = onUse.player();
         Country country = p.getCountry();
         if (country == null) {
             p.sendMessage(error);
             return;
         }
-        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getBlockPosition());
+        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
         if (province == null) {
             p.sendMessage(provinceNoExist);
             return;
@@ -95,14 +94,14 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     }
 
     @Override
-    public void onUse(PlayerUseItemOnBlockEvent e) {
-        CPlayer p = (CPlayer) e.getPlayer();
+    public void onRightClickOnBlock(OnUse onUse) {
+        CPlayer p = onUse.player();
         Country country = p.getCountry();
         if (country == null) {
             p.sendMessage(error);
             return;
         }
-        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(e.getPosition());
+        Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
         if (province == null) {
             p.sendMessage(provinceNoExist);
             return;

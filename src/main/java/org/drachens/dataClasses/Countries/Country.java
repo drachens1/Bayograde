@@ -233,7 +233,6 @@ public abstract class Country implements Cloneable {
             return;
         }
 
-
         modifiers.remove(modifier.getIdentifier());
         modifier.removeCountry(this);
         modifier.getBoostHashMap().forEach(this::minusBoost);
@@ -771,11 +770,11 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean isMilitaryAlly(Country country) {
-        return diplomacy.get(country.getName())==6;
+        return diplomacy.getOrDefault(country.getName(),-1)==6;
     }
 
     public boolean isEconomicAlly(Country country) {
-        return diplomacy.get(country.getName())==4;
+        return diplomacy.getOrDefault(country.getName(),-1)==4;
     }
 
     public boolean isAlly(Country country) {
