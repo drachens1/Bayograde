@@ -75,7 +75,7 @@ public class DiplomacyViewOptionsCMD extends Command {
                 comps.add(Component.text()
                         .append(Component.text(" [NON-AGGRESSION-PACT] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to send this player a non aggression pact offer", NamedTextColor.GRAY)))
-                        .clickEvent(ClickEvent.runCommand("/country diplomacy non-aggression-pact create " + against.getName()))
+                        .clickEvent(ClickEvent.suggestCommand("/country diplomacy non-aggression-pact create " + against.getName()+" "))
                         .build());
                 comps.add(Component.newline());
             }

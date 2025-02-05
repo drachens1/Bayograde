@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.Modifier;
@@ -140,7 +141,7 @@ public abstract class Factions {
 
     public void removeInvite(Country country) {
         invites.remove(country);
-        country.removeInviteToFaction(this);
+        country.removeInvite(InvitesEnum.faction,getStringName());
     }
 
     public void sendMessage(Component message) {

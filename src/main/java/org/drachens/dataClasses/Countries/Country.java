@@ -15,6 +15,7 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
+import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.bossbars.CapitulationBar;
 import org.drachens.dataClasses.Diplomacy.Demand;
@@ -45,6 +46,7 @@ import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
+import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
@@ -77,8 +79,6 @@ public abstract class Country implements Cloneable {
     private final AStarPathfinderXZ aStarPathfinder;
     private final Instance instance;
     private final List<Clientside> clientsides = new ArrayList<>();
-    private final List<Player> playerInvites = new ArrayList<>();
-    private final List<String> factionInvites = new ArrayList<>();
     private final HashMap<String, Demand> demandHashMap = new HashMap<>();
     private final DemandManager demandManager = ContinentalManagers.demandManager;
     private final List<Province> occupies;
@@ -94,6 +94,7 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, WarJustification> warJustificationHashMap = new HashMap<>();
     private final HashMap<String, WarJustification> completedWarJustifications = new HashMap<>();
     private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
+    private final List<NonAggressionPact> nonAggressionTicks = new ArrayList<>();
     private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
     private final CountryChat countryChat;
     private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
@@ -119,6 +120,7 @@ public abstract class Country implements Cloneable {
     private Country overlord = null;
     private Component originalName;
     private PuppetChat puppetChat;
+    private final HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap = new HashMap<>();
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
         laws.forEach(((string, lawCategory) -> this.laws.put(string, new LawCategory(lawCategory, this))));
@@ -795,7 +797,7 @@ public abstract class Country implements Cloneable {
     }
 
     public boolean isInAllFactions() {
-        return !isInAMilitaryFaction() || !isInAnEconomicFaction();
+        return !isInAMilitaryFaction() && !isInAnEconomicFaction();
     }
 
     public void addBuilding(Building building) {
@@ -843,32 +845,8 @@ public abstract class Country implements Cloneable {
         this.clientsides.remove(clientside);
     }
 
-    public void inviteToFaction(Factions factions) {
-        factionInvites.add(factions.getStringName());
-    }
-
-    public void removeInviteToFaction(Factions factions) {
-        factionInvites.remove(factions.getStringName());
-    }
-
-    public List<String> getInvitedToFactions() {
-        return factionInvites;
-    }
-
     public boolean isPlayerLeader(Player player) {
         return playerLeader == player;
-    }
-
-    public void invitePlayer(Player player) {
-        playerInvites.add(player);
-    }
-
-    public void removeInvite(Player player) {
-        playerInvites.remove(player);
-    }
-
-    public boolean hasInvited(Player player) {
-        return playerInvites.contains(player);
     }
 
     public void sendDemand(Demand demand) {
@@ -999,6 +977,14 @@ public abstract class Country implements Cloneable {
         });
 
         e.forEach(eventsRunners::remove);
+
+        nonAggressionTicks.forEach(nonAggressionPact -> {
+            if (nonAggressionPact.getDuration()<=0f){
+                EventDispatcher.call(new NonAggressionExpireEvent(nonAggressionPact));
+                return;
+            }
+            nonAggressionPact.minus(1f);
+        });
     }
 
     public abstract void newDay(NewDay newDay);
@@ -1037,20 +1023,16 @@ public abstract class Country implements Cloneable {
 
     public void addNonAggressionPact(NonAggressionPact nonAggressionPact, Country other) {
         nonAggressionPactHashMap.put(other.name, nonAggressionPact);
+        if (nonAggressionPact.getFrom()==this){
+            nonAggressionTicks.add(nonAggressionPact);
+        }
         loadCountriesDiplomacy(other);
     }
 
-    public void removeNonAggressionPact(Country other) {
+    public void removeNonAggressionPact(NonAggressionPact nonAggressionPact,Country other) {
         nonAggressionPactHashMap.remove(other.name);
+        nonAggressionTicks.remove(nonAggressionPact);
         loadCountriesDiplomacy(other);
-    }
-
-    public List<String> getNonAggressionPacts() {
-        return nonAggressionPactHashMap.keySet().stream().toList();
-    }
-
-    public boolean hasNonAggressionPact(String country) {
-        return nonAggressionPactHashMap.containsKey(country);
     }
 
     public boolean isPuppet(Country country) {
@@ -1186,9 +1168,6 @@ public abstract class Country implements Cloneable {
                 bordersWars.add(country);
             }
         }
-        if (capital==province){
-            System.out.println("Added the capital border border");
-        }
         p.add(province);
         bordersProvince.put(country, p);
     }
@@ -1196,9 +1175,6 @@ public abstract class Country implements Cloneable {
     public void removeBorder(Province province, String country) {
         List<Province> p = bordersProvince.get(country);
         if (p.remove(province)) {
-            if (capital==province){
-                System.out.println("Removed the capital border");
-            }
             if (p.isEmpty()) {
                 bordersProvince.remove(country);
                 if (isAtWar(country)){
@@ -1252,5 +1228,29 @@ public abstract class Country implements Cloneable {
 
     public int getDiplomacy(String country){
         return diplomacy.getOrDefault(country,-1);
+    }
+
+    public void addInvite(InvitesEnum invitesEnum, String invitee, Object object){
+        HashMap<String, Object> current = invitesHashMap.getOrDefault(invitesEnum,new HashMap<>());
+        current.put(invitee, object);
+        invitesHashMap.put(invitesEnum,current);
+    }
+
+    public Object getInvite(InvitesEnum invitesEnum, String invitee){
+        return invitesHashMap.getOrDefault(invitesEnum,new HashMap<>()).get(invitee);
+    }
+
+    public void removeInvite(InvitesEnum invitesEnum, String invitee){
+        HashMap<String, Object> current = invitesHashMap.getOrDefault(invitesEnum,new HashMap<>());
+        current.remove(invitee);
+        invitesHashMap.put(invitesEnum,current);
+    }
+
+    public Set<String> getInvites(InvitesEnum invitesEnum){
+        return invitesHashMap.getOrDefault(invitesEnum,new HashMap<>()).keySet();
+    }
+
+    public boolean hasInvite(InvitesEnum invitesEnum, String invitee){
+        return invitesHashMap.getOrDefault(invitesEnum,new HashMap<>()).containsKey(invitee);
     }
 }

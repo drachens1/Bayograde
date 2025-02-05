@@ -5,6 +5,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.events.factions.FactionJoinEvent;
@@ -21,7 +22,7 @@ public class AcceptCMD extends Command {
         var factionNames = ArgumentType.String("faction_name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (hasInvites(sender) && sender instanceof CPlayer player) {
-                        getSuggestionBasedOnInput(suggestion, player.getCountry().getInvitedToFactions());
+                        getSuggestionBasedOnInput(suggestion, player.getCountry().getInvites(InvitesEnum.faction));
                     }
                 });
 
@@ -52,7 +53,7 @@ public class AcceptCMD extends Command {
         if (sender instanceof CPlayer cPlayer) {
             Country country = cPlayer.getCountry();
             if (country == null) return false;
-            return country.getInvitedToFactions().isEmpty();
+            return country.getInvites(InvitesEnum.faction).isEmpty();
         }
         return false;
     }

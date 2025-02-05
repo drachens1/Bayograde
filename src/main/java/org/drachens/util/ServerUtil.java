@@ -81,6 +81,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static org.drachens.util.Messages.logCmd;
+import static org.drachens.util.OtherUtil.runThread;
 
 public class ServerUtil {
     private static final HashSet<Chunk> allowedChunks = new HashSet<>();
@@ -246,7 +247,7 @@ public class ServerUtil {
             });
             String time = e.day() + "/" + e.month() + "|" + e.year();
             ContinentalManagers.playerModsManager.getPlayers(e.world()).forEach(player -> player.sendPluginMessage("continentalmod:time", time));
-            ContinentalManagers.world(e.world()).countryDataManager().getCountries().forEach(country -> country.nextDay(e));
+            runThread(()->ContinentalManagers.world(e.world()).countryDataManager().getCountries().forEach(country -> country.nextDay(e)));
         });
 
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(true));

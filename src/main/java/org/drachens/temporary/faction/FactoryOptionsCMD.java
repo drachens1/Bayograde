@@ -132,7 +132,7 @@ public class FactoryOptionsCMD extends Command {
                             .build());
                 }
             }
-            if (!country.isInAFaction()){
+            if (!country.isInAllFactions()){
                 comps.add(Component.text()
                         .appendNewline()
                         .append(Component.text("Other:"))

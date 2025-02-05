@@ -6,6 +6,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.player_types.CPlayer;
@@ -35,13 +36,13 @@ public class AcceptCMD extends Command {
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (country == null)
                 return;
-            if (!country.hasInvited(p)) {
+            if (!country.hasInvite(InvitesEnum.player,p.getUsername())) {
                 p.sendMessage(notInvited);
                 return;
             }
             country.addPlayer((CPlayer) p);
             EventDispatcher.call(new CountryJoinEvent(country, (CPlayer) p));
-            country.removeInvite(p);
+            country.removeInvite(InvitesEnum.player,p.getUsername());
         }, countries);
     }
 }

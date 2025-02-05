@@ -11,6 +11,7 @@ public class NonAggressionCMD extends Command {
 
         setCondition((sender, s) -> isLeaderOfCountry(sender));
         addSubcommand(new NonAggressionCreateCMD());
+        addSubcommand(new NonAggressionAcceptCMD());
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

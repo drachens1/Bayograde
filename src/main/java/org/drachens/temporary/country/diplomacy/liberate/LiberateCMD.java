@@ -18,7 +18,7 @@ public class LiberateCMD extends Command {
 
         setCondition((sender, s) -> isLeaderOfCountry(sender));
 
-        var countries = ArgumentType.String("Countries")
+        var countries = ArgumentType.String("countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
                         return;

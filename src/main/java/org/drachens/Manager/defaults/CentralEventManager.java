@@ -13,12 +13,14 @@ import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.YearManager;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
+import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.bossbars.YearBar;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.*;
 import org.drachens.dataClasses.Diplomacy.Demand;
+import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
@@ -32,6 +34,9 @@ import org.drachens.events.countries.demands.DemandAcceptedEvent;
 import org.drachens.events.countries.demands.DemandCompletionEvent;
 import org.drachens.events.countries.demands.DemandCounterOfferEvent;
 import org.drachens.events.countries.demands.DemandDeniedEvent;
+import org.drachens.events.countries.nonaggression.NonAggressionAcceptedEvent;
+import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
+import org.drachens.events.countries.nonaggression.NonAggressionOfferEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.events.countries.war.EndWarEvent;
 import org.drachens.events.countries.war.StartWarEvent;
@@ -308,7 +313,7 @@ public class CentralEventManager {
         globEHandler.addListener(FactionInviteEvent.class, e -> {
             Factions factions = e.faction();
             factions.addToInvites(e.invited());
-            e.invited().inviteToFaction(factions);
+            e.invited().addInvite(InvitesEnum.faction,factions.getStringName(),factions);
             Country invited = e.invited();
             factions.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
@@ -370,7 +375,7 @@ public class CentralEventManager {
         globEHandler.addListener(CountryCoopPlayerEvent.class, e -> {
             CPlayer cPlayer = e.p();
             Country country = e.inviter();
-            country.invitePlayer(cPlayer);
+            country.addInvite(InvitesEnum.player,cPlayer.getUsername(),cPlayer);
             cPlayer.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(Component.text("You have been invited to join ", NamedTextColor.GREEN))
@@ -580,6 +585,71 @@ public class CentralEventManager {
                     .append(Component.text(" has returned occupied land to you"))
                     .build());
 
+        });
+
+        globEHandler.addListener(NonAggressionOfferEvent.class, e->{
+            NonAggressionPact nonAggressionPact = e.nonAggressionPact();
+            Country from = nonAggressionPact.getFrom();
+            Country to = nonAggressionPact.getTo();
+            to.addInvite(InvitesEnum.nonaggression,from.getName(),nonAggressionPact);
+            to.sendMessage(Component.text()
+                            .append(MessageEnum.country.getComponent())
+                            .append(Component.text("You have received a non-aggression pact from ",NamedTextColor.GREEN))
+                            .append(from.getNameComponent())
+                            .appendNewline()
+                            .append(Component.text("Non-aggression pact duration: "+nonAggressionPact.getDuration()+" days"))
+                            .append(Component.text()
+                                    .append(Component.text(" [ACCEPT]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                    .hoverEvent(HoverEvent.showText(Component.text("Click to accept the non-aggression pact", NamedTextColor.GRAY)))
+                                    .clickEvent(ClickEvent.runCommand("/country diplomacy non-aggression accept " + from.getName())))
+                    .build());
+            from.sendMessage(Component.text()
+                            .append(MessageEnum.country.getComponent())
+                            .append(Component.text("You have sent a non-aggression pact offer to ",NamedTextColor.GREEN))
+                            .append(to.getNameComponent())
+                    .build());
+        });
+
+        globEHandler.addListener(NonAggressionExpireEvent.class, e->{
+            NonAggressionPact nonAggressionPact = e.nonAggressionPact();
+            Country from = nonAggressionPact.getFrom();
+            Country to = nonAggressionPact.getTo();
+            from.removeNonAggressionPact(nonAggressionPact,to);
+            to.removeNonAggressionPact(nonAggressionPact,from);
+            from.loadCountriesDiplomacy(to);
+            to.loadCountriesDiplomacy(from);
+            to.sendMessage(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(Component.text("The non-aggression pact from ",NamedTextColor.GREEN))
+                    .append(from.getNameComponent())
+                    .append(Component.text(" has expired",NamedTextColor.GREEN))
+                    .build());
+            from.sendMessage(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(Component.text("The non-aggression pact from ",NamedTextColor.GREEN))
+                    .append(to.getNameComponent())
+                    .append(Component.text(" has expired",NamedTextColor.GREEN))
+                    .build());
+        });
+
+        globEHandler.addListener(NonAggressionAcceptedEvent.class, e->{
+            NonAggressionPact nonAggressionPact = e.nonAggressionPact();
+            Country from = nonAggressionPact.getFrom();
+            Country to = nonAggressionPact.getTo();
+            to.addInvite(InvitesEnum.nonaggression,from.getName(),nonAggressionPact);
+            to.sendMessage(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(Component.text("You have accepted the non-aggression pact from ",NamedTextColor.GREEN))
+                    .append(from.getNameComponent())
+                    .build());
+            from.sendMessage(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(Component.text("The non-aggression pact sent to ",NamedTextColor.GREEN))
+                    .append(to.getNameComponent())
+                    .append(Component.text(" has been accepted",NamedTextColor.GREEN))
+                    .build());
+            to.addNonAggressionPact(nonAggressionPact,from);
+            from.addNonAggressionPact(nonAggressionPact,to);
         });
 
     }
