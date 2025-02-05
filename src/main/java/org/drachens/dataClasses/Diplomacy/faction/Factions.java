@@ -2,6 +2,7 @@ package org.drachens.dataClasses.Diplomacy.faction;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.instance.Instance;
@@ -59,6 +60,11 @@ public abstract class Factions {
                 .appendNewline()
                 .append(Component.text("Members: "))
                 .append(memberComponents)
+                .appendNewline()
+                .append(Component.text()
+                        .append(Component.text("[OPTIONS]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click to get view the options", NamedTextColor.GRAY)))
+                        .clickEvent(ClickEvent.runCommand("/faction options")))
                 .build();
     }
 

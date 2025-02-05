@@ -48,35 +48,31 @@ public class InfoOptionsCMD extends Command {
         String name = country.getName();
         if (p.getCountry() == country) {
             comps.add(Component.text()
-                    .append(Component.text("[BORDERS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries borders", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country info borders"))
+                    .append(Component.text()
+                            .append(Component.text("[BORDERS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries borders", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country info borders")))
+                    .append(Component.text()
+                            .append(Component.text(" [LOANS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries loans", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country info loan_info")))
+                    .append(Component.text()
+                            .append(Component.text(" [LAWS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries laws", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country info laws")))
+                    .appendNewline()
                     .build());
-
-            comps.add(Component.text()
-                    .append(Component.text(" [LOANS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries loans", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country info loan_info"))
-                    .build());
-
-            comps.add(Component.text()
-                    .append(Component.text(" [LAWS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
-                    .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries laws", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country info laws"))
-                    .build());
-            comps.add(Component.newline());
         }
 
         comps.add(Component.text()
-                .append(Component.text(" [WARS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries wars", NamedTextColor.GRAY)))
-                .clickEvent(ClickEvent.runCommand("/country info wars " + name))
-                .build());
-
-        comps.add(Component.text()
-                .append(Component.text(" [PUPPETS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
-                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries puppets", NamedTextColor.GRAY)))
-                .clickEvent(ClickEvent.runCommand("/country info puppets " + name))
+                        .append(Component.text()
+                                .append(Component.text(" [WARS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries wars", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country info wars " + name)))
+                        .append(Component.text()
+                                .append(Component.text(" [PUPPETS] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .hoverEvent(HoverEvent.showText(Component.text("Click to show the countries puppets", NamedTextColor.GRAY)))
+                                .clickEvent(ClickEvent.runCommand("/country info puppets " + name)))
                 .build());
 
         p.sendMessage(Component.text()

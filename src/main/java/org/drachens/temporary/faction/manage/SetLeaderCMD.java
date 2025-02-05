@@ -16,7 +16,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class SetLeaderCMD extends Command {
     public SetLeaderCMD() {
-        super("set_leader");
+        super("set-leader");
         setCondition((sender, s) -> leaderOfAFaction(sender));
 
         var factionsArg = ArgumentType.String("factionName")
