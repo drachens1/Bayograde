@@ -163,7 +163,6 @@ public class Main {
                 new Hat("1", 1, Material.PURPLE_DYE, Component.text("item", NamedTextColor.AQUA), 1)
         ));
 
-
         ServerPropertiesFile spf = ContinentalManagers.configFileManager.getServerPropertiesFile();
 
         ContinentalManagers.database = new Database("server", spf.getDatabaseHost(), spf.getDatabasePort(), spf.getDatabaseUser(), spf.getDatabasePassword());

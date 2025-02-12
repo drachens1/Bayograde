@@ -30,6 +30,7 @@ public class CountryCMD extends Command {
         addSubcommand(new EditCMD());
         addSubcommand(new ModifiersCMD());
         addSubcommand(new ResearchCMD());
+        addSubcommand(new LeaveCMD());
 
         var smth = ArgumentType.String("type...")
 

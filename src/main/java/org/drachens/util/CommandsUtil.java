@@ -74,4 +74,12 @@ public class CommandsUtil {
                 .filter(suggestions -> suggestions.toLowerCase().startsWith(input))
                 .collect(Collectors.toList()), suggestion);
     }
+
+    public static String arrayToSentence(String[] args){
+        StringBuilder b = new StringBuilder();
+        for (String arg : args) {
+            b.append(arg).append(" ");
+        }
+        return b.toString();
+    }
 }

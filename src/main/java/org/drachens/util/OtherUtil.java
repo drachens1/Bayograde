@@ -1,6 +1,8 @@
 package org.drachens.util;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
+import org.intellij.lang.annotations.RegExp;
 
 public class OtherUtil {
     public static String posToString(Pos pos) {
@@ -61,5 +63,12 @@ public class OtherUtil {
 
     public static void runThread(Runnable runnable) {
         new Thread(runnable).start();
+    }
+
+    public static Component replaceWith(Component component, @RegExp String from, String to){
+        return component.replaceText(builder -> builder
+                .match(from)
+                .replacement(to)
+        );
     }
 }

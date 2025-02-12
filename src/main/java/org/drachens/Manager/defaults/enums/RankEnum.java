@@ -6,11 +6,12 @@ import net.minestom.server.entity.Player;
 import org.drachens.store.other.Rank;
 
 public enum RankEnum {
-    default_rank(new Rank.Create(Player::getName, Component.text(""),Component.text(""), NamedTextColor.GRAY,"default_rank")
-            .addLoginMessage(LoginMessageEnum.default_login_message)
+    default_rank(new Rank.Create(Player::getName, Component.text(""),Component.text(""), NamedTextColor.GRAY,"default_rank",0)
             .build()),
-//    Legatus(),
-//    deratus()
+    legatus(new Rank.Create(Player::getName, Component.text("\uD83D\uDE3E"),Component.text(""),NamedTextColor.GRAY,"legatus",1)
+            .build()),
+    deratus(new Rank.Create(Player::getName, Component.text("\uD83D\uDC1D"),Component.text(""),NamedTextColor.GRAY,"deratus",2)
+            .build())
     ;
 
     private final Rank rank;

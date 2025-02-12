@@ -35,7 +35,6 @@ public class VoteBar extends HideableBossBar {
                 completion++;
                 voteBar.progress(clamp(0f, 1f, completion / 12f));
                 if (completion >= 12f) {
-                    System.out.println("Vote bar hidden");
                     hide();
                     task.cancel();
                 }

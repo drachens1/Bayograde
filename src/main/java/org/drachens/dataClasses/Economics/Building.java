@@ -78,7 +78,7 @@ public class Building {
     }
 
     public void delete() {
-        this.itemDisplay.delete();
+        this.itemDisplay.dispose();
         this.country.removeBuilding(this);
         this.province.removeBuilding();
     }

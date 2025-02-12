@@ -15,9 +15,7 @@ public class CombatManager {
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
             HashMap<Province, Combat> a = combatHash.get(e.world());
             if (a == null) return;
-            a.forEach((province, combat) -> {
-                combat.newDay();
-            });
+            new HashMap<>(a).forEach((province, combat) -> combat.newDay());
         });
     }
 

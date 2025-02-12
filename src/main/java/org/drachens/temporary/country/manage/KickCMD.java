@@ -36,7 +36,7 @@ public class KickCMD extends Command {
             if (p.getCountry() == null || p.getCountry() != senders.getCountry()) return;
             Country country = p.getCountry();
             EventDispatcher.call(new CountryLeaveEvent(country, p));
-            country.removePlayer(p, true);
+            country.removePlayer(p);
         }, players);
     }
 

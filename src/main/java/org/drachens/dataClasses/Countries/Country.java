@@ -43,7 +43,6 @@ import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.events.NewDay;
-import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
 import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
@@ -361,8 +360,8 @@ public abstract class Country implements Cloneable {
 
     protected abstract void onAddPlayer(CPlayer p);
 
-    public void removePlayer(CPlayer p, boolean left) {
-        if (left) EventDispatcher.call(new CountryLeaveEvent(this, p));
+    public void removePlayer(CPlayer p) {
+        EventDispatcher.call(new CountryLeaveEvent(this, p));
         capitulationBar.removePlayer(p);
         this.players.remove(p);
         p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(originalName).build()).build());
@@ -377,24 +376,10 @@ public abstract class Country implements Cloneable {
         onRemovePlayer(p);
         warsWorld.removePlayer(p);
         allyWorld.removePlayer(p);
+        p.setCountry(null);
     }
 
     protected abstract void onRemovePlayer(CPlayer p);
-
-
-    public void changeCountry(CPlayer p) {
-        Country country = p.getCountry();
-
-        if (country != null) {
-            if (country.getPlayer().contains(p)) {
-                country.removePlayer(p, false);
-            }
-            EventDispatcher.call(new CountryChangeEvent(this, country, p));
-        }
-
-
-        addPlayer(p);
-    }
 
     public List<CPlayer> getPlayer() {
         return players;

@@ -26,9 +26,9 @@ public class Barracks extends BuildTypes {
             .build();
 
     public Barracks() {
-        super(new int[]{16}, Material.ORANGE_DYE, BuildingEnum.barracks,
-                province -> itemBuilder(Material.ORANGE_DYE,21),
-                province -> itemBuilder(Material.ORANGE_DYE,22));
+        super(new int[]{19}, Material.ORANGE_DYE, BuildingEnum.barracks,
+                province -> itemBuilder(Material.ORANGE_DYE,24),
+                province -> itemBuilder(Material.ORANGE_DYE,25));
     }
 
     @Override

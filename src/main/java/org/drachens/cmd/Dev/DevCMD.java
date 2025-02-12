@@ -30,5 +30,7 @@ public class DevCMD extends Command {
         addSubcommand(new ExampleCMD());
         addSubcommand(new AICmd());
         addSubcommand(new CountryBordersCMD());
+        addSubcommand(new TroopSummonCMD());
+        addSubcommand(new GiveRankCMD());
     }
 }

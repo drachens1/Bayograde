@@ -3,6 +3,7 @@ package org.drachens.dataClasses.Armys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.item.Material;
+import org.drachens.Manager.defaults.enums.PathingEnum;
 import org.drachens.Manager.defaults.enums.TroopTypeEnum;
 import org.drachens.animation.Animation;
 import org.drachens.dataClasses.Economics.Building;
@@ -23,7 +24,7 @@ public class DivisionTrainingQueue {
     private final CompletionBarTextDisplay completionBarTextDisplay;
     private final List<TrainedTroop> divisionDesign = new ArrayList<>();
     private final Building building;
-    private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE, new int[]{17, 18, 19, 20});
+    private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE, new int[]{20, 21, 22, 23});
     private int count = 0;
     private TrainedTroop trainedTroop;
     private float time;
@@ -75,15 +76,15 @@ public class DivisionTrainingQueue {
 
     private void finishTrainedTroop(TrainedTroop trainedTroop) {
         Province province = building.getProvince();
-        Troop troop = new Troop(province, trainedTroop, new TroopPathing());
+        Troop troop = new Troop(province, trainedTroop, PathingEnum.ww2.getaStarPathfinderVoids());
         removeFromQueue(trainedTroop);
         TroopCountry troopCountry = (TroopCountry) building.getCountry();
         troopCountry.addTroop(troop);
         if (divisionDesign.isEmpty()) {
-            completionBarTextDisplay.getTextDisplay().dispose();
+            completionBarTextDisplay.getTextDisplay().hide();
             troopCountry.finishBuildingTraining(building);
             trainingAnimation.stop(building.getItemDisplay());
-            building.getItemDisplay().setItem(itemBuilder(Material.ORANGE_DYE, 16));
+            building.getItemDisplay().setItem(itemBuilder(Material.ORANGE_DYE, 19));
         } else {
             completionBarTextDisplay.setProgress(1f);
             TrainedTroop next = divisionDesign.getFirst();

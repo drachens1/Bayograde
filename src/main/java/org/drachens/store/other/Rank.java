@@ -1,13 +1,11 @@
 package org.drachens.store.other;
 
-import dev.ng5m.ImmutableList;
 import dev.ng5m.Util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.network.packet.server.play.TeamsPacket;
-import org.drachens.Manager.defaults.enums.LoginMessageEnum;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.player_types.CPlayer;
@@ -24,9 +22,9 @@ public class Rank {
     public final NamedTextColor color;
     private final List<UUID> players = new ArrayList<>();
     private final String team;
-    private final List<LoginMessage> loginMessages;
     private final List<String> items;
     private final String identifier;
+    private final int weight;
 
     public Rank(Create c){
         this.displayNameSupplier = c.displayNameSupplier;
@@ -35,16 +33,24 @@ public class Rank {
         this.color = c.color;
         this.team = Util.randomAlNum(16);
         this.items=c.items;
-        this.loginMessages=c.loginMessages;
         this.identifier=c.identifier;
+        this.weight=c.weight;
+    }
+
+    public String toString(){
+        return "[identifier:"+identifier+"-weight:"+weight+"]";
     }
 
     public String getIdentifier(){
         return identifier;
     }
 
-    public final ImmutableList<UUID> getPlayers() {
-        return new ImmutableList<>(this.players);
+    public int getWeight(){
+        return weight;
+    }
+
+    public final ArrayList<UUID> getPlayers() {
+        return new ArrayList<>(this.players);
     }
 
     protected final void sendPackets(String addedPlayer, Player player) {
@@ -90,10 +96,6 @@ public class Rank {
         EventDispatcher.call(new RankRemoveEvent(player, this));
     }
 
-    public List<LoginMessage> getLoginMessages(){
-        return loginMessages;
-    }
-
     public List<String> getCosmetics(){
         return items;
     }
@@ -103,21 +105,17 @@ public class Rank {
         public final Component prefix;
         public final Component suffix;
         public final NamedTextColor color;
-        private final List<LoginMessage> loginMessages = new ArrayList<>();
         private final List<String> items = new ArrayList<>();
         private final String identifier;
+        private final int weight;
 
-        public Create(Function<Player, Component> displayNameSupplier, Component prefix, Component suffix, NamedTextColor color, String identifier) {
+        public Create(Function<Player, Component> displayNameSupplier, Component prefix, Component suffix, NamedTextColor color, String identifier, int weight) {
             this.displayNameSupplier = displayNameSupplier;
             this.prefix = prefix;
             this.suffix = suffix;
             this.color = color;
             this.identifier=identifier;
-        }
-
-        public Create addLoginMessage(LoginMessageEnum loginMessageEnum){
-            loginMessages.add(loginMessageEnum.getLoginMessage());
-            return this;
+            this.weight=weight;
         }
 
         public Create addCosmetic(String storeItem){

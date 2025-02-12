@@ -59,11 +59,11 @@ public class ContinentalWorld extends World {
         ContinentalManagers.world(getInstance()).votingManager().getVoteBar().removePlayer(p);
         ContinentalManagers.yearManager.getYearBar(getInstance()).removePlayer(p);
         if (p.getCountry() != null) {
-            p.getCountry().removePlayer(p, true);
+            p.getCountry().removePlayer(p);
         }
         p.addPlayTime(LocalTime.now());
         Country country = p.getCountry();
-        if (country != null) country.removePlayer(p, true);
+        if (country != null) country.removePlayer(p);
     }
 
     @Override

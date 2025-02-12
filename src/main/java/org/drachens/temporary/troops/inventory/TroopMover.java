@@ -31,8 +31,20 @@ public class TroopMover extends HotbarItemButton {
         if (province == null) return;
         if (nextProv.containsKey(p)) {
             p.sendActionBar(Component.text("Moved"));
-            List<Troop> troops = nextProv.getOrDefault(p, new ArrayList<>());
-            troops.forEach(troop -> troop.move(province));
+            List<Troop> troops = nextProv.get(p);
+            if (troops.isEmpty()){
+                p.sendActionBar(Component.text("empty"));
+            }
+            List<Troop> toRemove = new ArrayList<>();
+            troops.forEach(troop -> {
+                if (troop.isDead()){
+                    toRemove.add(troop);
+                    return;
+                }
+                troop.move(province);
+            });
+            troops.removeAll(toRemove);
+            nextProv.put(p,troops);
         }
     }
 
@@ -41,7 +53,7 @@ public class TroopMover extends HotbarItemButton {
         Province province = ContinentalManagers.world(onUse.instance()).provinceManager().getProvince(onUse.pos());
         CPlayer p = onUse.player();
         if (province.getTroops().isEmpty()) return;
-        List<Troop> selected = province.getTroops();
+        List<Troop> selected = new ArrayList<>(province.getTroops());
         p.sendActionBar(Component.text("Selected"));
         if (p.isSneaking()){
             List<Troop> troops = nextProv.getOrDefault(p, new ArrayList<>());

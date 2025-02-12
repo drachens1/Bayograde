@@ -53,15 +53,14 @@ public class Combat {
 
 
     public void newDay() {
-        System.out.println("New combat day!");
         resolveAttack();
     }
 
     private void resolveAttack() {
         for (Troop attacker : new ArrayList<>(attackers)) {
             for (Troop defender : new ArrayList<>(defenders)) {
-                float attackerDamage = attacker.getDamage() * attacker.getStrength();
-                float defenderDamage = defender.getDamage() * defender.getStrength();
+                float attackerDamage = attacker.getDamage() * (attacker.getStrength()/100);
+                float defenderDamage = defender.getDamage() * (defender.getStrength()/100);
 
                 float attackerDamageReduction = defender.getDefence() / (defender.getDefence() + attacker.getDamage());
                 float defenderDamageReduction = attacker.getDefence() / (attacker.getDefence() + defender.getDamage());
@@ -72,14 +71,18 @@ public class Combat {
                 attacker.setHealth(attacker.getHealth() - (defenderDamage * (1 - attackerDamageReduction)));
                 attacker.setOrg(attacker.getOrg() - (defenderDamage * (1 - attackerDamageReduction) * 0.2f));
 
-                if (defender.getHealth() <= 0 || defender.getOrg() <= 0) {
+                if (defender.getOrg() <= 0) {
                     defender.retreat();
-                    defenders.remove(defender);
+                    removeDefender(defender);
+                }else if (defender.getHealth() <= 0){
+                    defender.kill();
                 }
 
-                if (attacker.getHealth() <= 0 || attacker.getOrg() <= 0) {
+                if (attacker.getOrg() <= 0) {
                     attacker.retreat();
-                    attackers.remove(attacker);
+                    removeAttacker(attacker);
+                }else if (attacker.getHealth() <= 0){
+                    attacker.kill();
                 }
             }
         }

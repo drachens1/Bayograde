@@ -30,6 +30,7 @@ public class ContinentalManagers {
     public static final ServerHealthManager serverHealthManager = new ServerHealthManager();
     public static final CentralAIManager centralAIManager = new CentralAIManager();
     public static final AdminManager adminManager = new AdminManager();
+    public static final ChatCensor chatCensor = new ChatCensor();
     public static Database database;
 
     //todo add settings

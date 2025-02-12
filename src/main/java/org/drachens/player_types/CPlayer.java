@@ -11,11 +11,11 @@ import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
+import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.other.Clientside;
-import org.drachens.fileManagement.PlayerInfoEntry;
-import org.drachens.fileManagement.customTypes.PlayerJson;
-import org.drachens.store.other.LoginMessage;
+import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
+import org.drachens.fileManagement.customTypes.player.PlayerJson;
 import org.drachens.store.other.Rank;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,7 @@ public class CPlayer extends Player {
     private final List<String> permissions = new ArrayList<>();
 
     private final HashMap<ClientSideExtras, List<Clientside>> clientSides = new HashMap<>();
-    private final List<Rank> ranks = new ArrayList<>();
-    private final List<LoginMessage> loginMessages = new ArrayList<>();
+    private final PriorityQueue<Rank> ranks = new PriorityQueue<>(Comparator.comparingInt(Rank::getWeight).reversed());
     private final HashSet<String> ownedCosmetics = new HashSet<>();
     private Country country;
 
@@ -124,15 +123,19 @@ public class CPlayer extends Player {
     public void addRank(Rank rank){
         ranks.add(rank);
         ownedCosmetics.addAll(rank.getCosmetics());
-        loginMessages.addAll(rank.getLoginMessages());
         playerJson.addRank(rank.getIdentifier());
+        if (!rank.getIdentifier().equalsIgnoreCase("default_rank")){
+            playerJson.setPremium(true);
+        }
     }
 
     public void removeRank(Rank rank){
         ranks.remove(rank);
         rank.getCosmetics().forEach(ownedCosmetics::remove);
-        rank.getLoginMessages().forEach(loginMessages::remove);
         playerJson.removeRank(rank.getIdentifier());
+        if (!ranks.contains(RankEnum.deratus.getRank())||ranks.contains(RankEnum.legatus.getRank())){
+            playerJson.setPremium(false);
+        }
     }
 
     public boolean hasRank(Rank rank){
@@ -141,10 +144,6 @@ public class CPlayer extends Player {
 
     public boolean hasCosmetic(String cosmetic){
         return ownedCosmetics.contains(cosmetic);
-    }
-
-    public List<LoginMessage> getLoginMessages(){
-        return loginMessages;
     }
 
     public ItemStack getPlayerHead() {
@@ -169,10 +168,6 @@ public class CPlayer extends Player {
 
     public List<String> getCosmetics(){
         return new ArrayList<>(ownedCosmetics);
-    }
-
-    public LoginMessage getActiveLoginMessage(){
-        return loginMessages.getFirst();
     }
 
     public void addClientSide(ClientSideExtras clientSideExtras, Clientside clientSide){
@@ -218,5 +213,17 @@ public class CPlayer extends Player {
 
     public PlayerJson getPlayerJson(){
         return playerJson;
+    }
+
+    public PriorityQueue<Rank> getRanks(){
+        return ranks;
+    }
+
+    public Rank getDominantRank(){
+        return ranks.peek();
+    }
+
+    public boolean isPremium(){
+        return playerJson.isPremium();
     }
 }

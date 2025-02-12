@@ -30,6 +30,7 @@ public class TextDisplay extends Clientside {
     public byte bitmask;
     private EntityMetaDataPacket entityMetaDataPacket;
     private EntityTeleportPacket entityTeleportPacket;
+    private boolean hidden = false;
 
     private TextDisplay(create c) {
         super(c.storeViewers, c.instance, c.pos);
@@ -100,6 +101,7 @@ public class TextDisplay extends Clientside {
         List<CPlayer> players = country.getPlayer();
         if (storeViewers)
             addPlayers(players);
+        if (hidden)return;
         List<Player> players1 = new ArrayList<>(players);
 
         PacketSendingUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
@@ -120,6 +122,7 @@ public class TextDisplay extends Clientside {
         List<CPlayer> players = country.getPlayer();
         if (storeViewers)
             removePlayers(players);
+        if (hidden)return;
 
         PacketSendingUtils.sendGroupedPacket(new ArrayList<>(players), new DestroyEntitiesPacket(this.entityId));
     }
@@ -128,6 +131,7 @@ public class TextDisplay extends Clientside {
     public void addViewer(CPlayer p) {
         if (storeViewers)
             addPlayer(p);
+        if (hidden)return;
 
         PacketSendingUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
@@ -146,6 +150,7 @@ public class TextDisplay extends Clientside {
     public void removeViewer(CPlayer p) {
         if (storeViewers)
             addViewer(p);
+        if (hidden)return;
 
         PacketSendingUtils.sendPacket(p, new DestroyEntitiesPacket(this.entityId));
     }
@@ -164,6 +169,18 @@ public class TextDisplay extends Clientside {
     @Override
     public DestroyEntitiesPacket getDestroyPacket() {
         return new DestroyEntitiesPacket(this.entityId);
+    }
+
+    public void hide(){
+        if (hidden)return;
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(),getDestroyPacket());
+        hidden=true;
+    }
+
+    public void show(){
+        if (!hidden)return;
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(),getSpawnPacket());
+        hidden=false;
     }
 
     public static class create {

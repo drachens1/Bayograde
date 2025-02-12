@@ -5,6 +5,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.AdminMessageType;
+import org.drachens.player_types.CPlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class ChatCensor {
         loadFile();
         MinecraftServer.getGlobalEventHandler().addListener(PlayerChatEvent.class, event -> {
             String msg = normalize(event.getRawMessage());
+            System.out.println(event.getRawMessage());
             if (containsEmoji(msg)) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage("Emojis are not allowed!");
@@ -39,6 +41,20 @@ public class ChatCensor {
                 }
             }
         });
+    }
+
+    public boolean isOkay(String msg){
+        msg = normalize(msg);
+        if (containsEmoji(msg)) {
+            return false;
+        }
+        for (Pattern pattern : bannedPatterns) {
+            if (pattern.matcher(msg).find()) {
+                ContinentalManagers.adminManager.broadcast(AdminMessageType.swears,Component.text(msg));
+                return false;
+            }
+        }
+        return true;
     }
 
     private void loadFile() {

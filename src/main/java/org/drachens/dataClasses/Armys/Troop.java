@@ -39,15 +39,15 @@ public class Troop {
     private DivisionDesign design;
     private Task t;
     private final HashSet<Country> countries = new HashSet<>();
+    private boolean dead = false;
 
     public Troop(Province province, TrainedTroop trainedTroop, AStarPathfinderVoids troopPathing) {
         this.troopPathing = troopPathing;
         this.troopType = trainedTroop.getTroopType();
         this.country = trainedTroop.getCountry();
-        Pos pos = province.getPos().add(0.5, 1.5, 0.5);
-        this.troop = new ItemDisplay(troopType.getOwnTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
-        this.ally = new ItemDisplay(troopType.getAllyTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
-        this.enemy = new ItemDisplay(troopType.getEnemyTroop(), pos, province.getInstance(), ItemDisplay.DisplayType.GROUND, true);
+        this.troop = new ItemDisplay(troopType.getOwnTroop(), province, ItemDisplay.DisplayType.GROUND, true, ItemDisplay.Front.north);
+        this.ally = new ItemDisplay(troopType.getAllyTroop(), province, ItemDisplay.DisplayType.GROUND, true, ItemDisplay.Front.north);
+        this.enemy = new ItemDisplay(troopType.getEnemyTroop(), province, ItemDisplay.DisplayType.GROUND, true, ItemDisplay.Front.north);
         this.province = province;
         this.design = trainedTroop.getDesign();
         this.strength = trainedTroop.getStrength();
@@ -89,6 +89,10 @@ public class Troop {
         return speed;
     }
 
+    public boolean isDead(){
+        return dead;
+    }
+
     public void move(Province to) {
         if (task != null && task.isAlive()) task.cancel();
         startMoveAnimation();
@@ -128,18 +132,25 @@ public class Troop {
         to.getNeighbours().forEach(p -> {
             Country occp = p.getOccupier();
             if (country!=occp){
-                if (!countries.contains(occp)){
-                    countries.add(occp);
-                    int diplo = country.getDiplomacy(occp.getName());
-                    if (!(diplo==6||diplo==5)){
-                        occp.addClientside(enemy);
-                    }
-                }
+                addOccp(occp);
                 removed.remove(occp);
+                if (p.getTroops()!=null){
+                    p.getTroops().forEach(troop1 -> troop1.addOccp(country));
+                }
             }
         });
 
         removed.forEach(country1 -> country1.removeClientside(enemy));
+    }
+
+    private void addOccp(Country occp){
+        if (!countries.contains(occp)){
+            int diplo = country.getDiplomacy(occp.getName());
+            if (!(diplo==6||diplo==5)){
+                countries.add(occp);
+                occp.addClientside(enemy);
+            }
+        }
     }
 
     public boolean canMove(Province province) {
@@ -150,7 +161,6 @@ public class Troop {
         if (t!=null)t.cancel();
         t = scheduler.buildTask(this::cull).delay(600,ChronoUnit.MILLIS).schedule();
         smoothMove(to);
-        moveDisplays(to);
         move(to, province);
         province = to;
     }
@@ -158,9 +168,9 @@ public class Troop {
     public void moveToEnemy(Province to) {
         if (!to.getTroops().isEmpty()) {
             attack(to);
+            return;
         }
         smoothMove(to);
-        moveDisplays(to);
         move(to, province);
         province = to;
         province.setOccupier(country);
@@ -186,14 +196,19 @@ public class Troop {
         battle.addAttacker(this);
     }
 
-    public void leaveBattle() {
-        if (battle != null) {
-            battle.removeAttacker(this);
-        }
+    public void retreat() {
+        System.out.println("Retreat");
+        moveNear();
     }
 
-    public void retreat() {
-
+    private void moveNear(){
+        for (Province neigh : province.getNeighbours()){
+            if (country.isMilitaryFriend(neigh.getOccupier())){
+                moveBlock(neigh);
+                return;
+            }
+        }
+        kill();
     }
 
     public void setBattle(Combat battle) {
@@ -225,9 +240,27 @@ public class Troop {
     }
 
     public void kill() {
-        troop.delete();
-        ally.delete();
-        enemy.delete();
+        if (isDead()){
+            return;
+        }
+        System.out.println("dead");
+        dead = true;
+        province.removeTroop(this);
+        country.removeTroop(this);
+        countries.forEach(country1 -> country1.removeClientside(enemy));
+        if (country.isInAMilitaryFaction()){
+            country.getMilitaryFactionType().getMembers().forEach(country1 -> country1.removeClientside(ally));
+        }
+        if (country.hasPuppets()){
+            country.getPuppets().forEach(country1 -> country1.removeClientside(ally));
+        }
+        if (country.hasOverlord()){
+            country.getOverlord().getPuppets().forEach(country1 -> country1.removeClientside(ally));
+            country.getOverlord().removeClientside(ally);
+        }
+        troop.dispose();
+        ally.dispose();
+        enemy.dispose();
     }
 
     public TroopCountry getCountry() {
@@ -244,6 +277,10 @@ public class Troop {
         }
     }
 
+    public TroopType getTroopType() {
+        return troopType;
+    }
+
     private void startMoveAnimation(){
         troopType.getMoveAnimation().start(troop, true).onFinish(troop, () -> troop.setItem(troopType.getOwnTroop()));
         troopType.getEnemyMoveAnimation().start(enemy, true).onFinish(enemy, () -> enemy.setItem(troopType.getEnemyTroop()));
@@ -251,9 +288,9 @@ public class Troop {
     }
 
     public void startShootingAnimation(){
-        troopType.getShootingAnimation().start(troop);
-        troopType.getAllyShootingAnimation().start(ally);
-        troopType.getEnemyShootingAnimation().start(enemy);
+        troopType.getShootingAnimation().start(troop,true);
+        troopType.getAllyShootingAnimation().start(ally,true);
+        troopType.getEnemyShootingAnimation().start(enemy,true);
     }
 
     private void stopMoveAnimation(){
@@ -284,12 +321,6 @@ public class Troop {
         troop.moveSmooth(to, 20);
         ally.moveSmooth(to, 20);
         enemy.moveSmooth(to, 20);
-    }
-
-    private void moveDisplays(Province to){
-        troop.setGhostPos(to.getPos());
-        enemy.setGhostPos(to.getPos());
-        ally.setGhostPos(to.getPos());
     }
 
     private void hideDisplays(){

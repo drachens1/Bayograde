@@ -23,14 +23,18 @@ public enum InventoryEnum {
             new BuildItem(itemBuilder(Material.BROWN_DYE, 2), BuildingEnum.university), new BuildItem(itemBuilder(Material.BROWN_DYE, 3), BuildingEnum.researchCenter),
             new BuildItem(itemBuilder(Material.BROWN_DYE, 4), BuildingEnum.researchLab), new ExitItem()})),
 
-    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),
+    clicks_build_menu(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),new ExitItem()})),
+
+    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE),InventoryEnum.clicks_build_menu),
             new ChangeInventoryButton(itemBuilder(Material.BOOK),
                     InventoryEnum.scoreboardInv), new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research),
             new NavalInvasionClicksItem()})),
 
-    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),
-            new TroopMover(), new ChangeInventoryButton(itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),
-            new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research), new BuildItem(itemBuilder(Material.GOLD_INGOT), BuildingEnum.barracks)}));
+    troops_build_menu(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),new BuildItem(itemBuilder(Material.GOLD_INGOT), BuildingEnum.barracks),new ExitItem()})),
+
+    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE),InventoryEnum.troops_build_menu),
+            new TroopMover(), new ChangeInventoryButton(itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv)}));
+
 
     private final HotbarInventory hotbarInventory;
 

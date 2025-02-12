@@ -25,7 +25,6 @@ import net.minestom.server.instance.Weather;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
-import org.drachens.Manager.ChatCensor;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -58,11 +57,10 @@ import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.events.NewDay;
-import org.drachens.events.countries.CountryChangeEvent;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
-import org.drachens.fileManagement.PlayerInfoEntry;
+import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.databases.Table;
 import org.drachens.player_types.CPlayer;
@@ -127,8 +125,6 @@ public class ServerUtil {
         worldManager.registerWorld(continentalWorld);
         worldManager.setDefaultWorld(continentalWorld);
 
-        new ChatCensor();
-
         List<VotingOption> votingOptions = new ArrayList<>();
         votingOptions.add(VotingWinner.ww2_troops.getVotingOption());
         votingOptions.add(VotingWinner.ww2_clicks.getVotingOption());
@@ -183,24 +179,16 @@ public class ServerUtil {
             } else {
                 prefix = c.getPrefix();
             }
-            Rank rank = playerRanks.get(p.getPlayerConnection()).getFirst();
-            if (rank != null) {
-                components.add(rank.prefix);
-                components.add(Component.text(" "));
-                components.add(prefix);
-                components.add(Component.text(" "));
-                components.add(p.getName().color(rank.color));
-                components.add(Component.text(" : ", NamedTextColor.GRAY));
-                components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
-                components.add(Component.text(" "));
-                components.add(rank.suffix);
-            } else {
-                components.add(prefix);
-                components.add(Component.text(" "));
-                components.add(p.getName());
-                components.add(Component.text(" : ", NamedTextColor.GRAY));
-                components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
-            }
+            Rank rank = p.getDominantRank();
+            components.add(rank.prefix);
+            components.add(Component.text(" "));
+            components.add(prefix);
+            components.add(Component.text(" "));
+            components.add(p.getName().color(rank.color));
+            components.add(Component.text(" : ", NamedTextColor.GRAY));
+            components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
+            components.add(Component.text(" "));
+            components.add(rank.suffix);
             return Component.text().append(components).build();
         };
 
@@ -226,7 +214,6 @@ public class ServerUtil {
 
 
         globEHandler.addListener(CountryJoinEvent.class, e -> e.p().setCountry(e.joined()));
-        globEHandler.addListener(CountryChangeEvent.class, e -> e.p().setCountry(e.joined()));
 
         AtomicInteger i = new AtomicInteger();
         globEHandler.addListener(NewDay.class,e->{

@@ -6,6 +6,8 @@ import org.drachens.animation.Animation;
 import org.drachens.animation.AnimationType;
 import org.drachens.animation.DynamicAnimation;
 
+import java.util.Arrays;
+
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class TroopType {
@@ -27,31 +29,35 @@ public class TroopType {
         this.moveAnimation = moveAnimation;
         this.shootingAnimation = shootingAnimation;
         this.standstillAnimation = standstillAnimation;
-        int[][] enemyShootingFrames = shootingAnimation.getFrames().clone();
+        int[][] enemyShootingFrames = Arrays.stream(shootingAnimation.getFrames())
+                .map(int[]::clone)
+                .toArray(int[][]::new);
         for (int i = 0; i < enemyShootingFrames.length; i++) {
-            for (int j = 0; j < enemyShootingFrames[i].length; j++) {
-                enemyShootingFrames[i][j] += 5;
-            }
+            enemyShootingFrames[i][1] += 6;
+            System.out.println("EnemyShoot: "+enemyShootingFrames[i][1]);
         }
         this.enemyShootAnimation=new DynamicAnimation(shootingAnimation.getItem(),enemyShootingFrames);
 
         int[] enemyMoveFrames = moveAnimation.getFrames().clone();
         for (int i = 0; i < enemyMoveFrames.length; i++) {
-            enemyMoveFrames[i] += 5;
+            enemyMoveFrames[i] += 6;
+            System.out.println("EnemyMove: "+enemyMoveFrames[i]);
         }
         this.enemyMoveAnimation=new Animation(moveAnimation.getDelayBetween(), moveAnimation.getItem(), enemyMoveFrames);
 
-        int[][] allyShootingFrames = shootingAnimation.getFrames().clone();
+        int[][] allyShootingFrames = Arrays.stream(shootingAnimation.getFrames())
+                .map(int[]::clone)
+                .toArray(int[][]::new);
         for (int i = 0; i < allyShootingFrames.length; i++) {
-            for (int j = 0; j < allyShootingFrames[i].length; j++) {
-                allyShootingFrames[i][j] += 5;
-            }
+            allyShootingFrames[i][1] += 12;
+            System.out.println("AllyShoot: "+allyShootingFrames[i][1]);
         }
         this.allyShootAnimation=new DynamicAnimation(shootingAnimation.getItem(),allyShootingFrames);
 
         int[] allyMoveFrames = moveAnimation.getFrames().clone();
         for (int i = 0; i < allyMoveFrames.length; i++) {
-            allyMoveFrames[i] += 5;
+            allyMoveFrames[i] += 12;
+            System.out.println("AllyMove: "+allyMoveFrames[i]);
         }
         this.allyMoveAnimation=new Animation(moveAnimation.getDelayBetween(), moveAnimation.getItem(), allyMoveFrames);
     }

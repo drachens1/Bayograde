@@ -1,6 +1,5 @@
 package org.drachens.temporary.invasions;
 
-import kotlin.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -14,6 +13,7 @@ import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Pair;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;
 import org.drachens.interfaces.inventories.OnUse;

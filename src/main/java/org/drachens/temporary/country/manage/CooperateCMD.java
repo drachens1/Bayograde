@@ -23,20 +23,18 @@ public class CooperateCMD extends Command {
                     if (!isLeaderOfCountry(sender)) return;
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
-                    player.getCountry().getPlayer().forEach(p -> playerNames.add(p.getUsername()));
+                    player.getInstance().getPlayers().forEach(p -> playerNames.add(p.getUsername()));
+                    player.getCountry().getPlayer().forEach(p-> playerNames.remove(p.getUsername()));
                     getSuggestionBasedOnInput(suggestion, playerNames);
                 });
 
         addSyntax((sender, context) -> {
             if (!isLeaderOfCountry(sender)) return;
-            String player = context.get(players);
             CPlayer senders = (CPlayer) sender;
-            CPlayer p = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(player);
+            CPlayer p = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(context.get(players));
             if (p == null) return;
-            if (p.getCountry() == null || p.getCountry() != senders.getCountry()) return;
-            Country country = p.getCountry();
-            if (!country.isPlayerLeader(p)) return;
-            EventDispatcher.call(new CountryCoopPlayerEvent(country, p));
+            if (p.getCountry() != null) return;
+            EventDispatcher.call(new CountryCoopPlayerEvent(senders.getCountry(), p));
         }, players);
     }
 

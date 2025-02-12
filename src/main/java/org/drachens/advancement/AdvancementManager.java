@@ -1,12 +1,12 @@
 package org.drachens.advancement;
 
-import kotlin.Pair;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.AdvancementRoot;
 import net.minestom.server.advancements.AdvancementTab;
 import net.minestom.server.advancements.Notification;
+import org.drachens.dataClasses.Pair;
 import org.drachens.events.AdvancementEvent;
-import org.drachens.fileManagement.customTypes.PlayerJson;
+import org.drachens.fileManagement.customTypes.player.PlayerJson;
 import org.drachens.player_types.CPlayer;
 
 import java.util.*;

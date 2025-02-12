@@ -144,10 +144,15 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     }
 
     public void updateAll() {
+        if (valid())return;
         updateGeneralInfo();
         updateDiplomacy();
         updateIdeologies();
         updateEconomy();
+    }
+
+    public boolean valid(){
+        return getPlayer().getCountry()==null;
     }
 
     public void updateGeneralInfo() {

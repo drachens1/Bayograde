@@ -120,7 +120,7 @@ public class CentralEventManager {
             e.instance().getPlayers().forEach(player -> {
                 CPlayer p = (CPlayer) player;
                 if (p.getCountry() != null) {
-                    p.getCountry().removePlayer(p, true);
+                    p.getCountry().removePlayer(p);
                 }
             });
             clientEntsToLoad.reset();
@@ -380,6 +380,10 @@ public class CentralEventManager {
                     .append(MessageEnum.country.getComponent())
                     .append(Component.text("You have been invited to join ", NamedTextColor.GREEN))
                     .append(country.getNameComponent())
+                            .append(Component.text()
+                                    .append(Component.text("[ACCEPT]",NamedTextColor.GOLD,TextDecoration.BOLD))
+                                    .hoverEvent(Component.text("Click to join", NamedTextColor.GREEN))
+                                    .clickEvent(ClickEvent.runCommand("/country accept " + country.getName())))
                     .build());
             country.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())

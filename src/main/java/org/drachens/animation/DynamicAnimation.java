@@ -7,6 +7,7 @@ import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.other.ItemDisplay;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
@@ -20,6 +21,7 @@ public class DynamicAnimation extends AnimationType {
     public DynamicAnimation(Material item, int[][] frames) {
         this.item = item;
         this.frames = frames;
+        System.out.println(Arrays.deepToString(frames) +" Frames");
     }
 
     public Material getItem(){
@@ -42,6 +44,7 @@ public class DynamicAnimation extends AnimationType {
 
         taskHashMap.put(itemDisplay, scheduler.buildTask(() -> {
             itemDisplay.setItem(itemBuilder(item, frames[current][1]));
+            System.out.println(frames[current][1] +" Current frame: "+current);
 
             int nextFrame = current + 1;
             if (nextFrame >= frames.length) {

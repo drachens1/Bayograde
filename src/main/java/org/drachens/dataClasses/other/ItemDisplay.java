@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.other;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
@@ -17,7 +16,6 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.player_types.CPlayer;
 
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +32,7 @@ public class ItemDisplay extends Clientside {
     private boolean hidden = false;
     private EntityMetaDataPacket interpolation;
     private float yaw = 0f;
+    private Front front;
 
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance, boolean storeViewers) {
         super(storeViewers, instance, pos);
@@ -41,7 +40,18 @@ public class ItemDisplay extends Clientside {
         this.item = item;
         this.displayType = displayType.getSerialized();
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
+        front=null;
     }
+
+    public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers, Front front) {
+        super(storeViewers, province.getInstance(), province.getPos().add(0.5,1.5,0.5));
+
+        this.item = item;
+        this.displayType = displayType.getSerialized();
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
+        this.front=front;
+    }
+
 
     public ItemDisplay(ItemStack item, Province province, DisplayType displayType, boolean storeViewers) {
         super(storeViewers, province.getInstance(), province.getPos());
@@ -49,22 +59,11 @@ public class ItemDisplay extends Clientside {
         this.item = item;
         this.displayType = displayType.getSerialized();
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
-    }
-
-    public ItemDisplay(ItemStack item, Pos pos, Instance instance, DisplayType displayType, boolean storeViewers) {
-        super(storeViewers, instance, pos);
-
-        this.item = item;
-        this.displayType = displayType.getSerialized();
-        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
+        front=null;
     }
 
     public float getYaw(){
         return yaw;
-    }
-
-    public void delete() {
-        this.dispose();
     }
 
     public Pos getPos() {
@@ -76,11 +75,6 @@ public class ItemDisplay extends Clientside {
         this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
-    }
-
-    public void setGhostPos(Pos pos){
-        pos = pos.withYaw(yaw);
-        this.pos=pos;
     }
 
     public void addYaw(float yaw){
@@ -134,7 +128,6 @@ public class ItemDisplay extends Clientside {
         EntityMetaDataPacket entityMetaDataPacket1 = new EntityMetaDataPacket(entityId, map);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket1);
         interpolation=entityMetaDataPacket1;
-        MinecraftServer.getSchedulerManager().buildTask(()-> interpolation=null).delay(time * 50L,ChronoUnit.MILLIS).schedule();
     }
 
     public void setGlowing(boolean glowing) {
@@ -174,6 +167,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             addPlayers(players);
 
+        if (hidden)return;
         List<Player> players1 = new ArrayList<>(players);
         PacketSendingUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
                 entityId,
@@ -200,6 +194,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             removePlayers(players);
 
+        if (hidden)return;
         PacketSendingUtils.sendGroupedPacket(players1, new DestroyEntitiesPacket(
                 this.entityId
         ));
@@ -210,6 +205,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             addPlayer(p);
 
+        if (hidden)return;
         PacketSendingUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
                 uuid,
@@ -232,6 +228,7 @@ public class ItemDisplay extends Clientside {
         if (storeViewers)
             removePlayer(p);
 
+        if (hidden)return;
         PacketSendingUtils.sendPacket(p, new DestroyEntitiesPacket(
                 this.entityId
         ));
@@ -287,5 +284,12 @@ public class ItemDisplay extends Clientside {
         public byte getSerialized() {
             return this.serialized;
         }
+    }
+
+    public enum Front {
+        north,
+        east,
+        south,
+        west
     }
 }

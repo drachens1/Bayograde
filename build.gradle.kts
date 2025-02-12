@@ -1,7 +1,6 @@
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.0"
-    kotlin("jvm")
     application
     `java-library`
     `maven-publish`
@@ -22,6 +21,7 @@ dependencies {
     implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
     implementation("org.javassist:javassist:3.30.2-GA")
+    implementation("net.kyori:adventure-text-minimessage:4.18.0")
 }
 
 java {
