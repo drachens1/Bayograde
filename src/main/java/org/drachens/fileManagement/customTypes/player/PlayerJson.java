@@ -1,7 +1,6 @@
 package org.drachens.fileManagement.customTypes.player;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.drachens.Manager.defaults.enums.RankEnum;
@@ -22,6 +21,8 @@ public class PlayerJson extends GsonFileType {
     private List<String> ranks;
     private CustomLoginRecord customLoginMessage;
     private boolean premium = false;
+    private boolean autoVoteActive = false;
+    private String autoVoteOption;
 
     public PlayerJson(String json, CPlayer p) {
         super(json);
@@ -56,6 +57,8 @@ public class PlayerJson extends GsonFileType {
         addDefault("","premium","login-message","change-join");
         addDefault("","premium","login-message","change-leave");
         addDefault("","premium","login-message","leave");
+        addDefault(new JsonPrimitive(false),"premium","auto-vote","active");
+        addDefault("","premium","auto-vote","current");
     }
 
     protected void premiumLoad(){
@@ -67,8 +70,9 @@ public class PlayerJson extends GsonFileType {
         String leave = loginMSG.get("leave").getAsString();
         if (join != null && changeJoin != null && changeLeave != null && leave != null){
             customLoginMessage = new CustomLoginRecord(join,changeJoin,changeLeave,leave);
-
         }
+        autoVoteOption = premium.getAsJsonObject("auto-vote").get("current").getAsString();
+        autoVoteActive = premium.getAsJsonObject("auto-vote").get("active").getAsBoolean();
     }
 
     public void laterInit(){
@@ -127,11 +131,30 @@ public class PlayerJson extends GsonFileType {
     public CustomLoginRecord getCustomLoginMessage(){
         return customLoginMessage;
     }
+
     public boolean isPremium(){
         return premium;
     }
 
     public void setPremium(boolean b){
         premium=b;
+    }
+    
+    public boolean isAutoVoteActive(){
+        return autoVoteActive;
+    }
+
+    public void setAutoVoteActive(boolean autoVoteActive) {
+        this.autoVoteActive = autoVoteActive;
+        set(new JsonPrimitive(autoVoteActive),"premium","auto-vote","active");
+    }
+
+    public String getAutoVoteOption(){
+        return autoVoteOption;
+    }
+
+    public void setAutoVoteOption(String autoVoteOption) {
+        this.autoVoteOption = autoVoteOption;
+        set(autoVoteOption,"premium","auto-vote","current");
     }
 }

@@ -226,4 +226,8 @@ public class CPlayer extends Player {
     public boolean isPremium(){
         return playerJson.isPremium();
     }
+
+    public boolean isAutoVoteActive(){
+        return playerJson.isAutoVoteActive();
+    }
 }

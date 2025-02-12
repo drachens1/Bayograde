@@ -11,6 +11,8 @@ import org.drachens.interfaces.HideableBossBar;
 
 import java.time.temporal.ChronoUnit;
 
+import static org.drachens.util.OtherUtil.bound;
+
 public class VoteBar extends HideableBossBar {
     private final BossBar voteBar;
     private final Instance instance;
@@ -33,18 +35,12 @@ public class VoteBar extends HideableBossBar {
             @Override
             public void run() {
                 completion++;
-                voteBar.progress(clamp(0f, 1f, completion / 12f));
+                voteBar.progress(bound(0f, 1f, completion / 12f));
                 if (completion >= 12f) {
                     hide();
                     task.cancel();
                 }
             }
         }).repeat(1, ChronoUnit.SECONDS).schedule();
-    }
-
-    float clamp(float min, float max, float number) {
-        if (number > max) number = max;
-        if (number < min) number = min;
-        return number;
     }
 }

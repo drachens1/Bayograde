@@ -11,7 +11,6 @@ import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.temporary.troops.TroopCountry;
-import org.drachens.temporary.troops.TroopPathing;
 
 import java.util.ArrayList;
 import java.util.HashSet;

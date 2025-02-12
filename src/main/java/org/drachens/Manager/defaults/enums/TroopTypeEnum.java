@@ -4,7 +4,6 @@ import net.minestom.server.item.Material;
 import org.drachens.animation.Animation;
 import org.drachens.animation.DynamicAnimation;
 import org.drachens.dataClasses.Armys.TroopType;
-import org.drachens.temporary.troops.buildings.Barracks;
 
 public enum TroopTypeEnum {
     ww2(new TroopType(

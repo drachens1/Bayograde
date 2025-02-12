@@ -60,8 +60,8 @@ import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
-import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
 import org.drachens.fileManagement.databases.Table;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
@@ -270,7 +270,7 @@ public class ServerUtil {
 
         commandManager.register(new OpMeCMD());
 
-        commandManager.register(new SettingsCMD());
+        commandManager.register(new SettingsCMD(votingOptionsCMD));
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

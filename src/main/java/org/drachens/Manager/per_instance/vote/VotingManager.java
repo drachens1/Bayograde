@@ -9,9 +9,11 @@ import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.VoteEvent;
 import org.drachens.events.system.StartGameEvent;
+import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import java.time.temporal.ChronoUnit;
@@ -78,6 +80,12 @@ public class VotingManager {
         voted = false;
         votes.clear();
         voteBar.start();
+        instance.getPlayers().forEach(player -> {
+            CPlayer p = (CPlayer) player;
+            if (p.isAutoVoteActive()){
+                EventDispatcher.call(new VoteEvent(p, VotingWinner.valueOf(p.getPlayerJson().getAutoVoteOption()).getVotingOption()));
+            }
+        });
         if (task != null) task.cancel();
         task = MinecraftServer.getSchedulerManager().buildTask(() -> {
             if (!voted) {

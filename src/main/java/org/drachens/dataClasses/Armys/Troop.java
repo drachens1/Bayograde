@@ -1,7 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
