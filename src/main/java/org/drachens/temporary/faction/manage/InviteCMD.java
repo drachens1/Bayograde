@@ -7,7 +7,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionInviteEvent;
 import org.drachens.player_types.CPlayer;
 
@@ -44,9 +44,9 @@ public class InviteCMD extends Command {
             if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country invited = ContinentalManagers.world(player.getInstance()).countryDataManager().getCountryFromName(context.get(countryArg));
-            Factions factions1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (factions1.getLeader() != player.getCountry()) return;
-            EventDispatcher.call(new FactionInviteEvent(invited, factions1));
+            Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
+            if (faction1.getLeader() != player.getCountry()) return;
+            EventDispatcher.call(new FactionInviteEvent(invited, faction1));
         }, factionsArg, countryArg);
     }
 

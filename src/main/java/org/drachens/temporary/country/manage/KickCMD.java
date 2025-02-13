@@ -23,7 +23,7 @@ public class KickCMD extends Command {
                     if (!isLeaderOfCountry(sender)) return;
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
-                    player.getCountry().getPlayer().forEach(p -> playerNames.add(p.getUsername()));
+                    player.getCountry().getPlayers().forEach(p -> playerNames.add(p.getUsername()));
                     getSuggestionBasedOnInput(suggestion, playerNames);
                 });
 

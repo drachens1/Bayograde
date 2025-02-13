@@ -7,7 +7,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionLeaveEvent;
 import org.drachens.player_types.CPlayer;
 
@@ -35,11 +35,11 @@ public class LeaveCMD extends Command {
             if (!isInAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
-            Factions factions1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (country == null || factions1 == null) return;
-            if (!factions1.getMembers().contains(country)) return;
-            factions1.removeCountry(country);
-            EventDispatcher.call(new FactionLeaveEvent(factions1, country));
+            Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
+            if (country == null || faction1 == null) return;
+            if (!faction1.getMembers().contains(country)) return;
+            faction1.removeCountry(country);
+            EventDispatcher.call(new FactionLeaveEvent(faction1, country));
 
         }, factionsArg);
     }

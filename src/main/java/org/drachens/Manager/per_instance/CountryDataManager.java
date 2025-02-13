@@ -2,7 +2,7 @@ package org.drachens.Manager.per_instance;
 
 import net.minestom.server.instance.Instance;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +12,8 @@ public class CountryDataManager {
     private final List<String> countryNameList = new ArrayList<>();
     private final HashMap<String, Country> countryHashMap = new HashMap<>();
     private final Instance instance;
-    private final HashMap<String, Factions> factionsHashMap = new HashMap<>();
-    private final List<Factions> factions = new ArrayList<>();
+    private final HashMap<String, Faction> factionsHashMap = new HashMap<>();
+    private final List<Faction> factions = new ArrayList<>();
     private final List<String> factionNames = new ArrayList<>();
     private List<Country> countries;
 
@@ -52,30 +52,30 @@ public class CountryDataManager {
         countryNameList.add(country.getName());
     }
 
-    public void addFaction(Factions factions) {
-        this.factions.add(factions);
-        this.factionNames.add(factions.getStringName());
-        factionsHashMap.put(factions.getStringName(), factions);
+    public void addFaction(Faction faction) {
+        this.factions.add(faction);
+        this.factionNames.add(faction.getStringName());
+        factionsHashMap.put(faction.getStringName(), faction);
     }
 
-    public void removeFaction(Factions factions) {
-        this.factions.remove(factions);
-        this.factionNames.remove(factions.getStringName());
-        factionsHashMap.remove(factions.getStringName());
+    public void removeFaction(Faction faction) {
+        this.factions.remove(faction);
+        this.factionNames.remove(faction.getStringName());
+        factionsHashMap.remove(faction.getStringName());
     }
 
     public boolean factionExists(String name) {
         return factionNames.contains(name);
     }
 
-    public void renameFaction(String old, String newName, Factions faction) {
+    public void renameFaction(String old, String newName, Faction faction) {
         factionNames.remove(old);
         factionNames.add(newName);
         factionsHashMap.remove(old);
         factionsHashMap.put(newName, faction);
     }
 
-    public Factions getFaction(String name) {
+    public Faction getFaction(String name) {
         return factionsHashMap.get(name.toLowerCase());
     }
 
@@ -83,7 +83,7 @@ public class CountryDataManager {
         return factionNames;
     }
 
-    public List<Factions> getFactions() {
+    public List<Faction> getFactions() {
         return factions;
     }
 }

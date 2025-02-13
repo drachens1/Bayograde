@@ -7,8 +7,8 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.dataClasses.Diplomacy.faction.FactionChat;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
@@ -44,7 +44,7 @@ public class FactionChatCMD extends Command {
         addSyntax((sender, context) -> {
             if (!isInAFaction(sender)) return;
             CPlayer p = (CPlayer) sender;
-            Factions faction = ContinentalManagers.world(p.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
+            Faction faction = ContinentalManagers.world(p.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
             if (faction == null || !faction.containsCountry(p.getCountry())) return;
             FactionChat factionChat = faction.getFactionChat();
             boolean current = active.getOrDefault(p, false);

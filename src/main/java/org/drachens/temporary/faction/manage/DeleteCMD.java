@@ -6,7 +6,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.player_types.CPlayer;
 
 public class DeleteCMD extends Command {
@@ -34,7 +34,7 @@ public class DeleteCMD extends Command {
             if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
-            Factions factionToDelete = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
+            Faction factionToDelete = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
             if (factionToDelete != null && factionToDelete.isLeader(country))
                 factionToDelete.delete();
         }, factions);

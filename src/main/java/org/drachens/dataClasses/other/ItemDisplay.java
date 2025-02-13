@@ -163,7 +163,7 @@ public class ItemDisplay extends Clientside {
 
     @Override
     public void addCountry(Country country) {
-        List<CPlayer> players = country.getPlayer();
+        List<CPlayer> players = country.getPlayers();
         if (storeViewers)
             addPlayers(players);
 
@@ -189,7 +189,7 @@ public class ItemDisplay extends Clientside {
 
     @Override
     public void removeCountry(Country country) {
-        List<CPlayer> players = country.getPlayer();
+        List<CPlayer> players = country.getPlayers();
         List<Player> players1 = new ArrayList<>(players);
         if (storeViewers)
             removePlayers(players);

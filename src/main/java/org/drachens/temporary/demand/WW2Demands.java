@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 import net.minestom.server.instance.block.Block;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -42,8 +43,7 @@ public class WW2Demands extends Demand {
         countries.removeAll(from.getPuppets());
         countries.forEach(country -> country.getOccupies().forEach(province -> imaginaryWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE)));
         shownBlocks.forEach((province, block) -> imaginaryWorld.addGhostBlock(province.getPos(), block));
-        CPlayer p = (CPlayer) from.getPlayerLeader();
-        showPlayer(p);
+        from.getPlayers().forEach(Player::refreshCommands);
     }
 
     public List<Country> getDemandedAnnexation() {

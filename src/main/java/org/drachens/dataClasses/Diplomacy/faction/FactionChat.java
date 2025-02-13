@@ -9,17 +9,17 @@ import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 public class FactionChat implements Channel {
-    private final Factions factions;
+    private final Faction faction;
 
-    public FactionChat(Factions factions) {
-        this.factions = factions;
+    public FactionChat(Faction faction) {
+        this.faction = faction;
     }
 
     @Override
     public void onChat(PlayerChatEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (factions.containsCountry(p.getCountry())) {
-            factions.sendMessage(Component.text()
+        if (faction.containsCountry(p.getCountry())) {
+            faction.sendMessage(Component.text()
                     .append(MessageEnum.factionChat.getComponent())
                     .append(Component.text(p.getUsername()))
                     .append(Component.text(": "))

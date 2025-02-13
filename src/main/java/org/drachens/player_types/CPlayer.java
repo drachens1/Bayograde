@@ -125,6 +125,7 @@ public class CPlayer extends Player {
         ownedCosmetics.addAll(rank.getCosmetics());
         playerJson.addRank(rank.getIdentifier());
         if (!rank.getIdentifier().equalsIgnoreCase("default_rank")){
+            refreshCommands();
             playerJson.setPremium(true);
         }
     }

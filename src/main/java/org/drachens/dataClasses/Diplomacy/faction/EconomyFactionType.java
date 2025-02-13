@@ -12,7 +12,7 @@ import org.drachens.interfaces.MapGen;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EconomyFactionType extends Factions {
+public class EconomyFactionType extends Faction {
     private final Component name = Component.text("Economy", NamedTextColor.GOLD);
 
     public EconomyFactionType(Country creator, String name) {

@@ -1,8 +1,6 @@
 package org.drachens.temporary.country;
 
 import net.minestom.server.command.builder.Command;
-import net.minestom.server.command.builder.arguments.ArgumentType;
-import net.minestom.server.entity.Player;
 import org.drachens.temporary.country.diplomacy.DiplomacyCMD;
 import org.drachens.temporary.country.edit.EditCMD;
 import org.drachens.temporary.country.info.Info;
@@ -31,14 +29,5 @@ public class CountryCMD extends Command {
         addSubcommand(new ModifiersCMD());
         addSubcommand(new ResearchCMD());
         addSubcommand(new LeaveCMD());
-
-        var smth = ArgumentType.String("type...")
-
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    Player p = (Player) sender;
-                    p.refreshCommands();
-                });
-        addSyntax((sender, context) -> {
-        }, smth);
     }
 }

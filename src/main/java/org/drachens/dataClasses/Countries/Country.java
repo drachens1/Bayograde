@@ -24,7 +24,7 @@ import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.PuppetChat;
 import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.Loan;
@@ -355,6 +355,7 @@ public abstract class Country implements Cloneable {
         clientsides.forEach(clientside -> clientside.addViewer(p));
         if (playerLeader == null)
             setPlayerLeader(p);
+        p.refreshCommands();
         onAddPlayer(p);
     }
 
@@ -376,12 +377,13 @@ public abstract class Country implements Cloneable {
         onRemovePlayer(p);
         warsWorld.removePlayer(p);
         allyWorld.removePlayer(p);
+        p.refreshCommands();
         p.setCountry(null);
     }
 
     protected abstract void onRemovePlayer(CPlayer p);
 
-    public List<CPlayer> getPlayer() {
+    public List<CPlayer> getPlayers() {
         return players;
     }
 
@@ -716,8 +718,8 @@ public abstract class Country implements Cloneable {
         return majorCityBlocks.containsKey(province);
     }
 
-    public boolean canJoinFaction(Factions factions) {
-        return (factions instanceof MilitaryFactionType && getMilitaryFactionType() == null) || (factions instanceof EconomyFactionType && getEconomyFactionType() == null);
+    public boolean canJoinFaction(Faction faction) {
+        return (faction instanceof MilitaryFactionType && getMilitaryFactionType() == null) || (faction instanceof EconomyFactionType && getEconomyFactionType() == null);
     }
 
     public EconomyFactionType getEconomyFactionType() {

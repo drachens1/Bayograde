@@ -22,7 +22,7 @@ import org.drachens.dataClasses.*;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
@@ -263,39 +263,39 @@ public class CentralEventManager {
 
         globEHandler.addListener(FactionCreateEvent.class, e -> {
             Country creator = e.creator();
-            Factions factions = e.newFaction();
+            Faction faction = e.newFaction();
             broadcast(Component.text()
                             .append(MessageEnum.faction.getComponent())
                             .append(creator.getNameComponent())
                             .append(Component.text(" has created ", NamedTextColor.GREEN))
-                            .append(factions.getNameComponent())
+                            .append(faction.getNameComponent())
                             .build(),
                     creator.getCapital().getInstance());
         });
 
         globEHandler.addListener(FactionDeleteEvent.class, e -> {
             Country deleter = e.deleter();
-            Factions factions = e.deletedFaction();
+            Faction faction = e.deletedFaction();
             broadcast(Component.text()
                             .append(MessageEnum.faction.getComponent())
                             .append(deleter.getNameComponent())
                             .append(Component.text(" has deleted ", NamedTextColor.GREEN))
-                            .append(factions.getNameComponent())
+                            .append(faction.getNameComponent())
                             .build(),
                     deleter.getCapital().getInstance());
         });
 
         globEHandler.addListener(FactionJoinEvent.class, e -> {
-            Factions factions = e.factions();
+            Faction faction = e.faction();
             Country country = e.country();
-            if (factions instanceof MilitaryFactionType militaryFactionType) {
+            if (faction instanceof MilitaryFactionType militaryFactionType) {
                 if (!country.canJoinFaction(militaryFactionType)) return;
                 militaryFactionType.getMembers().forEach(country1 -> country1.getOccupies().forEach(province -> country1.getAllyWorld().removeGhostBlock(province.getPos())));
                 militaryFactionType.addMember(country);
                 country.setMilitaryFactionType(militaryFactionType);
                 country.createInfo();
 
-            } else if (factions instanceof EconomyFactionType economyFactionType) {
+            } else if (faction instanceof EconomyFactionType economyFactionType) {
                 if (!country.canJoinFaction(economyFactionType)) return;
                 country.setEconomyFactionType(economyFactionType);
                 economyFactionType.addCountry(country);
@@ -305,17 +305,17 @@ public class CentralEventManager {
                             .append(MessageEnum.faction.getComponent())
                             .append(country.getNameComponent())
                             .append(Component.text(" has joined ", NamedTextColor.GREEN))
-                            .append(factions.getNameComponent())
+                            .append(faction.getNameComponent())
                             .build(),
                     country.getCapital().getInstance());
         });
 
         globEHandler.addListener(FactionInviteEvent.class, e -> {
-            Factions factions = e.faction();
-            factions.addToInvites(e.invited());
-            e.invited().addInvite(InvitesEnum.faction,factions.getStringName(),factions);
+            Faction faction = e.faction();
+            faction.addToInvites(e.invited());
+            e.invited().addInvite(InvitesEnum.faction, faction.getStringName(), faction);
             Country invited = e.invited();
-            factions.sendMessage(Component.text()
+            faction.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
                     .append(invited.getNameComponent())
                     .append(Component.text(" has been invited to the faction", NamedTextColor.GREEN))
@@ -323,19 +323,19 @@ public class CentralEventManager {
             invited.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
                     .append(Component.text(" you have been invited to join ", NamedTextColor.GREEN))
-                    .append(factions.getNameComponent())
+                    .append(faction.getNameComponent())
                     .append(Component.text()
                             .append(Component.text(" [CLICK]", NamedTextColor.GOLD, TextDecoration.BOLD))
                             .hoverEvent(Component.text("Click to join the faction", NamedTextColor.GRAY))
-                            .clickEvent(ClickEvent.runCommand("/faction join " + factions.getStringName())))
+                            .clickEvent(ClickEvent.runCommand("/faction join " + faction.getStringName())))
                     .build());
         });
 
         globEHandler.addListener(FactionKickEvent.class, e -> {
-            Factions factions = e.faction();
-            factions.removeCountry(e.country());
+            Faction faction = e.faction();
+            faction.removeCountry(e.country());
             Country country = e.country();
-            factions.sendMessage(Component.text()
+            faction.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
                     .append(country.getNameComponent())
                     .append(Component.text(" was kicked from the faction", NamedTextColor.RED))
@@ -343,15 +343,15 @@ public class CentralEventManager {
             country.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
                     .append(Component.text("You were kicked from "))
-                    .append(factions.getName())
+                    .append(faction.getName())
                     .build());
         });
 
         globEHandler.addListener(FactionSetLeaderEvent.class, e -> {
-            Factions factions = e.faction();
+            Faction faction = e.faction();
             Country country = e.country();
-            factions.setLeader(country);
-            factions.sendMessage(Component.text()
+            faction.setLeader(country);
+            faction.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
                     .append(country.getNameComponent())
                     .append(Component.text(" has became the leader of the faction", NamedTextColor.GREEN))
@@ -359,7 +359,7 @@ public class CentralEventManager {
             country.sendMessage(Component.text()
                     .append(MessageEnum.faction.getComponent())
                     .append(Component.text("assigned you as its leader "))
-                    .append(factions.getName())
+                    .append(faction.getName())
                     .build());
         });
 

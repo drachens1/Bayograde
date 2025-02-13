@@ -7,7 +7,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionJoinEvent;
 import org.drachens.player_types.CPlayer;
 
@@ -35,15 +35,15 @@ public class AcceptCMD extends Command {
         addSyntax((sender, context) -> {
             if (!hasInvites(sender)) return;
             CPlayer cPlayer = (CPlayer) sender;
-            Factions factions = ContinentalManagers.world(cPlayer.getInstance()).countryDataManager().getFaction(context.get(factionNames));
-            if (factions == null) {
+            Faction faction = ContinentalManagers.world(cPlayer.getInstance()).countryDataManager().getFaction(context.get(factionNames));
+            if (faction == null) {
                 cPlayer.sendMessage("Faction not found");
                 return;
             }
             Country country = cPlayer.getCountry();
-            if (factions.hasInvited(country)) {
-                factions.addCountry(country);
-                EventDispatcher.call(new FactionJoinEvent(factions, country));
+            if (faction.hasInvited(country)) {
+                faction.addCountry(country);
+                EventDispatcher.call(new FactionJoinEvent(faction, country));
             }
         }, factionNames);
 

@@ -10,7 +10,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionJoinEvent;
 import org.drachens.player_types.CPlayer;
 
@@ -41,7 +41,7 @@ public class JoinCMD extends Command {
                 return;
             }
 
-            Factions faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
+            Faction faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
             if (faction == null) {
                 player.sendMessage("Cannot find that faction.");
                 return;

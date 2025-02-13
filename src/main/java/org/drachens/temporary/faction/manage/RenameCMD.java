@@ -8,7 +8,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.Diplomacy.faction.Factions;
+import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
@@ -47,9 +47,9 @@ public class RenameCMD extends Command {
         addSyntax((sender, context) -> {
             if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
-            Factions factions = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
+            Faction faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
             Country country = player.getCountry();
-            if (!factions.isLeader(country)) {
+            if (!faction.isLeader(country)) {
                 player.sendMessage(notLeader);
                 return;
             }
@@ -58,7 +58,7 @@ public class RenameCMD extends Command {
                 player.sendMessage(nameTaken);
                 return;
             }
-            factions.rename(newNam);
+            faction.rename(newNam);
         }, factionsArg, newName);
     }
 
