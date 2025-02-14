@@ -2,9 +2,9 @@ package org.drachens.util;
 
 import net.minestom.server.coordinate.Pos;
 import org.drachens.Manager.per_instance.ProvinceManager;
-import org.drachens.dataClasses.AStarPathfinderVoids;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
+import org.drachens.interfaces.AStarPathfinderVoids;
 
 import java.util.*;
 

@@ -22,7 +22,6 @@ import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.PuppetChat;
-import org.drachens.dataClasses.Diplomacy.Relations;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
@@ -51,7 +50,8 @@ import org.drachens.events.countries.warjustification.WarJustificationCompletion
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
 import org.drachens.interfaces.MapGen;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
+import org.drachens.dataClasses.Research.ResearchCountry;
+import org.drachens.temporary.scoreboards.DefaultCountryScoreboard;
 import org.drachens.util.AStarPathfinderXZ;
 import org.drachens.util.MessageEnum;
 
@@ -83,7 +83,6 @@ public abstract class Country implements Cloneable {
     private final List<Province> occupies;
     private final List<Province> cities;
     private final Stability stability;
-    private final Relations relations = new Relations(this);
     private final HashMap<String, Loan> loanRequests = new HashMap<>();
     private final CapitulationBar capitulationBar = new CapitulationBar();
     private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
@@ -120,6 +119,7 @@ public abstract class Country implements Cloneable {
     private Component originalName;
     private PuppetChat puppetChat;
     private final HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap = new HashMap<>();
+    private final ResearchCountry researchCountry;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
         laws.forEach(((string, lawCategory) -> this.laws.put(string, new LawCategory(lawCategory, this))));
@@ -145,6 +145,11 @@ public abstract class Country implements Cloneable {
         allyWorld = new ImaginaryWorld(instance, true);
         stability = new Stability(50f, this);
         countryChat = new CountryChat(this);
+        if (ContinentalManagers.world(instance).dataStorer().votingOption.isResearchEnabled()){
+            researchCountry = new ResearchCountry(this);
+        }else {
+            researchCountry = null;
+        }
     }
 
     public void init() {
@@ -887,7 +892,9 @@ public abstract class Country implements Cloneable {
     }
 
     public void setPlayerLeader(Player player) {
+        if (playerLeader!=null)playerLeader.refreshCommands();
         this.playerLeader = player;
+        if (player!=null) player.refreshCommands();
     }
 
     public Block getBlockForProvince(Province province) {
@@ -910,10 +917,6 @@ public abstract class Country implements Cloneable {
         return stability;
     }
 
-    public Relations getRelations() {
-        return relations;
-    }
-
     public void addLoanRequest(Loan loan) {
         loanRequests.put(loan.getFromCountry().getName(), loan);
     }
@@ -929,6 +932,9 @@ public abstract class Country implements Cloneable {
     public void nextWeek(NewDay newDay) {
         getVault().calculateIncrease();
         getStability().newWeek();
+        if (getResearchCountry()!=null){
+            getResearchCountry().newWeek(newDay);
+        }
         newWeek(newDay);
     }
 
@@ -1239,5 +1245,13 @@ public abstract class Country implements Cloneable {
 
     public boolean hasInvite(InvitesEnum invitesEnum, String invitee){
         return invitesHashMap.getOrDefault(invitesEnum,new HashMap<>()).containsKey(invitee);
+    }
+
+    public HashMap<String, Integer> getDiplomacy(){
+        return diplomacy;
+    }
+
+    public ResearchCountry getResearchCountry(){
+        return researchCountry;
     }
 }

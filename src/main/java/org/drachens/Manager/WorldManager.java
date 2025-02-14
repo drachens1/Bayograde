@@ -28,6 +28,7 @@ public class WorldManager {
     private final ResourcePackInfo resourcePackInfo = ResourcePackInfo.resourcePackInfo()
             .uri(URI.create("https://download.mc-packs.net/pack/60f880067ca235c61abbc7949269cba5a0f0d01e.zip"))
             .hash("60f880067ca235c61abbc7949269cba5a0f0d01e").build();
+
     private final LoginMessage def = new LoginMessage(
             player -> Component.text()
                     .append(Component.text(player.getUsername(), NamedTextColor.GRAY))
@@ -37,12 +38,12 @@ public class WorldManager {
                     .build(), player -> Component.text()
             .append(Component.text(player.getUsername(), NamedTextColor.GRAY))
             .append(Component.text("[", NamedTextColor.GRAY))
-            .append(Component.text("-", NamedTextColor.RED))
+            .append(Component.text("+", NamedTextColor.GREEN))
             .append(Component.text("]", NamedTextColor.GRAY))
             .build(), player -> Component.text()
             .append(Component.text(player.getUsername(), NamedTextColor.GRAY))
             .append(Component.text("[", NamedTextColor.GRAY))
-            .append(Component.text("+", NamedTextColor.GREEN))
+            .append(Component.text("-", NamedTextColor.RED))
             .append(Component.text("]", NamedTextColor.GRAY))
             .build(),
             player -> Component.text()
@@ -61,11 +62,13 @@ public class WorldManager {
         globEHandler.addListener(PlayerUseItemEvent.class, e -> worldHashMap.get(e.getInstance()).playerUseItem(e));
         globEHandler.addListener(PlayerStartDiggingEvent.class, e -> worldHashMap.get(e.getInstance()).playerStartDigging(e));
         globEHandler.addListener(PlayerMoveEvent.class, e -> worldHashMap.get(e.getInstance()).playerMove(e));
+        globEHandler.addListener(PlayerHandAnimationEvent.class, e -> worldHashMap.get(e.getInstance()).playerAnimationEvent(e));
         globEHandler.addListener(PlayerDisconnectEvent.class, e -> {
             if (worldHashMap.containsKey(e.getInstance())) {
                 worldHashMap.get(e.getInstance()).playerDisconnect(e);
                 CPlayer p = (CPlayer) e.getPlayer();
-                if (p.isPremium()){
+                generalChanges(p);
+                if (p.isPremium()&&p.getPlayerJson().isCustomLoginMessageActive()){
                     CustomLoginRecord clr = p.getPlayerJson().getCustomLoginMessage();
                     handlePremiumLogin(p,clr.leave(),clr,p.getInstance(),def.onPlayerLeave(p));
                 }else {
@@ -77,13 +80,13 @@ public class WorldManager {
             }
 
         });
-        globEHandler.addListener(PlayerHandAnimationEvent.class, e -> worldHashMap.get(e.getInstance()).playerAnimationEvent(e));
         globEHandler.addListener(PlayerSpawnEvent.class, e -> {
             CPlayer p = (CPlayer) e.getPlayer();
+            generalChanges(p);
             if (playerHashSet.containsKey(p)) {
                 Instance prev = playerHashSet.get(p);
                 worldHashMap.get(prev).removePlayer(p);
-                if (p.isPremium()){
+                if (p.isPremium()&&p.getPlayerJson().isCustomLoginMessageActive()){
                     CustomLoginRecord clr = p.getPlayerJson().getCustomLoginMessage();
                     handlePremiumLogin(p,clr.changeLeave(),clr,prev, def.onPlayerChangeInstanceFrom(p));
                     handlePremiumLogin(p,clr.changeJoin(),clr,p.getInstance(), def.onPlayerChangeInstanceTo(p));
@@ -104,7 +107,7 @@ public class WorldManager {
     public void initialJoin(CPlayer p) {
         p.setHead();
         p.getPlayerJson().laterInit();
-        sendResourcePack(p);
+        //sendResourcePack(p);
         ContinentalManagers.permissions.playerOp(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
@@ -114,7 +117,7 @@ public class WorldManager {
         p.refreshCommands();
         ContinentalManagers.advancementManager.addPlayer(p);
         p.setJoinTime(LocalTime.now());
-        if (p.isPremium()){
+        if (p.isPremium()&&p.getPlayerJson().isCustomLoginMessageActive()){
             CustomLoginRecord clr = p.getPlayerJson().getCustomLoginMessage();
             handlePremiumLogin(p,clr.join(),clr,p.getInstance(), def.onPlayerJoin(p));
         }else {
@@ -142,6 +145,12 @@ public class WorldManager {
                 .build();
 
         //p.sendResourcePacks(request);
+    }
+
+    private void generalChanges(CPlayer p){
+        if (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner!=null){
+            p.setWorldClasses(ContinentalManagers.world(p.getInstance()));
+        }
     }
 
     public World getDefaultWorld() {

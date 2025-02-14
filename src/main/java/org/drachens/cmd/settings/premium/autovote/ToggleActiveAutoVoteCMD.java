@@ -18,11 +18,11 @@ public class ToggleActiveAutoVoteCMD extends Command {
         setDefaultExecutor(((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             if (!p.hasRank(RankEnum.deratus.getRank()))return;
-            boolean current = p.getPlayerJson().isAutoVoteActive();
-            p.getPlayerJson().setAutoVoteActive(!current);
+            boolean current = !p.getPlayerJson().isAutoVoteActive();
+            p.getPlayerJson().setAutoVoteActive(current);
             p.sendMessage(Component.text()
                             .append(Component.text("Active: ", NamedTextColor.GREEN))
-                            .append(Component.text(!current))
+                            .append(Component.text(current))
                     .build());
         }));
     }

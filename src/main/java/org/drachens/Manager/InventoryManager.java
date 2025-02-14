@@ -72,7 +72,7 @@ public class InventoryManager {
 
         activeHotBar.computeIfPresent(player, (p, hotbar) -> {
             List<HotbarItemButton> buttons = hotbar.getItems();
-            int slot = event.getSlot();
+            int slot = event.getNewSlot();
 
             if (slot >= buttons.size()) {
                 if (lastButton != null) lastButton.onSwapFrom(event);

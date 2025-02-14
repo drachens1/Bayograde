@@ -2,8 +2,8 @@ package org.drachens.temporary.country.research;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.research.ResearchCountry;
 
 public class ResearchActiveCMD extends Command {
     public ResearchActiveCMD() {
@@ -13,8 +13,8 @@ public class ResearchActiveCMD extends Command {
         setDefaultExecutor((sender, context) -> {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
-            ResearchCountry country = (ResearchCountry) p.getCountry();
-            p.sendMessage(country.getCurrentResearch().getName());
+            Country country = p.getCountry();
+            p.sendMessage(country.getResearchCountry().getCurrentResearch().getName());
         });
     }
 

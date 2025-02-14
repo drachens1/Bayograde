@@ -1,5 +1,6 @@
 package org.drachens.fileManagement.customTypes.player;
 
+import net.minestom.server.network.player.GameProfile;
 import org.drachens.fileManagement.databases.Entry;
 import org.drachens.fileManagement.databases.Table;
 import org.drachens.player_types.CPlayer;
@@ -9,15 +10,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PlayerInfoEntry implements Entry {
-    private final CPlayer p;
+    private final GameProfile gameProfile;
     private final String uuid;
     private final Table table;
     private PlayerJson playerJson;
 
-    public PlayerInfoEntry(CPlayer p, Table table) {
-        this.p = p;
-        this.uuid= p.getUuid().toString();
-        p.setPlayerDataFile(this);
+    public PlayerInfoEntry(GameProfile gameProfile, Table table) {
+        this.gameProfile = gameProfile;
+        this.uuid= gameProfile.uuid().toString();
         this.table = table;
         insert();
     }
@@ -51,7 +51,7 @@ public class PlayerInfoEntry implements Entry {
             } catch (SQLException e) {
                 System.err.println("Error inserting the info " + e.getMessage());
             }
-            playerJson = new PlayerJson("",p);
+            playerJson = new PlayerJson("",gameProfile);
         } else {
             load();
         }
@@ -69,9 +69,9 @@ public class PlayerInfoEntry implements Entry {
                 String jsonData = resultSet.getString(2);
 
                 if (jsonData==null||jsonData.isEmpty()){
-                    playerJson = new PlayerJson("",p);
+                    playerJson = new PlayerJson("",gameProfile);
                 }else {
-                    playerJson = new PlayerJson(jsonData,p);
+                    playerJson = new PlayerJson(jsonData,gameProfile);
                 }
             }
         } catch (SQLException e) {
@@ -97,5 +97,10 @@ public class PlayerInfoEntry implements Entry {
         } catch (SQLException e) {
             System.err.println("Error applying changes: " + e.getMessage());
         }
+    }
+
+    public void setPlayer(CPlayer p){
+        p.setPlayerDataFile(this);
+        playerJson.setPlayer(p);
     }
 }

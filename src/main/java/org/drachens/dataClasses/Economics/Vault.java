@@ -128,16 +128,16 @@ public abstract class Vault {
         boolean overlord = country.getOverlord() != null;
 
         buildings.forEach(building -> {
-            Payments payments = factory.generate(building);
-            payments.multiply(country.getBoost(BoostEnum.production));
+            Payment payment = factory.generate(building);
+            payment.multiply(country.getBoost(BoostEnum.production));
             if (overlord) {
-                Payments toCountry2 = new Payments(payments);
+                Payments toCountry2 = new Payments(payment);
                 toCountry2.multiply(0.8f);
-                payments.multiply(0.2f);
-                toOverlord.addPayments(payments);
+                payment.multiply(0.2f);
+                toOverlord.addPayment(payment);
                 toCountry.addPayments(toCountry2);
             } else {
-                toCountry.addPayments(payments);
+                toCountry.addPayment(payment);
             }
         });
         addPayments(toCountry);

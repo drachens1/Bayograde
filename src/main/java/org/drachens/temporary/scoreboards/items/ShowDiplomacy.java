@@ -8,7 +8,7 @@ import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.interfaces.inventories.HotbarItemButton;
 import org.drachens.interfaces.inventories.OnUse;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
+import org.drachens.temporary.scoreboards.DefaultCountryScoreboard;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 

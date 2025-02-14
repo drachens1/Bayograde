@@ -35,7 +35,7 @@ public class VoteBar extends HideableBossBar {
             @Override
             public void run() {
                 completion++;
-                voteBar.progress(bound(0f, 1f, completion / 12f));
+                voteBar.progress(bound(1f, 0f, completion / 12f));
                 if (completion >= 12f) {
                     hide();
                     task.cancel();

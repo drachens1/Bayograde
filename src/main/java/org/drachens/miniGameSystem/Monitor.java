@@ -43,23 +43,12 @@ public class Monitor {
         }
     }
 
-    public void clear(Material newMat) {
-        pixelHashMap.forEach((pos, pixel) -> {
-            pixel.setMaterial(newMat);
-            pixel.clear();
-        });
-    }
-
     public Instance getInstance() {
         return instance;
     }
 
     public Material getDefaultMaterial() {
         return defaultMaterial;
-    }
-
-    public void setDefaultMaterial(Material material) {
-        this.defaultMaterial = material;
     }
 }
 

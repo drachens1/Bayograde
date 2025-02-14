@@ -55,10 +55,6 @@ public class Pixel {
         monitor.getInstance().setBlock(pos, material.block());
     }
 
-    public void clear() {
-        dynamicPixels.clear();
-    }
-
     public String toString() {
         return pos + ", " + material;
     }

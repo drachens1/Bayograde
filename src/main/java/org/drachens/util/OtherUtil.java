@@ -55,9 +55,7 @@ public class OtherUtil {
     }
 
     public static float bound(float upper, float lower, float value) {
-        if (value > upper) {
-            return upper;
-        }
+        if (value > upper) return upper;
         return Math.max(value, lower);
     }
 

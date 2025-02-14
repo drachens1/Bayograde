@@ -56,6 +56,6 @@ public class YearBar extends HideableBossBar {
                     EventDispatcher.call(new ResetEvent(instance));
                 }
             }
-        }).repeat(votingOption.getDayLength(), ChronoUnit.MILLIS).schedule();
+        }).repeat(votingOption.getDayLength()*votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
     }
 }

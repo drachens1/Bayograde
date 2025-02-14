@@ -9,9 +9,9 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class ResearchAfterCMD extends Command {
         addSyntax((sender, context) -> {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
-            ResearchCountry country = (ResearchCountry) p.getCountry();
+            Country country = p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             List<Component> comps = new ArrayList<>();
             tree.getAfter(context.get(choice)).forEach(string -> {
@@ -69,8 +69,8 @@ public class ResearchAfterCMD extends Command {
     private List<String> getAvailable(CommandSender sender) {
         if (notCountry(sender)) return new ArrayList<>();
         CPlayer p = (CPlayer) sender;
-        ResearchCountry country = (ResearchCountry) p.getCountry();
+        Country country = p.getCountry();
         TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
-        return tree.getAvailable(country);
+        return tree.getAvailable(country.getResearchCountry());
     }
 }

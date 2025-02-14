@@ -462,6 +462,4 @@ public final class Pacman extends MiniGame<Pacman.PacmanWorld> {
             setPos(new Pos(realX, realY, 0));
         }
     }
-
-
 }

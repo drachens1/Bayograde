@@ -15,7 +15,6 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class WhoisCMD extends Command {
     public WhoisCMD() {
         super("whois");
-
         var player = ArgumentType.String("player")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     List<String> s = new ArrayList<>();

@@ -22,7 +22,7 @@ import org.drachens.events.countries.warjustification.WarJustificationStartEvent
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;
 import org.drachens.temporary.factory.Factory;
-import org.drachens.temporary.research.ResearchCountry;
+import org.drachens.dataClasses.Research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,22 +102,24 @@ public class ClicksAI implements AIManager {
     static class ResearchGrinder extends AI {
         private final List<Province> centers = new ArrayList<>();
         private final HashMap<Province, List<Province>> availableSpaces = new HashMap<>();
-        private final ResearchCountry country;
+        private final ResearchCountry researchCountry;
+        private final Country country;
         private final TechTree tree;
         private final Random r = new Random();
         private final ResearchCenter researchCenter = (ResearchCenter) BuildingEnum.researchCenter.getBuildTypes();
 
-        public ResearchGrinder(ResearchCountry country) {
+        public ResearchGrinder(Country country) {
             this.country = country;
+            this.researchCountry = country.getResearchCountry();
             tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
         }
 
         public void startResearch() {
-            List<String> s = tree.getAvailable(country);
+            List<String> s = tree.getAvailable(researchCountry);
             String active = s.get(new Random().nextInt(s.size()));
             ResearchOption r = tree.getResearchOption(active);
-            if (r.canResearch(country)) {
-                country.startResearching(r);
+            if (r.canResearch(researchCountry)) {
+                researchCountry.startResearching(r);
             }
         }
 
@@ -167,7 +169,7 @@ public class ClicksAI implements AIManager {
         @Override
         public void tick() {
             buildResearch();
-            if (!country.isResearching()) {
+            if (!researchCountry.isResearching()) {
                 startResearch();
             }
         }

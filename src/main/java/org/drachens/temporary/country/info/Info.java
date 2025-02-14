@@ -13,5 +13,6 @@ public class Info extends Command {
         addSubcommand(new LawsInfo("laws"));
         addSubcommand(new BordersInfoCMD());
         addSubcommand(new InfoOptionsCMD());
+        addSubcommand(new Leader());
     }
 }

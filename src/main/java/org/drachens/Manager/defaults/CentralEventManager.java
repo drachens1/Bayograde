@@ -17,13 +17,18 @@ import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.bossbars.YearBar;
+import org.drachens.cmd.ConfirmCMD;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.*;
+import org.drachens.dataClasses.Delay;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
+import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.VotingOption;
+import org.drachens.dataClasses.datastorage.DataStorer;
+import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.events.CaptureBlockEvent;
@@ -45,6 +50,8 @@ import org.drachens.events.countries.warjustification.WarJustificationCancelEven
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
 import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
+import org.drachens.events.customgame.CustomGameInviteEvent;
+import org.drachens.events.customgame.CustomGameKickEvent;
 import org.drachens.events.factions.*;
 import org.drachens.events.research.ResearchCompletionEvent;
 import org.drachens.events.research.ResearchStartEvent;
@@ -66,6 +73,8 @@ public class CentralEventManager {
 
     public CentralEventManager() {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
+        ConfirmCMD confirm = (ConfirmCMD) MinecraftServer.getCommandManager().getCommand("confirm");
+        if (confirm==null)return;
 
         globEHandler.addListener(StartGameEvent.class, e -> {
             Instance instance = e.instance();
@@ -262,6 +271,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(FactionCreateEvent.class, e -> {
+            if (!ContinentalManagers.world(e.creator().getInstance()).dataStorer().votingOption.isFactionsEnabled())return;
             Country creator = e.creator();
             Faction faction = e.newFaction();
             broadcast(Component.text()
@@ -476,7 +486,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(ResearchStartEvent.class, e -> {
-            e.country().setCurrentResearch(e.researchOption());
+            e.country().getResearchCountry().setCurrentResearch(e.researchOption());
             e.country().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(Component.text("You have started researching ", NamedTextColor.GREEN))
@@ -485,7 +495,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(ResearchCompletionEvent.class, e -> {
-            e.country().completeActiveResearch();
+            e.country().getResearchCountry().completeActiveResearch();
             e.country().sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(Component.text("You have finished researching ", NamedTextColor.GREEN))
@@ -656,5 +666,36 @@ public class CentralEventManager {
             from.addNonAggressionPact(nonAggressionPact,to);
         });
 
+        globEHandler.addListener(CustomGameInviteEvent.class, e->{
+            CPlayer inviter = e.inviter();
+            CPlayer invited = e.invited();
+            broadcast(Component.text()
+                    .append(MessageEnum.system.getComponent())
+                    .append(Component.text(inviter.getUsername()))
+                    .append(Component.text(" has invited ",NamedTextColor.GREEN))
+                    .append(Component.text(invited.getUsername()))
+                    .append(Component.text(" to play",NamedTextColor.GREEN))
+                    .build(),inviter.getInstance());
+
+            confirm.putPlayerRunnable(invited, () -> invited.setInstance(inviter.getInstance()));
+
+            invited.sendMessage(Component.text()
+                            .append(MessageEnum.system.getComponent())
+                            .append(Component.text("You have been invited to play a custom game with ",NamedTextColor.GREEN))
+                            .append(Component.text(inviter.getUsername()))
+                            .append(Component.text()
+                                    .append(Component.text(" [ACCEPT] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join", NamedTextColor.GRAY)))
+                                    .clickEvent(ClickEvent.runCommand("/confirm")))
+                    .build());
+        });
+
+        globEHandler.addListener(CustomGameKickEvent.class, e->{
+            Player p = e.kicked();
+            if (p.getInstance() != ContinentalManagers.worldManager.getDefaultWorld().getInstance()) {
+                p.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
+            }
+            p.teleport(new Pos(0, 1, 0));
+        });
     }
 }

@@ -4,6 +4,7 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.player_types.CPlayer;
+import org.drachens.temporary.country.manage.modifiers.ModifiersCMD;
 
 public class ManageCMD extends Command {
     public ManageCMD() {
@@ -11,6 +12,7 @@ public class ManageCMD extends Command {
         addSubcommand(new SetLeaderCMD());
         addSubcommand(new KickCMD());
         addSubcommand(new CooperateCMD());
+        addSubcommand(new ModifiersCMD());
 
         setCondition((sender, s) -> isLeaderOfCountry(sender));
     }

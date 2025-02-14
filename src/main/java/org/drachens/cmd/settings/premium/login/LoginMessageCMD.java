@@ -22,5 +22,6 @@ public class LoginMessageCMD extends Command {
 
         addSubcommand(new SetLoginMessageCMD());
         addSubcommand(new HelpLoginMessageCMD());
+        addSubcommand(new ToggleLoginMessageCMD());
     }
 }

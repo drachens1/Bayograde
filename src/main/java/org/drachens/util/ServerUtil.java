@@ -45,16 +45,19 @@ import org.drachens.cmd.Msg.ReplyCMD;
 import org.drachens.cmd.SpawnCMD;
 import org.drachens.cmd.StoreCMD;
 import org.drachens.cmd.TeleportCMD;
+import org.drachens.cmd.game.GameCMD;
+import org.drachens.cmd.game.PlaytimeCMD;
+import org.drachens.cmd.gamecreate.GameManageCMD;
+import org.drachens.cmd.gamecreate.start.StartGameCMD;
 import org.drachens.cmd.help.HelpCMD;
-import org.drachens.cmd.info.PlaytimeCMD;
 import org.drachens.cmd.minigames.MinigamesCMD;
 import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
-import org.drachens.dataClasses.DataStorer;
 import org.drachens.dataClasses.VotingOption;
-import org.drachens.dataClasses.WorldClasses;
+import org.drachens.dataClasses.datastorage.DataStorer;
+import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
@@ -62,19 +65,15 @@ import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
-import org.drachens.fileManagement.databases.Table;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
 import org.drachens.temporary.country.CountryCMD;
 import org.drachens.temporary.faction.FactionCMD;
-import org.drachens.temporary.scoreboards.country.DefaultCountryScoreboard;
+import org.drachens.temporary.scoreboards.DefaultCountryScoreboard;
 import org.drachens.temporary.view_modes.ViewModesCMD;
 import org.drachens.temporary.worlds.ContinentalWorld;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -147,12 +146,13 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
 
+        HashMap<UUID, PlayerInfoEntry> playerUUIDMap = new HashMap<>();
+
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
             final Player p = e.getPlayer();
+            runThread(()->playerUUIDMap.remove(p.getUuid()).setPlayer((CPlayer) p));
             e.setSpawningInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
             p.setRespawnPoint(new Pos(0, 1, 0));
-            Table table = ContinentalManagers.database.getTable("player_info");
-            new PlayerInfoEntry((CPlayer) p, table);
         });
 
         globEHandler.addListener(RankAddEvent.class, e -> playerRanks.get(e.player().getPlayerConnection()).add(e.rank()));
@@ -167,6 +167,7 @@ public class ServerUtil {
                 return;
             }
             playerRanks.put(e.getConnection(), new ArrayList<>());
+            playerUUIDMap.put(gameProfile.uuid(),new PlayerInfoEntry(gameProfile, ContinentalManagers.database.getTable("player_info")));
         });
 
         Function<PlayerChatEvent, Component> chatEvent = e -> {
@@ -188,7 +189,9 @@ public class ServerUtil {
             components.add(Component.text(" : ", NamedTextColor.GRAY));
             components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
             components.add(Component.text(" "));
-            components.add(rank.suffix);
+            if (p.isPremium()&&p.getPlayerJson().isSuffixActive()){
+                components.add(Component.text(p.getPlayerJson().getSuffix()));
+            }
             return Component.text().append(components).build();
         };
 
@@ -271,6 +274,9 @@ public class ServerUtil {
         commandManager.register(new OpMeCMD());
 
         commandManager.register(new SettingsCMD(votingOptionsCMD));
+        commandManager.register(new StartGameCMD(votingOptionsCMD));
+        commandManager.register(new GameManageCMD());
+        commandManager.register(new GameCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);

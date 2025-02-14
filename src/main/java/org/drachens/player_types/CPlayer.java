@@ -13,6 +13,7 @@ import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
 import org.drachens.fileManagement.customTypes.player.PlayerJson;
@@ -35,6 +36,7 @@ public class CPlayer extends Player {
 
     private UUID lastMessenger;
 
+    private WorldClasses worldClasses;
     private ItemStack headItem;
     private LocalTime joinTime;
     private Long playTime;
@@ -42,8 +44,11 @@ public class CPlayer extends Player {
     private PlayerJson playerJson;
     private PlayerInfoEntry playerInfoEntry;
     private boolean isUsingMod = false;
+    private boolean leaderOfOwnGame = false;
+    private boolean isInOwnGame = false;
+    private boolean isInInterchange = false;
 
-    public CPlayer(PlayerConnection playerConnection, GameProfile gameProfile) {
+    public CPlayer(@NotNull PlayerConnection playerConnection, @NotNull GameProfile gameProfile) {
         super(playerConnection, gameProfile);
     }
 
@@ -159,10 +164,6 @@ public class CPlayer extends Player {
         permissions.add(permission);
     }
 
-    public void removePermission(@NotNull String permission) {
-        permissions.remove(permission);
-    }
-
     public @NotNull List<String> getAllPermissionss() {
         return permissions;
     }
@@ -230,5 +231,37 @@ public class CPlayer extends Player {
 
     public boolean isAutoVoteActive(){
         return playerJson.isAutoVoteActive();
+    }
+
+    public boolean isLeaderOfOwnGame() {
+        return leaderOfOwnGame;
+    }
+
+    public void setLeaderOfOwnGame(boolean b){
+        this.leaderOfOwnGame=b;
+    }
+
+    public boolean isInOwnGame(){
+        return isInOwnGame;
+    }
+
+    public void setInOwnGame(boolean b){
+        this.isInOwnGame=b;
+    }
+
+    public boolean isInInterchange(){
+        return isInInterchange;
+    }
+
+    public void setInInterchange(boolean b){
+        this.isInInterchange=b;
+    }
+
+    public void setWorldClasses(WorldClasses worldClasses){
+        this.worldClasses=worldClasses;
+    }
+
+    public WorldClasses getWorldClasses(){
+        return worldClasses;
     }
 }

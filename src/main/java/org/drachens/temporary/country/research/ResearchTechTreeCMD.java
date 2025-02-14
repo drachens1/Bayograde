@@ -6,9 +6,10 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ColoursEnum;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.research.ResearchCountry;
+import org.drachens.dataClasses.Research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,8 @@ public class ResearchTechTreeCMD extends Command {
         setDefaultExecutor((sender, context) -> {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
-            ResearchCountry country = (ResearchCountry) p.getCountry();
+            Country country = p.getCountry();
+            ResearchCountry researchCountry = country.getResearchCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             List<Component> comps = new ArrayList<>();
             tree.getResearchCategories().forEach(researchCategory -> {
@@ -32,11 +34,11 @@ public class ResearchTechTreeCMD extends Command {
                         .appendNewline()
                         .build());
                 researchCategory.getResearchOptionList().forEach(researchOption -> {
-                    if (country.hasResearched(researchOption.getIdentifier())) {
+                    if (researchCountry.hasResearched(researchOption.getIdentifier())) {
                         comps.add(researchOption.getName().color(NamedTextColor.GREEN));
-                    } else if (country.isResearching() && country.getCurrentResearch() == researchOption) {
+                    } else if (researchCountry.isResearching() && researchCountry.getCurrentResearch() == researchOption) {
                         comps.add(researchOption.getName().color(ColoursEnum.ORANGE.getTextColor()));
-                    } else if (researchOption.canResearch(country)) {
+                    } else if (researchOption.canResearch(researchCountry)) {
                         comps.add(researchOption.getName().color(NamedTextColor.YELLOW));
                     } else {
                         comps.add(researchOption.getName().color(NamedTextColor.RED));

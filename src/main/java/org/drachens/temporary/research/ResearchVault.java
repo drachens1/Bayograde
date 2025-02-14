@@ -9,6 +9,7 @@ import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Research.ResearchCenter;
+import org.drachens.dataClasses.Research.ResearchCountry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ public abstract class ResearchVault extends Vault {
 
     @Override
     public void onCountrySet(Country country) {
-        this.country = (ResearchCountry) country;
+        this.country = country.getResearchCountry();
     }
 
     @Override

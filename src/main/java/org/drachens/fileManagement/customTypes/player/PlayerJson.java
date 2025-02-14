@@ -3,6 +3,7 @@ package org.drachens.fileManagement.customTypes.player;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minestom.server.network.player.GameProfile;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.fileManagement.filetypes.GsonFileType;
 import org.drachens.player_types.CPlayer;
@@ -15,21 +16,23 @@ import java.util.List;
 import static org.drachens.util.Messages.getTime;
 
 public class PlayerJson extends GsonFileType {
-    private final CPlayer p;
+    private final GameProfile gameProfile;
+    private CPlayer p;
     private HashMap<String, Integer> eventAchievementTrigger;
     private Long playtime;
     private List<String> ranks;
     private CustomLoginRecord customLoginMessage;
+    private boolean customLoginMessageActive = false;
     private boolean premium = false;
     private boolean autoVoteActive = false;
     private String autoVoteOption;
+    private boolean suffixActive = false;
+    private String suffix;
 
-    public PlayerJson(String json, CPlayer p) {
+    public PlayerJson(String json, GameProfile gameProfile) {
         super(json);
-        this.p=p;
-        p.setPlayerJson(this);
+        this.gameProfile=gameProfile;
         setDefaults();
-        initialLoad();
     }
 
     @Override
@@ -57,8 +60,11 @@ public class PlayerJson extends GsonFileType {
         addDefault("","premium","login-message","change-join");
         addDefault("","premium","login-message","change-leave");
         addDefault("","premium","login-message","leave");
+        addDefault(new JsonPrimitive(false),"premium","login-message","active");
         addDefault(new JsonPrimitive(false),"premium","auto-vote","active");
         addDefault("","premium","auto-vote","current");
+        addDefault("","premium","suffix","current");
+        addDefault(new JsonPrimitive(false),"premium","suffix","active");
     }
 
     protected void premiumLoad(){
@@ -68,11 +74,14 @@ public class PlayerJson extends GsonFileType {
         String changeJoin = loginMSG.get("change-join").getAsString();
         String changeLeave = loginMSG.get("change-leave").getAsString();
         String leave = loginMSG.get("leave").getAsString();
+        customLoginMessageActive = loginMSG.get("active").getAsBoolean();
         if (join != null && changeJoin != null && changeLeave != null && leave != null){
             customLoginMessage = new CustomLoginRecord(join,changeJoin,changeLeave,leave);
         }
         autoVoteOption = premium.getAsJsonObject("auto-vote").get("current").getAsString();
         autoVoteActive = premium.getAsJsonObject("auto-vote").get("active").getAsBoolean();
+        suffixActive = premium.getAsJsonObject("suffix").get("active").getAsBoolean();
+        suffix = premium.getAsJsonObject("suffix").get("current").getAsString();
     }
 
     public void laterInit(){
@@ -86,8 +95,8 @@ public class PlayerJson extends GsonFileType {
     @Override
     protected void setDefaults() {
         String time = getTime();
-        addDefault(p.getUsername(),"display", "username");
-        addDefault(p.getUuid().toString(),"display", "uuid");
+        addDefault(gameProfile.name(),"display", "username");
+        addDefault(gameProfile.uuid().toString(),"display", "uuid");
         addDefault(0L,"activity","playtime");
         addDefault(time,"activity","last-online");
         addDefault(time,"activity","first-join");
@@ -128,6 +137,15 @@ public class PlayerJson extends GsonFileType {
         set(clr.leave(),"premium","login-message","leave");
     }
 
+    public void setLoginMessageActive(boolean b){
+        customLoginMessageActive = b;
+        set(new JsonPrimitive(b),"premium","login-message","active");
+    }
+
+    public boolean isCustomLoginMessageActive(){
+        return customLoginMessageActive;
+    }
+
     public CustomLoginRecord getCustomLoginMessage(){
         return customLoginMessage;
     }
@@ -156,5 +174,29 @@ public class PlayerJson extends GsonFileType {
     public void setAutoVoteOption(String autoVoteOption) {
         this.autoVoteOption = autoVoteOption;
         set(autoVoteOption,"premium","auto-vote","current");
+    }
+
+    public void setPlayer(CPlayer player){
+        this.p=player;
+        p.setPlayerJson(this);
+        initialLoad();
+    }
+
+    public boolean isSuffixActive(){
+        return suffixActive;
+    }
+
+    public void setSuffixActive(boolean b){
+        this.suffixActive=b;
+        set(new JsonPrimitive(b),"premium","suffix","active");
+    }
+
+    public String getSuffix(){
+        return suffix;
+    }
+
+    public void setSuffix(String suffix){
+        this.suffix=suffix;
+        set(suffix,"premium","suffix","current");
     }
 }

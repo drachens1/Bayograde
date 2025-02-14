@@ -6,10 +6,10 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +35,14 @@ public class ResearchOptionCMD extends Command {
         addSyntax((sender, context) -> {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
-            ResearchCountry country = (ResearchCountry) p.getCountry();
+            Country country = p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             ResearchOption researchOption = tree.getResearchOption(context.get(choice));
             if (researchOption == null) {
                 return;
             }
-            if (researchOption.canResearch(country)) {
-                country.startResearching(researchOption);
+            if (researchOption.canResearch(country.getResearchCountry())) {
+                country.getResearchCountry().startResearching(researchOption);
             } else {
                 p.sendMessage(Component.text("You cannot research this", NamedTextColor.RED));
             }
@@ -59,8 +59,8 @@ public class ResearchOptionCMD extends Command {
     private List<String> getAvailable(CommandSender sender) {
         if (notCountry(sender)) return new ArrayList<>();
         CPlayer p = (CPlayer) sender;
-        ResearchCountry country = (ResearchCountry) p.getCountry();
+        Country country = p.getCountry();
         TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
-        return tree.getAvailable(country);
+        return tree.getAvailable(country.getResearchCountry());
     }
 }

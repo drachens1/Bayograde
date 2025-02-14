@@ -41,6 +41,13 @@ public class Payment implements Cloneable {
         return message;
     }
 
+    public Component getShownMessage(){
+        return Component.text()
+                .append(Component.text(getAmount()))
+                .append(getCurrencyType().getSymbol())
+                .build();
+    }
+
     public boolean add(Payment payment) {
         if (payment.getCurrencyType().equals(currencyType)) {
             amount += payment.getAmount();

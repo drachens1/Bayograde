@@ -27,10 +27,6 @@ public class Sprite {
         this(pos, monitor, identifier, (collided, pos1) -> miniGameRunnable.apply(collided));
     }
 
-    public DynamicPixel getDynamicPixel(Pos pos) {
-        return materialHashMap.get(new RelativePos((int) (pos.x() - this.pos.x()), (int) (pos.y() - this.pos.y())));
-    }
-
     public void addDynamicPixel(RelativePos relativePos, DynamicPixel dynamicPixel) {
         materialHashMap.put(relativePos, dynamicPixel);
         dynamicPixel.setSprite(this);
@@ -73,7 +69,6 @@ public class Sprite {
     public static class Builder {
         private final HashMap<Character, Material> ingredients = new HashMap<>();
         private String s;
-        private int weight = 0;
         private String identifier;
         private MiniGameRunnable collisionFunction;
 
@@ -120,7 +115,7 @@ public class Sprite {
 
             Sprite sprite = new Sprite(pos, monitor, identifier, collisionFunction);
 
-            loadLayout(weight, s, ingredients, sprite);
+            loadLayout(0, s, ingredients, sprite);
 
             return sprite;
         }

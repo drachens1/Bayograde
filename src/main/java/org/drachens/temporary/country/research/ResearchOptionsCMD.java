@@ -8,8 +8,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Countries.Country;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.research.ResearchCountry;
+import org.drachens.dataClasses.Research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,9 @@ public class ResearchOptionsCMD extends Command {
         setDefaultExecutor((sender, context) -> {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
-            ResearchCountry country = (ResearchCountry) p.getCountry();
+            Country country = p.getCountry();
             List<Component> comps = new ArrayList<>();
-            getAvailable(country, p).forEach(string -> {
+            getAvailable(country.getResearchCountry(), p).forEach(string -> {
                 comps.add(Component.text()
                         .append(Component.text(string))
                         .append(Component.text()

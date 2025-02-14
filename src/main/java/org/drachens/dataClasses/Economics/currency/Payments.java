@@ -47,8 +47,7 @@ public class Payments {
     public Component getMessages() {
         List<Component> comps = new ArrayList<>();
         payments.forEach(payment -> {
-            comps.add(Component.text(payment.getAmount()));
-            comps.add(payment.getCurrencyType().getSymbol());
+            comps.add(payment.getShownMessage());
             comps.add(Component.newline());
         });
         return Component.text()

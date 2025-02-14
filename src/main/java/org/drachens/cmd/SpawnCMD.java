@@ -3,10 +3,7 @@ package org.drachens.cmd;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.events.AdvancementEvent;
-import org.drachens.player_types.CPlayer;
 
 public class SpawnCMD extends Command {
     public SpawnCMD() {
@@ -19,7 +16,6 @@ public class SpawnCMD extends Command {
                 p.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
             }
             p.teleport(new Pos(0, 1, 0));
-            EventDispatcher.call(new AdvancementEvent((CPlayer) p, "factoryBuilt"));
         });
     }
 }

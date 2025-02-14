@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.Research.tree;
 
 import net.kyori.adventure.text.Component;
-import org.drachens.temporary.research.ResearchCountry;
+import org.drachens.dataClasses.Research.ResearchCountry;
 
 import java.util.ArrayList;
 import java.util.HashMap;

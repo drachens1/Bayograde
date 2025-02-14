@@ -6,6 +6,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.animation.Animation;
@@ -13,7 +14,6 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -30,8 +30,8 @@ import static org.drachens.util.Messages.sendMessage;
 
 
 public class Factory extends BuildTypes {
-    private final Payments produces;
-    private final Payments payments = new Payments(new Payment(CurrencyEnum.production, 5f));
+    private final Payment produces;
+    private final Payment payment = new Payment(CurrencyEnum.production, 5f);
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the factory : 5 Production", NamedTextColor.RED))
             .build();
@@ -62,7 +62,7 @@ public class Factory extends BuildTypes {
             }
             return itemBuilder(Material.CYAN_DYE,building.getCurrentLvl()*2+23);
                 });
-        produces = new Payments(new Payment(CurrencyEnum.production, 1000f));
+        produces = new Payment(CurrencyEnum.production, 1000f);
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);
         materialLvls.put(Material.LIME_GLAZED_TERRACOTTA, 3);
@@ -74,7 +74,7 @@ public class Factory extends BuildTypes {
 
     @Override
     public void onBuild(Country country, Province province, CPlayer p) {
-        country.removePayments(payments);
+        country.removePayment(payment);
         Building factory = new Building(this, province);
         ItemDisplay itemDisplay = factory.getItemDisplay();
         smokeAnimation.start(itemDisplay, true);
@@ -82,7 +82,7 @@ public class Factory extends BuildTypes {
 
     @Override
     public void onBuild(Country country, Province province, CPlayer p, float yaw) {
-        country.removePayments(payments);
+        country.removePayment(payment);
         Building factory = new Building(this, province);
         ItemDisplay itemDisplay = factory.getItemDisplay();
         itemDisplay.addYaw(yaw);
@@ -94,7 +94,7 @@ public class Factory extends BuildTypes {
         if (province.getOccupier() != country && country.isPuppet(province.getOccupier())) return false;
         if (province.getBuilding() != null) return false;
         if (!province.isCity()) return false;
-        if (!country.canMinusCosts(payments)) {
+        if (!country.canMinusCost(payment)) {
             sendMessage(p, cantAffordMsg);
             return false;
         }
@@ -106,9 +106,9 @@ public class Factory extends BuildTypes {
         if (building.getCountry() != country) return false;
         Province province = building.getProvince();
         if (!materialLvls.containsKey(province.getMaterial())) return false;
-        Payments temp = new Payments(payments);
+        Payment temp = payment.clone();
         temp.multiply(add);
-        if (!country.canMinusCosts(temp)) {
+        if (!country.canMinusCost(temp)) {
             sendMessage(p, cantAffordToUpgrade);
             return false;
         }
@@ -159,12 +159,13 @@ public class Factory extends BuildTypes {
         smokeAnimation.start(itemDisplay, true);
     }
 
-    public Payments generate(Building building) {
+    public Payment generate(Building building) {
         Country country = building.getCountry();
-        Payments payments1 = new Payments(produces);
-        payments1.multiply(country.getBoost(BoostEnum.production) + building.getCurrentLvl());
-        createFloatingText(building, payments1.getMessages());
-        return payments1;
+        Payment payment = produces.clone();
+        payment.multiply(ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getProgressionRate());
+        payment.multiply(country.getBoost(BoostEnum.production) + building.getCurrentLvl());
+        createFloatingText(building, payment.getShownMessage());
+        return payment;
     }
 
     public void createFloatingText(Building building, Component text) {

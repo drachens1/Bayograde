@@ -12,7 +12,6 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.research.ResearchCountry;
 
 import static org.drachens.util.Messages.sendMessage;
 
@@ -31,7 +30,7 @@ public class ResearchCenter extends BuildTypes {
     public void onBuild(Country country, Province province, CPlayer p) {
         country.removePayments(payments);
         new Building(this, province);
-        ResearchCountry c = (ResearchCountry) country;
+        ResearchCountry c = country.getResearchCountry();
         c.addResearchCenter(province.getBuilding());
     }
 
@@ -48,8 +47,8 @@ public class ResearchCenter extends BuildTypes {
 
     @Override
     protected void onCaptured(Country capturer, Building building) {
-        ResearchCountry c = (ResearchCountry) building.getCountry();
-        ResearchCountry s = (ResearchCountry) capturer;
+        ResearchCountry c = building.getCountry().getResearchCountry();
+        ResearchCountry s = capturer.getResearchCountry();
         c.removeResearchCenter(building);
         s.addResearchCenter(building);
         building.setCountry(capturer);

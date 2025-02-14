@@ -235,6 +235,7 @@ public class WW2Demands extends Demand {
 
     @Override
     public void ifAccepted() {
+        getFromCountry().removeOutgoingDemand(this);
         Country to = getToCountry();
         Country from = getFromCountry();
 
@@ -256,7 +257,7 @@ public class WW2Demands extends Demand {
 
     @Override
     public void ifDenied() {
-
+        getFromCountry().removeOutgoingDemand(this);
     }
 
     @Override
@@ -268,6 +269,7 @@ public class WW2Demands extends Demand {
     @Override
     public void copyButOpposite(Demand d) {
         if (!(d instanceof WW2Demands demand)) return;
+        getFromCountry().removeOutgoingDemand(this);
         this.offeredProvinces = demand.getDemandedProvinces();
         this.offeredAnnexation = demand.getDemandedAnnexation();
         this.offeredPayments = demand.getDemandedPayments();

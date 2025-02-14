@@ -5,7 +5,7 @@ import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.*;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.advancement.AdvancementManager;
-import org.drachens.dataClasses.WorldClasses;
+import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.fileManagement.ConfigFileManager;
 import org.drachens.fileManagement.databases.Database;
 import org.drachens.store.CosmeticsManager;
