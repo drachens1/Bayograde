@@ -16,7 +16,6 @@ repositories {
 dependencies {
     implementation("net.minestom:minestom-snapshots:620ebe5d6b")
     implementation("org.slf4j:slf4j-simple:2.0.16")
-    implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")

@@ -1,15 +1,14 @@
 package org.drachens.fileManagement.customTypes;
 
-import org.drachens.fileManagement.filetypes.YamlFileType;
-import org.spongepowered.configurate.serialize.SerializationException;
-
-import java.util.ArrayList;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
+import org.drachens.fileManagement.filetypes.GsonFileType;
 import java.util.HashSet;
 
-public class WhitelistFile extends YamlFileType {
+public class WhitelistFile extends GsonFileType {
     private final HashSet<String> players = new HashSet<>();
     public WhitelistFile() {
-        super("whitelist", "whitelist.yml");
+        super("whitelist.yml");
         setDefaults();
         initialLoad();
     }
@@ -21,21 +20,17 @@ public class WhitelistFile extends YamlFileType {
 
     @Override
     protected void setDefaults() {
-        try {
-            addDefault(false,"whitelist","active");
-            addDefault(new ArrayList<>(),"whitelist","players");
-            save();
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        }
+        addDefault(new JsonPrimitive(false),"whitelist","active");
+        addDefault(new JsonArray(),"whitelist","players");
     }
 
     public boolean isActive(){
-        return getConfigurationNode().node("whitelist","active").getBoolean();
+        return getConfig().getAsJsonObject("whitelist").get("active").getAsBoolean();
     }
 
     public void toggle(boolean b){
-        set(b,"whitelist","active");
+        set(new JsonPrimitive(b),"whitelist","active");
+        saveToFile();
     }
 
     public HashSet<String> getPlayers(){
@@ -49,12 +44,12 @@ public class WhitelistFile extends YamlFileType {
     public void addPlayer(String player){
         addToList(player,String.class,"whitelist","players");
         players.add(player);
-        save();
+        saveToFile();
     }
 
     public void removePlayer(String player){
         removeFromList(player,String.class,"whitelist","players");
         players.add(player);
-        save();
+        saveToFile();
     }
 }

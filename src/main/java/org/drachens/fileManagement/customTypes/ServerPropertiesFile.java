@@ -1,11 +1,11 @@
 package org.drachens.fileManagement.customTypes;
 
-import org.drachens.fileManagement.filetypes.YamlFileType;
-import org.spongepowered.configurate.serialize.SerializationException;
+import com.google.gson.JsonPrimitive;
+import org.drachens.fileManagement.filetypes.GsonFileType;
 
-public class ServerPropertiesFile extends YamlFileType {
+public class ServerPropertiesFile extends GsonFileType {
     public ServerPropertiesFile() {
-        super("serverProperties", "serverProperties.yml");
+        super("serverProperties.yml");
         setDefaults();
         initialLoad();
     }
@@ -17,50 +17,45 @@ public class ServerPropertiesFile extends YamlFileType {
 
     @Override
     protected void setDefaults() {
-        try {
-            addDefault(25565, "server", "port");
-            addDefault("localhost", "server", "host");
-            addDefault(false, "velocity", "active");
-            addDefault("null", "velocity", "secret");
-            addDefault("", "database", "host");
-            addDefault(25560, "database", "port");
-            addDefault("", "database", "user");
-            addDefault("", "database", "password");
-            save();
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        }
+        addDefault(new JsonPrimitive(25565), "server", "port");
+        addDefault("localhost", "server", "host");
+        addDefault(new JsonPrimitive(false), "velocity", "active");
+        addDefault("null", "velocity", "secret");
+        addDefault("", "database", "host");
+        addDefault(new JsonPrimitive(25560), "database", "port");
+        addDefault("", "database", "user");
+        addDefault("", "database", "password");
     }
 
     public int getPort() {
-        return getConfigurationNode().node("server", "port").getInt();
+        return getConfig().getAsJsonObject("server").get("port").getAsInt();
     }
 
     public String getHost() {
-        return getConfigurationNode().node("server", "host").getString();
+        return getConfig().getAsJsonObject("server").get("host").getAsString();
     }
 
     public boolean isVelocity() {
-        return getConfigurationNode().node("velocity", "active").getBoolean();
+        return getConfig().getAsJsonObject("velocity").get("active").getAsBoolean();
     }
 
     public String getSecret() {
-        return getConfigurationNode().node("velocity", "secret").getString();
+        return getConfig().getAsJsonObject("velocity").get("secret").getAsString();
     }
 
     public String getDatabaseHost() {
-        return getConfigurationNode().node("database", "host").getString();
+        return getConfig().getAsJsonObject("database").get("host").getAsString();
     }
 
     public String getDatabaseUser() {
-        return getConfigurationNode().node("database", "user").getString();
+        return getConfig().getAsJsonObject("database").get("user").getAsString();
     }
 
     public String getDatabasePassword() {
-        return getConfigurationNode().node("database", "password").getString();
+        return getConfig().getAsJsonObject("database").get("password").getAsString();
     }
 
     public int getDatabasePort() {
-        return getConfigurationNode().node("database", "port").getInt();
+        return getConfig().getAsJsonObject("database").get("port").getAsInt();
     }
 }

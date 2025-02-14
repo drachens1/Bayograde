@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minestom.server.network.player.GameProfile;
 import org.drachens.Manager.defaults.enums.RankEnum;
-import org.drachens.fileManagement.filetypes.GsonFileType;
+import org.drachens.fileManagement.filetypes.GsonStringMaker;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.drachens.util.Messages.getTime;
 
-public class PlayerJson extends GsonFileType {
+public class PlayerJson extends GsonStringMaker {
     private final GameProfile gameProfile;
     private CPlayer p;
     private HashMap<String, Integer> eventAchievementTrigger;

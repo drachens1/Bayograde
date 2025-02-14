@@ -1,164 +1,47 @@
 package org.drachens.fileManagement.filetypes;
 
-import com.google.gson.*;
+import java.io.File;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
-public abstract class GsonFileType {
-    private final Gson gson;
-    private JsonObject config;
+public abstract class GsonFileType extends GsonStringMaker {
+    private final File file;
 
-    public GsonFileType(String json) {
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
-        loadFromJson(json);
+    public GsonFileType(String path) {
+        super(readFile(path));
+        this.file = new File(path);
     }
 
-    private void loadFromJson(String json) {
-        if (json==null||json.isBlank()){
-            this.config = new JsonObject();
-            return;
-        }
-        try {
-            this.config = JsonParser.parseString(json).getAsJsonObject();
-        } catch (JsonSyntaxException e) {
-            System.err.println("Unable to parse JSON for : " + e.getMessage());
-            this.config = new JsonObject();
-        }
-    }
-
-    public String saveToJson() {
-        return gson.toJson(config);
-    }
-
-    public JsonObject getConfig() {
-        return config;
-    }
-
-    private JsonObject getOrCreateParent(JsonObject root, String... path) {
-        JsonObject current = root;
-        for (int i = 0; i < path.length - 1; i++) {
-            if (!current.has(path[i]) || !current.get(path[i]).isJsonObject()) {
-                current.add(path[i], new JsonObject());
+    private static String readFile(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            current = current.getAsJsonObject(path[i]);
+            return "{}";
         }
-        return current;
-    }
 
-    protected void addDefault(Long value, String... path) {
-        addDefault(new JsonPrimitive(value),path);
-    }
-
-    protected void addDefault(String value, String... path) {
-        addDefault(new JsonPrimitive(value),path);
-    }
-
-    protected void addDefault(JsonElement value, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        String key = path[path.length - 1];
-
-        if (!parent.has(key)) {
-            parent.add(key, value);
-        }
-    }
-
-    protected void set(Long value, String... path) {
-        set(new JsonPrimitive(value),path);
-    }
-
-    protected void set(String value, String... path) {
-        set(new JsonPrimitive(value),path);
-    }
-
-    protected void set(JsonElement value, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        parent.add(path[path.length - 1], value);
-    }
-
-    protected <T> void addToList(T value, Class<T> clazz, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        String key = path[path.length - 1];
-
-        JsonArray array = parent.has(key) ? parent.getAsJsonArray(key) : new JsonArray();
-        JsonElement jsonValue = gson.toJsonTree(value, clazz);
-
-        if (!array.contains(jsonValue)) {
-            array.add(jsonValue);
-            parent.add(key, array);
-        }
-    }
-
-    protected <T> void removeFromList(T value, Class<T> clazz, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        String key = path[path.length - 1];
-
-        if (!parent.has(key)) return;
-
-        JsonArray array = parent.getAsJsonArray(key);
-        JsonElement jsonValue = gson.toJsonTree(value, clazz);
-
-        array.remove(jsonValue);
-        parent.add(key, array);
-    }
-
-    protected <T> List<T> getFromList(Class<T> clazz, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        String key = path[path.length - 1];
-
-        List<T> list = new ArrayList<>();
-
-        if (!parent.has(key)) return list;
-
-        JsonElement element = parent.get(key);
-
-        if (element.isJsonArray()) {
-            JsonArray array = element.getAsJsonArray();
-            for (JsonElement jsonElement : array) {
-                list.add(gson.fromJson(jsonElement, clazz));
+        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            StringBuilder json = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                json.append(line);
             }
-        } else if (element.isJsonPrimitive()) {
-            list.add(gson.fromJson(element, clazz));
-        } else {
-            System.err.println("Error: " + key);
+            return json.toString();
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + path + " - " + e.getMessage());
+            return "{}";
         }
-
-        return list;
     }
 
-    protected <T> HashMap<String, T> loadHashMap(Class<T> clazz, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        String key = path[path.length - 1];
-
-        HashMap<String, T> map = new HashMap<>();
-
-        if (!parent.has(key) || !parent.get(key).isJsonObject()) {
-            return map;
+    public void saveToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+            writer.write(saveToJson());
+        } catch (IOException e) {
+            System.err.println("Error saving file: " + file.getAbsolutePath() + " - " + e.getMessage());
         }
-
-        JsonObject jsonObject = parent.getAsJsonObject(key);
-        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-            map.put(entry.getKey(), gson.fromJson(entry.getValue(), clazz));
-        }
-
-        return map;
     }
-
-    protected <T> void saveHashMap(HashMap<String, T> map, Class<T> clazz, String... path) {
-        JsonObject parent = getOrCreateParent(config, path);
-        String key = path[path.length - 1];
-
-        JsonObject jsonObject = new JsonObject();
-        for (Map.Entry<String, T> entry : map.entrySet()) {
-            jsonObject.add(entry.getKey(), gson.toJsonTree(entry.getValue(), clazz));
-        }
-
-        parent.add(key, jsonObject);
-    }
-
-    protected abstract void initialLoad();
-
-    protected abstract void setDefaults();
 }
