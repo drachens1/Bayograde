@@ -2,6 +2,7 @@ package org.drachens.Manager.defaults.enums;
 
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.NoneCustomisableInventory;
+import org.drachens.generalGame.clicks.ClicksDefaultInventory;
 import org.drachens.generalGame.demand.*;
 import org.drachens.generalGame.factory.FactoryButton;
 import org.drachens.generalGame.invasions.NavalInvasionClicksItem;
@@ -9,6 +10,7 @@ import org.drachens.generalGame.scoreboards.items.ShowDiplomacy;
 import org.drachens.generalGame.scoreboards.items.ShowEconomy;
 import org.drachens.generalGame.scoreboards.items.ShowGeneralInfo;
 import org.drachens.generalGame.scoreboards.items.ShowIdeology;
+import org.drachens.generalGame.troops.TroopsDefaultInventory;
 import org.drachens.generalGame.troops.inventory.TroopMover;
 import org.drachens.interfaces.inventories.*;
 
@@ -25,15 +27,11 @@ public enum InventoryEnum {
 
     clicks_build_menu(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),new ExitItem()})),
 
-    defaultInv(new NoneCustomisableInventory(new HotbarItemButton[]{new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE),InventoryEnum.clicks_build_menu),
-            new ChangeInventoryButton(itemBuilder(Material.BOOK),
-                    InventoryEnum.scoreboardInv), new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research),
-            new NavalInvasionClicksItem()})),
+    defaultInv(new ClicksDefaultInventory()),
 
     troops_build_menu(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),new BuildItem(itemBuilder(Material.GOLD_INGOT), BuildingEnum.barracks),new ExitItem()})),
 
-    troops_default(new NoneCustomisableInventory(new HotbarItemButton[]{new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE),InventoryEnum.troops_build_menu),
-            new TroopMover(), new ChangeInventoryButton(itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv)}));
+    troops_default(new TroopsDefaultInventory());
 
 
     private final HotbarInventory hotbarInventory;

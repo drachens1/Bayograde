@@ -88,7 +88,7 @@ public class CentralEventManager {
             e.votingOption().getMapGenerator().generate(e.instance(), e.votingOption());
             InventoryEnum hotbarInventory = e.votingOption().getDefaultInventory();
             if (hotbarInventory != null)
-                e.instance().getPlayers().forEach(p -> ContinentalManagers.inventoryManager.assignInventory(p, hotbarInventory));
+                e.instance().getPlayers().forEach(p -> ContinentalManagers.inventoryManager.assignInventory((CPlayer) p, hotbarInventory));
 
             YearManager yearManager = ContinentalManagers.yearManager;
             if (!yearManager.contains(instance)) {

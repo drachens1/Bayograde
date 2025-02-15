@@ -103,7 +103,7 @@ public abstract class Country implements Cloneable {
     private final HashMap<String, Integer> diplomacy = new HashMap<>();
     //1 = war 2 = neutral 3 = eco ally 4 = non aggression 5 = puppet/overlord 6 = mil ally
     private CompletionBarTextDisplay capitulationTextBar;
-    private Player playerLeader;
+    private CPlayer playerLeader;
     private Leader leader;
     private EconomyFactionType economyFactionType;
     private MilitaryFactionType militaryFactionType;
@@ -891,11 +891,11 @@ public abstract class Country implements Cloneable {
         return demandHashMap.keySet().stream().toList();
     }
 
-    public Player getPlayerLeader() {
+    public CPlayer getPlayerLeader() {
         return playerLeader;
     }
 
-    public void setPlayerLeader(Player player) {
+    public void setPlayerLeader(CPlayer player) {
         if (playerLeader!=null)playerLeader.refreshCommands();
         this.playerLeader = player;
         if (player!=null) player.refreshCommands();

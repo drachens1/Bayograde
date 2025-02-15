@@ -1,20 +1,11 @@
 package org.drachens.interfaces.inventories;
 
-import net.minestom.server.entity.Player;
+import org.drachens.player_types.CPlayer;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class HotbarInventory {
-    private final List<HotbarItemButton> hotbarItemButtons = new ArrayList<>();
+public interface HotbarInventory {
+    void addPlayer(CPlayer player);
 
-    public HotbarInventory(HotbarItemButton[] hotbarItemButtons) {
-        this.hotbarItemButtons.addAll(List.of(hotbarItemButtons));
-    }
-
-    protected abstract void addPlayer(Player player);
-
-    public List<HotbarItemButton> getItems() {
-        return hotbarItemButtons;
-    }
+    List<HotbarItemButton> getItems(CPlayer player);
 }

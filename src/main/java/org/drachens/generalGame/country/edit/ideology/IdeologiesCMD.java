@@ -6,8 +6,6 @@ public class IdeologiesCMD extends Command {
     public IdeologiesCMD() {
         super("ideologies");
 
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
-
         addSubcommand(new IdeologiesChangeOptionsCMD());
         addSubcommand(new IdeologiesBoostCMD());
     }

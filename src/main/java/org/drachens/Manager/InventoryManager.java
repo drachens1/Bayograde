@@ -66,12 +66,12 @@ public class InventoryManager {
     }
 
     private void handleSlotChange(PlayerChangeHeldSlotEvent event) {
-        Player player = event.getPlayer();
+        CPlayer player = (CPlayer) event.getPlayer();
 
         HotbarItemButton lastButton = activeButton.getOrDefault(player, null);
 
         activeHotBar.computeIfPresent(player, (p, hotbar) -> {
-            List<HotbarItemButton> buttons = hotbar.getItems();
+            List<HotbarItemButton> buttons = hotbar.getItems((CPlayer) p);
             int slot = event.getNewSlot();
 
             if (slot >= buttons.size()) {
@@ -91,10 +91,10 @@ public class InventoryManager {
     }
 
     private void handleMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+        CPlayer player = (CPlayer) event.getPlayer();
         try {
             Optional.ofNullable(activeHotBar.get(player))
-                    .map(hotbar -> hotbar.getItems().get(player.getHeldSlot()))
+                    .map(hotbar -> hotbar.getItems(player).get(player.getHeldSlot()))
                     .ifPresent(button -> button.onMove(event));
         }catch (IndexOutOfBoundsException e){
             //
@@ -102,13 +102,13 @@ public class InventoryManager {
 
     }
 
-    public void assignInventory(Player p, InventoryEnum inventory) {
+    public void assignInventory(CPlayer p, InventoryEnum inventory) {
         changeInventory(p, inventory.getHotbarInventory());
     }
 
-    private void changeInventory(Player p, HotbarInventory inventory) {
+    private void changeInventory(CPlayer p, HotbarInventory inventory) {
         p.getInventory().clear();
-        inventory.getItems().forEach((itemStack -> p.getInventory().addItemStack(itemStack.getItem())));
+        inventory.getItems(p).forEach((itemStack -> p.getInventory().addItemStack(itemStack.getItem())));
         activeHotBar.put(p, inventory);
     }
 }

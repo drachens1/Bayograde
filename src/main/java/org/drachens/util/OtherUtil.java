@@ -4,6 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
 import org.intellij.lang.annotations.RegExp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OtherUtil {
     public static String posToString(Pos pos) {
         return pos.x() + ", " + pos.z();
@@ -68,5 +71,11 @@ public class OtherUtil {
                 .match(from)
                 .replacement(to)
         );
+    }
+
+    public static <T> List<T> addToList(List<T> list, T value) {
+        list = new ArrayList<>(list);
+        list.add(value);
+        return list;
     }
 }
