@@ -6,7 +6,7 @@ import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.other.Clientside;
-import org.drachens.temporary.troops.TroopCountry;
+import org.drachens.generalGame.troops.TroopCountry;
 
 import java.util.ArrayList;
 import java.util.List;

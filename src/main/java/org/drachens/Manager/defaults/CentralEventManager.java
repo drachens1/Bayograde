@@ -27,6 +27,8 @@ import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.VotingOption;
+import org.drachens.dataClasses.additional.GlobalGameWorldClass;
+import org.drachens.dataClasses.customgame.CustomGameWorldClass;
 import org.drachens.dataClasses.datastorage.DataStorer;
 import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
@@ -57,8 +59,8 @@ import org.drachens.events.research.ResearchCompletionEvent;
 import org.drachens.events.research.ResearchStartEvent;
 import org.drachens.events.system.ResetEvent;
 import org.drachens.events.system.StartGameEvent;
+import org.drachens.generalGame.demand.WW2Demands;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.demand.WW2Demands;
 import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
@@ -66,8 +68,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.inventoryManager;
+import static org.drachens.Manager.defaults.ContinentalManagers.putWorldClass;
 import static org.drachens.util.Messages.broadcast;
-import static org.drachens.util.ServerUtil.putWorldClass;
 
 public class CentralEventManager {
 
@@ -95,9 +97,16 @@ public class CentralEventManager {
             YearBar yearBar = yearManager.getYearBar(instance);
             yearBar.run(e.votingOption());
 
-            broadcast(Component.text().append(MessageEnum.system.getComponent())
-                    .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
-                    .append(Component.text(" has won!!", NamedTextColor.GREEN)).build(), e.instance());
+            if (ContinentalManagers.world(instance).isGlobalGameWorldClass()){
+                broadcast(Component.text().append(MessageEnum.system.getComponent())
+                        .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
+                        .append(Component.text(" has won!!", NamedTextColor.GREEN)).build(), e.instance());
+            }else if (ContinentalManagers.world(instance).isCustomGameWorldClass()) {
+                broadcast(Component.text().append(MessageEnum.system.getComponent())
+                        .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
+                        .append(Component.text(" has started", NamedTextColor.GREEN)).build(), e.instance());
+            }
+
         });
 
         Delay provinceDelay = new Delay(100L);
@@ -116,32 +125,56 @@ public class CentralEventManager {
 
         globEHandler.addListener(ResetEvent.class, e -> {
             Instance instance = e.instance();
-            YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
-            yearBar.cancelTask();
             WorldClasses worldClasses = ContinentalManagers.world(instance);
-            worldClasses.votingManager().reset();
-            CountryDataManager countryDataManager = worldClasses.countryDataManager();
-            countryDataManager.getCountries().forEach((Country::endGame));
-            ClientEntsToLoad clientEntsToLoad = worldClasses.clientEntsToLoad();
-            if (clientEntsToLoad.getClientSides(e.instance()) != null) {
-                new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach((Clientside::dispose));
-            }
-            e.instance().getPlayers().forEach(player -> {
-                CPlayer p = (CPlayer) player;
-                if (p.getCountry() != null) {
-                    p.getCountry().removePlayer(p);
+            if (worldClasses.isGlobalGameWorldClass()){
+                GlobalGameWorldClass globalGameWorldClass = worldClasses.getAsGlobalGameWorldClass();
+                YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
+                yearBar.cancelTask();
+                globalGameWorldClass.votingManager().reset();
+                CountryDataManager countryDataManager = globalGameWorldClass.countryDataManager();
+                countryDataManager.getCountries().forEach((Country::endGame));
+                ClientEntsToLoad clientEntsToLoad = globalGameWorldClass.clientEntsToLoad();
+                if (clientEntsToLoad.getClientSides(e.instance()) != null) {
+                    new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach((Clientside::dispose));
                 }
-            });
-            clientEntsToLoad.reset();
-            CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());
-            putWorldClass(instance, new WorldClasses(
-                    c,
-                    clientEntsToLoad,
-                    worldClasses.votingManager(),
-                    worldClasses.provinceManager(),
-                    new DataStorer()
-            ));
-            broadcast(Component.text().append(MessageEnum.system.getComponent()).append(Component.text("Game Over", NamedTextColor.GREEN)).build(), e.instance());
+                e.instance().getPlayers().forEach(player -> {
+                    CPlayer p = (CPlayer) player;
+                    if (p.getCountry() != null) {
+                        p.getCountry().removePlayer(p);
+                    }
+                });
+                clientEntsToLoad.reset();
+                CountryDataManager c = new CountryDataManager(instance, new ArrayList<>());
+                putWorldClass(instance, new GlobalGameWorldClass(
+                        c,
+                        clientEntsToLoad,
+                        globalGameWorldClass.votingManager(),
+                        globalGameWorldClass.provinceManager(),
+                        new DataStorer()
+                ));
+                broadcast(Component.text().append(MessageEnum.system.getComponent()).append(Component.text("Game Over", NamedTextColor.GREEN)).build(), e.instance());
+
+            }
+            if (worldClasses.isCustomGameWorldClass()){
+                CustomGameWorldClass customGameWorldClass = worldClasses.getAsCustomGameWorldClass();
+                YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
+                yearBar.cancelTask();
+                CountryDataManager countryDataManager = customGameWorldClass.countryDataManager();
+                countryDataManager.getCountries().forEach((Country::endGame));
+                ClientEntsToLoad clientEntsToLoad = customGameWorldClass.clientEntsToLoad();
+                if (clientEntsToLoad.getClientSides(e.instance()) != null) {
+                    new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach((Clientside::dispose));
+                }
+                e.instance().getPlayers().forEach(player -> {
+                    CPlayer p = (CPlayer) player;
+                    if (p.getCountry() != null) {
+                        p.getCountry().removePlayer(p);
+                    }
+                });
+                clientEntsToLoad.reset();
+                broadcast(Component.text().append(MessageEnum.system.getComponent()).append(Component.text("Game Over", NamedTextColor.GREEN)).build(), e.instance());
+                ContinentalManagers.removeWorldClass(instance);
+            }
         });
 
         globEHandler.addListener(CaptureBlockEvent.class, e -> {

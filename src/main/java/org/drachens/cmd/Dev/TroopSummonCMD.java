@@ -5,8 +5,8 @@ import org.drachens.Manager.defaults.enums.PathingEnum;
 import org.drachens.Manager.defaults.enums.TroopTypeEnum;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
 import org.drachens.dataClasses.Armys.Troop;
+import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.troops.TroopCountry;
 
 public class TroopSummonCMD extends Command {
     public TroopSummonCMD() {

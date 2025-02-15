@@ -1,9 +1,11 @@
 package org.drachens.cmd.gamecreate.start;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.cmd.vote.VotingOptionCMD;
-import org.drachens.dataClasses.customgame.InterchangeWorld;
+import org.drachens.dataClasses.customgame.CustomGameWorld;
 import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
@@ -24,7 +26,11 @@ public class NewStartGameCMD extends Command {
 
         addSyntax((sender,context)->{
             CPlayer p = (CPlayer) sender;
-            new InterchangeWorld(p);
+            if (!strings.contains(context.get(votingOptions))){
+                p.sendMessage(Component.text("Not a valid option"));
+                return;
+            }
+            new CustomGameWorld(p,VotingWinner.valueOf(context.get(votingOptions)).getVotingOption());
         },votingOptions,name);
     }
 }

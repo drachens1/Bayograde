@@ -68,7 +68,7 @@ public class VotingManager {
                             .build()
                     , e.p().getInstance()
             );
-            ContinentalManagers.world(e.p().getInstance()).votingManager().vote(e.voted(), e.p());
+            ContinentalManagers.world(e.p().getInstance()).getAsGlobalGameWorldClass().votingManager().vote(e.voted(), e.p());
         });
     }
 

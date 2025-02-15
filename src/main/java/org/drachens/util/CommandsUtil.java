@@ -5,13 +5,12 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.Suggestion;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.instance.Instance;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.player_types.CPlayer;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.drachens.util.ServerUtil.getWorldClasses;
 
 public class CommandsUtil {
     public static Argument<String> getCountriesArg() {
@@ -37,11 +36,11 @@ public class CommandsUtil {
     }
 
     public static List<String> getCountryNames(Instance instance) {
-        return getWorldClasses(instance).countryDataManager().getNamesList();
+        return ContinentalManagers.world(instance).countryDataManager().getNamesList();
     }
 
     public static List<String> getFactionNames(Instance instance) {
-        return getWorldClasses(instance).countryDataManager().getFactionNames();
+        return ContinentalManagers.world(instance).countryDataManager().getFactionNames();
     }
 
     public static Suggestion suggestions(List<String> suggestion, Suggestion suggestions) {

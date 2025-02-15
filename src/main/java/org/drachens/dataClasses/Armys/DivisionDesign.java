@@ -6,9 +6,9 @@ import net.minestom.server.item.Material;
 import org.drachens.InventorySystem.InventoryButton;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Economics.currency.Payments;
+import org.drachens.generalGame.troops.TroopCountry;
+import org.drachens.generalGame.troops.inventory.TroopEditGUI;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.troops.TroopCountry;
-import org.drachens.temporary.troops.inventory.TroopEditGUI;
 
 import java.util.HashMap;
 import java.util.List;

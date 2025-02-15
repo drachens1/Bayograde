@@ -2,15 +2,15 @@ package org.drachens.Manager.defaults.enums;
 
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.NoneCustomisableInventory;
+import org.drachens.generalGame.demand.*;
+import org.drachens.generalGame.factory.FactoryButton;
+import org.drachens.generalGame.invasions.NavalInvasionClicksItem;
+import org.drachens.generalGame.scoreboards.items.ShowDiplomacy;
+import org.drachens.generalGame.scoreboards.items.ShowEconomy;
+import org.drachens.generalGame.scoreboards.items.ShowGeneralInfo;
+import org.drachens.generalGame.scoreboards.items.ShowIdeology;
+import org.drachens.generalGame.troops.inventory.TroopMover;
 import org.drachens.interfaces.inventories.*;
-import org.drachens.temporary.demand.*;
-import org.drachens.temporary.factory.FactoryButton;
-import org.drachens.temporary.invasions.NavalInvasionClicksItem;
-import org.drachens.temporary.scoreboards.items.ShowDiplomacy;
-import org.drachens.temporary.scoreboards.items.ShowEconomy;
-import org.drachens.temporary.scoreboards.items.ShowGeneralInfo;
-import org.drachens.temporary.scoreboards.items.ShowIdeology;
-import org.drachens.temporary.troops.inventory.TroopMover;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 

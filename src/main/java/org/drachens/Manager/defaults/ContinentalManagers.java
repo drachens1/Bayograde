@@ -10,7 +10,7 @@ import org.drachens.fileManagement.ConfigFileManager;
 import org.drachens.fileManagement.databases.Database;
 import org.drachens.store.CosmeticsManager;
 
-import static org.drachens.util.ServerUtil.getWorldClasses;
+import java.util.HashMap;
 
 public class ContinentalManagers {
     public static final PlayerModsManager playerModsManager = new PlayerModsManager();
@@ -31,10 +31,20 @@ public class ContinentalManagers {
     public static final CentralAIManager centralAIManager = new CentralAIManager();
     public static final AdminManager adminManager = new AdminManager();
     public static final ChatCensor chatCensor = new ChatCensor();
+    public static final GeneralManager generalManager = new GeneralManager();
     public static Database database;
 
-    //todo add settings
     public static WorldClasses world(Instance instance) {
-        return getWorldClasses(instance);
+        return worldClassesHashMap.get(instance);
+    }
+
+    private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
+
+    public static void putWorldClass(Instance instance, WorldClasses worldClasses) {
+        worldClassesHashMap.put(instance, worldClasses);
+    }
+
+    public static void removeWorldClass(Instance instance) {
+        worldClassesHashMap.remove(instance);
     }
 }

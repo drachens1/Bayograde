@@ -8,9 +8,9 @@ import org.drachens.dataClasses.Armys.DivisionTrainingQueue.TrainedTroop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
+import org.drachens.generalGame.troops.Combat;
+import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.interfaces.AStarPathfinderVoids;
-import org.drachens.temporary.troops.Combat;
-import org.drachens.temporary.troops.TroopCountry;
 import org.drachens.util.AStarPathfinderXZ;
 
 import java.time.temporal.ChronoUnit;

@@ -15,8 +15,8 @@ import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
+import org.drachens.generalGame.troops.Combat;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.troops.Combat;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -12,7 +12,6 @@ import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.events.NewDay;
 import org.drachens.events.research.ResearchCompletionEvent;
 import org.drachens.events.research.ResearchStartEvent;
-import org.drachens.temporary.clicks.ClicksVault;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,8 +36,7 @@ public class ResearchCountry {
 
     public void newWeek(NewDay newDay) {
         if (current != null) {
-            ClicksVault vault = (ClicksVault) c.getVault();
-            researchCurrent.remove(vault.getResearch());
+            researchCurrent.remove(c.getResearchVault().getResearch());
             if (researchCurrent.getAmount() <= 0) {
                 EventDispatcher.call(new ResearchCompletionEvent(c.getInstance(), c, current));
                 if (onFinishResearch != null) {

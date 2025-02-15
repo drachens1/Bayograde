@@ -3,12 +3,13 @@ package org.drachens.fileManagement.customTypes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 import org.drachens.fileManagement.filetypes.GsonFileType;
+
 import java.util.HashSet;
 
 public class WhitelistFile extends GsonFileType {
     private final HashSet<String> players = new HashSet<>();
     public WhitelistFile() {
-        super("whitelist.yml");
+        super("whitelist.json");
         setDefaults();
         initialLoad();
     }
@@ -22,6 +23,7 @@ public class WhitelistFile extends GsonFileType {
     protected void setDefaults() {
         addDefault(new JsonPrimitive(false),"whitelist","active");
         addDefault(new JsonArray(),"whitelist","players");
+        saveToFile();
     }
 
     public boolean isActive(){

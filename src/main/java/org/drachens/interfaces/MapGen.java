@@ -6,6 +6,8 @@ import org.drachens.dataClasses.VotingOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drachens.util.OtherUtil.runThread;
+
 public abstract class MapGen {
     private final List<Instance> generating = new ArrayList<>();
     private final int sizeX;
@@ -16,7 +18,11 @@ public abstract class MapGen {
         this.sizeY = sizeY;
     }
 
-    public abstract void generate(Instance instance, VotingOption votingOption);
+    public abstract void onGenerate(Instance instance, VotingOption votingOption);
+
+    public void generate(Instance instance, VotingOption votingOption){
+        runThread(()->onGenerate(instance,votingOption));
+    }
 
     public int getSizeX() {
         return sizeX;

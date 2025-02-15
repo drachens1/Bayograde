@@ -7,7 +7,7 @@ import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.additional.BoostEnum;
-import org.drachens.temporary.factory.Factory;
+import org.drachens.generalGame.factory.Factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -33,6 +33,7 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.Province;
+import org.drachens.dataClasses.Research.ResearchCountry;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
@@ -48,10 +49,10 @@ import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
+import org.drachens.generalGame.research.ResearchVault;
+import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.interfaces.MapGen;
 import org.drachens.player_types.CPlayer;
-import org.drachens.dataClasses.Research.ResearchCountry;
-import org.drachens.temporary.scoreboards.DefaultCountryScoreboard;
 import org.drachens.util.AStarPathfinderXZ;
 import org.drachens.util.MessageEnum;
 
@@ -120,12 +121,20 @@ public abstract class Country implements Cloneable {
     private PuppetChat puppetChat;
     private final HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap = new HashMap<>();
     private final ResearchCountry researchCountry;
+    private final ResearchVault researchVault;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
         laws.forEach(((string, lawCategory) -> this.laws.put(string, new LawCategory(lawCategory, this))));
         this.occupies = new ArrayList<>();
         this.ideology = defaultIdeologies.clone(this);
         this.vault = vault;
+        if (ContinentalManagers.world(instance).dataStorer().votingOption.isResearchEnabled()){
+            researchCountry = new ResearchCountry(this);
+            researchVault = new ResearchVault(this.getResearchCountry());
+        }else {
+            researchCountry = null;
+            researchVault = null;
+        }
         vault.setCountry(this);
         this.originalName = nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name));
         this.name = name;
@@ -145,11 +154,6 @@ public abstract class Country implements Cloneable {
         allyWorld = new ImaginaryWorld(instance, true);
         stability = new Stability(50f, this);
         countryChat = new CountryChat(this);
-        if (ContinentalManagers.world(instance).dataStorer().votingOption.isResearchEnabled()){
-            researchCountry = new ResearchCountry(this);
-        }else {
-            researchCountry = null;
-        }
     }
 
     public void init() {
@@ -931,6 +935,9 @@ public abstract class Country implements Cloneable {
 
     public void nextWeek(NewDay newDay) {
         getVault().calculateIncrease();
+        if (researchVault!=null){
+            researchVault.extraCalcIncrease();
+        }
         getStability().newWeek();
         if (getResearchCountry()!=null){
             getResearchCountry().newWeek(newDay);
@@ -1253,5 +1260,9 @@ public abstract class Country implements Cloneable {
 
     public ResearchCountry getResearchCountry(){
         return researchCountry;
+    }
+
+    public ResearchVault getResearchVault(){
+        return researchVault;
     }
 }

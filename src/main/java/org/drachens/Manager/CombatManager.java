@@ -4,7 +4,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.dataClasses.Province;
 import org.drachens.events.NewDay;
-import org.drachens.temporary.troops.Combat;
+import org.drachens.generalGame.troops.Combat;
 
 import java.util.HashMap;
 

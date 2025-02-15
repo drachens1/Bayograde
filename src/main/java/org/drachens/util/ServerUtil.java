@@ -56,8 +56,8 @@ import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.VotingOption;
+import org.drachens.dataClasses.additional.GlobalGameWorldClass;
 import org.drachens.dataClasses.datastorage.DataStorer;
-import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
@@ -65,24 +65,24 @@ import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;
+import org.drachens.generalGame.ContinentalWorld;
+import org.drachens.generalGame.country.CountryCMD;
+import org.drachens.generalGame.faction.FactionCMD;
+import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
+import org.drachens.generalGame.view_modes.ViewModesCMD;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
-import org.drachens.temporary.country.CountryCMD;
-import org.drachens.temporary.faction.FactionCMD;
-import org.drachens.temporary.scoreboards.DefaultCountryScoreboard;
-import org.drachens.temporary.view_modes.ViewModesCMD;
-import org.drachens.temporary.worlds.ContinentalWorld;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import static org.drachens.Manager.defaults.ContinentalManagers.putWorldClass;
 import static org.drachens.util.Messages.logCmd;
 import static org.drachens.util.OtherUtil.runThread;
 
 public class ServerUtil {
     private static final HashSet<Chunk> allowedChunks = new HashSet<>();
-    private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();
     private static final HashMap<PlayerConnection, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
     private static GlobalEventHandler globalEventHandler;
@@ -133,7 +133,7 @@ public class ServerUtil {
             instance.setWeather(Weather.CLEAR);
             instance.setTime(0);
             instance.setTimeRate(0);
-            worldClassesHashMap.put(instance, new WorldClasses(
+            putWorldClass(instance, new GlobalGameWorldClass(
                             new CountryDataManager(instance, new ArrayList<>()),
                             new ClientEntsToLoad(),
                             new VotingManager(instance),
@@ -299,14 +299,6 @@ public class ServerUtil {
         startSrv();
     }
 
-
-    public static WorldClasses getWorldClasses(Instance instance) {
-        return worldClassesHashMap.get(instance);
-    }
-
-    public static void putWorldClass(Instance instance, WorldClasses worldClasses) {
-        worldClassesHashMap.put(instance, worldClasses);
-    }
 
     public static Pos blockVecToPos(BlockVec blockVec) {
         return new Pos(blockVec.blockX(), blockVec.blockY(), blockVec.blockZ());

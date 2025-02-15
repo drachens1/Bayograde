@@ -3,8 +3,8 @@ package org.drachens.cmd.ai;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.generalGame.clicks.ClicksAI;
 import org.drachens.player_types.CPlayer;
-import org.drachens.temporary.clicks.ClicksAI;
 
 public class AICmd extends Command {
     public AICmd() {

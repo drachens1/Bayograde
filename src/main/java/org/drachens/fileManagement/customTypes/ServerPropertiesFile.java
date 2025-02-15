@@ -5,7 +5,7 @@ import org.drachens.fileManagement.filetypes.GsonFileType;
 
 public class ServerPropertiesFile extends GsonFileType {
     public ServerPropertiesFile() {
-        super("serverProperties.yml");
+        super("serverProperties.json");
         setDefaults();
         initialLoad();
     }
@@ -25,6 +25,7 @@ public class ServerPropertiesFile extends GsonFileType {
         addDefault(new JsonPrimitive(25560), "database", "port");
         addDefault("", "database", "user");
         addDefault("", "database", "password");
+        saveToFile();
     }
 
     public int getPort() {

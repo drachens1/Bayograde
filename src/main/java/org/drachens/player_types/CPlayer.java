@@ -46,7 +46,6 @@ public class CPlayer extends Player {
     private boolean isUsingMod = false;
     private boolean leaderOfOwnGame = false;
     private boolean isInOwnGame = false;
-    private boolean isInInterchange = false;
 
     public CPlayer(@NotNull PlayerConnection playerConnection, @NotNull GameProfile gameProfile) {
         super(playerConnection, gameProfile);
@@ -247,14 +246,6 @@ public class CPlayer extends Player {
 
     public void setInOwnGame(boolean b){
         this.isInOwnGame=b;
-    }
-
-    public boolean isInInterchange(){
-        return isInInterchange;
-    }
-
-    public void setInInterchange(boolean b){
-        this.isInInterchange=b;
     }
 
     public void setWorldClasses(WorldClasses worldClasses){
