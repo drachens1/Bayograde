@@ -1,9 +1,11 @@
 package org.drachens.dataClasses.Economics.currency;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
+import org.drachens.interfaces.Saveable;
 
-public class Currencies implements Cloneable {
+public class Currencies implements Cloneable, Saveable {
     private final CurrencyTypes currencyType;
     private float amount;
 
@@ -55,5 +57,10 @@ public class Currencies implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

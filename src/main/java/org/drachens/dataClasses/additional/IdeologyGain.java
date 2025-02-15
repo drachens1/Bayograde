@@ -1,9 +1,11 @@
 package org.drachens.dataClasses.additional;
 
+import com.google.gson.JsonElement;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
+import org.drachens.interfaces.Saveable;
 
-public class IdeologyGain implements EventsRunner {
+public class IdeologyGain implements EventsRunner, Saveable {
     private final Country country;
     private final IdeologyTypes ideologyTypes;
     private final float dailyIncrease;
@@ -24,5 +26,10 @@ public class IdeologyGain implements EventsRunner {
         country.getIdeology().addIdeology(ideologyTypes, dailyIncrease);
         count--;
         return false;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

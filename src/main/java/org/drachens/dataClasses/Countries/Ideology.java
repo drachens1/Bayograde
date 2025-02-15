@@ -1,11 +1,17 @@
 package org.drachens.dataClasses.Countries;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.Pair;
 import org.drachens.dataClasses.VotingOption;
+import org.drachens.interfaces.Saveable;
 
 import java.util.*;
 
-public class Ideology {
+import static org.drachens.util.JsonUtil.saveHashMap;
+
+public class Ideology implements Saveable {
     private final Country country;
     private final HashMap<IdeologyTypes, Float> ideologies;
     public float total = 0f;
@@ -143,5 +149,16 @@ public class Ideology {
         List<String> s = new ArrayList<>();
         ideologies.keySet().forEach(ideologyTypes -> s.add(ideologyTypes.getIdentifier()));
         return s;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("Current",currentIdeology.toJson());
+        jsonObject.add("total",new JsonPrimitive(total));
+        HashMap<String,Float> ideologiesCopy = new HashMap<>();
+        ideologies.forEach((ideologyTypes, aFloat) -> ideologiesCopy.put(ideologyTypes.getIdentifier(),aFloat));
+        saveHashMap(ideologiesCopy,Float.class,jsonObject,"ideology");
+        return jsonObject;
     }
 }

@@ -1,13 +1,15 @@
 package org.drachens.dataClasses.Countries;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
 import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Leader {
+public class Leader implements Saveable {
     private final List<Modifier> modifiers;
     private final Component name;
     private Component description;
@@ -59,6 +61,11 @@ public class Leader {
     public void setIdeologyTypes(IdeologiesEnum ideologyTypes) {
         this.ideologyTypes = ideologyTypes.getIdeologyTypes();
         createDescription();
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     public static class create {

@@ -13,11 +13,6 @@ import org.drachens.player_types.CPlayer;
 
 public class TroopWarSystem implements War {
 
-
-    public TroopWarSystem() {
-
-    }
-
     @Override
     public void onClick(PlayerBlockInteractEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();

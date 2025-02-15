@@ -1,10 +1,15 @@
 package org.drachens.dataClasses.additional;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Diplomacy.faction;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.dataClasses.Armys.Troop;
@@ -7,11 +8,12 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.generalGame.troops.TroopCountry;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MilitaryFactionType extends Faction {
+public class MilitaryFactionType extends Faction implements Saveable {
     public MilitaryFactionType(Country creator, String name) {
         super(creator, name, new Modifier.create(Component.text(name, NamedTextColor.RED), "military_faction").build());
     }
@@ -51,5 +53,10 @@ public class MilitaryFactionType extends Faction {
         members.remove(country);
         Clientside clientside = troop.getAlly();
         members.forEach(member -> member.unloadClientside(clientside));
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

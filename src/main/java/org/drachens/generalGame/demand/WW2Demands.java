@@ -1,5 +1,8 @@
 package org.drachens.generalGame.demand;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -427,5 +430,42 @@ public class WW2Demands extends Demand {
 
     public void setPeace(boolean p) {
         peace = p;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        JsonArray demandAnnex = new JsonArray();
+        demandedAnnexation.forEach(country -> demandAnnex.add(country.getReference()));
+        jsonObject.add("demandAnnexation", demandAnnex);
+
+        JsonArray demandProv = new JsonArray();
+        demandedProvinces.forEach(province -> demandProv.add(province.getReference()));
+        jsonObject.add("demandProvinces", demandProv);
+
+        JsonArray demandPuppets = new JsonArray();
+        demandedPuppets.forEach(country -> demandPuppets.add(country.getReference()));
+        jsonObject.add("demandPuppets", demandPuppets);
+
+        JsonArray demandPayments = new JsonArray();
+        demandedPayments.forEach(payment -> demandPayments.add(payment.toJson()));
+        jsonObject.add("demandPayments", demandPayments);
+
+        JsonArray offerAnnex = new JsonArray();
+        offeredAnnexation.forEach(country -> offerAnnex.add(country.getReference()));
+        jsonObject.add("offeredAnnexation", offerAnnex);
+
+        JsonArray offerProv = new JsonArray();
+        offeredProvinces.forEach(province -> offerProv.add(province.getReference()));
+        jsonObject.add("offeredProvinces", offerProv);
+
+        JsonArray offerPuppets = new JsonArray();
+        offeredPuppets.forEach(country -> offerPuppets.add(country.getReference()));
+        jsonObject.add("offeredPuppets", offerPuppets);
+
+        JsonArray offerPayments = new JsonArray();
+        offeredPayments.forEach(payment -> offerPayments.add(payment.toJson()));
+        jsonObject.add("offeredPayments", offerPayments);
+        return jsonObject;
     }
 }

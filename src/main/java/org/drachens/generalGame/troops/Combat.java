@@ -1,13 +1,15 @@
 package org.drachens.generalGame.troops;
 
+import com.google.gson.JsonElement;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Province;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Combat {
+public class Combat implements Saveable {
     private final Province province;
     private final List<Troop> attackers = new ArrayList<>();
     private final List<Troop> defenders = new ArrayList<>();
@@ -100,5 +102,10 @@ public class Combat {
 
     public Province getProvince() {
         return province;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

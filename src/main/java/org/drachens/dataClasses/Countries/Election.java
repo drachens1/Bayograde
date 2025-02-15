@@ -1,12 +1,18 @@
 package org.drachens.dataClasses.Countries;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.drachens.Manager.defaults.enums.ElectionsEnum;
 import org.drachens.dataClasses.VotingOption;
+import org.drachens.interfaces.Saveable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Election {
+import static org.drachens.util.JsonUtil.saveHashMap;
+
+public class Election implements Saveable {
     private ElectionsEnum currentElectionType;
     private HashMap<ElectionsEnum, Float> electionTypesHashMap;
 
@@ -76,6 +82,16 @@ public class Election {
         }
 
         currentElectionType = leadingElection;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("current",new JsonPrimitive(currentElectionType.name()));
+        HashMap<String,Float> ideologiesCopy = new HashMap<>();
+        electionTypesHashMap.forEach((electionType, aFloat) -> ideologiesCopy.put(electionType.name(),aFloat));
+        saveHashMap(ideologiesCopy,Float.class,jsonObject,"ideology");
+        return jsonObject;
     }
 }
 

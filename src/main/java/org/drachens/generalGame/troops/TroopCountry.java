@@ -1,5 +1,7 @@
 package org.drachens.generalGame.troops;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -64,6 +66,11 @@ public class TroopCountry extends Country {
     @Override
     public void newDay(NewDay newDay) {
         new HashMap<>(divisionTrainingQueueHashMap).forEach(((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay()));
+    }
+
+    @Override
+    protected JsonElement abstractToJson() {
+        return new JsonObject();
     }
 
     @Override

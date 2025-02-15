@@ -1,14 +1,16 @@
 package org.drachens.Manager.per_instance;
 
+import com.google.gson.JsonElement;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import org.drachens.dataClasses.FlatPos;
 import org.drachens.dataClasses.Province;
+import org.drachens.interfaces.Saveable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProvinceManager {
+public class ProvinceManager implements Saveable {
     private Map<FlatPos, Province> provinceHashMap;
 
     public ProvinceManager() {
@@ -37,5 +39,10 @@ public class ProvinceManager {
 
     public void reset() {
         provinceHashMap = new HashMap<>();
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

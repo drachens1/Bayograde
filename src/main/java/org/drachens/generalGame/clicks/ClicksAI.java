@@ -1,5 +1,6 @@
 package org.drachens.generalGame.clicks;
 
+import com.google.gson.JsonElement;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
@@ -23,6 +24,7 @@ import org.drachens.events.countries.warjustification.WarJustificationStartEvent
 import org.drachens.generalGame.factory.Factory;
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class ClicksAI implements AIManager {
+public class ClicksAI implements AIManager, Saveable {
     private final VotingWinner votingWinner;
     private final HashMap<Country, AI> ais = new HashMap<>();
 
@@ -54,6 +56,11 @@ public class ClicksAI implements AIManager {
     @Override
     public void tick(Instance instance) {
         ais.forEach(((country, ai) -> ai.tick()));
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     static class FactorySpammer extends AI {

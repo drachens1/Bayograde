@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.event.player.PlayerStartDiggingEvent;
@@ -20,6 +21,8 @@ import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.World;
+import org.drachens.dataClasses.additional.GlobalGameWorldClass;
+import org.drachens.events.VoteEvent;
 import org.drachens.generalGame.scoreboards.DefaultScoreboard;
 import org.drachens.player_types.CPlayer;
 
@@ -41,9 +44,10 @@ public class ContinentalWorld extends World {
         final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
         final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
-        ContinentalManagers.world(instance).getAsGlobalGameWorldClass().votingManager().getVoteBar().addPlayer(p);
-        if (ContinentalManagers.world(instance).getAsGlobalGameWorldClass().votingManager() != null && ContinentalManagers.world(instance).dataStorer().votingOption != null) {
-            InventoryEnum inventoryEnum = ContinentalManagers.world(instance).dataStorer().votingOption.getDefaultInventory();
+        GlobalGameWorldClass globalGameWorldClass = ContinentalManagers.world(instance).getAsGlobalGameWorldClass();
+        globalGameWorldClass.getAsGlobalGameWorldClass().votingManager().getVoteBar().addPlayer(p);
+        if (globalGameWorldClass.getAsGlobalGameWorldClass().votingManager() != null && globalGameWorldClass.dataStorer().votingOption != null) {
+            InventoryEnum inventoryEnum = globalGameWorldClass.dataStorer().votingOption.getDefaultInventory();
             if (inventoryEnum != null)
                 ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
         }
@@ -51,7 +55,12 @@ public class ContinentalWorld extends World {
             ContinentalManagers.yearManager.addBar(instance);
         }
         ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
-        ContinentalManagers.world(instance).clientEntsToLoad().loadPlayer(p);
+        globalGameWorldClass.clientEntsToLoad().loadPlayer(p);
+        if (globalGameWorldClass.votingManager().getVoteBar().isShown()){
+            if (p.isPremium() && p.getPlayerJson().isAutoVoteActive()){
+                EventDispatcher.call(new VoteEvent(p,VotingWinner.valueOf(p.getPlayerJson().getAutoVoteOption()).getVotingOption()));
+            }
+        }
     }
 
     @Override

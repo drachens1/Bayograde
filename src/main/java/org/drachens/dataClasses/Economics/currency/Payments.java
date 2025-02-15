@@ -1,13 +1,15 @@
 package org.drachens.dataClasses.Economics.currency;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class Payments {
+public class Payments implements Saveable {
     private final HashSet<Payment> payments;
 
     public Payments(Payments payments) {
@@ -62,5 +64,10 @@ public class Payments {
             current += payment.getAmount();
             amountHashMap.put(payment.getCurrencyType(), current);
         }));
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

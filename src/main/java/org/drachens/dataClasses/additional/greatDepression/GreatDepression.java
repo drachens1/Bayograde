@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.additional.greatDepression;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -10,9 +11,10 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.additional.ModifierCommand;
+import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 
-public class GreatDepression implements ModifierCommand {
+public class GreatDepression implements ModifierCommand, Saveable {
     private final Component notEnoughTime = Component.text("It has not been 70 days since the last decision", NamedTextColor.RED);
     private final Component alreadyTaken = Component.text("You have already completed this decision", NamedTextColor.RED);
     private final Component properUsage = Component.text("Proper usage /country modifiers depression ", NamedTextColor.RED);
@@ -273,4 +275,8 @@ public class GreatDepression implements ModifierCommand {
     }
 
 
+    @Override
+    public JsonElement toJson() {
+        return null;
+    }
 }

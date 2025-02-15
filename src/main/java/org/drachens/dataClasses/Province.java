@@ -1,5 +1,9 @@
 package org.drachens.dataClasses;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -16,6 +20,7 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
 import org.drachens.generalGame.troops.Combat;
+import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public class Province {
+public class Province implements Saveable {
     private final Instance instance;
     private final Pos pos;
     private final List<Troop> troops = new ArrayList<>();
@@ -400,5 +405,27 @@ public class Province {
 
     public Province add(int x, int z) {
         return ContinentalManagers.world(instance).provinceManager().getProvince((int) (pos.x() + x), (int) (pos.z() + z));
+    }
+
+    public JsonElement getReference(){
+        return new JsonPrimitive(pos.x()+","+pos.z());
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("pos",new JsonPrimitive(pos.toString()));
+        jsonObject.add("occupier",new JsonPrimitive(occupier.getName()));
+        jsonObject.add("combat",combat.toJson());
+        JsonArray jsonArray = new JsonArray();
+        troops.forEach(troop -> {
+            jsonArray.add(troop.toJson());
+        });
+        jsonObject.add("troops",jsonArray);
+        JsonArray jsonArray2 = new JsonArray();
+        corers.forEach(country -> jsonArray2.add(country.getReference()));
+        jsonObject.add("corers",jsonArray2);
+        jsonObject.add("city",new JsonPrimitive(city));
+        return jsonObject;
     }
 }

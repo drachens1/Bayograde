@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.item.Material;
@@ -11,6 +12,7 @@ import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.generalGame.troops.TroopCountry;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +21,7 @@ import java.util.Map;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
-public class DivisionTrainingQueue {
+public class DivisionTrainingQueue implements Saveable {
     private final CompletionBarTextDisplay completionBarTextDisplay;
     private final List<TrainedTroop> divisionDesign = new ArrayList<>();
     private final Building building;
@@ -90,6 +92,11 @@ public class DivisionTrainingQueue {
             this.trainedTroop = next;
             time = next.time;
         }
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     public static class TrainedTroop {

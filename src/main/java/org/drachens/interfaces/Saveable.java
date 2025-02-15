@@ -2,13 +2,10 @@ package org.drachens.interfaces;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.drachens.Manager.defaults.ContinentalManagers;
 
 public interface Saveable {
-    Gson GSON = new Gson();
-    default JsonElement toJson() {
-        return GSON.toJsonTree(this);
-    }
-    static <T extends Saveable> T fromJson(JsonElement jsonElement, Class<T> clazz) {
-        return GSON.fromJson(jsonElement, clazz);
-    }
+    Gson gson = ContinentalManagers.saveManager.getGson();
+
+    JsonElement toJson();
 }

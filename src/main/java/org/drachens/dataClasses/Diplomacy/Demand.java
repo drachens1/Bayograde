@@ -4,8 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.events.countries.demands.DemandCompletionEvent;
+import org.drachens.interfaces.Saveable;
 
-public abstract class Demand {
+public abstract class Demand implements Saveable {
     private final Country fromCountry;
     private final Country toCountry;
 
@@ -48,4 +49,6 @@ public abstract class Demand {
     protected abstract void onCompleted();
 
     public abstract void copyButOpposite(Demand demand);
+
+
 }

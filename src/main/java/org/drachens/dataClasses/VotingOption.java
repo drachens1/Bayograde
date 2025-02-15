@@ -1,5 +1,6 @@
 package org.drachens.dataClasses;
 
+import com.google.gson.JsonElement;
 import org.drachens.Manager.defaults.enums.ElectionsEnum;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
@@ -7,13 +8,14 @@ import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.interfaces.MapGen;
+import org.drachens.interfaces.Saveable;
 import org.drachens.interfaces.War;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class VotingOption {
+public class VotingOption implements Saveable {
     private final int countries;
     private final int startingYear;
     private final int endYear;
@@ -124,6 +126,11 @@ public class VotingOption {
 
     public long getProgressionRate() {
         return progressionRate;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     public static class create {

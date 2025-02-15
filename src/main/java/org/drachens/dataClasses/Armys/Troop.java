@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
+import com.google.gson.JsonElement;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
@@ -11,6 +12,7 @@ import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.generalGame.troops.Combat;
 import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.interfaces.AStarPathfinderVoids;
+import org.drachens.interfaces.Saveable;
 import org.drachens.util.AStarPathfinderXZ;
 
 import java.time.temporal.ChronoUnit;
@@ -18,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Troop {
+public class Troop implements Saveable {
     private final TroopType troopType;
     private final TroopCountry country;
     private final AStarPathfinderVoids troopPathing;
@@ -332,5 +334,10 @@ public class Troop {
         troop.show();
         enemy.show();
         ally.show();
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

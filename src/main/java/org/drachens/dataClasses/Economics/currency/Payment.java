@@ -1,9 +1,13 @@
 package org.drachens.dataClasses.Economics.currency;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
+import org.drachens.interfaces.Saveable;
 
-public class Payment implements Cloneable {
+public class Payment implements Cloneable, Saveable {
     private final CurrencyTypes currencyType;
     private float amount;
     private Component message;
@@ -84,5 +88,13 @@ public class Payment implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("currency",new JsonPrimitive(currencyType.getIdentifier()));
+        jsonObject.add("amount",new JsonPrimitive(amount));
+        return jsonObject;
     }
 }

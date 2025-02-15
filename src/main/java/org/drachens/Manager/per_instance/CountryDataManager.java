@@ -1,14 +1,19 @@
 package org.drachens.Manager.per_instance;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minestom.server.instance.Instance;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CountryDataManager {
+public class CountryDataManager implements Saveable {
     private final List<String> countryNameList = new ArrayList<>();
     private final HashMap<String, Country> countryHashMap = new HashMap<>();
     private final Instance instance;
@@ -85,5 +90,29 @@ public class CountryDataManager {
 
     public List<Faction> getFactions() {
         return factions;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+
+        JsonArray countryNamesJsonArray = new JsonArray();
+        for (String countryName : countryNameList) {
+            countryNamesJsonArray.add(new JsonPrimitive(countryName));
+        }
+        jsonObject.add("countries", countryNamesJsonArray);
+
+        JsonArray factionNamesArray = new JsonArray();
+        for (String countryName : factionNames) {
+            factionNamesArray.add(new JsonPrimitive(countryName));
+        }
+        jsonObject.add("factions", factionNamesArray);
+
+        JsonArray countriesJsonArray = new JsonArray();
+        for (Country country : countries) {
+            countriesJsonArray.add(country.toJson());
+        }
+        jsonObject.add("countries", countriesJsonArray);
+        return jsonObject;
     }
 }

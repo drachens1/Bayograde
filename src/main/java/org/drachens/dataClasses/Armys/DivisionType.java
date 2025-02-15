@@ -1,9 +1,11 @@
 package org.drachens.dataClasses.Armys;
 
+import com.google.gson.JsonElement;
 import net.minestom.server.item.ItemStack;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.interfaces.Saveable;
 
-public class DivisionType {
+public class DivisionType implements Saveable {
     private String name;
     private float hp;
     private float atk;
@@ -88,5 +90,10 @@ public class DivisionType {
 
     public float getTrainingTime() {
         return trainingTime;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

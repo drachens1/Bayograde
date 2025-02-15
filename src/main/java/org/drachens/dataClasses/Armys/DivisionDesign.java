@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -8,6 +9,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.generalGame.troops.inventory.TroopEditGUI;
+import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 
 import java.util.HashMap;
@@ -16,7 +18,7 @@ import java.util.Map;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
-public class DivisionDesign {
+public class DivisionDesign implements Saveable {
     private final Profile profile;
     private final TroopCountry country;
     private HashMap<Integer, DivisionType> design;
@@ -150,6 +152,11 @@ public class DivisionDesign {
 
     public float getOrg() {
         return org;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     public static class Profile {

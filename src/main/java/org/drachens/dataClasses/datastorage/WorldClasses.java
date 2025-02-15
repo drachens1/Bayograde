@@ -5,8 +5,9 @@ import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.additional.GlobalGameWorldClass;
 import org.drachens.dataClasses.customgame.CustomGameWorldClass;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
+import org.drachens.interfaces.Saveable;
 
-public abstract class WorldClasses {
+public abstract class WorldClasses implements Saveable {
     private final CountryDataManager countryDataManager;
     private final ClientEntsToLoad clientEntsToLoad;
     private final ProvinceManager provinceManager;

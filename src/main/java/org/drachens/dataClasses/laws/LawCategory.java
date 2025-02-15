@@ -1,13 +1,15 @@
 package org.drachens.dataClasses.laws;
 
+import com.google.gson.JsonElement;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class LawCategory {
+public class LawCategory implements Saveable {
     private final String identifier;
     private final List<Law> laws;
     private final HashMap<String, Law> lawMap;
@@ -68,6 +70,11 @@ public class LawCategory {
 
     public Law getLaw(String name) {
         return lawMap.get(name);
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     public static class Create {

@@ -1,11 +1,15 @@
 package org.drachens.dataClasses.Economics;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.interfaces.Saveable;
 
-public class Loan {
+public class Loan implements Saveable {
     private final Country fromCountry;
     private final Country toCountry;
     private final CurrencyTypes currencyTypes;
@@ -74,5 +78,17 @@ public class Loan {
 
     public Country getToCountry() {
         return toCountry;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("from",new JsonPrimitive(fromCountry.getName()));
+        jsonObject.add("to",new JsonPrimitive(toCountry.getName()));
+        jsonObject.add("currency",new JsonPrimitive(currencyTypes.getIdentifier()));
+        jsonObject.add("perweek",new JsonPrimitive(perWeek));
+        jsonObject.add("termlength",new JsonPrimitive(termlength));
+        jsonObject.add("balanceToPayOff",new JsonPrimitive(balanceToPayOff));
+        return jsonObject;
     }
 }

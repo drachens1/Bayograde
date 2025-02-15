@@ -289,6 +289,7 @@ public class ServerUtil {
 
         new CentralEventManager();
         start();
+
     }
 
     public static HashSet<Chunk> getAllowedChunks() {

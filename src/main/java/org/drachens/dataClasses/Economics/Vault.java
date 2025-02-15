@@ -8,15 +8,16 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.generalGame.factory.Factory;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class Vault {
-    private final HashMap<CurrencyTypes, Currencies> amount;
-    private final List<Loan> loans;
-    private Country country;
+public abstract class Vault implements Saveable {
+    protected final HashMap<CurrencyTypes, Currencies> amount;
+    protected final List<Loan> loans;
+    protected Country country;
 
     public Vault(HashMap<CurrencyTypes, Currencies> startingCurrencies) {
         this.amount = new HashMap<>(startingCurrencies);

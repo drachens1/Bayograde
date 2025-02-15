@@ -1,5 +1,6 @@
 package org.drachens.generalGame.troops;
 
+import com.google.gson.JsonElement;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -10,13 +11,14 @@ import org.drachens.events.NewDay;
 import org.drachens.generalGame.factory.Factory;
 import org.drachens.interfaces.AI;
 import org.drachens.interfaces.AIManager;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class TroopAI implements AIManager {
+public class TroopAI implements AIManager, Saveable {
     private final HashMap<Country, AI> ais = new HashMap<>();
     private final VotingWinner votingWinner;
 
@@ -42,6 +44,11 @@ public class TroopAI implements AIManager {
     @Override
     public void tick(Instance instance) {
         ais.forEach(((country, ai) -> ai.tick()));
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 
     static class FactorySpammer extends AI {

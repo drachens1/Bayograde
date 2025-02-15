@@ -20,6 +20,7 @@ dependencies {
     implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
     implementation("net.kyori:adventure-text-minimessage:4.18.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
 }
 
 java {

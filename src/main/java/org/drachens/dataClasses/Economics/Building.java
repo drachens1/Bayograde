@@ -1,16 +1,20 @@
 package org.drachens.dataClasses.Economics;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
+import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 
 import java.util.HashSet;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
-public class Building {
+public class Building implements Saveable {
     private final HashSet<String> synonyms;
     private final BuildingEnum buildType;
     private final Province province;
@@ -81,5 +85,13 @@ public class Building {
         this.itemDisplay.dispose();
         this.country.removeBuilding(this);
         this.province.removeBuilding();
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("province",province.getReference());
+        jsonObject.add("lvl",new JsonPrimitive(current));
+        return jsonObject;
     }
 }

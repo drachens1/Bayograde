@@ -1,8 +1,10 @@
 package org.drachens.dataClasses.Diplomacy;
 
+import com.google.gson.JsonElement;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.interfaces.Saveable;
 
-public class NonAggressionPact {
+public class NonAggressionPact implements Saveable {
     private final Country from;
     private final Country to;
     private final float max;
@@ -33,5 +35,10 @@ public class NonAggressionPact {
 
     public void minus(float amount) {
         duration -= amount;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

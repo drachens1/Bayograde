@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.additional.greatDepression;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.Manager.defaults.enums.ColoursEnum;
@@ -7,13 +8,14 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.interfaces.Saveable;
 import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GreatDepressionEventsRunner implements EventsRunner {
+public class GreatDepressionEventsRunner implements EventsRunner, Saveable {
     private final Country country;
     private final Modifier greatDepression;
     private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
@@ -168,5 +170,10 @@ public class GreatDepressionEventsRunner implements EventsRunner {
 
     public void setRelief(boolean relief) {
         this.relief = relief;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

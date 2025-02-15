@@ -49,15 +49,15 @@ public abstract class GsonStringMaker {
         return current;
     }
 
-    protected void addDefault(Long value, String... path) {
+    public void addDefault(Long value, String... path) {
         addDefault(new JsonPrimitive(value),path);
     }
 
-    protected void addDefault(String value, String... path) {
+    public void addDefault(String value, String... path) {
         addDefault(new JsonPrimitive(value),path);
     }
 
-    protected void addDefault(JsonElement value, String... path) {
+    public void addDefault(JsonElement value, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         String key = path[path.length - 1];
 
@@ -66,20 +66,20 @@ public abstract class GsonStringMaker {
         }
     }
 
-    protected void set(Long value, String... path) {
+    public void set(Long value, String... path) {
         set(new JsonPrimitive(value),path);
     }
 
-    protected void set(String value, String... path) {
+    public void set(String value, String... path) {
         set(new JsonPrimitive(value),path);
     }
 
-    protected void set(JsonElement value, String... path) {
+    public void set(JsonElement value, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         parent.add(path[path.length - 1], value);
     }
 
-    protected <T> void addToList(T value, Class<T> clazz, String... path) {
+    public <T> void addToList(T value, Class<T> clazz, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         String key = path[path.length - 1];
 
@@ -92,7 +92,7 @@ public abstract class GsonStringMaker {
         }
     }
 
-    protected <T> void removeFromList(T value, Class<T> clazz, String... path) {
+    public <T> void removeFromList(T value, Class<T> clazz, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         String key = path[path.length - 1];
 
@@ -105,7 +105,7 @@ public abstract class GsonStringMaker {
         parent.add(key, array);
     }
 
-    protected <T> List<T> getFromList(Class<T> clazz, String... path) {
+    public <T> List<T> getFromList(Class<T> clazz, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         String key = path[path.length - 1];
 
@@ -129,7 +129,7 @@ public abstract class GsonStringMaker {
         return list;
     }
 
-    protected <T> HashMap<String, T> loadHashMap(Class<T> clazz, String... path) {
+    public <T> HashMap<String, T> loadHashMap(Class<T> clazz, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         String key = path[path.length - 1];
 
@@ -147,7 +147,7 @@ public abstract class GsonStringMaker {
         return map;
     }
 
-    protected <T> void saveHashMap(HashMap<String, T> map, Class<T> clazz, String... path) {
+    public <T> void saveHashMap(HashMap<String, T> map, Class<T> clazz, String... path) {
         JsonObject parent = getOrCreateParent(config, path);
         String key = path[path.length - 1];
 

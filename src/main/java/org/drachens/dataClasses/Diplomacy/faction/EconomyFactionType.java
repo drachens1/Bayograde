@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Diplomacy.faction;
 
+import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.instance.Instance;
@@ -8,11 +9,12 @@ import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.interfaces.MapGen;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EconomyFactionType extends Faction {
+public class EconomyFactionType extends Faction implements Saveable {
     private final Component name = Component.text("Economy", NamedTextColor.GOLD);
 
     public EconomyFactionType(Country creator, String name) {
@@ -58,5 +60,10 @@ public class EconomyFactionType extends Faction {
         MapGen mapGenerator = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
         float mapSize = (mapGenerator.getSizeX() + mapGenerator.getSizeY()) / 2f;
         return boost * mapSize;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

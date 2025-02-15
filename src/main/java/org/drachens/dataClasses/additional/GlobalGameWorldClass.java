@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.additional;
 
+import com.google.gson.JsonElement;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
@@ -15,5 +16,10 @@ public class GlobalGameWorldClass extends WorldClasses {
     }
     public VotingManager votingManager(){
         return votingManager;
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

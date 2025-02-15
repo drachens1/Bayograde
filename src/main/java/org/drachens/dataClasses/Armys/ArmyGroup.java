@@ -1,11 +1,13 @@
 package org.drachens.dataClasses.Armys;
 
+import com.google.gson.JsonElement;
 import org.drachens.dataClasses.Province;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArmyGroup {
+public class ArmyGroup implements Saveable {
     private final int group;
     private final List<Troop> troops = new ArrayList<>();
     private final List<Province> troopProvinces = new ArrayList<>();
@@ -36,5 +38,10 @@ public class ArmyGroup {
 
     public void removeTroop(Troop troop) {
         this.troops.remove(troop);
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }

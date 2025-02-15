@@ -1,11 +1,13 @@
 package org.drachens.dataClasses.Diplomacy.Justifications;
 
+import com.google.gson.JsonElement;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.interfaces.Saveable;
 
 import java.util.function.Consumer;
 
-public class WarJustification {
+public class WarJustification implements Saveable {
     private final Country againstCountry;
     private final Modifier modifier;
     private float timeLeft;
@@ -13,18 +15,18 @@ public class WarJustification {
     private final Consumer<WarJustification> runner;
 
     public WarJustification(WarGoalType warGoalType, Country againstCountry) {
-        this.timeLeft = warGoalType.getTimeToMake();
+        this.timeLeft = warGoalType.timeToMake();
         this.againstCountry = againstCountry;
-        this.modifier = warGoalType.getModifier();
-        this.expires = warGoalType.getExpires();
+        this.modifier = warGoalType.modifier();
+        this.expires = warGoalType.expires();
         this.runner = null;
     }
 
     public WarJustification(WarGoalType warGoalType, Country againstCountry, Consumer<WarJustification> runner) {
-        this.timeLeft = warGoalType.getTimeToMake();
+        this.timeLeft = warGoalType.timeToMake();
         this.againstCountry = againstCountry;
-        this.modifier = warGoalType.getModifier();
-        this.expires = warGoalType.getExpires();
+        this.modifier = warGoalType.modifier();
+        this.expires = warGoalType.expires();
         this.runner = runner;
     }
 
@@ -55,5 +57,10 @@ public class WarJustification {
     public void onFinished(){
         if (runner!=null)
             runner.accept(this);
+    }
+
+    @Override
+    public JsonElement toJson() {
+        return null;
     }
 }
