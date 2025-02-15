@@ -52,6 +52,7 @@ import org.drachens.events.countries.warjustification.WarJustificationExpiresEve
 import org.drachens.generalGame.research.ResearchVault;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.interfaces.MapGen;
+import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.AStarPathfinderXZ;
 import org.drachens.util.MessageEnum;
@@ -60,47 +61,47 @@ import java.util.*;
 
 import static org.drachens.util.Messages.broadcast;
 
-public abstract class Country implements Cloneable {
-    private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
-    private final MapGen mapGen;
-    private final List<CPlayer> players;
-    private final Vault vault;
-    private final List<Material> city = new ArrayList<>();
-    private final HashMap<BuildingEnum, List<Building>> buildTypesListHashMap = new HashMap<>();
-    private final HashSet<String> countryWars = new HashSet<>();
-    private final Ideology ideology;
-    private final Election elections;
-    private final HashMap<String, ModifierCommand> modifierCommandsHashMap = new HashMap<>();
-    private final HashMap<String, Modifier> modifiers = new HashMap<>();
-    private final List<Modifier> visibleModifiers = new ArrayList<>();
-    private final List<EventsRunner> eventsRunners = new ArrayList<>();
-    private final List<Country> puppets = new ArrayList<>();
-    private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
-    private final AStarPathfinderXZ aStarPathfinder;
-    private final Instance instance;
-    private final List<Clientside> clientsides = new ArrayList<>();
-    private final HashMap<String, Demand> demandHashMap = new HashMap<>();
-    private final DemandManager demandManager = ContinentalManagers.demandManager;
-    private final List<Province> occupies;
-    private final List<Province> cities;
-    private final Stability stability;
-    private final HashMap<String, Loan> loanRequests = new HashMap<>();
-    private final CapitulationBar capitulationBar = new CapitulationBar();
-    private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
-    private final ImaginaryWorld warsWorld;
-    private final ImaginaryWorld allyWorld;
-    private final HashMap<String, Demand> outgoingDemands = new HashMap<>();
-    private final HashMap<String, WarJustification> warJustificationHashMap = new HashMap<>();
-    private final HashMap<String, WarJustification> completedWarJustifications = new HashMap<>();
-    private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
-    private final List<NonAggressionPact> nonAggressionTicks = new ArrayList<>();
-    private final HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
-    private final CountryChat countryChat;
-    private final HashSet<ConditionEnum> conditionEnums = new HashSet<>();
-    private final HashMap<String, LawCategory> laws = new HashMap<>();
-    private final HashMap<String, List<Province>> bordersProvince = new HashMap<>();
-    private final HashSet<String> bordersWars = new HashSet<>();
-    private final HashMap<String, Integer> diplomacy = new HashMap<>();
+public abstract class Country implements Cloneable, Saveable {
+    private  ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
+    private  MapGen mapGen;
+    private  List<CPlayer> players;
+    private  Vault vault;
+    private  List<Material> city = new ArrayList<>();
+    private  HashMap<BuildingEnum, List<Building>> buildTypesListHashMap = new HashMap<>();
+    private  HashSet<String> countryWars = new HashSet<>();
+    private  Ideology ideology;
+    private  Election elections;
+    private  HashMap<String, ModifierCommand> modifierCommandsHashMap = new HashMap<>();
+    private  HashMap<String, Modifier> modifiers = new HashMap<>();
+    private  List<Modifier> visibleModifiers = new ArrayList<>();
+    private  List<EventsRunner> eventsRunners = new ArrayList<>();
+    private  List<Country> puppets = new ArrayList<>();
+    private  HashMap<Province, Material> majorCityBlocks = new HashMap<>();
+    private  AStarPathfinderXZ aStarPathfinder;
+    private  Instance instance;
+    private  List<Clientside> clientsides = new ArrayList<>();
+    private  HashMap<String, Demand> demandHashMap = new HashMap<>();
+    private  DemandManager demandManager = ContinentalManagers.demandManager;
+    private  List<Province> occupies;
+    private  List<Province> cities;
+    private  Stability stability;
+    private  HashMap<String, Loan> loanRequests = new HashMap<>();
+    private  CapitulationBar capitulationBar = new CapitulationBar();
+    private  HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
+    private  ImaginaryWorld warsWorld;
+    private  ImaginaryWorld allyWorld;
+    private  HashMap<String, Demand> outgoingDemands = new HashMap<>();
+    private  HashMap<String, WarJustification> warJustificationHashMap = new HashMap<>();
+    private  HashMap<String, WarJustification> completedWarJustifications = new HashMap<>();
+    private  HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
+    private  List<NonAggressionPact> nonAggressionTicks = new ArrayList<>();
+    private  HashMap<String, List<Province>> occupiesThereCores = new HashMap<>();
+    private  CountryChat countryChat;
+    private  HashSet<ConditionEnum> conditionEnums = new HashSet<>();
+    private  HashMap<String, LawCategory> laws = new HashMap<>();
+    private  HashMap<String, List<Province>> bordersProvince = new HashMap<>();
+    private  HashSet<String> bordersWars = new HashSet<>();
+    private  HashMap<String, Integer> diplomacy = new HashMap<>();
     //1 = war 2 = neutral 3 = eco ally 4 = non aggression 5 = puppet/overlord 6 = mil ally
     private CompletionBarTextDisplay capitulationTextBar;
     private CPlayer playerLeader;
@@ -119,9 +120,9 @@ public abstract class Country implements Cloneable {
     private Country overlord = null;
     private Component originalName;
     private PuppetChat puppetChat;
-    private final HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap = new HashMap<>();
-    private final ResearchCountry researchCountry;
-    private final ResearchVault researchVault;
+    private HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap = new HashMap<>();
+    private ResearchCountry researchCountry;
+    private ResearchVault researchVault;
 
     public Country(String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Election election, Instance instance, Vault vault, HashMap<String, LawCategory> laws) {
         laws.forEach(((string, lawCategory) -> this.laws.put(string, new LawCategory(lawCategory, this))));
@@ -155,6 +156,8 @@ public abstract class Country implements Cloneable {
         stability = new Stability(50f, this);
         countryChat = new CountryChat(this);
     }
+
+    public Country(){};
 
     public void init() {
         List<Country> countries = new ArrayList<>(ContinentalManagers.world(instance).countryDataManager().getCountries());

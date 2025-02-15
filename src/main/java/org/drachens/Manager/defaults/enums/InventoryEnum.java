@@ -5,14 +5,15 @@ import org.drachens.dataClasses.NoneCustomisableInventory;
 import org.drachens.generalGame.clicks.ClicksDefaultInventory;
 import org.drachens.generalGame.demand.*;
 import org.drachens.generalGame.factory.FactoryButton;
-import org.drachens.generalGame.invasions.NavalInvasionClicksItem;
 import org.drachens.generalGame.scoreboards.items.ShowDiplomacy;
 import org.drachens.generalGame.scoreboards.items.ShowEconomy;
 import org.drachens.generalGame.scoreboards.items.ShowGeneralInfo;
 import org.drachens.generalGame.scoreboards.items.ShowIdeology;
 import org.drachens.generalGame.troops.TroopsDefaultInventory;
-import org.drachens.generalGame.troops.inventory.TroopMover;
-import org.drachens.interfaces.inventories.*;
+import org.drachens.interfaces.inventories.BuildItem;
+import org.drachens.interfaces.inventories.ExitItem;
+import org.drachens.interfaces.inventories.HotbarInventory;
+import org.drachens.interfaces.inventories.HotbarItemButton;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
