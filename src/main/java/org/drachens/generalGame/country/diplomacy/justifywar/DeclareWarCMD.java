@@ -1,6 +1,5 @@
 package org.drachens.generalGame.country.diplomacy.justifywar;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -17,15 +16,10 @@ public class DeclareWarCMD extends Command {
         super("declare-war");
         var countries = getCountriesArgExcludingPlayersCountry();
         setDefaultExecutor((sender, context) -> {
-            if (notIsLeaderOfCountry(sender)) return;
             sender.sendMessage("Proper usage /country diplomacy declare_war <country> ");
         });
 
         addSyntax((sender, context) -> {
-            if (notIsLeaderOfCountry(sender)) {
-                sender.sendMessage("You are not the leader of a country");
-                return;
-            }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -40,14 +34,5 @@ public class DeclareWarCMD extends Command {
             }
             EventDispatcher.call(new StartWarEvent(country, against, warJustification));
         }, countries);
-    }
-
-    private boolean notIsLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return true;
-            return !country.isPlayerLeader(p);
-        }
-        return true;
     }
 }

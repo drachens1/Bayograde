@@ -2,7 +2,6 @@ package org.drachens.generalGame.country.diplomacy.justifywar;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
@@ -36,7 +35,6 @@ public class JustifyAgainstCMD extends Command {
         addSyntax((sender, context) -> sender.sendMessage("Proper usage /country diplomacy justify-war against <country> <type>"), option);
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -57,14 +55,5 @@ public class JustifyAgainstCMD extends Command {
             WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(), against);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
         }, option, countries);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

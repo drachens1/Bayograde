@@ -2,7 +2,6 @@ package org.drachens.generalGame.country.diplomacy.nonaggression;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
@@ -28,10 +27,7 @@ public class NonAggressionAcceptCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getInvites(InvitesEnum.nonaggression));
                 });
 
-        setCondition((sender,command)->isLeaderOfCountry(sender));
-
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Set<String> invites = country.getInvites(InvitesEnum.nonaggression);
@@ -47,14 +43,5 @@ public class NonAggressionAcceptCMD extends Command {
             country.removeInvite(InvitesEnum.nonaggression,input);
             EventDispatcher.call(new NonAggressionAcceptedEvent(nonAggressionPact));
         }, countries);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

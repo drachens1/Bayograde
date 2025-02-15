@@ -14,17 +14,10 @@ public class AddPlayerCustomGameCMD extends Command {
     public AddPlayerCustomGameCMD() {
         super("invite");
 
-
-        setCondition((sender,s)->{
-            CPlayer p = (CPlayer) sender;
-            return p.isLeaderOfOwnGame();
-        });
-
         var players = ArgumentType.String("username");
 
         addSyntax((sender,context)->{
             CPlayer p = (CPlayer) sender;
-            if (!p.isLeaderOfOwnGame())return;
             Player target = MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(context.get(players));
             if (target==null){
                 p.sendMessage(Component.text("That player is null", NamedTextColor.RED));

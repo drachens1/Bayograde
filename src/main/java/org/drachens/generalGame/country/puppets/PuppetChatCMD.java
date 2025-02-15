@@ -1,9 +1,7 @@
 package org.drachens.generalGame.country.puppets;
 
 import net.kyori.adventure.text.Component;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Diplomacy.PuppetChat;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
@@ -16,10 +14,7 @@ public class PuppetChatCMD extends Command {
     public PuppetChatCMD() {
         super("chat");
 
-        setCondition((sender, s) -> isOrHasPuppets(sender));
-
         setDefaultExecutor((sender, context) -> {
-            if (!isOrHasPuppets(sender)) return;
             CPlayer p = (CPlayer) sender;
             PuppetChat puppetChat = p.getCountry().getOverlord().getPuppetChat();
             boolean current = active.getOrDefault(p, false);
@@ -37,13 +32,5 @@ public class PuppetChatCMD extends Command {
                         .append(Component.text("Puppet chat is now inactive")));
             }
         });
-    }
-
-    private boolean isOrHasPuppets(CommandSender sender) {
-        if (sender instanceof CPlayer player) {
-            Country country = player.getCountry();
-            return country != null && (country.hasOverlord() || country.hasPuppets());
-        }
-        return false;
     }
 }

@@ -6,8 +6,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Economics.currency.Payment;
-import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.Research.ResearchCountry;
+import org.drachens.dataClasses.additional.Modifier;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -20,6 +20,8 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class PayCMD extends Command {
     public PayCMD() {
         super("pay");
+        setCondition((sender,s)->isLeaderOfCountry(sender));
+
         var countries = ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!isLeaderOfCountry(sender)) {
@@ -38,7 +40,6 @@ public class PayCMD extends Command {
         }, countries);
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (to == null) return;
@@ -62,7 +63,6 @@ public class PayCMD extends Command {
                         .build());
             }
         }, countries, amount);
-
     }
 
     private boolean isLeaderOfCountry(CommandSender sender) {

@@ -5,7 +5,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.Ideology;
@@ -18,10 +17,7 @@ public class IdeologiesChangeOptionsCMD extends Command {
     public IdeologiesChangeOptionsCMD() {
         super("change-options");
 
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
-
         setDefaultExecutor((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Ideology ideology = country.getIdeology();
@@ -45,14 +41,5 @@ public class IdeologiesChangeOptionsCMD extends Command {
                     .append(comps)
                     .build());
         });
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

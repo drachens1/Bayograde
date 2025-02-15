@@ -17,7 +17,6 @@ public class JoinCMD extends Command {
         addSyntax((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
-            if (inCountry(sender))return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (country == null)
                 return;

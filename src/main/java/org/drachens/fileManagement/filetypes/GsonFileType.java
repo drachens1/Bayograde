@@ -1,7 +1,5 @@
 package org.drachens.fileManagement.filetypes;
 
-import java.io.File;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 

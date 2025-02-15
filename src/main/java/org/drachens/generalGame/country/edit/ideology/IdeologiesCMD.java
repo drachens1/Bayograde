@@ -1,9 +1,6 @@
 package org.drachens.generalGame.country.edit.ideology;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
-import org.drachens.player_types.CPlayer;
 
 public class IdeologiesCMD extends Command {
     public IdeologiesCMD() {
@@ -15,12 +12,5 @@ public class IdeologiesCMD extends Command {
         addSubcommand(new IdeologiesBoostCMD());
     }
 
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
-    }
+
 }

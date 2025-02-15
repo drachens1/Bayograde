@@ -19,7 +19,6 @@ public class CountryChatCMD extends Command {
         setCondition((sender, s) -> isInCountry(sender));
 
         setDefaultExecutor((sender, context) -> {
-            if (!isInCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             CountryChat countryChat = p.getCountry().getCountryChat();
             boolean current = active.getOrDefault(p, false);

@@ -14,12 +14,6 @@ import java.util.List;
 public class GameOptionsManageOptionsCMD extends Command {
     public GameOptionsManageOptionsCMD() {
         super("options");
-
-        setCondition((sender,s)->{
-            CPlayer p = (CPlayer) sender;
-            return p.isLeaderOfOwnGame();
-        });
-
         setDefaultExecutor((sender,context)->{
             CPlayer p = (CPlayer) sender;
             List<Component> comps = new ArrayList<>();

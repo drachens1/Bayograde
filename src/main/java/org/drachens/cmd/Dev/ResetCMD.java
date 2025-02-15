@@ -14,7 +14,6 @@ public class ResetCMD extends Command {
         });
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (!p.hasPermission("reset")) return;
             EventDispatcher.call(new ResetEvent(p.getInstance()));
         });
     }

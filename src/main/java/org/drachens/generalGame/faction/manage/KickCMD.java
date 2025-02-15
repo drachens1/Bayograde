@@ -22,7 +22,7 @@ public class KickCMD extends Command {
 
         var factionsArg = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
+                    if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country != null) {
                             if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
@@ -37,13 +37,12 @@ public class KickCMD extends Command {
 
         var countryArg = ArgumentType.String("countryName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
+                    if (sender instanceof CPlayer player) {
                         getSuggestionBasedOnInput(suggestion, getCountryNames(player.getInstance()));
                     }
                 });
 
         addSyntax((sender, context) -> {
-            if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = ContinentalManagers.world(player.getInstance()).countryDataManager().getCountryFromName(context.get(countryArg));
             Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));

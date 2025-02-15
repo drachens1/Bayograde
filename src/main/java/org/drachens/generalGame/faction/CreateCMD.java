@@ -38,19 +38,16 @@ public class CreateCMD extends Command {
 
         var nameArg = ArgumentType.String("factionName");
         setDefaultExecutor((sender, context) -> {
-            if (notInAFaction(sender)) {
-                sender.sendMessage("Proper usage /faction create <type> <name> ");
-            }
+            sender.sendMessage("Proper usage /faction create <type> <name> ");
+
         });
 
 
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
-            if (notInAFaction(sender))
-                sender.sendMessage("Proper usage /faction create <type> <name> ");
+            sender.sendMessage("Proper usage /faction create <type> <name> ");
         }, type);
 
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
-            if (!notInAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             String factionName = context.get(nameArg);

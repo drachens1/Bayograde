@@ -11,7 +11,6 @@ public class LeaveCMD extends Command {
         setCondition(((sender, commandString) -> inCountry(sender)));
 
         setDefaultExecutor((sender,context)->{
-            if (!inCountry(sender))return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             country.removePlayer(p);

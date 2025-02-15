@@ -6,7 +6,6 @@ import org.drachens.generalGame.country.edit.EditCMD;
 import org.drachens.generalGame.country.info.Info;
 import org.drachens.generalGame.country.loan.LoanCMD;
 import org.drachens.generalGame.country.manage.ManageCMD;
-import org.drachens.generalGame.country.manage.modifiers.ModifiersCMD;
 import org.drachens.generalGame.country.puppets.PuppetCMD;
 import org.drachens.generalGame.country.research.ResearchCMD;
 
@@ -28,5 +27,6 @@ public class CountryCMD extends Command {
         addSubcommand(new ModifiersCMD());
         addSubcommand(new ResearchCMD());
         addSubcommand(new LeaveCMD());
+        addSubcommand(new ModifiersCMD());
     }
 }

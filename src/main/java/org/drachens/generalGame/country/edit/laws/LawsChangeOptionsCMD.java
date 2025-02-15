@@ -5,7 +5,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.Country;
@@ -23,12 +22,9 @@ public class LawsChangeOptionsCMD extends Command {
 
         var lawSet = ArgumentType.String("law")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getLawNames());
                 });
-
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
         setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p)) {
@@ -47,7 +43,6 @@ public class LawsChangeOptionsCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             LawCategory lawCategory = country.getLaw(context.get(lawSet));
@@ -74,14 +69,5 @@ public class LawsChangeOptionsCMD extends Command {
                     .appendNewline()
                     .append(comps));
         }, lawSet);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

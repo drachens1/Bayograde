@@ -21,7 +21,7 @@ public class InviteCMD extends Command {
 
         var factionsArg = ArgumentType.String("faction name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
+                    if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
                             suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
@@ -35,13 +35,11 @@ public class InviteCMD extends Command {
         var countryArg = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
-            if (leaderOfAFaction(sender)) {
-                sender.sendMessage("Proper usage /faction manage invite <faction name> <country name>");
-            }
+            sender.sendMessage("Proper usage /faction manage invite <faction name> <country name>");
+
         }, factionsArg);
 
         addSyntax((sender, context) -> {
-            if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country invited = ContinentalManagers.world(player.getInstance()).countryDataManager().getCountryFromName(context.get(countryArg));
             Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));

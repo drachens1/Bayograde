@@ -1,6 +1,5 @@
 package org.drachens.generalGame.country.diplomacy.liberate;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
@@ -15,9 +14,6 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class LiberateCMD extends Command {
     public LiberateCMD() {
         super("liberate");
-
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
-
         var countries = ArgumentType.String("countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
@@ -36,12 +32,10 @@ public class LiberateCMD extends Command {
                 });
 
         setDefaultExecutor((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             sender.sendMessage("Proper usage /country diplomacy liberate <country>");
         });
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -57,10 +51,6 @@ public class LiberateCMD extends Command {
         }, countries);
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) {
-                sender.sendMessage("You are not a leader of a country");
-                return;
-            }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -79,14 +69,5 @@ public class LiberateCMD extends Command {
             }
             EventDispatcher.call(new LiberationEvent(target, country, t));
         }, countries, type);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p) && country.occupiesAnyOtherCores();
-        }
-        return false;
     }
 }

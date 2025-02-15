@@ -187,4 +187,8 @@ public class CustomGameWorld extends World {
             p.sendActionBar(province.getOccupier().getNameComponent());
         }
     }
+
+    public boolean hasStarted(){
+        return started;
+    }
 }

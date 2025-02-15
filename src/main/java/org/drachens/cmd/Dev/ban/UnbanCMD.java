@@ -19,11 +19,10 @@ public class UnbanCMD extends Command {
         });
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (p.hasPermission("unban")) sender.sendMessage("Usage: /unban player");
+            sender.sendMessage("Usage: /unban player");
         });
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (!p.hasPermission("unban")) return;
             System.out.println(p.getUsername() + " has unbanned " + context.get(player));
             UUID u = getUUIDFromName(context.get(player));
             if (u == null) {

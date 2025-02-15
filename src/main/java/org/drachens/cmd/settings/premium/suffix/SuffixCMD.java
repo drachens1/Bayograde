@@ -16,7 +16,6 @@ public class SuffixCMD extends Command {
 
         setDefaultExecutor(((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (!p.isPremium())return;
             p.sendMessage(Component.text()
                     .append(Component.text("Suffix: ", NamedTextColor.GREEN))
                     .append(Component.text(p.getPlayerJson().getSuffix()))

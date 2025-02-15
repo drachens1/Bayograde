@@ -14,9 +14,6 @@ public class LoginMessageCMD extends Command {
 
         setDefaultExecutor(((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (!p.isPremium()){
-                return;
-            }
             p.sendMessage(p.getPlayerJson().getCustomLoginMessage().getComponent());
         }));
 

@@ -10,17 +10,10 @@ import org.drachens.player_types.CPlayer;
 public class SetSuffixCMD extends Command {
      public SetSuffixCMD() {
         super("set");
-
-         setCondition(((sender, commandString) -> {
-             CPlayer p = (CPlayer) sender;
-             return p.isPremium();
-         }));
-
          var suffix = ArgumentType.String("name");
 
          addSyntax((sender,context)->{
              CPlayer p = (CPlayer) sender;
-             if (!p.isPremium())return;
              p.getPlayerJson().setSuffix(context.get(suffix));
              p.sendMessage(Component.text()
                              .append(Component.text("New Suffix: ", NamedTextColor.GREEN))

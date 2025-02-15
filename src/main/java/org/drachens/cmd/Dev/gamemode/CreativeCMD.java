@@ -13,9 +13,7 @@ public class CreativeCMD extends Command {
         });
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (p.hasPermission("gamemode")) {
-                p.setGameMode(GameMode.CREATIVE);
-            }
+            p.setGameMode(GameMode.CREATIVE);
         });
     }
 }

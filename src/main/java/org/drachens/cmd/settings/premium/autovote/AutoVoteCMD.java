@@ -20,7 +20,6 @@ public class AutoVoteCMD extends Command {
 
         setDefaultExecutor(((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (!p.hasRank(RankEnum.deratus.getRank()))return;
             p.sendMessage(Component.text()
                             .append(Component.text("Auto Vote: ",NamedTextColor.GREEN))
                             .append(Component.text(p.getPlayerJson().getAutoVoteOption()))

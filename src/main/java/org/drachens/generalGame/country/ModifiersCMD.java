@@ -1,4 +1,4 @@
-package org.drachens.generalGame.country.manage.modifiers;
+package org.drachens.generalGame.country;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
@@ -15,7 +15,6 @@ public class ModifiersCMD extends Command {
 
         var modifier = ArgumentType.String("modifier")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (notInCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
                     getSuggestionBasedOnInput(suggestion, country.getModifierNames());
@@ -23,7 +22,6 @@ public class ModifiersCMD extends Command {
 
         var second = ArgumentType.String("input")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (notInCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
                     ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
@@ -37,12 +35,10 @@ public class ModifiersCMD extends Command {
         setCondition((sender, s) -> !notInCountry(sender));
 
         setDefaultExecutor((sender, context) -> {
-            if (notInCountry(sender)) return;
             sender.sendMessage("Proper usage /country modifiers <modifier>");
         });
 
         addSyntax((sender, context) -> {
-            if (notInCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
@@ -54,7 +50,6 @@ public class ModifiersCMD extends Command {
         }, modifier);
 
         addSyntax((sender, context) -> {
-            if (notInCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));

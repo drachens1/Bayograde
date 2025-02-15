@@ -26,7 +26,6 @@ public class AcceptCMD extends Command {
                 .append(Component.text("this country has not invited you", NamedTextColor.RED))
                 .build();
         addSyntax((sender, context) -> {
-            if (inCountry(sender))return;
             if (!(sender instanceof CPlayer p))
                 return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));

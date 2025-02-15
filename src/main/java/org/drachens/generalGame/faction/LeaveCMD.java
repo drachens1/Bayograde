@@ -20,19 +20,16 @@ public class LeaveCMD extends Command {
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
-                        if (country != null && country.isInAFaction()) {
-                            if (country.isInAnEconomicFaction()) {
-                                suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
-                            }
-                            if (country.isInAMilitaryFaction()) {
-                                suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
-                            }
+                        if (country.isInAnEconomicFaction()) {
+                            suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
+                        }
+                        if (country.isInAMilitaryFaction()) {
+                            suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
                         }
                     }
                 });
 
         addSyntax((sender, context) -> {
-            if (!isInAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));

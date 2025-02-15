@@ -2,7 +2,6 @@ package org.drachens.generalGame.country.edit.laws;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
@@ -19,14 +18,12 @@ public class LawsChangeCMD extends Command {
 
         var law2 = ArgumentType.String("categories")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getLawNames());
                 });
 
         var options = ArgumentType.String("options")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     LawCategory law = p.getCountry().getLaw(context.get(law2));
                     if (law == null) {
@@ -35,9 +32,6 @@ public class LawsChangeCMD extends Command {
                     }
                     getSuggestionBasedOnInput(suggestion, law.getLaws());
                 });
-
-
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
 
         setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p)) {
@@ -59,7 +53,6 @@ public class LawsChangeCMD extends Command {
         }, law2);
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             LawCategory lawCategory = country.getLaw(context.get(law2));
@@ -78,14 +71,5 @@ public class LawsChangeCMD extends Command {
                     .append(law.modifier().getName())
                     .build());
         }, law2, options);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

@@ -22,7 +22,6 @@ public class SummonCMD extends Command {
         addSyntax((sender, context) -> {
             if (!(sender instanceof CPlayer p))
                 return;
-            if (!p.hasPermission("summon")) return;
             ItemStack itemStack = context.get(item);
             int modelDatas = context.get(modelData);
             if (itemStack == null) return;

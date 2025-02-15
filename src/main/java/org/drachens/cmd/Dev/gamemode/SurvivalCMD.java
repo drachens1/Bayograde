@@ -13,9 +13,7 @@ public class SurvivalCMD extends Command {
         });
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (p.hasPermission("gamemode")) {
-                p.setGameMode(GameMode.SURVIVAL);
-            }
+            p.setGameMode(GameMode.SURVIVAL);
         });
     }
 }

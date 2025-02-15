@@ -29,8 +29,6 @@ public class WhoisCMD extends Command {
 
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (!(p.getUsername().equalsIgnoreCase("drachens") || p.getUsername().equalsIgnoreCase("sweeville")))
-                return;
             CPlayer target = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(context.get(player));
             if (target == null) {
                 p.sendMessage(Component.text("That is not a valid player", NamedTextColor.RED));

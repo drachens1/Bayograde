@@ -1,7 +1,6 @@
 package org.drachens.generalGame.country.manage;
 
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
@@ -18,10 +17,8 @@ public class SetLeaderCMD extends Command {
 
     public SetLeaderCMD() {
         super("set_leader");
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
         var players = ArgumentType.String("Username")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!isLeaderOfCountry(sender)) return;
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
                     player.getCountry().getPlayers().forEach(p -> playerNames.add(p.getUsername()));
@@ -29,7 +26,6 @@ public class SetLeaderCMD extends Command {
                 });
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             String player = context.get(players);
             CPlayer senders = (CPlayer) sender;
             CPlayer p = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(player);
@@ -38,14 +34,5 @@ public class SetLeaderCMD extends Command {
             Country country = p.getCountry();
             EventDispatcher.call(new CountrySetLeaderEvent(country, p));
         }, players);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

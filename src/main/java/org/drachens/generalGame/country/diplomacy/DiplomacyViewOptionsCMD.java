@@ -5,7 +5,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
@@ -24,10 +23,6 @@ public class DiplomacyViewOptionsCMD extends Command {
         var countries = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) {
-                sender.sendMessage("You are not the leader of a country");
-                return;
-            }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -106,14 +101,5 @@ public class DiplomacyViewOptionsCMD extends Command {
 
             p.sendMessage(Component.text().append(comps));
         }, countries);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

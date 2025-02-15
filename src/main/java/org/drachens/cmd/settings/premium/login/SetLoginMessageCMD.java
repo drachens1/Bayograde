@@ -15,11 +15,6 @@ public class SetLoginMessageCMD extends Command {
     public SetLoginMessageCMD() {
         super("set");
 
-        setCondition(((sender, commandString) -> {
-            CPlayer p = (CPlayer) sender;
-            return p.isPremium();
-        }));
-
         ChatCensor chatCensor = ContinentalManagers.chatCensor;
 
         var option = ArgumentType.Word("option")

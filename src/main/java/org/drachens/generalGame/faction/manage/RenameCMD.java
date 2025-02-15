@@ -19,7 +19,7 @@ public class RenameCMD extends Command {
 
         var factionsArg = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
+                    if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country != null) {
                             if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
@@ -45,7 +45,6 @@ public class RenameCMD extends Command {
                 .build();
 
         addSyntax((sender, context) -> {
-            if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Faction faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
             Country country = player.getCountry();

@@ -17,7 +17,7 @@ public class DeleteCMD extends Command {
 
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (leaderOfAFaction(sender) && sender instanceof CPlayer player) {
+                    if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country != null) {
                             if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
@@ -31,7 +31,6 @@ public class DeleteCMD extends Command {
                 });
 
         addSyntax((sender, context) -> {
-            if (!leaderOfAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             Faction factionToDelete = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));

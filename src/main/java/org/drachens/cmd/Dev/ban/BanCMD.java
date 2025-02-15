@@ -21,11 +21,10 @@ public class BanCMD extends Command {
         });
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (p.hasPermission("ban")) sender.sendMessage("Usage /ban <player>");
+            sender.sendMessage("Usage /ban <player>");
         });
         addSyntax((sender, context) -> {
             CPlayer send = (CPlayer) sender;
-            if (!send.hasPermission("ban")) return;
             System.out.println(send.getUsername() + " has banned " + context.get(player));
             UUID p = getUUIDFromName(context.get(player));
             if (p == null) {

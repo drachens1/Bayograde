@@ -1,6 +1,5 @@
 package org.drachens.generalGame.country.loan;
 
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
@@ -24,8 +23,6 @@ public class LoanCreateCMD extends Command {
 
         var countries = getCountriesArgExcludingPlayersCountry();
 
-        setCondition((sender, s) -> isLeaderOfCountry(sender));
-
         addSyntax((sender, context) -> {
         }, countries);
         addSyntax((sender, context) -> {
@@ -34,10 +31,6 @@ public class LoanCreateCMD extends Command {
         }, countries, interest);
 
         addSyntax(((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) {
-                sender.sendMessage("You are not the leader of a country");
-                return;
-            }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -49,14 +42,5 @@ public class LoanCreateCMD extends Command {
             target.addLoanRequest(loan);
             EventDispatcher.call(new LoanSendEvent(p.getInstance(), country, target, loan));
         }), countries, amount, interest, termLength);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

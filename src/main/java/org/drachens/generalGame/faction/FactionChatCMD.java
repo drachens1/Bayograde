@@ -22,7 +22,7 @@ public class FactionChatCMD extends Command {
 
         var factionsArg = ArgumentType.String("faction name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (isInAFaction(sender) && sender instanceof CPlayer player) {
+                    if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country.isInAnEconomicFaction()) {
                             suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
@@ -35,14 +35,9 @@ public class FactionChatCMD extends Command {
 
         setCondition((sender, s) -> isInAFaction(sender));
 
-        setDefaultExecutor((sender, context) -> {
-            if (isInAFaction(sender)) {
-                sender.sendMessage("Proper usage /faction chat <faction> ");
-            }
-        });
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /faction chat <faction> "));
 
         addSyntax((sender, context) -> {
-            if (!isInAFaction(sender)) return;
             CPlayer p = (CPlayer) sender;
             Faction faction = ContinentalManagers.world(p.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
             if (faction == null || !faction.containsCountry(p.getCountry())) return;

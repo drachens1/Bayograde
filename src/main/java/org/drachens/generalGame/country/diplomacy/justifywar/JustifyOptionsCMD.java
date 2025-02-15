@@ -6,7 +6,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.Country;
@@ -22,15 +21,10 @@ public class JustifyOptionsCMD extends Command {
         var countries = getCountriesArgExcludingPlayersCountry();
 
         setDefaultExecutor((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) return;
             sender.sendMessage("proper usage /country diplomacy justify options <country>");
         });
 
         addSyntax((sender, context) -> {
-            if (!isLeaderOfCountry(sender)) {
-                sender.sendMessage("You are not the leader of a country");
-                return;
-            }
             CPlayer p = (CPlayer) sender;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (country == null) {
@@ -86,14 +80,5 @@ public class JustifyOptionsCMD extends Command {
                             .build())
                     .build());
         }, countries);
-    }
-
-    private boolean isLeaderOfCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
-        }
-        return false;
     }
 }

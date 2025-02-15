@@ -12,7 +12,7 @@ public class GamemodeCMD extends Command {
         });
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            if (p.hasPermission("gamemode")) sender.sendMessage("Proper usage /gamemode <choice>");
+            sender.sendMessage("Proper usage /gamemode <choice>");
         });
         addSubcommand(new CreativeCMD());
         addSubcommand(new SurvivalCMD());

@@ -3,7 +3,6 @@ package org.drachens.cmd.Dev;
 import net.minestom.server.command.builder.Command;
 import org.drachens.cmd.Dev.ban.BanCMD;
 import org.drachens.cmd.Dev.ban.UnbanCMD;
-import org.drachens.cmd.Dev.debug.debugCMD;
 import org.drachens.cmd.Dev.gamemode.GamemodeCMD;
 import org.drachens.cmd.ai.AICmd;
 import org.drachens.cmd.example.ExampleCMD;
@@ -23,7 +22,6 @@ public class DevCMD extends Command {
         addSubcommand(new BanCMD());
         addSubcommand(new UnbanCMD());
         addSubcommand(new GamemodeCMD());
-        addSubcommand(new debugCMD());
         addSubcommand(new SummonCMD());
         addSubcommand(new ExampleCMD());
         addSubcommand(new AICmd());

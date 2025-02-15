@@ -25,14 +25,13 @@ public class JoinCMD extends Command {
 
         var factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (notInAFaction(sender) && sender instanceof Player player) {
+                    if (sender instanceof Player player) {
                         getSuggestionBasedOnInput(suggestion, getFactionNames(player.getInstance()));
                     }
                 });
 
 
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
-            if (!notInAFaction(sender)) return;
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
 
