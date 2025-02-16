@@ -49,10 +49,7 @@ import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
-import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
-import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
-import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
 import org.drachens.generalGame.research.ResearchVault;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.interfaces.MapGen;
@@ -954,43 +951,13 @@ public abstract class Country implements Cloneable, Saveable {
     protected abstract void newWeek(NewDay newDay);
 
     public void nextDay(NewDay newDay) {
-        List<String> toRemove = new ArrayList<>();
-        completedWarJustifications.forEach((name, warJust) -> {
-            warJust.minusExpires(1f);
-            if (warJust.getExpires() <= 0f) {
-                toRemove.add(warJust.getAgainstCountry().name);
-                EventDispatcher.call(new WarJustificationExpiresEvent(warJust, this));
-            }
-        });
-        toRemove.forEach(completedWarJustifications::remove);
-
-        toRemove.clear();
-        warJustificationHashMap.forEach((name, warJust) -> {
-            warJust.minusTimeLeft(1f);
-            if (warJust.getTimeLeft() <= 0f) {
-                toRemove.add(warJust.getAgainstCountry().name);
-                completedWarJustifications.put(warJust.getAgainstCountry().name, warJust);
-                EventDispatcher.call(new WarJustificationCompletionEvent(warJust, this));
-                warJust.onFinished();
-            }
-        });
-        toRemove.forEach(warJustificationHashMap::remove);
-        newDay(newDay);
-
         List<EventsRunner> e = new ArrayList<>();
         new ArrayList<>(eventsRunners).forEach(eventsRunner -> {
             if (eventsRunner.newDay()) e.add(eventsRunner);
         });
 
         e.forEach(eventsRunners::remove);
-
-        nonAggressionTicks.forEach(nonAggressionPact -> {
-            if (nonAggressionPact.getDuration()<=0f){
-                EventDispatcher.call(new NonAggressionExpireEvent(nonAggressionPact));
-                return;
-            }
-            nonAggressionPact.minus(1f);
-        });
+        newDay(newDay);
     }
 
     public abstract void newDay(NewDay newDay);
@@ -1000,7 +967,7 @@ public abstract class Country implements Cloneable, Saveable {
     }
 
     public void addWarJustification(WarJustification warJustification) {
-        warJustificationHashMap.put(warJustification.getAgainstCountry().name, warJustification);
+        warJustificationHashMap.put(warJustification.against().name, warJustification);
     }
 
     public void removeWarJustification(String country) {
@@ -1029,7 +996,7 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void addNonAggressionPact(NonAggressionPact nonAggressionPact, Country other) {
         nonAggressionPactHashMap.put(other.name, nonAggressionPact);
-        if (nonAggressionPact.getFrom()==this){
+        if (nonAggressionPact.from()==this){
             nonAggressionTicks.add(nonAggressionPact);
         }
         loadCountriesDiplomacy(other);

@@ -1,42 +1,18 @@
 package org.drachens.dataClasses.Diplomacy;
 
 import com.google.gson.JsonElement;
+import net.minestom.server.event.EventDispatcher;
+import org.drachens.dataClasses.Countdown;
 import org.drachens.dataClasses.Countries.Country;
+import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
 import org.drachens.interfaces.Saveable;
 
-public class NonAggressionPact implements Saveable {
-    private final Country from;
-    private final Country to;
-    private final float max;
-    private float duration;
-
-    public NonAggressionPact(Country from, Country to, float duration) {
-        this.from = from;
-        this.to = to;
-        this.max = duration;
-        this.duration = duration;
+public record NonAggressionPact(Country from, Country to, int duration) implements Saveable {
+    public NonAggressionPact {
+        new Countdown(duration,()->{
+            EventDispatcher.call(new NonAggressionExpireEvent(this));
+        }).start(from().getInstance());
     }
-
-    public Country getFrom() {
-        return from;
-    }
-
-    public Country getTo() {
-        return to;
-    }
-
-    public float getMaxDuration() {
-        return max;
-    }
-
-    public float getDuration() {
-        return duration;
-    }
-
-    public void minus(float amount) {
-        duration -= amount;
-    }
-
     @Override
     public JsonElement toJson() {
         return null;

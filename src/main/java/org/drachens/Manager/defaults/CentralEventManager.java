@@ -187,7 +187,7 @@ public class CentralEventManager {
         globEHandler.addListener(StartWarEvent.class, e -> {
             Country defender = e.defender();
             Country attacker = e.attacker();
-            attacker.addModifier(e.warJustification().getModifier());
+            attacker.addModifier(e.warJustification().modifier());
             attacker.removeCompletedWarJustification(defender.getName());
             List<Component> warsWith = new ArrayList<>();
             List<Country> atks = new ArrayList<>();
@@ -537,7 +537,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(WarJustificationStartEvent.class, e -> {
-            Country against = e.warJustification().getAgainstCountry();
+            Country against = e.warJustification().against();
             Country from = e.from();
             from.addWarJustification(e.warJustification());
             against.sendMessage(Component.text()
@@ -553,7 +553,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(WarJustificationCancelEvent.class, e -> {
-            Country against = e.warJustification().getAgainstCountry();
+            Country against = e.warJustification().against();
             Country from = e.from();
             from.removeWarJustification(against.getName());
             against.sendMessage(Component.text()
@@ -569,7 +569,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(WarJustificationCompletionEvent.class, e -> { //Not cancelable
-            Country against = e.warJustification().getAgainstCountry();
+            Country against = e.warJustification().against();
             Country from = e.from();
             against.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
@@ -591,7 +591,7 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(WarJustificationExpiresEvent.class, e -> { //Not cancelable
-            Country against = e.warJustification().getAgainstCountry();
+            Country against = e.warJustification().against();
             Country from = e.from();
             against.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
@@ -636,15 +636,15 @@ public class CentralEventManager {
 
         globEHandler.addListener(NonAggressionOfferEvent.class, e->{
             NonAggressionPact nonAggressionPact = e.nonAggressionPact();
-            Country from = nonAggressionPact.getFrom();
-            Country to = nonAggressionPact.getTo();
+            Country from = nonAggressionPact.from();
+            Country to = nonAggressionPact.to();
             to.addInvite(InvitesEnum.nonaggression,from.getName(),nonAggressionPact);
             to.sendMessage(Component.text()
                             .append(MessageEnum.country.getComponent())
                             .append(Component.text("You have received a non-aggression pact from ",NamedTextColor.GREEN))
                             .append(from.getNameComponent())
                             .appendNewline()
-                            .append(Component.text("Non-aggression pact duration: "+nonAggressionPact.getDuration()+" days"))
+                            .append(Component.text("Non-aggression pact duration: "+nonAggressionPact.duration()+" days"))
                             .append(Component.text()
                                     .append(Component.text(" [ACCEPT]",NamedTextColor.GOLD,TextDecoration.BOLD))
                                     .hoverEvent(HoverEvent.showText(Component.text("Click to accept the non-aggression pact", NamedTextColor.GRAY)))
@@ -659,8 +659,8 @@ public class CentralEventManager {
 
         globEHandler.addListener(NonAggressionExpireEvent.class, e->{
             NonAggressionPact nonAggressionPact = e.nonAggressionPact();
-            Country from = nonAggressionPact.getFrom();
-            Country to = nonAggressionPact.getTo();
+            Country from = nonAggressionPact.from();
+            Country to = nonAggressionPact.to();
             from.removeNonAggressionPact(nonAggressionPact,to);
             to.removeNonAggressionPact(nonAggressionPact,from);
             from.loadCountriesDiplomacy(to);
@@ -681,8 +681,8 @@ public class CentralEventManager {
 
         globEHandler.addListener(NonAggressionAcceptedEvent.class, e->{
             NonAggressionPact nonAggressionPact = e.nonAggressionPact();
-            Country from = nonAggressionPact.getFrom();
-            Country to = nonAggressionPact.getTo();
+            Country from = nonAggressionPact.from();
+            Country to = nonAggressionPact.to();
             to.addInvite(InvitesEnum.nonaggression,from.getName(),nonAggressionPact);
             to.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())

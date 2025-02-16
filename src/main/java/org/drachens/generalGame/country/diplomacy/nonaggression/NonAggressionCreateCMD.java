@@ -18,7 +18,7 @@ public class NonAggressionCreateCMD extends Command {
         super("create");
         var countries = getCountriesArgExcludingPlayersCountry();
 
-        var length = ArgumentType.Float("length");
+        var length = ArgumentType.Integer("length");
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             p.sendMessage(Component.text("Proper usage /country diplomacy non-aggression create <target>", NamedTextColor.RED));

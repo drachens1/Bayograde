@@ -33,6 +33,7 @@ public class ContinentalManagers {
     public static final ChatCensor chatCensor = new ChatCensor();
     public static final GeneralManager generalManager = new GeneralManager();
     public static final SaveManager saveManager = new SaveManager();
+    public static final CountdownManager countdownManager = new CountdownManager();
     public static Database database;
 
     public static WorldClasses world(Instance instance) {
