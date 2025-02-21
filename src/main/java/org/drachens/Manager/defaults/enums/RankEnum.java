@@ -1,10 +1,12 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import org.drachens.store.other.Rank;
 
+@Getter
 public enum RankEnum {
     default_rank(new Rank.Create(Player::getName, Component.text(""),Component.text(""), NamedTextColor.GRAY,"default_rank",0)
             .build()),
@@ -17,8 +19,5 @@ public enum RankEnum {
     private final Rank rank;
     RankEnum(Rank rank){
         this.rank=rank;
-    }
-    public Rank getRank(){
-        return rank;
     }
 }

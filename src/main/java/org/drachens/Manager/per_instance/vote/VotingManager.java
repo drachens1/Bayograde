@@ -1,5 +1,6 @@
 package org.drachens.Manager.per_instance.vote;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -24,6 +25,7 @@ import static org.drachens.util.Messages.broadcast;
 
 public class VotingManager {
     private final HashMap<Player, VotingOption> votes = new HashMap<>();
+    @Getter
     private final VoteBar voteBar;
     private final Instance instance;
     private boolean voted;
@@ -70,10 +72,6 @@ public class VotingManager {
             );
             ContinentalManagers.world(e.p().getInstance()).getAsGlobalGameWorldClass().votingManager().vote(e.voted(), e.p());
         });
-    }
-
-    public VoteBar getVoteBar() {
-        return voteBar;
     }
 
     public void reset() {

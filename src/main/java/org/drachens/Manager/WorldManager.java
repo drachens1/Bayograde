@@ -1,5 +1,7 @@
 package org.drachens.Manager;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
@@ -53,6 +55,8 @@ public class WorldManager {
                     .append(Component.text("]", NamedTextColor.GRAY))
                     .build()
     );
+    @Getter
+    @Setter
     private World defaultWorld;
 
     public WorldManager() {
@@ -151,14 +155,6 @@ public class WorldManager {
         if (null != ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner) {
             p.setWorldClasses(ContinentalManagers.world(p.getInstance()));
         }
-    }
-
-    public World getDefaultWorld() {
-        return defaultWorld;
-    }
-
-    public void setDefaultWorld(World world) {
-        this.defaultWorld = world;
     }
 
     public void registerWorld(World world) {

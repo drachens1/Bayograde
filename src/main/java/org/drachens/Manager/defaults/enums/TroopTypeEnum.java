@@ -1,10 +1,12 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import net.minestom.server.item.Material;
 import org.drachens.animation.Animation;
 import org.drachens.animation.DynamicAnimation;
 import org.drachens.dataClasses.Armys.TroopType;
 
+@Getter
 public enum TroopTypeEnum {
     ww2(new TroopType(
             6, Material.ORANGE_DYE,
@@ -20,7 +22,4 @@ public enum TroopTypeEnum {
         this.troopTye = troopType;
     }
 
-    public TroopType getTroopTye() {
-        return troopTye;
-    }
 }

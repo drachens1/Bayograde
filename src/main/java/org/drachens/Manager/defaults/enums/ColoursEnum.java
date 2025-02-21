@@ -1,7 +1,9 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import net.kyori.adventure.text.format.TextColor;
 
+@Getter
 public enum ColoursEnum {
     RED(255, 0, 0),
     GREEN(0, 255, 0),
@@ -31,7 +33,4 @@ public enum ColoursEnum {
         this.textColor = TextColor.color(r, g, b);
     }
 
-    public TextColor getTextColor() {
-        return textColor;
-    }
 }

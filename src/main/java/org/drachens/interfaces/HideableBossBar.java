@@ -1,5 +1,6 @@
 package org.drachens.interfaces;
 
+import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.minestom.server.entity.Player;
 
@@ -7,16 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class HideableBossBar {
+    @Getter
     private final BossBar bossBar;
     private final List<Player> players = new ArrayList<>();
+    @Getter
     private boolean shown;
 
     protected HideableBossBar(BossBar bossBar) {
         this.bossBar = bossBar;
-    }
-
-    public BossBar getBossBar() {
-        return bossBar;
     }
 
     public void addPlayer(Player p) {
@@ -45,7 +44,4 @@ public abstract class HideableBossBar {
         }
     }
 
-    public boolean isShown() {
-        return shown;
-    }
 }

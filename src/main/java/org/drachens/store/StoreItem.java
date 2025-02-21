@@ -1,5 +1,6 @@
 package org.drachens.store;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public abstract class StoreItem {
+    @Getter
     private final String identifier;
     private final int cost;
     private final Material material;
@@ -65,8 +67,4 @@ public abstract class StoreItem {
     }
 
     protected abstract void onClickAfterBought(CPlayer p);
-
-    public String getIdentifier() {
-        return identifier;
-    }
 }

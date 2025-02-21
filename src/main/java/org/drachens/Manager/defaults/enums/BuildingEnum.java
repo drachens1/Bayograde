@@ -1,10 +1,12 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import org.drachens.dataClasses.Economics.BuildTypes;
 
 import java.util.HashSet;
 import java.util.List;
 
+@Getter
 public enum BuildingEnum {
     university(new HashSet<>(List.of("research"))),
     library(new HashSet<>(List.of("research"))),
@@ -24,11 +26,4 @@ public enum BuildingEnum {
         this.buildTypes = buildTypes;
     }
 
-    public BuildTypes getBuildTypes() {
-        return buildTypes;
-    }
-
-    public HashSet<String> getSynonyms() {
-        return synonyms;
-    }
 }

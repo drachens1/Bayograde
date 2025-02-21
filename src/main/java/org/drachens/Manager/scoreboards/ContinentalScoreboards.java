@@ -1,9 +1,11 @@
 package org.drachens.Manager.scoreboards;
 
+import lombok.Getter;
 import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.player_types.CPlayer;
 
 public abstract class ContinentalScoreboards {
+    @Getter
     private Sidebar sidebar;
     private CPlayer p;
 
@@ -14,10 +16,6 @@ public abstract class ContinentalScoreboards {
     }
 
     protected abstract Sidebar createSidebar(CPlayer p);
-
-    public Sidebar getSidebar() {
-        return sidebar;
-    }
 
     public CPlayer getPlayer() {
         return p;

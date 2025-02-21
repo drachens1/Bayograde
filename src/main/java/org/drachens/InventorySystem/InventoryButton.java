@@ -1,5 +1,6 @@
 package org.drachens.InventorySystem;
 
+import lombok.Getter;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.item.ItemStack;
 import org.drachens.player_types.CPlayer;
@@ -7,6 +8,7 @@ import org.drachens.player_types.CPlayer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Getter
 public class InventoryButton {
     private Function<CPlayer, ItemStack> iconCreator;
     private Consumer<InventoryPreClickEvent> eventConsumer;
@@ -21,11 +23,4 @@ public class InventoryButton {
         return this;
     }
 
-    public Consumer<InventoryPreClickEvent> getEventConsumer() {
-        return this.eventConsumer;
-    }
-
-    public Function<CPlayer, ItemStack> getIconCreator() {
-        return this.iconCreator;
-    }
 }

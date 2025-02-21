@@ -1,11 +1,13 @@
 package org.drachens.store;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 public class StoreCategory {
     private final List<StoreItem> storeItems;
     private final String identifier;
@@ -19,19 +21,4 @@ public class StoreCategory {
         this.storeItems = Arrays.stream(storeItems).toList();
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Component getName() {
-        return name;
-    }
-
-    public ItemStack getItem() {
-        return item;
-    }
-
-    public List<StoreItem> getStoreItems() {
-        return storeItems;
-    }
 }

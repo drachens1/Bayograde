@@ -1,5 +1,6 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -7,6 +8,7 @@ import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.additional.greatDepression.GreatDepression;
 
+@Getter
 public enum ModifiersEnum {
     great_depression(new Modifier.create(Component.text("Great Depression", ColoursEnum.RED.getTextColor()), "great_depression")
             .addBoost(BoostEnum.production, -0.5f)
@@ -92,7 +94,4 @@ public enum ModifiersEnum {
         this.modifier = modifier;
     }
 
-    public Modifier getModifier() {
-        return modifier;
-    }
 }

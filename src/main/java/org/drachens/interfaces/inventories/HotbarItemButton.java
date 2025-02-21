@@ -1,18 +1,16 @@
 package org.drachens.interfaces.inventories;
 
+import lombok.Getter;
 import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.item.ItemStack;
 
+@Getter
 public abstract class HotbarItemButton {
     private final ItemStack item;
 
     protected HotbarItemButton(ItemStack item) {
         this.item = item;
-    }
-
-    public ItemStack getItem() {
-        return item;
     }
 
     // So player start digging event

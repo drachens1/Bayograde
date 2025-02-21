@@ -1,11 +1,13 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Armys.DivisionType;
 import org.drachens.dataClasses.Economics.currency.Payment;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
+@Getter
 public enum DivisionTypeEnum {
     ww2_cavalry(new DivisionType("Cavalry", 2.0f, 1.0f, 3.0f, 2.0f, 1.0f, 1.0f, new Payment(CurrencyEnum.production, 3.0f), itemBuilder(Material.PURPLE_DYE, 0))),
     ww2_infantry(new DivisionType("Infantry", 2.0f, 2.0f, 5.0f, 1.0f, 1.0f, 1.0f, new Payment(CurrencyEnum.production, 4.0f), itemBuilder(Material.PURPLE_DYE, 1))),
@@ -20,7 +22,4 @@ public enum DivisionTypeEnum {
         this.divisionType = divisionType;
     }
 
-    public DivisionType getDivisionType() {
-        return divisionType;
-    }
 }

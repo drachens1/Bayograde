@@ -1,7 +1,9 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
 
+@Getter
 public enum IdeologiesEnum {
     ww2_fascist,
     ww2_neutral,
@@ -14,10 +16,6 @@ public enum IdeologiesEnum {
     ww2_nationalist;
 
     private IdeologyTypes ideologyTypes;
-
-    public IdeologyTypes getIdeologyTypes() {
-        return ideologyTypes;
-    }
 
     public void setIdeologyTypes(IdeologyTypes ideologyTypes) {
         this.ideologyTypes = ideologyTypes;

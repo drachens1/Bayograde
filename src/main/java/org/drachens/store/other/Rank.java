@@ -1,6 +1,7 @@
 package org.drachens.store.other;
 
 import dev.ng5m.Util;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
@@ -24,7 +25,9 @@ public class Rank {
     private final List<UUID> players = new ArrayList<>();
     private final String team;
     private final List<String> items;
+    @Getter
     private final String identifier;
+    @Getter
     private final int weight;
 
     public Rank(Create c){
@@ -40,14 +43,6 @@ public class Rank {
 
     public String toString(){
         return "[identifier:"+ identifier +"-weight:"+ weight + ']';
-    }
-
-    public String getIdentifier(){
-        return identifier;
-    }
-
-    public int getWeight(){
-        return weight;
     }
 
     public final ArrayList<UUID> getPlayers() {

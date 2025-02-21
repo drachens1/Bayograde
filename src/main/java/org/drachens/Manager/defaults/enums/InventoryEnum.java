@@ -1,5 +1,6 @@
 package org.drachens.Manager.defaults.enums;
 
+import lombok.Getter;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.NoneCustomisableInventory;
 import org.drachens.generalGame.clicks.ClicksDefaultInventory;
@@ -17,6 +18,7 @@ import org.drachens.interfaces.inventories.HotbarItemButton;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
+@Getter
 public enum InventoryEnum {
     scoreboardInv(new NoneCustomisableInventory(new HotbarItemButton[]{new ShowDiplomacy(), new ShowEconomy(), new ShowIdeology(), new ShowGeneralInfo(), new ExitItem()})),
 
@@ -41,7 +43,4 @@ public enum InventoryEnum {
         this.hotbarInventory = hotbarInventory;
     }
 
-    public HotbarInventory getHotbarInventory() {
-        return hotbarInventory;
-    }
 }

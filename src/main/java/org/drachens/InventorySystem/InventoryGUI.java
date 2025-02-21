@@ -1,5 +1,6 @@
 package org.drachens.InventorySystem;
 
+import lombok.Getter;
 import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryOpenEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -14,15 +15,12 @@ import java.util.Objects;
 
 public abstract class InventoryGUI implements InventoryHandler {
 
+    @Getter
     private final Inventory inventory;
     private final Map<Integer, InventoryButton> buttonMap = new HashMap<>();
 
     protected InventoryGUI() {
         this.inventory = this.createInventory();
-    }
-
-    public Inventory getInventory() {
-        return this.inventory;
     }
 
     public void addButton(int slot, InventoryButton button) {
