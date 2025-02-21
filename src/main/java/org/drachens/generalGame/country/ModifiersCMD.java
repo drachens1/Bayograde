@@ -3,11 +3,9 @@ package org.drachens.generalGame.country;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.ModifierCommand;
 import org.drachens.player_types.CPlayer;
-
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class ModifiersCMD extends Command {
     public ModifiersCMD() {

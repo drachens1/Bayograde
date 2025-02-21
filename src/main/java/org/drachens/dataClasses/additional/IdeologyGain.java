@@ -1,8 +1,8 @@
 package org.drachens.dataClasses.additional;
 
 import com.google.gson.JsonElement;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.interfaces.Saveable;
 
 public class IdeologyGain implements EventsRunner, Saveable {

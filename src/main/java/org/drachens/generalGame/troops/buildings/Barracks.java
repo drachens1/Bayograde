@@ -7,7 +7,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Armys.DivisionDesign;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;

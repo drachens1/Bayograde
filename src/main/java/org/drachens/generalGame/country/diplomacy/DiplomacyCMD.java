@@ -2,7 +2,7 @@ package org.drachens.generalGame.country.diplomacy;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.generalGame.country.diplomacy.demand.DemandCMD;
 import org.drachens.generalGame.country.diplomacy.justifywar.DeclareWarCMD;
 import org.drachens.generalGame.country.diplomacy.justifywar.JustifyWarCMD;

@@ -1,0 +1,172 @@
+package org.drachens.dataClasses.Countries.countryClass;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.drachens.Manager.defaults.enums.BuildingEnum;
+import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
+import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
+import org.drachens.dataClasses.Economics.Building;
+import org.drachens.dataClasses.Economics.Loan;
+import org.drachens.dataClasses.Economics.Vault;
+import org.drachens.dataClasses.additional.BoostEnum;
+import org.drachens.dataClasses.additional.EventsRunner;
+import org.drachens.dataClasses.additional.Modifier;
+import org.drachens.dataClasses.additional.ModifierCommand;
+import org.drachens.dataClasses.laws.LawCategory;
+import org.drachens.dataClasses.other.CompletionBarTextDisplay;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+@Getter
+@Setter
+public class Economy {
+    private final Vault vault;
+    private EconomyFactionType economyFactionType;
+    private MilitaryFactionType militaryFactionType;
+    private final HashMap<String, Loan> loanRequests = new HashMap<>();
+    private final HashMap<BoostEnum, Float> boostHashmap = new HashMap<>();
+    private final HashMap<String, Modifier> modifiers = new HashMap<>();
+    private final HashMap<String, ModifierCommand> modifierCommandsHashMap = new HashMap<>();
+    private final List<Modifier> visibleModifiers = new ArrayList<>();
+    private final HashMap<String, LawCategory> laws = new HashMap<>();
+    private final List<EventsRunner> eventsRunners = new ArrayList<>();
+    private final HashMap<BuildingEnum, List<Building>> buildTypesListHashMap = new HashMap<>();
+    private CompletionBarTextDisplay capitulationTextBar;
+
+    public Economy(Vault vault, EconomyFactionType economyFactionType, MilitaryFactionType militaryFactionType,
+                   HashMap<String, Loan> loanRequests, HashMap<BoostEnum, Float> boostHashmap,
+                   CompletionBarTextDisplay capitulationTextBar, HashMap<String, Modifier> modifiers,
+                   HashMap<String, ModifierCommand> modifierCommandsHashMap, List<Modifier> visibleModifiers,
+                   HashMap<String, LawCategory> laws, List<EventsRunner> eventsRunners) {
+        this.vault = vault;
+        this.economyFactionType = economyFactionType;
+        this.militaryFactionType = militaryFactionType;
+        this.loanRequests.putAll(loanRequests);
+        this.boostHashmap.putAll(boostHashmap);
+        this.capitulationTextBar = capitulationTextBar;
+        this.modifiers.putAll(modifiers);
+        this.modifierCommandsHashMap.putAll(modifierCommandsHashMap);
+        this.visibleModifiers.addAll(visibleModifiers);
+        this.laws.putAll(laws);
+        this.eventsRunners.addAll(eventsRunners);
+    }
+
+    public void addLoanRequest(String key, Loan loan) {
+        loanRequests.put(key, loan);
+    }
+
+    public void removeLoanRequest(String key) {
+        loanRequests.remove(key);
+    }
+
+    public boolean containsLoanRequest(String key) {
+        return loanRequests.containsKey(key);
+    }
+
+    public float getBoost(BoostEnum boostType) {
+        if (boostType.isPercentage()){
+            return boostHashmap.getOrDefault(boostType,1f);
+        }
+        return boostHashmap.getOrDefault(boostType,0f);
+    }
+
+    public void addBoost(BoostEnum boostType, float value) {
+        boostHashmap.merge(boostType, value, Float::sum);
+    }
+
+    public void removeBoost(BoostEnum boostType, float value) {
+        boostHashmap.merge(boostType, -value, Float::sum);
+    }
+    public boolean containsBoost(BoostEnum boostType) {
+        return boostHashmap.containsKey(boostType);
+    }
+
+    public boolean hasModifier(String key){
+        return modifiers.containsKey(key);
+    }
+
+    public void addModifier(String key, Modifier modifier) {
+        modifiers.put(key, modifier);
+    }
+
+    public void removeModifier(String key) {
+        modifiers.remove(key);
+    }
+
+    public boolean containsModifier(String key) {
+        return modifiers.containsKey(key);
+    }
+
+    public void addModifierCommand(String key, ModifierCommand command) {
+        modifierCommandsHashMap.put(key, command);
+    }
+
+    public void removeModifierCommand(String key) {
+        modifierCommandsHashMap.remove(key);
+    }
+
+    public boolean containsModifierCommand(String key) {
+        return modifierCommandsHashMap.containsKey(key);
+    }
+
+    public void addVisibleModifier(Modifier modifier) {
+        if (!visibleModifiers.contains(modifier)) {
+            visibleModifiers.add(modifier);
+        }
+    }
+
+    public void removeVisibleModifier(Modifier modifier) {
+        visibleModifiers.remove(modifier);
+    }
+
+    public boolean containsVisibleModifier(Modifier modifier) {
+        return visibleModifiers.contains(modifier);
+    }
+
+    public void addLaw(String key, LawCategory lawCategory) {
+        laws.put(key, lawCategory);
+    }
+
+    public void removeLaw(String key) {
+        laws.remove(key);
+    }
+
+    public boolean containsLaw(String key) {
+        return laws.containsKey(key);
+    }
+
+    public void addEventsRunner(EventsRunner eventsRunner){
+        eventsRunners.add(eventsRunner);
+    }
+
+    public void removeEventsRunner(EventsRunner eventsRunner){
+        eventsRunners.remove(eventsRunner);
+    }
+
+    public void removeEventsRunners(List<EventsRunner> eventsRunner){
+        eventsRunners.removeAll(eventsRunner);
+    }
+
+    public void addBuilding(Building building) {
+        buildTypesListHashMap.computeIfAbsent(building.getBuildTypes(), k -> new ArrayList<>()).add(building);
+    }
+
+    public boolean removeBuilding(Building building) {
+        List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
+        return buildings != null && buildings.remove(building);
+    }
+
+    public void removeAllBuildingOfType(BuildingEnum type) {
+        buildTypesListHashMap.remove(type);
+    }
+
+    public List<Building> getBuildingType(BuildingEnum type) {
+        return buildTypesListHashMap.getOrDefault(type, new ArrayList<>());
+    }
+
+    public Modifier getModifier(String name){
+        return modifiers.get(name);
+    }
+}

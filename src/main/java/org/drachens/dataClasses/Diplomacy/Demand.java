@@ -1,11 +1,13 @@
 package org.drachens.dataClasses.Diplomacy;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.event.EventDispatcher;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.events.countries.demands.DemandCompletionEvent;
 import org.drachens.interfaces.Saveable;
 
+@Getter
 public abstract class Demand implements Saveable {
     private final Country fromCountry;
     private final Country toCountry;
@@ -13,14 +15,6 @@ public abstract class Demand implements Saveable {
     public Demand(Country fromCountry, Country toCountry) {
         this.fromCountry = fromCountry;
         this.toCountry = toCountry;
-    }
-
-    public Country getFromCountry() {
-        return fromCountry;
-    }
-
-    public Country getToCountry() {
-        return toCountry;
     }
 
     public abstract Component description();
@@ -42,7 +36,7 @@ public abstract class Demand implements Saveable {
     }
 
     public void complete() {
-        toCountry.sendDemand(this);
+        toCountry.getDiplomacy().addDemand(fromCountry.getName(),this);
         onCompleted();
     }
 

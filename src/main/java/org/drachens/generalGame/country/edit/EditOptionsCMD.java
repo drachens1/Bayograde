@@ -7,7 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
 
 public class EditOptionsCMD extends Command {

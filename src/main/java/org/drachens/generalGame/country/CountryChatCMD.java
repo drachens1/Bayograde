@@ -3,8 +3,8 @@ package org.drachens.generalGame.country;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.CountryChat;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 

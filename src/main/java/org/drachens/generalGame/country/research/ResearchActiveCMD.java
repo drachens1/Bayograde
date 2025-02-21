@@ -2,7 +2,7 @@ package org.drachens.generalGame.country.research;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
 
 public class ResearchActiveCMD extends Command {

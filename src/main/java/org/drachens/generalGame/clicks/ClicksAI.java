@@ -8,7 +8,8 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalType;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalTypeEnum;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Economics.BuildTypes;
@@ -75,13 +76,13 @@ public class ClicksAI implements AIManager, Saveable {
 
         public void tick() {
             if (canBuild) return;
-            int count = (int) (country.getVault().getAmount(CurrencyEnum.production.getCurrencyType()) / 5f);
-            buildFactory(new ArrayList<>(country.getCities()), count);
+            int count = (int) (country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()) / 5f);
+            buildFactory(new ArrayList<>(country.getMilitary().getCities()), count);
         }
 
         private void buildFactory(List<Province> cities, int count) {
             if (cities.isEmpty()) {
-                if (country.getVault().getAmount(CurrencyEnum.production.getCurrencyType()) > 10f) {
+                if (country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()) > 10f) {
                     canBuild = true;
                 }
                 return;
@@ -117,7 +118,7 @@ public class ClicksAI implements AIManager, Saveable {
 
         public ResearchGrinder(Country country) {
             this.country = country;
-            this.researchCountry = country.getResearchCountry();
+            this.researchCountry = country.getResearch().researchCountry();
             tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
         }
 
@@ -132,7 +133,7 @@ public class ClicksAI implements AIManager, Saveable {
 
         public void buildResearch() {
             if (availableSpaces.isEmpty()) {
-                List<Province> provinces = country.getOccupies();
+                List<Province> provinces = country.getMilitary().getOccupies();
                 Province province = provinces.get(r.nextInt(provinces.size()));
                 if (researchCenter.canBuild(country, province, null)) {
                     researchCenter.forceBuild(country, province, null);
@@ -192,32 +193,33 @@ public class ClicksAI implements AIManager, Saveable {
         public GlobalDominationAI(Country country, ClickWarSystem clickWarSystem) {
             this.clickWarSystem = clickWarSystem;
             this.country = country;
-            c = warJust -> EventDispatcher.call(new StartWarEvent(country, warJust.getAgainstCountry(), warJust));
+            c = warJust -> EventDispatcher.call(new StartWarEvent(country, warJust.against(), warJust));
         }
 
         @Override
         public void tick() {
-            if (!country.getBordersWars().isEmpty()){
-                conquerCountry(new ArrayList<>(country.getBordersWars()));
-            } else if (country.getWarJustifications().isEmpty()){
+            if (!country.getMilitary().getBordersWars().isEmpty()){
+                conquerCountry(new ArrayList<>(country.getMilitary().getBordersWars()));
+            } else if (country.getDiplomacy().getWarJustificationCountries().isEmpty()){
                 startAWar();
             }
         }
 
         public void startAWar() {
-            List<String> s = country.getBorders().stream().toList();
+            List<String> s = country.getMilitary().getBorders().stream().toList();
             String count = s.get(new Random().nextInt(0,s.size()));
             Country atk = ContinentalManagers.world(country.getInstance()).countryDataManager().getCountryFromName(count);
             if (!country.canFight(atk) || country.isAtWar(atk.getName())){
                 return;
             }
-            WarJustification warJustification = new WarJustification(WarGoalTypeEnum.surprise.getWarGoalType(), atk, c);
+            WarGoalType w = WarGoalTypeEnum.surprise.getWarGoalType();
+            WarJustification warJustification = new WarJustification(atk, country, w.modifier(), w.timeToMake(), w.expires(), c);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
         }
 
         public void conquerCountry(List<String> s) {
             Country atk = ContinentalManagers.world(country.getInstance()).countryDataManager().getCountryFromName(s.getFirst());
-            List<Province> provinces = country.getBordersCountry(s.getFirst());
+            List<Province> provinces = country.getMilitary().getBorder(s.getFirst());
             if (provinces==null){
                 s.remove(atk.getName());
                 if (s.isEmpty())return;

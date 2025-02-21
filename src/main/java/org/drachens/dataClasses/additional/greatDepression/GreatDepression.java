@@ -7,7 +7,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.suggestion.Suggestion;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.additional.ModifierCommand;
@@ -22,7 +22,7 @@ public class GreatDepression implements ModifierCommand, Saveable {
     @Override
     public void getSuggestion(CPlayer p, CommandContext context, Suggestion suggestion) {
         Country country = p.getCountry();
-        Modifier modifier = country.getModifier("great_depression");
+        Modifier modifier = country.getEconomy().getModifier("great_depression");
         GreatDepressionEventsRunner eventsRunner = (GreatDepressionEventsRunner) modifier.getEventsRunners().getFirst();
 
         if (!eventsRunner.isProtectionismComp()) suggestion.addEntry(new SuggestionEntry("protectionism"));
@@ -43,7 +43,7 @@ public class GreatDepression implements ModifierCommand, Saveable {
     @Override
     public void execute(CPlayer p, String input) {
         Country country = p.getCountry();
-        Modifier modifier = country.getModifier("great_depression");
+        Modifier modifier = country.getEconomy().getModifier("great_depression");
         GreatDepressionEventsRunner eventsRunner = (GreatDepressionEventsRunner) modifier.getEventsRunners().getFirst();
         if (eventsRunner.getTimeSinceLast() < 70) {
             p.sendMessage(notEnoughTime);

@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;

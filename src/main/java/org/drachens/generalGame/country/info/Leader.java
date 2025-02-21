@@ -6,7 +6,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 
 import static org.drachens.util.CommandsUtil.getCountryNames;
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;

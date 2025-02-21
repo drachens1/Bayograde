@@ -6,7 +6,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionSetLeaderEvent;
 import org.drachens.player_types.CPlayer;

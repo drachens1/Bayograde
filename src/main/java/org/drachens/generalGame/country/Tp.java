@@ -3,7 +3,7 @@ package org.drachens.generalGame.country;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
 
 import static org.drachens.util.CommandsUtil.getCountriesArg;
@@ -22,7 +22,7 @@ public class Tp extends Command {
                 p.sendMessage("Join a country or do /country tp <country>");
                 return;
             }
-            p.teleport(country.getCapital().getPos().withY(1));
+            p.teleport(country.getInfo().getCapital().getPos().withY(1));
         });
 
         addSyntax((sender, context) -> {
@@ -33,7 +33,7 @@ public class Tp extends Command {
                 p.sendMessage("That is not a valid country");
                 return;
             }
-            p.teleport(country.getCapital().getPos().withY(1));
+            p.teleport(country.getInfo().getCapital().getPos().withY(1));
         }, countries);
     }
 }

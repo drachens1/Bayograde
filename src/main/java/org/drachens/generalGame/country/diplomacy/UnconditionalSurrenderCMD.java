@@ -4,7 +4,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.events.countries.war.UnconditionalSurrenderEvent;
 import org.drachens.player_types.CPlayer;
 
@@ -19,7 +19,7 @@ public class UnconditionalSurrenderCMD extends Command {
                     if (!(sender instanceof CPlayer p)) {
                         return;
                     }
-                    getSuggestionBasedOnInput(suggestion, p.getCountry().getCountryWars());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getDiplomacy().getCountryWars());
                 });
 
         addSyntax((sender, context) -> {
@@ -34,7 +34,7 @@ public class UnconditionalSurrenderCMD extends Command {
                 p.sendMessage("That is not a valid country");
                 return;
             }
-            if (!country.isAtWar(other)) {
+            if (!country.isAtWar(other.getName())) {
                 p.sendMessage("You are not at war with that country");
                 return;
             }

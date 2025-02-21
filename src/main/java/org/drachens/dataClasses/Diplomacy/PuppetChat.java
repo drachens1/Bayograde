@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.interfaces.Channel;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
@@ -19,7 +19,7 @@ public class PuppetChat implements Channel {
     @Override
     public void onChat(PlayerChatEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (overlord == p.getCountry() || overlord.getPuppets().contains(p.getCountry())) {
+        if (overlord == p.getCountry() || overlord.getDiplomacy().getPuppets().contains(p.getCountry())) {
             Component msg = Component.text()
                     .append(MessageEnum.puppetChat.getComponent())
                     .append(Component.text(p.getUsername()))
@@ -27,7 +27,7 @@ public class PuppetChat implements Channel {
                     .append(Component.text(e.getRawMessage()))
                     .build();
             overlord.sendMessage(msg);
-            overlord.getPuppets().forEach(puppet -> puppet.sendMessage(msg));
+            overlord.getDiplomacy().getPuppets().forEach(puppet -> puppet.sendMessage(msg));
         } else {
             p.sendMessage(Component.text("You no longer have access to this chat", NamedTextColor.RED));
         }

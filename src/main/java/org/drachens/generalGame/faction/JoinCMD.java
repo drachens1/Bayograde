@@ -9,7 +9,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionJoinEvent;
 import org.drachens.player_types.CPlayer;

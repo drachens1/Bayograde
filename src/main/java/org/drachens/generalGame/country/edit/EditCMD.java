@@ -2,7 +2,7 @@ package org.drachens.generalGame.country.edit;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.generalGame.country.edit.ideology.IdeologiesCMD;
 import org.drachens.generalGame.country.edit.laws.LawsCMD;
 import org.drachens.player_types.CPlayer;

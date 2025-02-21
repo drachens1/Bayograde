@@ -1,9 +1,7 @@
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.0"
-    application
-    `java-library`
-    `maven-publish`
+    id("io.freefair.lombok") version "8.4"
 }
 
 group = "org.drachens"
@@ -20,17 +18,17 @@ dependencies {
     implementation("de.articdive:jnoise-pipeline:4.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
     implementation("net.kyori:adventure-text-minimessage:4.18.0")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.30")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
-}
-
-application {
-    applicationDefaultJvmArgs = listOf("--add-opens=java.base/java.lang=ALL-UNNAMED")
 }
 
 

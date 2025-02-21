@@ -1,7 +1,7 @@
 package org.drachens.dataClasses.laws;
 
 import com.google.gson.JsonElement;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;

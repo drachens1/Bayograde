@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -30,7 +30,7 @@ public class ResearchCenter extends BuildTypes {
     public void onBuild(Country country, Province province, CPlayer p) {
         country.removePayments(payments);
         new Building(this, province);
-        ResearchCountry c = country.getResearchCountry();
+        ResearchCountry c = country.getResearch().researchCountry();
         c.addResearchCenter(province.getBuilding());
     }
 
@@ -47,8 +47,8 @@ public class ResearchCenter extends BuildTypes {
 
     @Override
     protected void onCaptured(Country capturer, Building building) {
-        ResearchCountry c = building.getCountry().getResearchCountry();
-        ResearchCountry s = capturer.getResearchCountry();
+        ResearchCountry c = building.getCountry().getResearch().researchCountry();
+        ResearchCountry s = capturer.getResearch().researchCountry();
         c.removeResearchCenter(building);
         s.addResearchCenter(building);
         building.setCountry(capturer);

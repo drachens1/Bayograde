@@ -54,7 +54,7 @@ import org.drachens.cmd.minigames.MinigamesCMD;
 import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.additional.GlobalGameWorldClass;
 import org.drachens.dataClasses.datastorage.DataStorer;

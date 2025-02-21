@@ -6,7 +6,7 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.player_types.CPlayer;

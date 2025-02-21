@@ -5,7 +5,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.events.countries.LiberationEvent;
 import org.drachens.player_types.CPlayer;
 
@@ -19,7 +19,7 @@ public class LiberateCMD extends Command {
                     if (!(sender instanceof CPlayer p)) {
                         return;
                     }
-                    getSuggestionBasedOnInput(suggestion, p.getCountry().getOtherCountriesOccupier());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getMilitary().getOccupiesOthersCores());
                 });
 
         var type = ArgumentType.String("Type")
@@ -39,11 +39,11 @@ public class LiberateCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (target.hasCapitulated()) {
+            if (target.getInfo().isCapitulated()) {
                 p.sendMessage("You need to select a type if it has capitulated \n Proper usage /country diplomacy liberate <country> <type>");
                 return;
             }
-            if (country.getOthersCores(target).isEmpty()) {
+            if (country.getMilitary().getOthersCores(target).isEmpty()) {
                 p.sendMessage("You don't occupy any of there cores");
                 return;
             }

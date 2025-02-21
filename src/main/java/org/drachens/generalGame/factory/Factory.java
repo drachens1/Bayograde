@@ -10,7 +10,7 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.animation.Animation;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -91,7 +91,7 @@ public class Factory extends BuildTypes {
 
     @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
-        if (province.getOccupier() != country && country.isPuppet(province.getOccupier())) return false;
+        if (province.getOccupier() != country && country.getDiplomacy().containsPuppet(province.getOccupier())) return false;
         if (province.getBuilding() != null) return false;
         if (!province.isCity()) return false;
         if (!country.canMinusCost(payment)) {
@@ -172,10 +172,10 @@ public class Factory extends BuildTypes {
         Province province = building.getProvince();
         long initialDelay = new Random().nextLong(0, 200);
         scheduler.buildTask(() -> {
-            TextDisplay textDisplay = new TextDisplay.create(province, text)
-                    .setFollowPlayer(true)
-                    .setLineWidth(40)
-                    .withOffset()
+            TextDisplay textDisplay = TextDisplay.create(province, text)
+                    .followPlayer(true)
+                    .lineWidth(40)
+                    .offset(true)
                     .build();
             building.getCountry().addANotSavedTextDisplay(textDisplay);
             scheduler.buildTask(() -> {

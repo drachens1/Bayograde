@@ -10,7 +10,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.Manager.per_instance.CountryDataManager;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
 import org.drachens.dataClasses.Diplomacy.faction.MilitaryFactionType;
 import org.drachens.events.factions.FactionCreateEvent;

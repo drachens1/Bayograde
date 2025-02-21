@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.Manager.defaults.enums.ColoursEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;

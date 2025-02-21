@@ -15,7 +15,7 @@ public class TroopSummonCMD extends Command {
         setDefaultExecutor((sender,context)->{
             CPlayer p = (CPlayer) sender;
             TroopCountry country = (TroopCountry) p.getCountry();
-            Troop troop = new Troop(country.getCapital(),new DivisionTrainingQueue.TrainedTroop(TroopTypeEnum.ww2.getTroopTye(), country.getDivisionDesigns().getFirst(),0f), PathingEnum.ww2.getaStarPathfinderVoids());
+            Troop troop = new Troop(country.getInfo().getCapital(),new DivisionTrainingQueue.TrainedTroop(TroopTypeEnum.ww2.getTroopTye(), country.getDivisionDesigns().getFirst(),0f), PathingEnum.ww2.getaStarPathfinderVoids());
             troop.getTroopType().getShootingAnimation().start(troop.getTroop(),true);
         });
     }

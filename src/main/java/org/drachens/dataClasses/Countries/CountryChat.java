@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.player.PlayerChatEvent;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.interfaces.Channel;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
@@ -18,7 +19,7 @@ public class CountryChat implements Channel {
     @Override
     public void onChat(PlayerChatEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (country.containsPlayer(p)) {
+        if (country.getInfo().containsPlayer(p)) {
             country.sendMessage(Component.text()
                     .append(MessageEnum.countryChat.getComponent())
                     .append(Component.text(p.getUsername()))

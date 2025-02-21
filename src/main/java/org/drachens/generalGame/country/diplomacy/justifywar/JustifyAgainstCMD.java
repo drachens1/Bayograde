@@ -7,7 +7,8 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalType;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarGoalTypeEnum;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
@@ -42,7 +43,7 @@ public class JustifyAgainstCMD extends Command {
                 p.sendMessage(Component.text("You cant justify on yourself/ally/puppet/non-aggression pact", NamedTextColor.RED));
                 return;
             }
-            if (country.hasCondition(ConditionEnum.cant_start_a_war)) {
+            if (country.getDiplomacy().hasCondition(ConditionEnum.cant_start_a_war)) {
                 p.sendMessage(Component.text("You have the cant start a war condition. Therefore you cant start a war.", NamedTextColor.RED));
                 return;
             }
@@ -52,7 +53,8 @@ public class JustifyAgainstCMD extends Command {
                 return;
             }
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);
-            WarJustification warJustification = new WarJustification(warGoalTypeEnum.getWarGoalType(), against);
+            WarGoalType w = warGoalTypeEnum.getWarGoalType();
+            WarJustification warJustification = new WarJustification(country,against,w.modifier(),w.timeToMake(),w.expires(),null);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
         }, option, countries);
     }

@@ -4,13 +4,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.Pair;
+import lombok.Getter;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.interfaces.Saveable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 import static org.drachens.util.JsonUtil.saveHashMap;
 
+@Getter
 public class Ideology implements Saveable {
     private final Country country;
     private final HashMap<IdeologyTypes, Float> ideologies;
@@ -51,20 +55,12 @@ public class Ideology implements Saveable {
         }
     }
 
-    public IdeologyTypes getCurrentIdeology() {
-        return currentIdeology;
-    }
-
     public void setCurrentIdeology(IdeologyTypes currentIdeology) {
         if (this.currentIdeology != null) {
             country.removeModifier(this.currentIdeology.getModifier());
         }
         country.addModifier(currentIdeology.getModifier());
         this.currentIdeology = currentIdeology;
-    }
-
-    public HashMap<IdeologyTypes, Float> getIdeologies() {
-        return ideologies;
     }
 
     public void addIdeology(IdeologyTypes ideology, float percentage) {
@@ -95,6 +91,28 @@ public class Ideology implements Saveable {
     }
 
     public void changeLeadingIdeology() {
+        Pair<IdeologyTypes, Float> highest = getIdeologyTypesFloatPair();
+
+        if (currentIdeology == null) {
+            if (country.getInfo().getLeader() == null) {
+                List<Leader> leaders = highest.left().getLeaders();
+                country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
+                currentIdeology = highest.left();
+                return;
+            } else {
+                currentIdeology = country.getInfo().getLeader().getIdeologyTypes();
+            }
+        }
+        List<Leader> leaders = new ArrayList<>(currentIdeology.getLeaders());
+        if (currentIdeology != highest.left()) {
+            if (country.getInfo().getLeader() != null)
+                country.removeModifier(country.getInfo().getLeader().getIdeologyTypes().getModifier());
+            country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
+        }
+        currentIdeology = highest.left();
+    }
+
+    private @NotNull Pair<IdeologyTypes, Float> getIdeologyTypesFloatPair() {
         Pair<IdeologyTypes, Float> highest = new Pair<>() {
             @Override
             public IdeologyTypes left() {
@@ -121,24 +139,7 @@ public class Ideology implements Saveable {
                 };
             }
         }
-
-        if (currentIdeology == null) {
-            if (country.getLeader() == null) {
-                List<Leader> leaders = highest.left().getLeaders();
-                country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
-                currentIdeology = highest.left();
-                return;
-            } else {
-                currentIdeology = country.getLeader().getIdeologyTypes();
-            }
-        }
-        List<Leader> leaders = new ArrayList<>(currentIdeology.getLeaders());
-        if (currentIdeology != highest.left()) {
-            if (country.getLeader() != null)
-                country.removeModifier(country.getLeader().getIdeologyTypes().getModifier());
-            country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
-        }
-        currentIdeology = highest.left();
+        return highest;
     }
 
     public Ideology clone(Country country) {

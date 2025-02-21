@@ -1,10 +1,14 @@
 package org.drachens.dataClasses.other;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 
+@Getter
+@Setter
 public class CompletionBarTextDisplay {
     private final TextDisplay textDisplay;
     private final String fullBar = "||||||||||||||||||||||||||";
@@ -14,27 +18,15 @@ public class CompletionBarTextDisplay {
 
     public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour, Component additional) {
         pos = pos.add(0.5, 0, 0.5);
-        textDisplay = new TextDisplay.create(pos, instance, Component.text(fullBar, colour))
-                .setFollowPlayer(true)
+        textDisplay = TextDisplay.create(instance, pos, Component.text(fullBar, colour))
+                .followPlayer(true)
                 .build();
         this.colour = colour;
         this.additional=additional;
     }
 
-    public void setAdditional(Component additional){
-        this.additional=additional;
-    }
-
-    public TextDisplay getTextDisplay() {
-        return textDisplay;
-    }
-
     public void addProgress(float amount) {
         progress += amount;
-    }
-
-    public float getProgress() {
-        return progress;
     }
 
     public void setProgress(float progress) {

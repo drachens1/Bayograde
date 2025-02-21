@@ -1,7 +1,8 @@
 package org.drachens.dataClasses.Economics;
 
+import lombok.Getter;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public abstract class Vault implements Saveable {
     protected final HashMap<CurrencyTypes, Currencies> amount;
     protected final List<Loan> loans;
@@ -56,7 +58,7 @@ public abstract class Vault implements Saveable {
     }
 
     public void minusPayment(Payment payment, Country beneficiary) {
-        beneficiary.getVault().addPayment(payment);
+        beneficiary.getEconomy().getVault().addPayment(payment);
         amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
             if (existingCurrency == null) {
                 return new Currencies(key, -payment.getAmount());
@@ -120,13 +122,13 @@ public abstract class Vault implements Saveable {
 
     public void calculateIncrease() {
         Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
-        List<Building> buildings = country.getBuildings(BuildingEnum.factory);
+        List<Building> buildings = country.getEconomy().getBuildingType(BuildingEnum.factory);
         extraCalcIncrease();
         if (buildings == null) return;
 
         Payments toCountry = new Payments();
         Payments toOverlord = new Payments();
-        boolean overlord = country.getOverlord() != null;
+        boolean overlord = country.getInfo().getOverlord() != null;
 
         buildings.forEach(building -> {
             Payment payment = factory.generate(building);
@@ -144,7 +146,7 @@ public abstract class Vault implements Saveable {
         addPayments(toCountry);
 
         if (overlord) {
-            country.getOverlord().addPayments(toOverlord);
+            country.getInfo().getOverlord().addPayments(toOverlord);
         }
         loans.forEach(Loan::payThisWeek);
     }
@@ -190,8 +192,4 @@ public abstract class Vault implements Saveable {
     }
 
     protected abstract List<Currencies> getCustomCurrencies();
-
-    public List<Loan> getLoans() {
-        return loans;
-    }
 }

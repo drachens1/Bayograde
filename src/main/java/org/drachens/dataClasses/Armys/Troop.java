@@ -1,12 +1,14 @@
 package org.drachens.dataClasses.Armys;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
+import lombok.Setter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.timer.Scheduler;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue.TrainedTroop;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.generalGame.troops.Combat;
@@ -20,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Getter
+@Setter
 public class Troop implements Saveable {
     private final TroopType troopType;
     private final TroopCountry country;
@@ -46,9 +50,9 @@ public class Troop implements Saveable {
         this.troopPathing = troopPathing;
         this.troopType = trainedTroop.getTroopType();
         this.country = trainedTroop.getCountry();
-        this.troop = new ItemDisplay(troopType.getOwnTroop(), province, ItemDisplay.DisplayType.GROUND, true, ItemDisplay.Front.north);
-        this.ally = new ItemDisplay(troopType.getAllyTroop(), province, ItemDisplay.DisplayType.GROUND, true, ItemDisplay.Front.north);
-        this.enemy = new ItemDisplay(troopType.getEnemyTroop(), province, ItemDisplay.DisplayType.GROUND, true, ItemDisplay.Front.north);
+        this.troop = new ItemDisplay(troopType.getOwnTroop(), province, ItemDisplay.DisplayType.GROUND);
+        this.ally = new ItemDisplay(troopType.getAllyTroop(), province, ItemDisplay.DisplayType.GROUND);
+        this.enemy = new ItemDisplay(troopType.getEnemyTroop(), province, ItemDisplay.DisplayType.GROUND);
         this.province = province;
         this.design = trainedTroop.getDesign();
         this.strength = trainedTroop.getStrength();
@@ -70,41 +74,15 @@ public class Troop implements Saveable {
         this.organisation = org;
     }
 
-    public Province getProvince() {
-        return province;
-    }
-
-    public ItemDisplay getAlly() {
-        return ally;
-    }
-
-    public ItemDisplay getEnemey() {
-        return enemy;
-    }
-
-    public ItemDisplay getTroop() {
-        return troop;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public boolean isDead(){
-        return dead;
-    }
-
     public void move(Province to) {
         if (task != null && task.isAlive()) task.cancel();
         startMoveAnimation();
         if (province.distance(to)<=1){
-            task = scheduler.buildTask(()->{
-                moveBlock(to);
-            }).delay(1200, ChronoUnit.MILLIS).schedule();
+            task = scheduler.buildTask(()-> moveBlock(to)).delay(1200, ChronoUnit.MILLIS).schedule();
             return;
         }
         task = scheduler.buildTask(new Runnable() {
-            final List<AStarPathfinderXZ.Node> path = country.getaStarPathfinder().findPath(province, to, country, troopPathing);
+            final List<AStarPathfinderXZ.Node> path = country.getMilitary().getAStarPathfinder().findPath(province, to, country, troopPathing);
             int current = 0;
 
             @Override
@@ -146,7 +124,7 @@ public class Troop implements Saveable {
 
     private void addOccp(Country occp){
         if (!countries.contains(occp)){
-            int diplo = country.getDiplomacy(occp.getName());
+            int diplo = country.getDiplomaticRelations(occp.getName());
             if (!(diplo==6||diplo==5)){
                 countries.add(occp);
                 occp.addClientside(enemy);
@@ -212,34 +190,6 @@ public class Troop implements Saveable {
         kill();
     }
 
-    public void setBattle(Combat battle) {
-        this.battle = battle;
-    }
-
-    public float getHealth() {
-        return health;
-    }
-
-    public void setHealth(float amount) {
-        this.health = amount;
-    }
-
-    public float getDefence() {
-        return defence;
-    }
-
-    public float getStrength() {
-        return damage;
-    }
-
-    public void setStrength(float s) {
-        strength = s;
-    }
-
-    public float getDamage() {
-        return damage;
-    }
-
     public void kill() {
         if (isDead()){
             return;
@@ -250,24 +200,19 @@ public class Troop implements Saveable {
         country.removeTroop(this);
         countries.forEach(country1 -> country1.removeClientside(enemy));
         if (country.isInAMilitaryFaction()){
-            country.getMilitaryFactionType().getMembers().forEach(country1 -> country1.removeClientside(ally));
+            country.getEconomy().getMilitaryFactionType().getMembers().forEach(country1 -> country1.removeClientside(ally));
         }
         if (country.hasPuppets()){
-            country.getPuppets().forEach(country1 -> country1.removeClientside(ally));
+            country.getDiplomacy().getPuppets().forEach(country1 -> country1.removeClientside(ally));
         }
         if (country.hasOverlord()){
-            country.getOverlord().getPuppets().forEach(country1 -> country1.removeClientside(ally));
-            country.getOverlord().removeClientside(ally);
+            country.getInfo().getOverlord().getDiplomacy().getPuppets().forEach(country1 -> country1.removeClientside(ally));
+            country.getInfo().getOverlord().removeClientside(ally);
         }
         troop.dispose();
         ally.dispose();
         enemy.dispose();
     }
-
-    public TroopCountry getCountry() {
-        return country;
-    }
-
     private void cull(){
         if (province.getTroops().size()>=2){
             if (province.getTroops().getFirst()!=this){
@@ -276,10 +221,6 @@ public class Troop implements Saveable {
         }else {
             showDisplays();
         }
-    }
-
-    public TroopType getTroopType() {
-        return troopType;
     }
 
     private void startMoveAnimation(){

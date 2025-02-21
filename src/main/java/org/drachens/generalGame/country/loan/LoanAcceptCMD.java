@@ -3,7 +3,7 @@ package org.drachens.generalGame.country.loan;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 

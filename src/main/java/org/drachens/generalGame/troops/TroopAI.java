@@ -5,7 +5,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.events.NewDay;
 import org.drachens.generalGame.factory.Factory;

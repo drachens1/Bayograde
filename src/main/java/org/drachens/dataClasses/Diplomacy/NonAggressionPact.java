@@ -3,7 +3,7 @@ package org.drachens.dataClasses.Diplomacy;
 import com.google.gson.JsonElement;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countdown;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.events.countries.nonaggression.NonAggressionExpireEvent;
 import org.drachens.interfaces.Saveable;
 

@@ -3,7 +3,7 @@ package org.drachens.dataClasses.Diplomacy.Justifications;
 import com.google.gson.JsonElement;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countdown;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.events.countries.warjustification.WarJustificationCompletionEvent;
 import org.drachens.events.countries.warjustification.WarJustificationExpiresEvent;
@@ -18,12 +18,12 @@ public record WarJustification(Country from, Country against, Modifier modifier,
             if (runnable!=null){
                 runnable.accept(this);
             }
-            from.removeCompletedWarJustification(against.getName());
+            from.getDiplomacy().removeCompletedWarJustification(against.getName());
         });
         new Countdown(timeLeft,()->{
             EventDispatcher.call(new WarJustificationExpiresEvent(this, from));
             expiration.start(from.getInstance());
-            from.removeWarJustification(against.getName());
+            from.getDiplomacy().removeWarJustification(against.getName());
         }).start(from.getInstance());
     }
     @Override

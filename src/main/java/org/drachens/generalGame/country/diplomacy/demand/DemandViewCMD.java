@@ -8,7 +8,7 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.generalGame.demand.WW2Demands;
 import org.drachens.player_types.CPlayer;
 

@@ -242,20 +242,13 @@ public class Main {
         Material radMaterial = Material.SADDLE;
         Material planMaterial = Material.BROWN_DYE;
 
-        List<ElectionsEnum> electionTypes = new ArrayList<>();
-        electionTypes.add(ElectionsEnum.democratic);
-        electionTypes.add(ElectionsEnum.authoritarian);
-        electionTypes.add(ElectionsEnum.republic);
-        electionTypes.add(ElectionsEnum.totalitarian);
-
-        VotingWinner.ww2_clicks.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
-                .setMapGenerator(new MapGeneratorManager())
-                .setWar(new ClickWarSystem())
-                .setCountries(63)
-                .setDefaultCurrencies(c)
-                .setIdeologyTypes(ideologyTypesList)
-                .setElections(electionTypes)
-                .setTechTree(new TechTree.Create(Component.text("Tech", NamedTextColor.BLUE))
+        VotingWinner.ww2_clicks.setVotingOption(VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
+                .mapGenerator(new MapGeneratorManager())
+                .war(new ClickWarSystem())
+                .countries(63)
+                .defaultCurrencies(c)
+                .ideologyTypes(ideologyTypesList)
+                .tree(new TechTree.Create(Component.text("Tech", NamedTextColor.BLUE))
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_efficiency, Component.text("Increases production", NamedTextColor.DARK_PURPLE), Component.text("Factories efficiency", NamedTextColor.GRAY, TextDecoration.ITALIC))
                                 .addResearchOption(new ResearchOption.Create("ww2_eff1", itemBuilder(effMaterial), 100f)
                                         .setModifier(new Modifier.create(null)
@@ -409,17 +402,16 @@ public class Main {
                                         .build())
                                 .build())
                         .build())
-                .setDefaultInventory(InventoryEnum.defaultInv)
+                .defaultInventory(InventoryEnum.defaultInv)
                 .build());
 
-        VotingWinner.ww2_troops.setVotingOption(new VotingOption.create(1936, 1960, 1000L, "ww2_troops")
-                .setMapGenerator(new MapGeneratorManager())
-                .setWar(new TroopWarSystem())
-                .setCountries(63)
-                .setDefaultCurrencies(c)
-                .setIdeologyTypes(ideologyTypesList)
-                .setElections(electionTypes)
-                .setDefaultInventory(InventoryEnum.troops_default)
+        VotingWinner.ww2_troops.setVotingOption(VotingOption.create(1936, 1960, 1000L, "ww2_troops")
+                .mapGenerator(new MapGeneratorManager())
+                .war(new TroopWarSystem())
+                .countries(63)
+                .defaultCurrencies(c)
+                .ideologyTypes(ideologyTypesList)
+                .defaultInventory(InventoryEnum.troops_default)
                 .build());
     }
 

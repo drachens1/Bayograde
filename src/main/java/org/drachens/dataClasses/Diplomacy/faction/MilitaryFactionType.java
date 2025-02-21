@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.generalGame.troops.TroopCountry;
@@ -28,7 +28,7 @@ public class MilitaryFactionType extends Faction implements Saveable {
         if (country instanceof TroopCountry troopCountry)
             getMembers().forEach(member -> {
                 TroopCountry troopCountry1 = (TroopCountry) member;
-                troopCountry.loadClientsides(troopCountry1.getAlliedTroopClientsides());
+                troopCountry.getInfo().addClientsides(troopCountry1.getAlliedTroopClientsides());
             });
     }
 
@@ -37,7 +37,7 @@ public class MilitaryFactionType extends Faction implements Saveable {
         if (country instanceof TroopCountry troopCountry)
             getMembers().forEach(member -> {
                 TroopCountry troopCountry1 = (TroopCountry) member;
-                troopCountry.unloadClientsides(troopCountry1.getAlliedTroopClientsides());
+                troopCountry.getInfo().removeClientsides(troopCountry1.getAlliedTroopClientsides());
             });
     }
 
@@ -45,14 +45,14 @@ public class MilitaryFactionType extends Faction implements Saveable {
         List<Country> members = new ArrayList<>(getMembers());
         members.remove(country);
         Clientside clientside = troop.getAlly();
-        members.forEach(member -> member.loadClientside(clientside));
+        members.forEach(member -> member.getInfo().addClientside(clientside));
     }
 
     public void removeTroop(Troop troop, Country country) {
         List<Country> members = new ArrayList<>(getMembers());
         members.remove(country);
         Clientside clientside = troop.getAlly();
-        members.forEach(member -> member.unloadClientside(clientside));
+        members.forEach(member -> member.getInfo().removeClientside(clientside));
     }
 
     @Override

@@ -18,7 +18,7 @@ import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.World;
 import org.drachens.dataClasses.additional.GlobalGameWorldClass;

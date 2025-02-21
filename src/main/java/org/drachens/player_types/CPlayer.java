@@ -12,7 +12,7 @@ import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
 import org.drachens.Manager.defaults.enums.RankEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.datastorage.WorldClasses;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.fileManagement.customTypes.player.PlayerInfoEntry;

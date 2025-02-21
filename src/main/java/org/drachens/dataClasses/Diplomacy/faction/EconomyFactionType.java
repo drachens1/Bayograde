@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.interfaces.MapGen;
@@ -41,13 +41,13 @@ public class EconomyFactionType extends Faction implements Saveable {
     public void updateFactionModifier() {
         float totalDistance = 0f;
         int numOfCountries = 0;
-        Instance instance = getLeader().getCapital().getInstance();
+        Instance instance = getLeader().getInfo().getCapital().getInstance();
         for (Country country : getMembers()) {
             List<Country> countries = new ArrayList<>(getMembers());
             countries.remove(country);
             numOfCountries++;
             for (Country country1 : countries) {
-                totalDistance += (float) Math.abs(country.getCapital().distance(country1.getCapital()));
+                totalDistance += (float) Math.abs(country.getInfo().getCapital().distance(country1.getInfo().getCapital()));
             }
         }
         float boost = calculateBoost(totalDistance, numOfCountries, instance);

@@ -1,6 +1,6 @@
 package org.drachens.Manager;
 
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 
 import java.util.HashMap;

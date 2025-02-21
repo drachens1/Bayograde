@@ -5,7 +5,7 @@ import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;

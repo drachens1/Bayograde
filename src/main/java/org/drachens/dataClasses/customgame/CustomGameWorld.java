@@ -20,7 +20,7 @@ import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.World;
@@ -139,7 +139,7 @@ public class CustomGameWorld extends World {
         if (province.getOccupier() == null) {
             p.sendActionBar(Component.text("Unoccupied", NamedTextColor.GOLD, TextDecoration.BOLD));
         } else {
-            if (province.getOccupier().getNameComponent() == null) {
+            if (province.getOccupier().getComponentName() == null) {
                 System.err.println("Something went wrong drastically");
                 return;
             }
@@ -154,7 +154,7 @@ public class CustomGameWorld extends World {
                     float meanDmg = 0f;
                     int troopCount = troops.size();
                     if (troopCount == 0) {
-                        p.sendActionBar(province.getOccupier().getNameComponent());
+                        p.sendActionBar(province.getOccupier().getComponentName());
                         return;
                     }
                     for (Troop troop : troops) {
@@ -184,7 +184,8 @@ public class CustomGameWorld extends World {
                     return;
                 }
             }
-            p.sendActionBar(province.getOccupier().getNameComponent());
+            if (province.getOccupier()==null)return;
+            p.sendActionBar(province.getOccupier().getComponentName());
         }
     }
 

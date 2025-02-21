@@ -25,7 +25,7 @@ public class SummonCMD extends Command {
             ItemStack itemStack = context.get(item);
             int modelDatas = context.get(modelData);
             if (itemStack == null) return;
-            ItemDisplay i = new ItemDisplay(itemBuilder(itemStack.material(), modelDatas), p.getPosition(), ItemDisplay.DisplayType.GROUND, p.getInstance(), true);
+            ItemDisplay i = new ItemDisplay(itemBuilder(itemStack.material(), modelDatas), p.getPosition(), ItemDisplay.DisplayType.GROUND, p.getInstance());
             i.addViewer(p);
         }, item, modelData);
     }

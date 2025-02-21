@@ -5,14 +5,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.IdeologyGain;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
 
 import java.util.HashMap;
-
-import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
 public class IdeologiesBoostCMD extends Command {
     private final HashMap<String, IdeologiesEnum> ideologiesEnumHashMap = new HashMap<>();

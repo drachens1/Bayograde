@@ -8,7 +8,7 @@ import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.generalGame.demand.WW2Demands;
 import org.drachens.player_types.CPlayer;
@@ -34,7 +34,6 @@ public class DemandStartCMD extends Command {
         InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
 
         addSyntax((sender, context) -> {
-            if (!valid(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country from = p.getCountry();
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
@@ -46,7 +45,7 @@ public class DemandStartCMD extends Command {
             p.sendMessage(Component.text()
                     .append(MessageEnum.country.getComponent())
                     .append(Component.text("You have started creating a demand against "))
-                    .append(to.getNameComponent())
+                    .append(to.getComponentName())
                     .build());
             demandManager.addActive(from, demand);
             inventoryManager.assignInventory(p, InventoryEnum.demand);

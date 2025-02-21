@@ -8,7 +8,7 @@ import net.minestom.server.item.ItemStack;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.ItemDisplay;
@@ -54,7 +54,7 @@ public class BuildItem extends HotbarItemButton {
         }else {
             pos = new Pos(point);
         }
-        ItemDisplay itemDisplay = new ItemDisplay(itemBuilder(buildingEnum.getBuildTypes().getMaterial()),pos , ItemDisplay.DisplayType.NONE, p.getInstance(),true);
+        ItemDisplay itemDisplay = new ItemDisplay(itemBuilder(buildingEnum.getBuildTypes().getMaterial()),pos , ItemDisplay.DisplayType.NONE, p.getInstance());
         itemDisplay.addViewer(p);
         p.addClientSide(ClientSideExtras.can_build,itemDisplay);
         additionalOnSwapTo(e);

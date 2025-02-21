@@ -12,7 +12,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.cmd.ConfirmCMD;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Pair;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.inventories.HotbarItemButton;

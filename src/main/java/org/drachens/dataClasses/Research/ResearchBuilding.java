@@ -2,7 +2,7 @@ package org.drachens.dataClasses.Research;
 
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.BuildTypes;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;

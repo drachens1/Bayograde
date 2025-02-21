@@ -3,12 +3,14 @@ package org.drachens.dataClasses.Economics;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.interfaces.Saveable;
 
+@Getter
 public class Loan implements Saveable {
     private final Country fromCountry;
     private final Country toCountry;
@@ -27,7 +29,7 @@ public class Loan implements Saveable {
     }
 
     public Loan(float payment, CurrencyTypes currencyTypes, float interest, int termLength, Country from, Country to) {
-        to.getVault().addPayment(new Payment(currencyTypes, payment));
+        to.getEconomy().getVault().addPayment(new Payment(currencyTypes, payment));
         this.balanceToPayOff = payment * (interest / 100);
         this.currencyTypes = currencyTypes;
         this.fromCountry = from;
@@ -47,22 +49,22 @@ public class Loan implements Saveable {
         }
         balanceToPayOff -= perWeek;
         Payment payment = new Payment(currencyTypes, perWeek);
-        toCountry.getVault().minusPayment(payment);
-        fromCountry.getVault().addPayment(payment);
+        toCountry.getEconomy().getVault().minusPayment(payment);
+        fromCountry.getEconomy().getVault().addPayment(payment);
     }
 
     public void close() {
-        toCountry.getVault().removeLoan(this);
+        toCountry.getEconomy().getVault().removeLoan(this);
     }
 
     public Component getDescription() {
         return Component.text()
                 .append(Component.text("____/Loan\\_____"))
                 .append(Component.text("From: "))
-                .append(fromCountry.getNameComponent())
+                .append(fromCountry.getInfo().getOriginalName())
                 .appendNewline()
                 .append(Component.text("To: "))
-                .append(toCountry.getNameComponent())
+                .append(toCountry.getInfo().getOriginalName())
                 .appendNewline()
                 .append(Component.text("ToPay: "))
                 .append(Component.text(balanceToPayOff))
@@ -70,14 +72,6 @@ public class Loan implements Saveable {
                 .append(Component.text("Weeks to pay: "))
                 .append(Component.text(termlength))
                 .build();
-    }
-
-    public Country getFromCountry() {
-        return fromCountry;
-    }
-
-    public Country getToCountry() {
-        return toCountry;
     }
 
     @Override

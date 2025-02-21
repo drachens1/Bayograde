@@ -7,7 +7,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InvitesEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.MessageEnum;
@@ -31,13 +31,13 @@ public class AcceptCMD extends Command {
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (country == null)
                 return;
-            if (!country.hasInvite(InvitesEnum.player,p.getUsername())) {
+            if (!country.getDiplomacy().containsInvite(InvitesEnum.player,p.getUsername())) {
                 p.sendMessage(notInvited);
                 return;
             }
             country.addPlayer(p);
             EventDispatcher.call(new CountryJoinEvent(country, p));
-            country.removeInvite(InvitesEnum.player,p.getUsername());
+            country.getDiplomacy().removeInvite(InvitesEnum.player,p.getUsername());
         }, countries);
     }
 

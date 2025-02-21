@@ -1,6 +1,6 @@
 package org.drachens.generalGame.troops;
 
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.AStarPathfinderVoids;
 

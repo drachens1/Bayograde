@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
@@ -36,7 +36,7 @@ public class ResearchCountry {
 
     public void newWeek(NewDay newDay) {
         if (current != null) {
-            researchCurrent.remove(c.getResearchVault().getResearch());
+            researchCurrent.remove(c.getResearch().researchVault().getResearch());
             if (researchCurrent.getAmount() <= 0) {
                 EventDispatcher.call(new ResearchCompletionEvent(c.getInstance(), c, current));
                 if (onFinishResearch != null) {

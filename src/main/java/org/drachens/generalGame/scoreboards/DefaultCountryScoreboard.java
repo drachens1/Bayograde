@@ -8,8 +8,8 @@ import net.minestom.server.scoreboard.Sidebar;
 import org.drachens.Manager.defaults.enums.ColoursEnum;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardBuilder;
-import org.drachens.dataClasses.Countries.Country;
 import org.drachens.dataClasses.Countries.IdeologyTypes;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.player_types.CPlayer;
 

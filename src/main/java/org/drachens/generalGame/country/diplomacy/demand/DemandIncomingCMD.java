@@ -8,7 +8,7 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.events.countries.demands.DemandAcceptedEvent;
 import org.drachens.events.countries.demands.DemandCounterOfferEvent;
@@ -33,14 +33,13 @@ public class DemandIncomingCMD extends Command {
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemandSent(sender)) return;
                     CPlayer p = (CPlayer) sender;
-                    getSuggestionBasedOnInput(suggestion, p.getCountry().getDemandCountryNames());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getDiplomacy().getDemandCountries());
                 });
 
         var choice = ArgumentType.String("choice")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!hasDemandSent(sender)) return;
                     CPlayer p = (CPlayer) sender;
-                    if (!p.getCountry().getDemandCountryNames().contains(context.get(options))) return;
+                    if (!p.getCountry().getDiplomacy().getDemandCountries().contains(context.get(options))) return;
                     suggestion.addEntry(new SuggestionEntry("accept"));
                     suggestion.addEntry(new SuggestionEntry("deny"));
                     suggestion.addEntry(new SuggestionEntry("counter-offer"));
@@ -65,7 +64,6 @@ public class DemandIncomingCMD extends Command {
                 .build();
 
         addSyntax((sender, context) -> {
-            if (!hasDemandSent(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
             if (from == null) {
@@ -73,7 +71,7 @@ public class DemandIncomingCMD extends Command {
                 return;
             }
 
-            Demand sentDemand = p.getCountry().getDemand(from);
+            Demand sentDemand = p.getCountry().getDiplomacy().getDemand(from.getName());
             if (sentDemand == null) {
                 sendMessage(p, notSent);
                 return;
@@ -96,7 +94,6 @@ public class DemandIncomingCMD extends Command {
         }, options, choice);
 
         addSyntax((sender, context) -> {
-            if (!hasDemandSent(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
             if (from == null) {
@@ -133,11 +130,10 @@ public class DemandIncomingCMD extends Command {
         }, options, choice, third);
 
         setDefaultExecutor((sender, context) -> {
-            if (!hasDemandSent(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             List<Component> comps = new ArrayList<>();
-            country.getDemandCountryNames().forEach(name -> comps.add(Component.text("- " + name)));
+            country.getDiplomacy().getDemandCountries().forEach(name -> comps.add(Component.text("- " + name)));
             p.sendMessage(Component.text().append(comps).build());
         });
     }
@@ -154,6 +150,6 @@ public class DemandIncomingCMD extends Command {
     private boolean hasDemandSent(CommandSender sender) {
         if (!isLeaderOfCountry(sender)) return false;
         CPlayer p = (CPlayer) sender;
-        return p.getCountry().hasAnyDemands();
+        return p.getCountry().getDiplomacy().hasAnyDemands();
     }
 }

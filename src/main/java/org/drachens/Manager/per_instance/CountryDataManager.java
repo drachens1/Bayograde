@@ -4,8 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
+import lombok.Setter;
 import net.minestom.server.instance.Instance;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.interfaces.Saveable;
 
@@ -13,6 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
+@Setter
+@Getter
 public class CountryDataManager implements Saveable {
     private final List<String> countryNameList = new ArrayList<>();
     private final HashMap<String, Country> countryHashMap = new HashMap<>();
@@ -29,18 +34,6 @@ public class CountryDataManager implements Saveable {
             countryNameList.add(country.getName());
             countryHashMap.put(country.getName(), country);
         }
-    }
-
-    public List<Country> getCountries() {
-        return countries;
-    }
-
-    public void setCountries(List<Country> countries) {
-        this.countries = countries;
-    }
-
-    public Instance getInstance() {
-        return instance;
     }
 
     public Country getCountryFromName(String name) {
@@ -82,14 +75,6 @@ public class CountryDataManager implements Saveable {
 
     public Faction getFaction(String name) {
         return factionsHashMap.get(name.toLowerCase());
-    }
-
-    public List<String> getFactionNames() {
-        return factionNames;
-    }
-
-    public List<Faction> getFactions() {
-        return factions;
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -16,7 +18,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
-import org.drachens.dataClasses.Countries.Country;
+import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.Building;
 import org.drachens.events.CaptureBlockEvent;
 import org.drachens.generalGame.troops.Combat;
@@ -28,6 +30,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+@Getter
+@Setter
 public class Province implements Saveable {
     private final Instance instance;
     private final Pos pos;
@@ -117,7 +121,7 @@ public class Province implements Saveable {
 
     private Component createSecretDescription() {
         if (isCity()) {
-            if (occupier.getCapital() == this)
+            if (occupier.getInfo().getCapital() == this)
                 return createSecretCapitalDescription();
             return createSecretCityDescription();
         }
@@ -132,7 +136,7 @@ public class Province implements Saveable {
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
-                .append(occupier.getNameComponent())
+                .append(occupier.getInfo().getOriginalName())
                 .appendNewline()
                 .appendNewline()
                 .build();
@@ -160,7 +164,7 @@ public class Province implements Saveable {
                 .append(Component.text("\\________", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
-                .append(occupier.getNameComponent())
+                .append(occupier.getInfo().getOriginalName())
                 .appendNewline()
                 .append(comps)
                 .appendNewline()
@@ -188,7 +192,7 @@ public class Province implements Saveable {
                 .append(Component.text("\\_________", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
-                .append(occupier.getNameComponent())
+                .append(occupier.getInfo().getOriginalName())
                 .appendNewline()
                 .append(comps)
                 .appendNewline()
@@ -216,23 +220,11 @@ public class Province implements Saveable {
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(Component.text("Occupier: "))
-                .append(occupier.getNameComponent())
+                .append(occupier.getInfo().getOriginalName())
                 .appendNewline()
                 .append(comps)
                 .appendNewline()
                 .build();
-    }
-
-    public Pos getPos() {
-        return pos;
-    }
-
-    public Instance getInstance() {
-        return instance;
-    }
-
-    public Country getOccupier() {
-        return occupier;
     }
 
     public void setOccupier(Country attacker) {
@@ -243,8 +235,8 @@ public class Province implements Saveable {
                 this.occupier.cityCaptured(attacker, this);
         }
         if (isCity()) {
-            if (attacker.isMajorCity(this))
-                this.setCity(attacker.getMajorCity(this));
+            if (attacker.getMilitary().containsMajorCityBlock(this))
+                this.setCity(attacker.getMilitary().getMajorCityBlock(this));
             else
                 setCity(1);
             attacker.addCity(this);
@@ -268,8 +260,8 @@ public class Province implements Saveable {
         this.occupier = attacker;
         attacker.captureProvince(this);
         if (isCity()) {
-            if (attacker.isMajorCity(this))
-                setCity(attacker.getMajorCity(this));
+            if (attacker.getMilitary().containsMajorCityBlock(this))
+                setCity(attacker.getMilitary().getMajorCityBlock(this));
             else
                 setCity(1);
             attacker.addCity(this);
@@ -280,10 +272,6 @@ public class Province implements Saveable {
     public void initialOccupier(Country occupier) {
         this.occupier = occupier;
         occupier.addOccupied(this);
-    }
-
-    public List<Troop> getTroops() {
-        return troops;
     }
 
     public void addTroop(Troop troop) {
@@ -298,10 +286,6 @@ public class Province implements Saveable {
         EventDispatcher.call(new CaptureBlockEvent(attacker, this.occupier, this));
     }
 
-    public Building getBuilding() {
-        return building;
-    }
-
     public double distance(Province province) {
         return getPos().distance(province.getPos());
     }
@@ -313,24 +297,12 @@ public class Province implements Saveable {
 
     public void setBlock() {
         isBorder = false;
-        setBlock(occupier.getBlock());
+        setBlock(occupier.getInfo().getBlock());
     }
 
     public void setBorder() {
         isBorder = true;
-        setBlock(occupier.getBorder());
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
-
-    public boolean isCity() {
-        return city;
+        setBlock(occupier.getInfo().getBorder());
     }
 
     public void setCity(Material material) {
@@ -363,14 +335,6 @@ public class Province implements Saveable {
         p.setBlock();
     }
 
-    public List<Province> getNeighbours() {
-        return neighbours;
-    }
-
-    public void setNeighbours(List<Province> provinces) {
-        this.neighbours = provinces;
-    }
-
     public void addBuilding(Building building) {
         this.building = building;
     }
@@ -383,20 +347,8 @@ public class Province implements Saveable {
         return combat != null;
     }
 
-    public Combat getCombat() {
-        return combat;
-    }
-
-    public void setCombat(Combat combat) {
-        this.combat = combat;
-    }
-
     public void setCore(Country country) {
         corers.add(country);
-    }
-
-    public HashSet<Country> getCorers() {
-        return corers;
     }
 
     public boolean isBorder() {
@@ -418,12 +370,10 @@ public class Province implements Saveable {
         jsonObject.add("occupier",new JsonPrimitive(occupier.getName()));
         jsonObject.add("combat",combat.toJson());
         JsonArray jsonArray = new JsonArray();
-        troops.forEach(troop -> {
-            jsonArray.add(troop.toJson());
-        });
+        troops.forEach(troop -> jsonArray.add(troop.toJson()));
         jsonObject.add("troops",jsonArray);
         JsonArray jsonArray2 = new JsonArray();
-        corers.forEach(country -> jsonArray2.add(country.getReference()));
+        corers.forEach(country -> jsonArray2.add(country.getName()));
         jsonObject.add("corers",jsonArray2);
         jsonObject.add("city",new JsonPrimitive(city));
         return jsonObject;
