@@ -3,6 +3,7 @@ package org.drachens.generalGame.demand;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Setter
 public class WW2Demands extends Demand {
     private final HashMap<Province, Block> shownBlocks = new HashMap<>();
     private final ImaginaryWorld imaginaryWorld;
@@ -41,12 +43,12 @@ public class WW2Demands extends Demand {
         imaginaryWorld = new ImaginaryWorld(to.getInstance(), true);
         List<Country> countries = new ArrayList<>(ContinentalManagers.world(to.getInstance()).countryDataManager().getCountries());
         countries.remove(to);
-        countries.removeAll(to.getPuppets());
+        countries.removeAll(to.getDiplomacy().getPuppets());
         countries.remove(from);
-        countries.removeAll(from.getPuppets());
-        countries.forEach(country -> country.getOccupies().forEach(province -> imaginaryWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE)));
+        countries.removeAll(from.getDiplomacy().getPuppets());
+        countries.forEach(country -> country.getMilitary().getOccupies().forEach(province -> imaginaryWorld.addGhostBlock(province.getPos(), Block.GRAY_CONCRETE)));
         shownBlocks.forEach((province, block) -> imaginaryWorld.addGhostBlock(province.getPos(), block));
-        from.getPlayers().forEach(Player::refreshCommands);
+        from.getInfo().getPlayers().forEach(Player::refreshCommands);
     }
 
     public List<Country> getDemandedAnnexation() {
@@ -99,7 +101,7 @@ public class WW2Demands extends Demand {
                     comps.add(Component.text()
                             .appendNewline()
                             .append(Component.text(" - "))
-                            .append(c.getNameComponent())
+                            .append(c.getComponentName())
                             .build());
                 }
             }
@@ -144,7 +146,7 @@ public class WW2Demands extends Demand {
                     comps.add(Component.text()
                             .appendNewline()
                             .append(Component.text(" - "))
-                            .append(c.getNameComponent())
+                            .append(c.getComponentName())
                             .build());
                 }
             }
@@ -165,7 +167,7 @@ public class WW2Demands extends Demand {
                     comps.add(Component.text()
                             .appendNewline()
                             .append(Component.text(" - "))
-                            .append(c.getNameComponent())
+                            .append(c.getComponentName())
                             .build());
                 }
             }
@@ -210,13 +212,13 @@ public class WW2Demands extends Demand {
                     comps.add(Component.text()
                             .appendNewline()
                             .append(Component.text(" - "))
-                            .append(c.getNameComponent())
+                            .append(c.getComponentName())
                             .build());
                 }
             }
         }
 
-        if (getFromCountry().isAtWar(getToCountry())) {
+        if (getFromCountry().isAtWar(getToCountry().getName())) {
             comps.add(Component.text()
                     .appendNewline()
                     .append(Component.text("Peace: ", NamedTextColor.GREEN, TextDecoration.BOLD))
@@ -238,18 +240,18 @@ public class WW2Demands extends Demand {
 
     @Override
     public void ifAccepted() {
-        getFromCountry().removeOutgoingDemand(this);
+        getFromCountry().getDiplomacy().removeOutgoingDemand(getToCountry().getName());
         Country to = getToCountry();
         Country from = getFromCountry();
 
-        demandedAnnexation.forEach(country -> new ArrayList<>(country.getOccupies()).forEach(province -> province.setOccupier(from)));
+        demandedAnnexation.forEach(country -> new ArrayList<>(country.getMilitary().getOccupies()).forEach(province -> province.setOccupier(from)));
         demandedPuppets.forEach(country -> {
             country.setOverlord(from);
             from.addPuppet(country);
         });
         demandedProvinces.forEach(province -> province.setOccupier(from));
         demandedPayments.forEach(payment -> to.minusThenLoan(payment, from));
-        offeredAnnexation.forEach(country -> new ArrayList<>(country.getOccupies()).forEach(province -> province.setOccupier(to)));
+        offeredAnnexation.forEach(country -> new ArrayList<>(country.getMilitary().getOccupies()).forEach(province -> province.setOccupier(to)));
         offeredPuppets.forEach(country -> {
             country.setOverlord(to);
             to.addPuppet(country);
@@ -260,19 +262,19 @@ public class WW2Demands extends Demand {
 
     @Override
     public void ifDenied() {
-        getFromCountry().removeOutgoingDemand(this);
+        getFromCountry().getDiplomacy().removeOutgoingDemand(getToCountry().getName());
     }
 
     @Override
     protected void onCompleted() {
         imaginaryWorld.getPlayers().forEach(player -> hidePlayer((CPlayer) player));
-        getFromCountry().addOutgoingDemand(this);
+        getFromCountry().getDiplomacy().addOutgoingDemand(getToCountry().getName(),this);
     }
 
     @Override
     public void copyButOpposite(Demand d) {
         if (!(d instanceof WW2Demands demand)) return;
-        getFromCountry().removeOutgoingDemand(this);
+        getFromCountry().getDiplomacy().removeOutgoingDemand(getToCountry().getName());
         this.offeredProvinces = demand.getDemandedProvinces();
         this.offeredAnnexation = demand.getDemandedAnnexation();
         this.offeredPayments = demand.getDemandedPayments();
@@ -299,7 +301,7 @@ public class WW2Demands extends Demand {
     }
 
     private void processCountryDemand(Country country, Block block, boolean addDemand) {
-        country.getOccupies().forEach(province -> {
+        country.getMilitary().getOccupies().forEach(province -> {
             if (demandedProvinces.contains(province)) return;
             if (addDemand) {
                 updateProvinceBlock(province, block);
@@ -426,10 +428,6 @@ public class WW2Demands extends Demand {
 
     public void resetOfferAnnexation() {
         offeredAnnexation.clear();
-    }
-
-    public void setPeace(boolean p) {
-        peace = p;
     }
 
     @Override

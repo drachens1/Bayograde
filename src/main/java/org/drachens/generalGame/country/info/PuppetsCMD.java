@@ -27,7 +27,7 @@ public class PuppetsCMD extends Command {
                 return;
             }
             List<Component> comps = new ArrayList<>();
-            target.getPuppets().forEach(country -> comps.add(Component.text().append(Component.text(" - ")).append(country.getNameComponent()).appendNewline().build()));
+            target.getDiplomacy().getPuppets().forEach(country -> comps.add(Component.text().append(Component.text(" - ")).append(country.getComponentName()).appendNewline().build()));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(Component.text("Puppets", NamedTextColor.GOLD))
@@ -46,7 +46,7 @@ public class PuppetsCMD extends Command {
                 return;
             }
             List<Component> comps = new ArrayList<>();
-            target.getPuppets().forEach(country -> comps.add(Component.text().append(Component.text(" - ")).append(country.getNameComponent()).appendNewline().build()));
+            target.getDiplomacy().getPuppets().forEach(country -> comps.add(Component.text().append(Component.text(" - ")).append(country.getComponentName()).appendNewline().build()));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(Component.text("Puppets", NamedTextColor.GOLD))

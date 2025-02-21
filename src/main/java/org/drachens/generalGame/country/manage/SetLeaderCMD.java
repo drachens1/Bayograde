@@ -21,7 +21,7 @@ public class SetLeaderCMD extends Command {
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
-                    player.getCountry().getPlayers().forEach(p -> playerNames.add(p.getUsername()));
+                    player.getCountry().getInfo().getPlayers().forEach(p -> playerNames.add(p.getUsername()));
                     getSuggestionBasedOnInput(suggestion, playerNames);
                 });
 

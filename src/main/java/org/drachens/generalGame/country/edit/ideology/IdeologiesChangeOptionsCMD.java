@@ -35,7 +35,7 @@ public class IdeologiesChangeOptionsCMD extends Command {
                     .build())));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(country.getNameComponent())
+                    .append(country.getComponentName())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
                     .append(comps)

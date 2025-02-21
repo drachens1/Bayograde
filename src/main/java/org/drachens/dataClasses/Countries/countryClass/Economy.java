@@ -18,6 +18,7 @@ import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -63,6 +64,10 @@ public class Economy {
 
     public boolean containsLoanRequest(String key) {
         return loanRequests.containsKey(key);
+    }
+
+    public Loan getLoan(String key){
+        return loanRequests.get(key);
     }
 
     public float getBoost(BoostEnum boostType) {
@@ -125,6 +130,14 @@ public class Economy {
         return visibleModifiers.contains(modifier);
     }
 
+    public Set<String> getLawNames(){
+        return laws.keySet();
+    }
+
+    public LawCategory getLaw(String key){
+        return laws.get(key);
+    }
+
     public void addLaw(String key, LawCategory lawCategory) {
         laws.put(key, lawCategory);
     }
@@ -168,5 +181,13 @@ public class Economy {
 
     public Modifier getModifier(String name){
         return modifiers.get(name);
+    }
+
+    public Set<String> getModifierNames(){
+        return modifiers.keySet();
+    }
+
+    public ModifierCommand getModifierCommmand(String key){
+        return modifierCommandsHashMap.get(key);
     }
 }

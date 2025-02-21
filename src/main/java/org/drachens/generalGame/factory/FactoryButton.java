@@ -39,14 +39,16 @@ public class FactoryButton extends BuildItem {
         if (country==null)return;
         List<Clientside> newClientSides = new ArrayList<>();
         Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
-        List<Building> facs = country.getBuildings(BuildingEnum.factory);
+        List<Building> facs = country.getEconomy().getBuildingType(BuildingEnum.factory);
         if (facs==null)return;
-        facs.forEach(factor-> newClientSides.add(new TextDisplay.create(factor.getProvince().getPos().add(0.5,2,0.5),
-                factor.getCountry().getInstance(), Component.text()
-                .append(Component.text(factor.getCurrentLvl()))
-                .append(Component.text("/"))
-                .append(Component.text(factory.getMaxLvl(factor)))
-                .build()).setFollowPlayer(true).build()));
+        facs.forEach(factor-> newClientSides.add(TextDisplay.create(factor.getCountry().getInstance(),
+                factor.getProvince().getPos().add(0.5,2,0.5), Component.text()
+                        .append(Component.text(factor.getCurrentLvl()))
+                        .append(Component.text("/"))
+                        .append(Component.text(factory.getMaxLvl(factor)))
+                        .build())
+                .followPlayer(true)
+                .build()));
 
         newClientSides.forEach(newClientSide-> newClientSide.addViewer(p));
         p.addClientSides(ClientSideExtras.factory_built,newClientSides);

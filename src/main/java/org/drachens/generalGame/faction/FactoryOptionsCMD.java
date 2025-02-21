@@ -30,7 +30,7 @@ public class FactoryOptionsCMD extends Command {
                     .build());
             if (country.isInAFaction()){
                 if (country.isInAnEconomicFaction()){
-                    EconomyFactionType economicFaction = country.getEconomyFactionType();
+                    EconomyFactionType economicFaction = country.getEconomy().getEconomyFactionType();
                     String name = economicFaction.getStringName();
                     comps.add(Component.text()
                             .appendNewline()
@@ -80,7 +80,7 @@ public class FactoryOptionsCMD extends Command {
                 }
 
                 if (country.isInAMilitaryFaction()){
-                    MilitaryFactionType militaryFaction = country.getMilitaryFactionType();
+                    MilitaryFactionType militaryFaction = country.getEconomy().getMilitaryFactionType();
                     String name = militaryFaction.getStringName();
                     comps.add(Component.text()
                             .append(militaryFaction.getNameComponent())

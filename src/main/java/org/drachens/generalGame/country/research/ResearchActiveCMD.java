@@ -14,7 +14,7 @@ public class ResearchActiveCMD extends Command {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            p.sendMessage(country.getResearchCountry().getCurrentResearch().getName());
+            p.sendMessage(country.getResearch().researchCountry().getCurrentResearch().getName());
         });
     }
 

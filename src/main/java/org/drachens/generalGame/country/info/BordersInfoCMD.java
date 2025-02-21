@@ -46,9 +46,7 @@ public class BordersInfoCMD extends Command {
     private void sendPlayer(Country country, CPlayer p) {
         List<Component> comps = new ArrayList<>();
         CountryDataManager c = ContinentalManagers.world(p.getInstance()).countryDataManager();
-        country.getBorders().forEach(string -> {
-            comps.add(c.getCountryFromName(string).getNameComponent());
-        });
+        country.getMilitary().getBorders().forEach(string -> comps.add(c.getCountryFromName(string).getComponentName()));
         p.sendMessage(Component.text()
                 .append(comps)
                 .build());

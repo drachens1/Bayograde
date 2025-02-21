@@ -19,13 +19,13 @@ public class LawsChangeCMD extends Command {
         var law2 = ArgumentType.String("categories")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
-                    getSuggestionBasedOnInput(suggestion, p.getCountry().getLawNames());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getEconomy().getLawNames());
                 });
 
         var options = ArgumentType.String("options")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
-                    LawCategory law = p.getCountry().getLaw(context.get(law2));
+                    LawCategory law = p.getCountry().getEconomy().getLaw(context.get(law2));
                     if (law == null) {
                         suggestion.addEntry(new SuggestionEntry("Invalid category inputted"));
                         return;
@@ -55,7 +55,7 @@ public class LawsChangeCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            LawCategory lawCategory = country.getLaw(context.get(law2));
+            LawCategory lawCategory = country.getEconomy().getLaw(context.get(law2));
             if (lawCategory == null) {
                 p.sendMessage(Component.text("That law category is null", NamedTextColor.RED));
                 return;

@@ -47,14 +47,14 @@ public class WarsInfoCMD extends Command {
         List<Component> comps = new ArrayList<>();
         comps.add(Component.text()
                 .append(Component.text("______/", NamedTextColor.BLUE))
-                .append(country.getNameComponent())
+                .append(country.getComponentName())
                 .append(Component.text("\\______", NamedTextColor.BLUE))
                 .build());
-        country.getCountryWars().forEach(war -> {
+        country.getDiplomacy().getCountryWars().forEach(war -> {
             comps.add(Component.newline());
-            comps.add(ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(war).getNameComponent());
+            comps.add(ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(war).getComponentName());
         });
-        if (!country.getWarJustifications().isEmpty()) {
+        if (!country.getDiplomacy().getWarJustificationCountries().isEmpty()) {
             comps.add(Component.newline());
             comps.add(Component.text()
                     .append(Component.text("-----", NamedTextColor.BLUE))
@@ -62,31 +62,31 @@ public class WarsInfoCMD extends Command {
                     .append(Component.text("-----", NamedTextColor.BLUE))
                     .build());
 
-            country.getWarJustifications().forEach(justification -> {
-                WarJustification warJustification = country.getCreatingWarJustificationAgainst(justification);
+            country.getDiplomacy().getWarJustificationCountries().forEach(justification -> {
+                WarJustification warJustification = country.getDiplomacy().getWarJustification(justification);
                 comps.add(Component.text()
                         .appendNewline()
-                        .append(warJustification.getAgainstCountry().getNameComponent())
+                        .append(warJustification.against().getComponentName())
                         .append(Component.text(" time left: "))
-                        .append(Component.text(warJustification.getTimeLeft()))
+                        .append(Component.text(warJustification.timeLeft()))
                         .build());
             });
         }
 
-        if (!country.getCompletedWarJustifications().isEmpty()) {
+        if (!country.getDiplomacy().getCompletedWarJustifications().isEmpty()) {
             comps.add(Component.newline());
             comps.add(Component.text()
                     .append(Component.text("-", NamedTextColor.BLUE))
                     .append(Component.text("Completed-Justifications", NamedTextColor.GOLD, TextDecoration.BOLD))
                     .append(Component.text("-", NamedTextColor.BLUE))
                     .build());
-            country.getCompletedWarJustifications().forEach(justification -> {
-                WarJustification warJustification = country.getCreatingWarJustificationAgainst(justification);
+            country.getDiplomacy().getCompletedWarJustifications().forEach((c,justification) -> {
+                WarJustification warJustification = country.getDiplomacy().getWarJustification(c);
                 comps.add(Component.text()
                         .appendNewline()
-                        .append(warJustification.getAgainstCountry().getNameComponent())
+                        .append(warJustification.against().getComponentName())
                         .append(Component.text(" expires: "))
-                        .append(Component.text(warJustification.getExpires()))
+                        .append(Component.text(warJustification.expires()))
                         .build());
             });
         }

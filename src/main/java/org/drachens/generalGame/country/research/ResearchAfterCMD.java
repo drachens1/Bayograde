@@ -23,9 +23,7 @@ public class ResearchAfterCMD extends Command {
         super("after");
 
         var choice = ArgumentType.String("choice")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    getSuggestionBasedOnInput(suggestion, getAvailable(sender));
-                });
+                .setSuggestionCallback((sender, context, suggestion) -> getSuggestionBasedOnInput(suggestion, getAvailable(sender)));
 
         setCondition((sender, s) -> !notCountry(sender));
 
@@ -40,18 +38,16 @@ public class ResearchAfterCMD extends Command {
             Country country = p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             List<Component> comps = new ArrayList<>();
-            tree.getAfter(context.get(choice)).forEach(string -> {
-                comps.add(Component.text()
-                        .append(Component.text(string))
-                        .append(Component.text()
-                                .append(Component.text("[RESEARCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
-                                .clickEvent(ClickEvent.runCommand("/country research option " + string))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start researching this", NamedTextColor.GOLD))))
-                        .build());
-            });
+            tree.getAfter(context.get(choice)).forEach(string -> comps.add(Component.text()
+                    .append(Component.text(string))
+                    .append(Component.text()
+                            .append(Component.text("[RESEARCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .clickEvent(ClickEvent.runCommand("/country research option " + string))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start researching this", NamedTextColor.GOLD))))
+                    .build()));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(country.getNameComponent())
+                    .append(country.getComponentName())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
                     .append(comps)
@@ -71,6 +67,6 @@ public class ResearchAfterCMD extends Command {
         CPlayer p = (CPlayer) sender;
         Country country = p.getCountry();
         TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
-        return tree.getAvailable(country.getResearchCountry());
+        return tree.getAvailable(country.getResearch().researchCountry());
     }
 }

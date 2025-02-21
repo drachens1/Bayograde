@@ -65,10 +65,6 @@ public class Info {
         this.stability = stability;
     }
 
-    public String getName(){
-        return name;
-    }
-
     public void addMaxCapitulationPoints(float amount){
         maxCapitulationPoints+=amount;
     }

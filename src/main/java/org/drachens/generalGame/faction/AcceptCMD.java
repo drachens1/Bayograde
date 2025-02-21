@@ -11,6 +11,8 @@ import org.drachens.dataClasses.Diplomacy.faction.Faction;
 import org.drachens.events.factions.FactionJoinEvent;
 import org.drachens.player_types.CPlayer;
 
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+
 public class AcceptCMD extends Command {
     public AcceptCMD() {
         super("accept");
@@ -19,19 +21,14 @@ public class AcceptCMD extends Command {
 
         var factionNames = ArgumentType.String("faction_name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (hasInvites(sender) && sender instanceof CPlayer player) {
-                        getSuggestionBasedOnInput(suggestion, player.getCountry().getInvites(InvitesEnum.faction));
+                    if (sender instanceof CPlayer player) {
+                        getSuggestionBasedOnInput(suggestion, player.getCountry().getDiplomacy().getInviteKeys(InvitesEnum.faction));
                     }
                 });
 
-        setDefaultExecutor((sender, context) -> {
-            if (hasInvites(sender)) {
-                sender.sendMessage("Proper usage /faction accept <faction>");
-            }
-        });
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /faction accept <faction>"));
 
         addSyntax((sender, context) -> {
-            if (!hasInvites(sender)) return;
             CPlayer cPlayer = (CPlayer) sender;
             Faction faction = ContinentalManagers.world(cPlayer.getInstance()).countryDataManager().getFaction(context.get(factionNames));
             if (faction == null) {
@@ -51,7 +48,7 @@ public class AcceptCMD extends Command {
         if (sender instanceof CPlayer cPlayer) {
             Country country = cPlayer.getCountry();
             if (country == null) return false;
-            return country.getInvites(InvitesEnum.faction).isEmpty();
+            return country.getDiplomacy().getInviteKeys(InvitesEnum.faction).isEmpty();
         }
         return false;
     }

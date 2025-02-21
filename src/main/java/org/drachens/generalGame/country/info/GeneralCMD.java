@@ -43,8 +43,8 @@ public class GeneralCMD extends Command {
     }
 
     private void sendPlayer(Country country, CPlayer p) {
-        Component c = country.getDescription();
-        if (country.getPlayerLeader() == null) {
+        Component c = country.getInfo().getDescription();
+        if (country.getInfo().getPlayerLeader() == null) {
             p.sendMessage(c.appendNewline().append(Component.text("[JOIN]", NamedTextColor.GOLD, TextDecoration.BOLD)
                     .clickEvent(ClickEvent.runCommand("/country join " + country.getName()))
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))));

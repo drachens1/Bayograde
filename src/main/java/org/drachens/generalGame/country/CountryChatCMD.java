@@ -20,7 +20,7 @@ public class CountryChatCMD extends Command {
 
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            CountryChat countryChat = p.getCountry().getCountryChat();
+            CountryChat countryChat = p.getCountry().getInfo().getCountryChat();
             boolean current = active.getOrDefault(p, false);
             current = !current;
             active.put(p, current);

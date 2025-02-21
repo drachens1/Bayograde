@@ -24,9 +24,7 @@ public class TroopAI implements AIManager, Saveable {
 
     public TroopAI(VotingWinner votingWinner) {
         this.votingWinner = votingWinner;
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
-            tick(e.world());
-        });
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> tick(e.world()));
     }
 
     @Override
@@ -61,7 +59,7 @@ public class TroopAI implements AIManager, Saveable {
         }
 
         public void tick() {
-            buildFactory(new ArrayList<>(country.getCities()));
+            buildFactory(new ArrayList<>(country.getMilitary().getCities()));
         }
 
         private void buildFactory(List<Province> cities) {

@@ -20,7 +20,7 @@ public class CooperateCMD extends Command {
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
                     player.getInstance().getPlayers().forEach(p -> playerNames.add(p.getUsername()));
-                    player.getCountry().getPlayers().forEach(p-> playerNames.remove(p.getUsername()));
+                    player.getCountry().getInfo().getPlayers().forEach(p-> playerNames.remove(p.getUsername()));
                     getSuggestionBasedOnInput(suggestion, playerNames);
                 });
 

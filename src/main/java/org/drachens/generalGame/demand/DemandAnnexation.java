@@ -29,7 +29,7 @@ public class DemandAnnexation extends HotbarItemButton {
         Demand demand = demandManager.getDemand(p.getCountry());
         Country to = demand.getToCountry();
         Country provinceCountry = province.getOccupier();
-        if (!(to == provinceCountry || to.getPuppets().contains(provinceCountry))) {
+        if (!(to == provinceCountry || to.getDiplomacy().getPuppets().contains(provinceCountry))) {
             p.sendMessage("They are not a puppet or the actual country");
             return;
         }
@@ -45,7 +45,7 @@ public class DemandAnnexation extends HotbarItemButton {
         Demand demand = demandManager.getDemand(p.getCountry());
         Country to = demand.getToCountry();
         Country provinceCountry = province.getOccupier();
-        if (!(to == provinceCountry || to.getPuppets().contains(provinceCountry))) {
+        if (!(to == provinceCountry || to.getDiplomacy().getPuppets().contains(provinceCountry))) {
             p.sendMessage("They are not a puppet or the actual country");
             return;
         }

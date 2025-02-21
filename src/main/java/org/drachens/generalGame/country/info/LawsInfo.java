@@ -37,7 +37,7 @@ public class LawsInfo extends Command {
     private Component getLawsDescription(Country country, CPlayer p) {
         List<Component> comps = new ArrayList<>();
         if (country.isPlayerLeader(p)) {
-            country.getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
+            country.getEconomy().getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
                     .append(Component.text(string))
                     .append(Component.text(" : "))
                     .append(lawCategory.getCurrent().modifier().getName())
@@ -49,7 +49,7 @@ public class LawsInfo extends Command {
                     .appendNewline()
                     .build())));
         } else {
-            country.getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
+            country.getEconomy().getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
                     .append(Component.text(string))
                     .append(Component.text(" : "))
                     .append(lawCategory.getCurrent().modifier().getName())
@@ -59,7 +59,7 @@ public class LawsInfo extends Command {
 
         return Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
-                .append(country.getNameComponent())
+                .append(country.getComponentName())
                 .append(Component.text("\\_______", NamedTextColor.BLUE))
                 .appendNewline()
                 .append(comps)

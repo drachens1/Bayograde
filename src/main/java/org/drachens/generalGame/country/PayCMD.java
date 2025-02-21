@@ -49,7 +49,7 @@ public class PayCMD extends Command {
             if (from.canMinusCost(payment)) {
                 to.addPayment(payment, Component.text()
                         .append(MessageEnum.country.getComponent())
-                        .append(from.getNameComponent())
+                        .append(from.getComponentName())
                         .append(Component.text(" has sent you "))
                         .append(Component.text(value))
                         .append(production.getSymbol())
@@ -57,7 +57,7 @@ public class PayCMD extends Command {
                 from.sendMessage(Component.text()
                         .append(MessageEnum.country.getComponent())
                         .append(Component.text("You have sent"))
-                        .append(to.getNameComponent())
+                        .append(to.getComponentName())
                         .append(Component.text(" "))
                         .append(Component.text(value))
                         .build());

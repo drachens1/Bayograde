@@ -104,7 +104,7 @@ public class ContinentalWorld extends World {
         if (province.getOccupier() == null) {
             p.sendActionBar(Component.text("Unoccupied", NamedTextColor.GOLD, TextDecoration.BOLD));
         } else {
-            if (province.getOccupier().getNameComponent() == null) {
+            if (province.getOccupier().getComponentName() == null) {
                 System.err.println("Something went wrong drastically");
                 return;
             }
@@ -119,7 +119,7 @@ public class ContinentalWorld extends World {
                     float meanDmg = 0f;
                     int troopCount = troops.size();
                     if (troopCount == 0) {
-                        p.sendActionBar(province.getOccupier().getNameComponent());
+                        p.sendActionBar(province.getOccupier().getComponentName());
                         return;
                     }
                     for (Troop troop : troops) {
@@ -149,7 +149,8 @@ public class ContinentalWorld extends World {
                     return;
                 }
             }
-            p.sendActionBar(province.getOccupier().getNameComponent());
+            if (province.getOccupier()==null)return;
+            p.sendActionBar(province.getOccupier().getComponentName());
         }
     }
 }

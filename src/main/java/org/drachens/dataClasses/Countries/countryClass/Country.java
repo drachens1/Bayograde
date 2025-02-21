@@ -2,6 +2,7 @@ package org.drachens.dataClasses.Countries.countryClass;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -798,9 +799,17 @@ public abstract class Country implements Cloneable, Saveable {
         getDiplomacy().addDiplomaticRelation(name,1);
     }
 
+    public JsonElement getReference(){
+        return new JsonPrimitive(getName());
+    }
+
     @Override
     public JsonElement toJson() {
         return new JsonObject();
+    }
+
+    public Block getBlockForProvince(Province province) {
+        return province.getMaterial().block();
     }
 
     protected abstract JsonElement abstractToJson();

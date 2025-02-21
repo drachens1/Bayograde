@@ -31,9 +31,7 @@ public class LiberateCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("free"));
                 });
 
-        setDefaultExecutor((sender, context) -> {
-            sender.sendMessage("Proper usage /country diplomacy liberate <country>");
-        });
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /country diplomacy liberate <country>"));
 
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
@@ -43,7 +41,7 @@ public class LiberateCMD extends Command {
                 p.sendMessage("You need to select a type if it has capitulated \n Proper usage /country diplomacy liberate <country> <type>");
                 return;
             }
-            if (country.getMilitary().getOthersCores(target).isEmpty()) {
+            if (country.getMilitary().getOthersCoreProvinces(target.getName()).isEmpty()) {
                 p.sendMessage("You don't occupy any of there cores");
                 return;
             }
@@ -58,7 +56,7 @@ public class LiberateCMD extends Command {
                 p.sendMessage("Target is null");
                 return;
             }
-            if (country.getOthersCores(target).isEmpty()) {
+            if (country.getMilitary().getOthersCoreProvinces(target.getName()).isEmpty()) {
                 p.sendMessage("You don't occupy any of there cores");
                 return;
             }

@@ -21,19 +21,13 @@ public class ResearchOptionCMD extends Command {
         super("start");
 
         var choice = ArgumentType.String("choice")
-                .setSuggestionCallback((sender, context, suggestion) -> {
-                    getSuggestionBasedOnInput(suggestion, getAvailable(sender));
-                });
+                .setSuggestionCallback((sender, context, suggestion) -> getSuggestionBasedOnInput(suggestion, getAvailable(sender)));
 
         setCondition((sender, s) -> !notCountry(sender));
 
-        setDefaultExecutor((sender, context) -> {
-            if (notCountry(sender)) return;
-            sender.sendMessage(Component.text("Proper usage: /country research option <choice>", NamedTextColor.RED));
-        });
+        setDefaultExecutor((sender, context) -> sender.sendMessage(Component.text("Proper usage: /country research option <choice>", NamedTextColor.RED)));
 
         addSyntax((sender, context) -> {
-            if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
@@ -41,8 +35,8 @@ public class ResearchOptionCMD extends Command {
             if (researchOption == null) {
                 return;
             }
-            if (researchOption.canResearch(country.getResearchCountry())) {
-                country.getResearchCountry().startResearching(researchOption);
+            if (researchOption.canResearch(country.getResearch().researchCountry())) {
+                country.getResearch().researchCountry().startResearching(researchOption);
             } else {
                 p.sendMessage(Component.text("You cannot research this", NamedTextColor.RED));
             }
@@ -61,6 +55,6 @@ public class ResearchOptionCMD extends Command {
         CPlayer p = (CPlayer) sender;
         Country country = p.getCountry();
         TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
-        return tree.getAvailable(country.getResearchCountry());
+        return tree.getAvailable(country.getResearch().researchCountry());
     }
 }

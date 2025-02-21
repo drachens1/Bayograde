@@ -12,6 +12,8 @@ import org.drachens.util.MessageEnum;
 
 import java.util.HashMap;
 
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+
 public class IdeologiesBoostCMD extends Command {
     private final HashMap<String, IdeologiesEnum> ideologiesEnumHashMap = new HashMap<>();
 

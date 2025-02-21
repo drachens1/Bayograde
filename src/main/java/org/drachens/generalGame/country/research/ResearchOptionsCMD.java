@@ -26,18 +26,16 @@ public class ResearchOptionsCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             List<Component> comps = new ArrayList<>();
-            getAvailable(country.getResearchCountry(), p).forEach(string -> {
-                comps.add(Component.text()
-                        .append(Component.text(string))
-                        .append(Component.text()
-                                .append(Component.text("[RESEARCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
-                                .clickEvent(ClickEvent.runCommand("/country research option " + string))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start researching this", NamedTextColor.GOLD))))
-                        .build());
-            });
+            getAvailable(country.getResearch().researchCountry(), p).forEach(string -> comps.add(Component.text()
+                    .append(Component.text(string))
+                    .append(Component.text()
+                            .append(Component.text("[RESEARCH]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .clickEvent(ClickEvent.runCommand("/country research option " + string))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to start researching this", NamedTextColor.GOLD))))
+                    .build()));
             sender.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(country.getNameComponent())
+                    .append(country.getComponentName())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
                     .append(comps)

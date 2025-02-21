@@ -14,6 +14,8 @@ import org.drachens.player_types.CPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+
 public class LawsChangeOptionsCMD extends Command {
     public LawsChangeOptionsCMD() {
         super("change-options");
@@ -21,7 +23,7 @@ public class LawsChangeOptionsCMD extends Command {
         var lawSet = ArgumentType.String("law")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
-                    getSuggestionBasedOnInput(suggestion, p.getCountry().getLawNames());
+                    getSuggestionBasedOnInput(suggestion, p.getCountry().getEconomy().getLawNames());
                 });
 
         setDefaultExecutor((sender, context) -> {
@@ -43,7 +45,7 @@ public class LawsChangeOptionsCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            LawCategory lawCategory = country.getLaw(context.get(lawSet));
+            LawCategory lawCategory = country.getEconomy().getLaw(context.get(lawSet));
             if (lawCategory == null) {
                 p.sendMessage(Component.text("That law category is null", NamedTextColor.RED));
                 return;
@@ -58,7 +60,7 @@ public class LawsChangeOptionsCMD extends Command {
             comps.removeLast();
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(country.getNameComponent())
+                    .append(country.getComponentName())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
                     .appendNewline()
                     .append(Component.text("Law: " + lawCategory.getIdentifier()))

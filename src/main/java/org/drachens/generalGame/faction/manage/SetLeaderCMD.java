@@ -24,11 +24,11 @@ public class SetLeaderCMD extends Command {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country != null) {
-                            if (country.getEconomyFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
-                                suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
+                            if (country.isEconomyFactionLeader()) {
+                                suggestion.addEntry(new SuggestionEntry(country.getEconomy().getEconomyFactionType().getStringName()));
                             }
-                            if (country.getMilitaryFactionType() != null && country.getEconomyFactionType().isLeader(country)) {
-                                suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
+                            if (country.isMilitaryFactionLeader()) {
+                                suggestion.addEntry(new SuggestionEntry(country.getEconomy().getMilitaryFactionType().getStringName()));
                             }
                         }
                     }

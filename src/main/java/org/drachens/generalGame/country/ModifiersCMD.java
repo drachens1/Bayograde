@@ -7,6 +7,8 @@ import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.ModifierCommand;
 import org.drachens.player_types.CPlayer;
 
+import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
+
 public class ModifiersCMD extends Command {
     public ModifiersCMD() {
         super("modifiers");
@@ -15,14 +17,14 @@ public class ModifiersCMD extends Command {
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
-                    getSuggestionBasedOnInput(suggestion, country.getModifierNames());
+                    getSuggestionBasedOnInput(suggestion, country.getEconomy().getModifierNames());
                 });
 
         var second = ArgumentType.String("input")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
-                    ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
+                    ModifierCommand modifierCommand = country.getEconomy().getModifierCommmand(context.get(modifier));
                     if (modifierCommand == null) {
                         p.sendMessage("You do not have that modifier");
                         return;
@@ -39,7 +41,7 @@ public class ModifiersCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
+            ModifierCommand modifierCommand = country.getEconomy().getModifierCommmand(context.get(modifier));
             if (modifierCommand == null) {
                 p.sendMessage("You do not have that modifier");
                 return;
@@ -50,7 +52,7 @@ public class ModifiersCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            ModifierCommand modifierCommand = country.getModifierCommand(context.get(modifier));
+            ModifierCommand modifierCommand = country.getEconomy().getModifierCommmand(context.get(modifier));
             if (modifierCommand == null) {
                 p.sendMessage("You do not have that modifier");
                 return;

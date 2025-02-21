@@ -37,22 +37,17 @@ public class CreateCMD extends Command {
                 });
 
         var nameArg = ArgumentType.String("factionName");
-        setDefaultExecutor((sender, context) -> {
-            sender.sendMessage("Proper usage /faction create <type> <name> ");
-
-        });
+        setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /faction create <type> <name> "));
 
 
-        addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
-            sender.sendMessage("Proper usage /faction create <type> <name> ");
-        }, type);
+        addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> sender.sendMessage("Proper usage /faction create <type> <name> "), type);
 
         addConditionalSyntax((sender, s) -> notInAFaction(sender), (sender, context) -> {
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             String factionName = context.get(nameArg);
 
-            if (country.hasCondition(ConditionEnum.cant_join_faction)) {
+            if (country.getDiplomacy().hasCondition(ConditionEnum.cant_join_faction)) {
                 player.sendMessage(Component.text("You have the cant join a faction condition.", NamedTextColor.RED));
                 return;
             }
@@ -70,7 +65,7 @@ public class CreateCMD extends Command {
                     return;
                 }
                 EconomyFactionType faction = new EconomyFactionType(country, factionName);
-                country.setEconomyFactionType(faction);
+                country.getEconomy().setEconomyFactionType(faction);
                 EventDispatcher.call(new FactionCreateEvent(country, faction));
             } else if ("Military".equals(factionType)) {
                 if (country.isInAMilitaryFaction()) {
@@ -78,7 +73,7 @@ public class CreateCMD extends Command {
                     return;
                 }
                 MilitaryFactionType faction = new MilitaryFactionType(country, factionName);
-                country.setMilitaryFactionType(faction);
+                country.getEconomy().setMilitaryFactionType(faction);
                 EventDispatcher.call(new FactionCreateEvent(country, faction));
             } else {
                 player.sendMessage("Enter a valid faction type.");

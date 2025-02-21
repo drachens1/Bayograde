@@ -39,7 +39,7 @@ public class LoanCreateCMD extends Command {
             float i = context.get(interest);
             int t = context.get(termLength);
             Loan loan = new Loan(a, production, i, t, country, target);
-            target.addLoanRequest(loan);
+            target.getEconomy().addLoanRequest(country.getName(), loan);
             EventDispatcher.call(new LoanSendEvent(p.getInstance(), country, target, loan));
         }), countries, amount, interest, termLength);
     }

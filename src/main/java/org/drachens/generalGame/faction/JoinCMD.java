@@ -35,7 +35,7 @@ public class JoinCMD extends Command {
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
 
-            if (country.hasCondition(ConditionEnum.cant_join_faction)) {
+            if (country.getDiplomacy().hasCondition(ConditionEnum.cant_join_faction)) {
                 player.sendMessage(Component.text("You have the cant join a faction condition.", NamedTextColor.RED));
                 return;
             }

@@ -21,10 +21,10 @@ public class LeaveCMD extends Command {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
                         if (country.isInAnEconomicFaction()) {
-                            suggestion.addEntry(new SuggestionEntry(country.getEconomyFactionType().getStringName()));
+                            suggestion.addEntry(new SuggestionEntry(country.getEconomy().getEconomyFactionType().getStringName()));
                         }
                         if (country.isInAMilitaryFaction()) {
-                            suggestion.addEntry(new SuggestionEntry(country.getMilitaryFactionType().getStringName()));
+                            suggestion.addEntry(new SuggestionEntry(country.getEconomy().getMilitaryFactionType().getStringName()));
                         }
                     }
                 });

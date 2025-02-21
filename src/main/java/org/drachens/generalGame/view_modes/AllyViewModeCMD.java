@@ -29,7 +29,7 @@ public class AllyViewModeCMD extends Command {
             }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            ImaginaryWorld world = country.getAllyWorld();
+            ImaginaryWorld world = country.getMilitary().getAllyWorld();
             switch (context.get(on)) {
                 case "on":
                     world.addPlayer(p);

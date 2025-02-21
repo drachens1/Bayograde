@@ -24,7 +24,7 @@ public class ResearchTechTreeCMD extends Command {
             if (notCountry(sender)) return;
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            ResearchCountry researchCountry = country.getResearchCountry();
+            ResearchCountry researchCountry = country.getResearch().researchCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             List<Component> comps = new ArrayList<>();
             tree.getResearchCategories().forEach(researchCategory -> {

@@ -21,7 +21,7 @@ public class LoanInfoCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             List<Component> comps = new ArrayList<>();
-            country.getVault().getLoans().forEach(loan -> comps.add(loan.getDescription()));
+            country.getEconomy().getVault().getLoans().forEach(loan -> comps.add(loan.getDescription()));
             p.sendMessage(Component.text().append(comps).build());
         });
     }

@@ -1,5 +1,6 @@
 package org.drachens.generalGame.scoreboards;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public class DefaultCountryScoreboard extends ContinentalScoreboards {
     private final TextColor categoryColour = ColoursEnum.WHITE.getTextColor();
     private boolean generalInfo = true;
@@ -29,8 +31,8 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         Country country = p.getCountry();
         return new ScoreboardBuilder(Component.text("Country", NamedTextColor.GOLD, TextDecoration.BOLD))
                 .addLine("generalInfo", Component.text("General-Info    --v", categoryColour), 50)
-                .addLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE)).append(country.getNameComponent()).build(), 49)
-                .addLine("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE)).append(Component.text((int) country.getStability().getStability()))
+                .addLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE)).append(country.getComponentName()).build(), 49)
+                .addLine("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE)).append(Component.text((int) country.getInfo().getStability().getStability()))
                         .append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build(), 50)
                 .addLine("economy", Component.text("Economy          --^", categoryColour), 40)
                 .addLine("ideologies", Component.text("Ideologies        --^", categoryColour), 30)
@@ -45,9 +47,9 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         Country country = p.getCountry();
         sidebar.updateLineContent("generalInfo", Component.text("General-Info    --v", categoryColour));
         sidebar.createLine(new Sidebar.ScoreboardLine("generalInfo1", Component.text().append(Component.text("Country: ", NamedTextColor.BLUE))
-                .append(country.getNameComponent()).build(), 49));
+                .append(country.getComponentName()).build(), 49));
         sidebar.createLine(new Sidebar.ScoreboardLine("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE))
-                .append(Component.text((int) country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build(), 50));
+                .append(Component.text((int) country.getInfo().getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build(), 50));
     }
 
     public void closeGeneralInfo() {
@@ -64,7 +66,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         Country country = p.getCountry();
         Sidebar sidebar = getSidebar();
         sidebar.updateLineContent("economy", Component.text("Economy          --v", categoryColour));
-        List<Currencies> currenciesList = country.getVault().getCurrencies();
+        List<Currencies> currenciesList = country.getEconomy().getVault().getCurrencies();
         int i = 39;
         for (Currencies currencies : currenciesList) {
             sidebar.createLine(new Sidebar.ScoreboardLine("economy" + i, Component.text()
@@ -118,7 +120,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         Country country = p.getCountry();
         Sidebar sidebar = getSidebar();
         sidebar.updateLineContent("diplomacy", Component.text("Diplomacy         --v", categoryColour));
-        HashMap<String, Integer> diplo = country.getDiplomacy();
+        HashMap<String, Integer> diplo = country.getDiplomacy().getDiplomacy();
         int i = 19;
         for (Map.Entry<String, Integer> d : diplo.entrySet()){
             sidebar.createLine(new Sidebar.ScoreboardLine("diplomacy"+i,Component.text()
@@ -157,7 +159,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         Sidebar sidebar = getSidebar();
         Country country = p.getCountry();
         sidebar.updateLineContent("generalInfo2", Component.text().append(Component.text("Stability: ", NamedTextColor.BLUE))
-                .append(Component.text((int) country.getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build());
+                .append(Component.text((int) country.getInfo().getStability().getStability())).append(Component.text("%")).append(Component.text("\uD83D\uDC12", NamedTextColor.WHITE)).build());
     }
 
     public void updateDiplomacy() {
@@ -165,7 +167,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         CPlayer p = getPlayer();
         Sidebar sidebar = getSidebar();
         Country country = p.getCountry();
-        HashMap<String, Integer> diplo = country.getDiplomacy();
+        HashMap<String, Integer> diplo = country.getDiplomacy().getDiplomacy();
         int i = 19;
         for (Map.Entry<String, Integer> d : diplo.entrySet()){
             sidebar.updateLineContent("diplomacy"+i,Component.text()
@@ -182,7 +184,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         CPlayer p = getPlayer();
         Sidebar sidebar = getSidebar();
         Country country = p.getCountry();
-        List<Currencies> currenciesList = country.getVault().getCurrencies();
+        List<Currencies> currenciesList = country.getEconomy().getVault().getCurrencies();
         int i = 39;
         for (Currencies currencies : currenciesList) {
             sidebar.updateLineContent("economy" + i, Component.text()
@@ -217,21 +219,5 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
         } else {
             sidebar.updateLineContent(id, content);
         }
-    }
-
-    public boolean isDiplomacy() {
-        return diplomacy;
-    }
-
-    public boolean isEconomy() {
-        return economy;
-    }
-
-    public boolean isGeneralInfo() {
-        return generalInfo;
-    }
-
-    public boolean isIdeologies() {
-        return ideologies;
     }
 }

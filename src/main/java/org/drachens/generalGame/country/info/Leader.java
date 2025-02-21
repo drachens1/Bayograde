@@ -30,9 +30,9 @@ public class Leader extends Command {
                 return;
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
-                    .append(country.getLeader().getName())
+                    .append(country.getInfo().getLeader().getName())
                     .append(Component.text("\\_______", NamedTextColor.BLUE))
-                    .append(country.getLeader().getDescription())
+                    .append(country.getInfo().getLeader().getDescription())
                     .build());
         }, countries);
     }

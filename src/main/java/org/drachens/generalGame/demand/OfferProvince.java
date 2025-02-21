@@ -29,7 +29,7 @@ public class OfferProvince extends HotbarItemButton {
         Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
-        if (!(from == provinceCountry || from.getPuppets().contains(provinceCountry))) {
+        if (!(from == provinceCountry || from.getDiplomacy().getPuppets().contains(provinceCountry))) {
             p.sendMessage("They are not a puppet or the actual country");
             return;
         }
@@ -45,7 +45,7 @@ public class OfferProvince extends HotbarItemButton {
         Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
-        if (!(from == provinceCountry || from.getPuppets().contains(provinceCountry))) {
+        if (!(from == provinceCountry || from.getDiplomacy().getPuppets().contains(provinceCountry))) {
             p.sendMessage("They are not a puppet or the actual country");
             return;
         }

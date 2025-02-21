@@ -29,7 +29,7 @@ public class WarsViewModeCMD extends Command {
             }
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            ImaginaryWorld world = country.getWarsWorld();
+            ImaginaryWorld world = country.getMilitary().getWarsWorld();
             switch (context.get(on)) {
                 case "on":
                     world.addPlayer(p);

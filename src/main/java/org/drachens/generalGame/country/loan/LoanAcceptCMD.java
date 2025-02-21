@@ -23,18 +23,18 @@ public class LoanAcceptCMD extends Command {
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     List<String> countries1 = new ArrayList<>();
-                    p.getCountry().getLoanRequests().forEach((country, loan) -> countries1.add(country));
+                    p.getCountry().getEconomy().getLoanRequests().forEach((country, loan) -> countries1.add(country));
                     getSuggestionBasedOnInput(suggestion, countries1);
                 });
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             String countryName = context.get(countries);
-            if (!country.getLoanRequests().containsKey(countryName)) {
+            if (!country.getEconomy().getLoanRequests().containsKey(countryName)) {
                 p.sendMessage(noLoanFound);
                 return;
             }
-            country.acceptLoan(countryName);
+            country.getEconomy().getVault().addLoan(country.getEconomy().getLoan(countryName));
         }, countries);
     }
 }

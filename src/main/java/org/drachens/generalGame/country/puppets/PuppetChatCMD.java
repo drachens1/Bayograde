@@ -16,7 +16,7 @@ public class PuppetChatCMD extends Command {
 
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
-            PuppetChat puppetChat = p.getCountry().getOverlord().getPuppetChat();
+            PuppetChat puppetChat = p.getCountry().getInfo().getOverlord().getInfo().getPuppetChat();
             boolean current = active.getOrDefault(p, false);
             current = !current;
             active.put(p, current);
