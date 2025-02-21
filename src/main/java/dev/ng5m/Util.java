@@ -55,9 +55,4 @@ public enum Util {
             throw new RuntimeException(x);
         }
     }
-
-    public static void noop(Object... args) {
-
-    }
-
 }

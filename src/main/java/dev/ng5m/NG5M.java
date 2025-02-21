@@ -8,7 +8,6 @@ import dev.ng5m.event.PurchaseEvent;
 import dev.ng5m.shop.PurchaseGson;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventDispatcher;
-import org.drachens.miniGameSystem.minigames.FlappyBird;
 import org.drachens.player_types.CPlayer;
 
 import java.io.IOException;
@@ -34,17 +33,6 @@ public class NG5M {
         MinecraftServer.getConnectionManager().setPlayerProvider(CPlayer::new);
 
         new BanSystemEvents();
-
-        try {
-            if (!FlappyBird.db.exists()) {
-                FlappyBird.db.createNewFile();
-
-                Util.writeString(FlappyBird.db, "{}");
-            }
-
-        } catch (Exception x) {
-            throw new RuntimeException(x);
-        }
     }
 
     private void setupHTTP(){

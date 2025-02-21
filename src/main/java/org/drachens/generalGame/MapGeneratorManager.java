@@ -200,114 +200,171 @@ public class MapGeneratorManager extends MapGen {
             logMsg("server", "Tried to generate a new map when a map was generating", instance);
             return;
         }
+
         addGenerating(instance);
+        initializeGeneration(instance, votingOption);
+
+        MinecraftServer.getSchedulerManager().buildTask(() -> {
+            removeGenerating(instance);
+            countryDataManager.getCountries().forEach(Country::createInfo);
+        }).delay(2, ChronoUnit.SECONDS).schedule();
+
+        MinecraftServer.getSchedulerManager().buildTask(this::start).schedule();
+    }
+
+    private void initializeGeneration(Instance instance, VotingOption votingOption) {
         this.votingOption = votingOption;
         this.instance = instance;
         this.provinceManager = ContinentalManagers.world(instance).provinceManager();
         provinceManager.reset();
         this.countryDataManager = ContinentalManagers.world(instance).countryDataManager();
-        MinecraftServer.getSchedulerManager().buildTask(() -> {
-            removeGenerating(instance);
-            countryDataManager.getCountries().forEach(Country::createInfo);
-        }).delay(2, ChronoUnit.SECONDS).schedule();
         this.countries = votingOption.getCountries();
         this.currenciesHashMap = new HashMap<>(votingOption.getDefaultCurrencies());
-        countryNames = new ArrayList<>(countryTypes);
+        this.countryNames = new ArrayList<>(countryTypes);
         this.defIdeology = new Ideology(votingOption);
-        land = new ArrayList<>();
-        countryHashMap = new HashMap<>();
-        capitals = new HashMap<>();
-        MinecraftServer.getSchedulerManager().buildTask(this::start).schedule();
+        this.land = new ArrayList<>();
+        this.countryHashMap = new HashMap<>();
+        this.capitals = new HashMap<>();
     }
 
     public void start() {
+        Random random = new Random();
         JNoise noisePipeline = JNoise.newBuilder()
                 .setNoiseSource(PerlinNoiseGenerator.newBuilder()
-                        .setSeed(new Random().nextLong())
+                        .setSeed(random.nextLong())
                         .setInterpolation(Interpolation.LINEAR)
                         .build())
                 .clamp(0, 1)
-                .scale(new Random().nextDouble(0.03, 0.04))
+                .scale(random.nextDouble(0.03, 0.04))
                 .build();
 
         instance.enableAutoChunkLoad(true);
+
         for (int x = -getSizeX(); x < getSizeX(); x++) {
             for (int y = -getSizeY(); y < getSizeY(); y++) {
                 double noiseValue = noisePipeline.evaluateNoise(x, y);
                 Pos pos = new Pos(x, 0, y);
-                if (0.01 > noiseValue) {
+                if (noiseValue < 0.01) {
                     instance.setBlock(pos, Material.BLUE_STAINED_GLASS.block());
                 } else {
                     land.add(new FlatPos(x, y));
                 }
             }
         }
+
         MinecraftServer.getSchedulerManager().buildTask(this::createCountries).delay(10, ChronoUnit.MILLIS).schedule();
     }
 
     private void createCountries() {
         List<Country> countries = new ArrayList<>();
-        Country soviet = null;
-
         for (int i = 0; i < this.countries; i++) {
-            Country newCount = createCountry(i);
-            countries.add(newCount);
-            countryDataManager.addCountry(newCount);
-            if (null != newCount && Objects.equals(newCount.getName(), "Soviet-Union")) {
-                soviet = newCount;
+            Country newCountry = createCountry(i);
+            if (newCountry != null) {
+                countries.add(newCountry);
+                countryDataManager.addCountry(newCountry);
             }
         }
+
+        assignIdeologiesAndOverlords(countries);
+        floodFill(countries);
+    }
+
+    private void assignIdeologiesAndOverlords(List<Country> countries) {
+        Random random = new Random();
         for (int i = 0; i < countries.size(); i++) {
             Country country = countries.get(i);
-            country.getIdeology().addIdeology(votingOption.getIdeologyTypes().get(new Random().nextInt(votingOption.getIdeologyTypes().size())), new Random().nextFloat(0, 15.0f));
-            if (null != this.countryNames.get(i).overlord()) {
-                String overlord = countryNames.get(i).overlord();
-                Country c = countryDataManager.getCountryFromName(overlord);
-                country.setOverlord(c);
-                c.addPuppet(country);
+            country.getIdeology().addIdeology(
+                    votingOption.getIdeologyTypes().get(random.nextInt(votingOption.getIdeologyTypes().size())),
+                    random.nextFloat(0, 15.0f)
+            );
+
+            String overlord = countryNames.get(i).overlord();
+            if (overlord != null) {
+                Country overlordCountry = countryDataManager.getCountryFromName(overlord);
+                country.setOverlord(overlordCountry);
+                overlordCountry.addPuppet(country);
             }
         }
-        floodFill(countries, soviet);
     }
 
     private Country createCountry(int count) {
         if (countryNames.isEmpty()) {
-            System.err.println("Not enough countries had to exit early");
+            System.err.println("Not enough countries, exiting early");
             return null;
         }
+
         CountryType countryName = countryNames.get(count);
-        HashMap<CurrencyTypes, Currencies> newCurrencies = new HashMap<>();
-        for (Map.Entry<CurrencyTypes, Currencies> e : currenciesHashMap.entrySet()) {
-            newCurrencies.put(e.getKey(), e.getValue().clone());
-        }
-        Country country;
-        switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-            case ww2_clicks ->
-                    country = new ClicksCountry(newCurrencies, countryName.identifier(), countryName.name(), countryName.block(), countryName.border(), defIdeology, instance, laws);
-            case ww2_troops ->
-                    country = new TroopCountry(newCurrencies, countryName.identifier(), countryName.name(), countryName.block(), countryName.border(), defIdeology, instance, laws);
-            default ->
-                    throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
-        }
-        country.getIdeology().setCurrentIdeology(countryName.ideologiesEnum.getIdeologyTypes());
+        HashMap<CurrencyTypes, Currencies> newCurrencies = cloneCurrencies();
+
+        Country country = switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
+            case ww2_clicks -> new ClicksCountry(newCurrencies, countryName.identifier(), countryName.name(), countryName.block(), countryName.border(), defIdeology, instance, laws);
+            case ww2_troops -> new TroopCountry(newCurrencies, countryName.identifier(), countryName.name(), countryName.block(), countryName.border(), defIdeology, instance, laws);
+            default -> throw new IllegalArgumentException("Unexpected voting winner");
+        };
+
+        country.getIdeology().setCurrentIdeology(countryName.ideologiesEnum().getIdeologyTypes());
         country.getIdeology().addIdeology(countryName.ideologiesEnum().getIdeologyTypes(), new Random().nextFloat(40.0f, 80.0f));
+
         if (!"Soviet-Union".equals(countryName.identifier)) {
             Modifier m = ModifiersEnum.great_depression.getModifier().independantClone();
             m.addEventsRunner(new GreatDepressionEventsRunner(country, m));
             country.addModifier(m);
         }
+
         Leader leader = countryName.leader();
         leader.setIdeologyTypes(countryName.ideologiesEnum());
         country.setLeader(leader);
-        if (null != countryName.extra) {
-            for (Modifier modifier : countryName.extra()) {
-                country.addModifier(modifier);
-            }
+
+        if (countryName.extra() != null) {
+            Arrays.stream(countryName.extra()).forEach(country::addModifier);
         }
-        if (null != countryName.overlord()) {
+
+        if (countryName.overlord() != null) {
             country.setOverlord(countryDataManager.getCountryFromName(countryName.overlord()));
         }
+
         return country;
+    }
+
+    private HashMap<CurrencyTypes, Currencies> cloneCurrencies() {
+        HashMap<CurrencyTypes, Currencies> clonedCurrencies = new HashMap<>();
+        for (var entry : currenciesHashMap.entrySet()) {
+            clonedCurrencies.put(entry.getKey(), entry.getValue().clone());
+        }
+        return clonedCurrencies;
+    }
+
+    private void floodFill(List<Country> countries) {
+        Queue<FlatPos>[] countryQueues = new Queue[countries.size()];
+        for (int i = 0; i < countries.size(); i++) {
+            countryQueues[i] = new LinkedList<>();
+            startCountry(i, countryQueues, countries);
+        }
+
+        boolean anyQueueHadExpansion;
+        do {
+            anyQueueHadExpansion = false;
+
+            for (int i = 0; i < countries.size(); i++) {
+                Queue<FlatPos> queue = countryQueues[i];
+                Country country = countries.get(i);
+                while (!queue.isEmpty()) {
+                    FlatPos currentPos = queue.poll();
+                    for (FlatPos neighbor : getNeighbours(currentPos)) {
+                        if (land.contains(neighbor) && !countryHashMap.containsKey(neighbor)) {
+                            queue.add(neighbor);
+                            countryHashMap.put(neighbor, country);
+                            anyQueueHadExpansion = true;
+                            land.remove(neighbor);
+                        }
+                    }
+                }
+            }
+        } while (anyQueueHadExpansion);
+
+        land.forEach(pos -> instance.setBlock(new Pos(pos.x(), 0, pos.z()), Material.WHITE_TERRACOTTA.block()));
+
+        borders(countries);
     }
 
     private void startCountry(int i, Queue<FlatPos>[] countryQueues, List<Country> countries) {
@@ -322,55 +379,6 @@ public class MapGeneratorManager extends MapGen {
             } else continue;
             return;
         }
-    }
-
-    public void floodFill(List<Country> countries, Country targetCountry) {
-        Queue<FlatPos>[] countryQueues = new Queue[countries.size()];
-
-        for (int i = 0; i < countries.size(); i++) {
-            countryQueues[i] = new LinkedList<>();
-            startCountry(i, countryQueues, countries);
-        }
-
-        boolean anyQueueHadExpansion;
-        do {
-            anyQueueHadExpansion = false;
-
-            int targetIndex = countries.indexOf(targetCountry);
-            if (!countryQueues[targetIndex].isEmpty()) {
-                FlatPos currentPos = countryQueues[targetIndex].poll();
-                for (FlatPos neighbor : getNeighbours(currentPos)) {
-                    if (land.contains(neighbor) && !countryHashMap.containsKey(neighbor)) {
-                        countryQueues[targetIndex].add(neighbor);
-                        countryHashMap.put(neighbor, targetCountry);
-                        anyQueueHadExpansion = true;
-                        land.remove(neighbor);
-                    } else if (countryHashMap.containsKey(neighbor) && countryHashMap.get(neighbor) != targetCountry) {
-                        countryHashMap.put(neighbor, targetCountry);
-                        anyQueueHadExpansion = true;
-                    }
-                }
-            }
-
-            for (int i = 0; i < countries.size(); i++) {
-                if (i == targetIndex) continue;
-                if (!countryQueues[i].isEmpty()) {
-                    FlatPos currentPos = countryQueues[i].poll();
-                    for (FlatPos neighbor : getNeighbours(currentPos)) {
-                        if (land.contains(neighbor) && !countryHashMap.containsKey(neighbor)) {
-                            countryQueues[i].add(neighbor);
-                            countryHashMap.put(neighbor, countries.get(i));
-                            anyQueueHadExpansion = true;
-                            land.remove(neighbor);
-                        }
-                    }
-                }
-            }
-        } while (anyQueueHadExpansion);
-
-        land.forEach(z -> instance.setBlock(new Pos(z.x(), 0, z.z()), Material.WHITE_TERRACOTTA.block()));
-
-        borders(countries);
     }
 
     private void borders(List<Country> countries) {
