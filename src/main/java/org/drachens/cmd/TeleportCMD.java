@@ -8,8 +8,7 @@ import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import org.drachens.util.MessageEnum;
-
-import static org.drachens.util.ServerUtil.getAllowedChunks;
+import org.drachens.util.ServerUtil;
 
 public class TeleportCMD extends Command {
     public TeleportCMD() {
@@ -23,7 +22,7 @@ public class TeleportCMD extends Command {
                 return;
             }
             Pos ps = new Pos(context.get(x), 1, context.get(z));
-            if (!getAllowedChunks().contains(p.getInstance().getChunk(ps.chunkX(), ps.chunkZ()))) {
+            if (!ServerUtil.getAllowedChunks().contains(p.getInstance().getChunk(ps.chunkX(), ps.chunkZ()))) {
                 p.sendMessage(Component.text().append(MessageEnum.system.getComponent(), Component.text("you cannot teleport out of bounds", NamedTextColor.RED)).build());
                 return;
             }
@@ -35,7 +34,7 @@ public class TeleportCMD extends Command {
                 return;
             }
             Pos ps = new Pos(context.get(x), context.get(y), context.get(z));
-            if (!getAllowedChunks().contains(p.getInstance().getChunk(ps.chunkX(), ps.chunkZ()))) {
+            if (!ServerUtil.getAllowedChunks().contains(p.getInstance().getChunk(ps.chunkX(), ps.chunkZ()))) {
                 p.sendMessage(Component.text().append(MessageEnum.system.getComponent(), Component.text("you cannot teleport out of bounds", NamedTextColor.RED)).build());
                 return;
             }

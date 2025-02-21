@@ -3,6 +3,7 @@ package org.drachens.util;
 import dev.ng5m.Constants;
 import dev.ng5m.event.CancelPurchaseEvent;
 import dev.ng5m.event.PurchaseEvent;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -49,9 +50,7 @@ import org.drachens.cmd.game.GameCMD;
 import org.drachens.cmd.game.PlaytimeCMD;
 import org.drachens.cmd.gamecreate.GameManageCMD;
 import org.drachens.cmd.gamecreate.start.StartGameCMD;
-import org.drachens.cmd.help.HelpCMD;
-import org.drachens.cmd.minigames.MinigamesCMD;
-import org.drachens.cmd.settings.SettingsCMD;
+import org.drachens.cmd.help.HelpCMD;import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -81,8 +80,10 @@ import static org.drachens.Manager.defaults.ContinentalManagers.putWorldClass;
 import static org.drachens.util.Messages.logCmd;
 import static org.drachens.util.OtherUtil.runThread;
 
+@Getter
 public enum ServerUtil {
     ;
+    @Getter
     private static final HashSet<Chunk> allowedChunks = new HashSet<>();
     private static final HashMap<PlayerConnection, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
@@ -108,10 +109,6 @@ public enum ServerUtil {
             VelocityProxy.enable(serverPropertiesFile.getSecret());
         } else MojangAuth.init();
         srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
-    }
-
-    public static GlobalEventHandler getEventHandler() {
-        return globalEventHandler;
     }
 
     public static void setupAll(List<Command> cmd, ScoreboardManager scoreboardManager) {
@@ -252,8 +249,6 @@ public enum ServerUtil {
         commandManager.register(new MsgCMD());
         commandManager.register(new FlyCMD());
 
-        commandManager.register(new MinigamesCMD());
-
         commandManager.register(new FlyspeedCMD());
         commandManager.register(new CountryCMD());
         commandManager.register(new TeleportCMD());
@@ -288,10 +283,6 @@ public enum ServerUtil {
         new CentralEventManager();
         start();
 
-    }
-
-    public static HashSet<Chunk> getAllowedChunks() {
-        return allowedChunks;
     }
 
     public static void start() {
