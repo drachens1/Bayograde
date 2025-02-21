@@ -18,10 +18,10 @@ public class FactoryOptionsCMD extends Command {
     public FactoryOptionsCMD() {
         super("options");
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            if (country == null) return;
+            if (null == country) return;
             List<Component> comps = new ArrayList<>();
             comps.add(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
@@ -38,32 +38,32 @@ public class FactoryOptionsCMD extends Command {
                             .append(Component.text(" - Economy:"))
                             .appendNewline()
                             .build());
-                    if (economicFaction.isLeader(country)){
+                    if (economicFaction.isLeader(country)) {
                         comps.add(Component.text()
-                                        .append(Component.text("Manage: "))
-                                        .appendNewline()
-                                        .append(Component.text()
-                                                .append(Component.text(" [DELETE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
-                                                .hoverEvent(HoverEvent.showText(Component.text("Click to delete this faction", NamedTextColor.GRAY)))
-                                                .clickEvent(ClickEvent.runCommand("/faction manage delete "+name)))
+                                .append(Component.text("Manage: "))
+                                .appendNewline()
+                                .append(Component.text()
+                                        .append(Component.text(" [DELETE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
+                                        .hoverEvent(HoverEvent.showText(Component.text("Click to delete this faction", NamedTextColor.GRAY)))
+                                        .clickEvent(ClickEvent.runCommand("/faction manage delete " + name)))
                                 .append(Component.text()
                                         .append(Component.text(" [INVITE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for inviting someone", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage invite"+name+" ")))
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage invite" + name + ' ')))
                                 .append(Component.text()
                                         .append(Component.text(" [KICK] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for kicking someone", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage kick "+name+" ")))
-                                        .appendNewline()
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage kick " + name + ' ')))
+                                .appendNewline()
                                 .append(Component.text()
                                         .append(Component.text(" [RENAME] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for setting the name", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage rename "+name+" ")))
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage rename " + name + ' ')))
                                 .append(Component.text()
                                         .append(Component.text(" [SET-LEADER] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for setting the leader", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage set-leader "+name+" ")))
-                                        .appendNewline()
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage set-leader " + name + ' ')))
+                                .appendNewline()
                                 .build());
                     }
                     comps.add(Component.text()
@@ -87,31 +87,31 @@ public class FactoryOptionsCMD extends Command {
                             .append(Component.text(" - Military:"))
                             .appendNewline()
                             .build());
-                    if (militaryFaction.isLeader(country)){
+                    if (militaryFaction.isLeader(country)) {
                         comps.add(Component.text()
                                 .append(Component.text("Manage: "))
                                 .appendNewline()
                                 .append(Component.text()
                                         .append(Component.text(" [DELETE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to delete this faction", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.runCommand("/faction manage delete "+name)))
+                                        .clickEvent(ClickEvent.runCommand("/faction manage delete " + name)))
                                 .append(Component.text()
                                         .append(Component.text(" [INVITE] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for inviting someone", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage invite"+name+" ")))
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage invite" + name + ' ')))
                                 .append(Component.text()
                                         .append(Component.text(" [KICK] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for kicking someone", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage kick "+name+" ")))
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage kick " + name + ' ')))
                                 .appendNewline()
                                 .append(Component.text()
                                         .append(Component.text(" [RENAME] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for setting the name", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage rename "+name+" ")))
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage rename " + name + ' ')))
                                 .append(Component.text()
                                         .append(Component.text(" [SET-LEADER] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to get a prompt for setting the leader", NamedTextColor.GRAY)))
-                                        .clickEvent(ClickEvent.suggestCommand("/faction manage set-leader "+name+" ")))
+                                        .clickEvent(ClickEvent.suggestCommand("/faction manage set-leader " + name + ' ')))
                                 .appendNewline()
                                 .build());
                     }
@@ -132,7 +132,7 @@ public class FactoryOptionsCMD extends Command {
                             .build());
                 }
             }
-            if (!country.isInAllFactions()){
+            if (!country.isInAllFactions()) {
                 comps.add(Component.text()
                         .appendNewline()
                         .append(Component.text("Other:"))

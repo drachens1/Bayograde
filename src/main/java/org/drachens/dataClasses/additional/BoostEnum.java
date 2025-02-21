@@ -28,7 +28,6 @@ public enum BoostEnum {
     BoostEnum(String posSymbol, String negSymbol, boolean percentage) {
         this.posSymbol = Component.text(posSymbol, NamedTextColor.WHITE);
         this.negSymbol = Component.text(negSymbol, NamedTextColor.WHITE);
-        ;
         this.percentage = percentage;
     }
 

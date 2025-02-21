@@ -12,10 +12,6 @@ import java.util.List;
 public class Payments implements Saveable {
     private final HashSet<Payment> payments;
 
-    public Payments(Payments payments) {
-        this.payments = payments.getPayments();
-    }
-
     public Payments(Payment... payments) {
         this.payments = new HashSet<>(List.of(payments));
     }
@@ -43,7 +39,7 @@ public class Payments implements Saveable {
     }
 
     public void multiply(float multiply) {
-        payments.forEach((payment -> payment.multiply(multiply)));
+        payments.forEach(payment -> payment.multiply(multiply));
     }
 
     public Component getMessages() {
@@ -59,11 +55,11 @@ public class Payments implements Saveable {
 
     public void compress() {
         HashMap<CurrencyTypes, Float> amountHashMap = new HashMap<>();
-        payments.forEach((payment -> {
-            float current = amountHashMap.getOrDefault(payment.getCurrencyType(), 0f);
+        payments.forEach(payment -> {
+            float current = amountHashMap.getOrDefault(payment.getCurrencyType(), 0.0f);
             current += payment.getAmount();
             amountHashMap.put(payment.getCurrencyType(), current);
-        }));
+        });
     }
 
     @Override

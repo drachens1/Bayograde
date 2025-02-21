@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.network.packet.server.play.TeamsPacket;
+import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.events.ranks.RankAddEvent;
 import org.drachens.events.ranks.RankRemoveEvent;
 import org.drachens.player_types.CPlayer;
@@ -32,13 +33,13 @@ public class Rank {
         this.suffix = c.suffix;
         this.color = c.color;
         this.team = Util.randomAlNum(16);
-        this.items=c.items;
-        this.identifier=c.identifier;
-        this.weight=c.weight;
+        this.items =c.items;
+        this.identifier =c.identifier;
+        this.weight =c.weight;
     }
 
     public String toString(){
-        return "[identifier:"+identifier+"-weight:"+weight+"]";
+        return "[identifier:"+ identifier +"-weight:"+ weight + ']';
     }
 
     public String getIdentifier(){
@@ -54,7 +55,7 @@ public class Rank {
     }
 
     protected final void sendPackets(String addedPlayer, Player player) {
-        var conn = player.getPlayerConnection();
+        PlayerConnection conn = player.getPlayerConnection();
 
         conn.sendPacket(new TeamsPacket(this.team,
                 new TeamsPacket.CreateTeamAction(
@@ -69,7 +70,7 @@ public class Rank {
     }
 
     protected final void sendRemovePackets(Player player) {
-        var conn = player.getPlayerConnection();
+        PlayerConnection conn = player.getPlayerConnection();
 
         conn.sendPacket(new TeamsPacket(this.team,
                 new TeamsPacket.RemoveTeamAction()
@@ -82,7 +83,7 @@ public class Rank {
         player.addRank(this);
 
         sendPackets(player.getUsername(), player);
-        for (var viewer : Util.getAllOnlinePlayers()) {
+        for (Player viewer : Util.getAllOnlinePlayers()) {
             sendPackets(player.getUsername(), viewer);
         }
         EventDispatcher.call(new RankAddEvent(player, this));

@@ -19,9 +19,6 @@ public class ResearchActiveCMD extends Command {
     }
 
     private boolean notCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            return p.getCountry() == null;
-        }
-        return true;
+        return !(sender instanceof CPlayer p) || (null == p.getCountry());
     }
 }

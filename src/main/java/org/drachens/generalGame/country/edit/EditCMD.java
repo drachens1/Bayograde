@@ -10,7 +10,7 @@ import org.drachens.player_types.CPlayer;
 public class EditCMD extends Command {
     public EditCMD() {
         super("edit");
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s)-> isLeaderOfCountry(sender));
         addSubcommand(new LawsCMD());
         addSubcommand(new IdeologiesCMD());
         addSubcommand(new EditOptionsCMD());
@@ -19,8 +19,7 @@ public class EditCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

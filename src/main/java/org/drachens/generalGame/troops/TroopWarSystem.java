@@ -18,10 +18,10 @@ public class TroopWarSystem implements War {
         CPlayer p = (CPlayer) e.getPlayer();
         if (!p.isSneaking()) return;
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(e.getBlockPosition());
-        if (province == null || province.getBuilding() == null) return;
+        if (null == province || null == province.getBuilding()) return;
         Country country = p.getCountry();
-        if (country == null || country != p.getCountry()) return;
-        if (province.getBuilding().getBuildTypes() != BuildingEnum.barracks) return;
+        if (null == country) return;
+        if (BuildingEnum.barracks != province.getBuilding().getBuildTypes()) return;
         Barracks barracks = (Barracks) BuildingEnum.barracks.getBuildTypes();
         barracks.openGui(p, province.getBuilding());
     }

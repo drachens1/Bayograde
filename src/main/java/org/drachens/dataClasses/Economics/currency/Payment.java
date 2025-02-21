@@ -3,10 +3,12 @@ package org.drachens.dataClasses.Economics.currency;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.interfaces.Saveable;
 
+@Getter
 public class Payment implements Cloneable, Saveable {
     private final CurrencyTypes currencyType;
     private float amount;
@@ -33,47 +35,33 @@ public class Payment implements Cloneable, Saveable {
         this.amount = currencies.getAmount();
     }
 
-    public float getAmount() {
-        return amount;
-    }
-
-    public CurrencyTypes getCurrencyType() {
-        return currencyType;
-    }
-
-    public Component getMessage() {
-        return message;
-    }
-
     public Component getShownMessage(){
         return Component.text()
-                .append(Component.text(getAmount()))
-                .append(getCurrencyType().getSymbol())
+                .append(Component.text(this.amount))
+                .append(this.currencyType.getSymbol())
                 .build();
     }
 
     public boolean add(Payment payment) {
-        if (payment.getCurrencyType().equals(currencyType)) {
-            amount += payment.getAmount();
+        if (payment.currencyType.equals(currencyType)) {
+            amount += payment.amount;
             return true;
         }
         return false;
     }
 
-    public boolean remove(Payment payment) {
-        if (payment.getCurrencyType().equals(currencyType)) {
-            amount -= payment.getAmount();
-            return true;
+    public void remove(Payment payment) {
+        if (payment.currencyType.equals(currencyType)) {
+            amount -= payment.amount;
         }
-        return false;
     }
 
     public Payment minusMaxAmount(Payment payment) {
-        if (currencyType != payment.getCurrencyType()) return new Payment(payment.currencyType, 0f);
-        if (amount > payment.amount) return new Payment(payment.currencyType, 0f);
+        if (currencyType != payment.currencyType) return new Payment(payment.currencyType, 0.0f);
+        if (amount > payment.amount) return new Payment(payment.currencyType, 0.0f);
         amount -= payment.amount;
         Payment p = new Payment(payment.currencyType, Math.abs(amount));
-        amount = 0f;
+        amount = 0.0f;
         return p;
     }
 

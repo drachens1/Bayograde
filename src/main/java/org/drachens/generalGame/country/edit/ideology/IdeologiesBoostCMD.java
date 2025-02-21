@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.edit.ideology;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -20,28 +21,28 @@ public class IdeologiesBoostCMD extends Command {
     public IdeologiesBoostCMD() {
         super("boost");
 
-        ideologiesEnumHashMap.put("Fascist", IdeologiesEnum.ww2_fascist);
-        ideologiesEnumHashMap.put("Anarchism", IdeologiesEnum.ww2_anarchist);
-        ideologiesEnumHashMap.put("Conservative", IdeologiesEnum.ww2_conservatist);
-        ideologiesEnumHashMap.put("Capitalist", IdeologiesEnum.ww2_capitalist);
-        ideologiesEnumHashMap.put("Liberalist", IdeologiesEnum.ww2_liberalist);
+        this.ideologiesEnumHashMap.put("Fascist", IdeologiesEnum.ww2_fascist);
+        this.ideologiesEnumHashMap.put("Anarchism", IdeologiesEnum.ww2_anarchist);
+        this.ideologiesEnumHashMap.put("Conservative", IdeologiesEnum.ww2_conservatist);
+        this.ideologiesEnumHashMap.put("Capitalist", IdeologiesEnum.ww2_capitalist);
+        this.ideologiesEnumHashMap.put("Liberalist", IdeologiesEnum.ww2_liberalist);
 
 
-        var ideologies = ArgumentType.String("ideology")
+        final Argument<String> ideologies = ArgumentType.String("ideology")
                 .setSuggestionCallback((sender, context, suggestion) -> {
-                    if (!(sender instanceof CPlayer p)) return;
+                    if (!(sender instanceof final CPlayer p)) {
+                        return;
+                    }
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getIdeology().getIdeologyNames());
                 });
 
-        setDefaultExecutor((sender, context) -> {
-            sender.sendMessage(Component.text("Proper usage: /country edit ideology boost <ideology>", NamedTextColor.RED));
-        });
+        this.setDefaultExecutor((sender, context) -> sender.sendMessage(Component.text("Proper usage: /country edit ideology boost <ideology>", NamedTextColor.RED)));
 
-        addSyntax((sender, context) -> {
-            CPlayer p = (CPlayer) sender;
-            Country country = p.getCountry();
-            IdeologiesEnum i = ideologiesEnumHashMap.get(context.get(ideologies));
-            if (i.getIdeologyTypes() == null) {
+        this.addSyntax((sender, context) -> {
+            final CPlayer p = (CPlayer) sender;
+            final Country country = p.getCountry();
+            final IdeologiesEnum i = this.ideologiesEnumHashMap.get(context.get(ideologies));
+            if (null == i.getIdeologyTypes()) {
                 p.sendMessage(Component.text("Ideology was null"));
                 return;
             }

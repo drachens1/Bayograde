@@ -2,6 +2,7 @@ package org.drachens.generalGame.faction;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
@@ -16,7 +17,7 @@ public class LeaveCMD extends Command {
     public LeaveCMD() {
         super("leave");
         setCondition((sender, s) -> isInAFaction(sender));
-        var factionsArg = ArgumentType.String("factionName")
+        Argument<String> factionsArg = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
@@ -33,7 +34,7 @@ public class LeaveCMD extends Command {
             CPlayer player = (CPlayer) sender;
             Country country = player.getCountry();
             Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (country == null || faction1 == null) return;
+            if (null == country || null == faction1) return;
             if (!faction1.getMembers().contains(country)) return;
             faction1.removeCountry(country);
             EventDispatcher.call(new FactionLeaveEvent(faction1, country));
@@ -44,7 +45,7 @@ public class LeaveCMD extends Command {
     public boolean isInAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isInAFaction();
+            return null != country && country.isInAFaction();
         }
         return false;
     }

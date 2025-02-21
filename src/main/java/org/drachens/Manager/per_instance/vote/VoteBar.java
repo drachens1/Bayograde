@@ -25,18 +25,18 @@ public class VoteBar extends HideableBossBar {
     }
 
     public void start() {
-        if (task != null) task.cancel();
+        if (null != this.task) task.cancel();
         show();
-        if (ContinentalManagers.yearManager.getYearBar(instance) != null)
+        if (null != ContinentalManagers.yearManager.getYearBar(this.instance))
             ContinentalManagers.yearManager.getYearBar(instance).hide();
         task = MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
-            float completion = 0f;
+            float completion;
 
             @Override
             public void run() {
                 completion++;
-                voteBar.progress(bound(1f, 0f, completion / 12f));
-                if (completion >= 12f) {
+                voteBar.progress(bound(1.0f, 0.0f, completion / 12.0f));
+                if (12.0f <= this.completion) {
                     hide();
                     task.cancel();
                 }

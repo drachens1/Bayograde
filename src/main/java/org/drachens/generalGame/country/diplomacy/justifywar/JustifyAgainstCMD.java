@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.diplomacy.justifywar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -24,11 +25,11 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class JustifyAgainstCMD extends Command {
     public JustifyAgainstCMD() {
         super("against");
-        var countries = getCountriesArgExcludingPlayersCountry();
+        Argument<String> countries = getCountriesArgExcludingPlayersCountry();
 
         List<String> opts = Arrays.stream(new String[]{WarGoalTypeEnum.justified.name(), WarGoalTypeEnum.partially_justified.name(), WarGoalTypeEnum.surprise.name()}).toList();
 
-        var option = ArgumentType.String("Option")
+        Argument<String> option = ArgumentType.String("Option")
                 .setSuggestionCallback((sender, context, suggestion) -> getSuggestionBasedOnInput(suggestion, opts));
 
         HashSet<String> stuff = new HashSet<>(opts);

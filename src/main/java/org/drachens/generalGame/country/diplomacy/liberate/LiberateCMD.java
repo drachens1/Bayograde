@@ -1,6 +1,7 @@
 package org.drachens.generalGame.country.diplomacy.liberate;
 
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
@@ -14,7 +15,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class LiberateCMD extends Command {
     public LiberateCMD() {
         super("liberate");
-        var countries = ArgumentType.String("countries")
+        Argument<String> countries = ArgumentType.String("countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
                         return;
@@ -22,7 +23,7 @@ public class LiberateCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getMilitary().getOccupiesOthersCores());
                 });
 
-        var type = ArgumentType.String("Type")
+        Argument<String> type = ArgumentType.String("Type")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer)) {
                         return;
@@ -52,7 +53,7 @@ public class LiberateCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (target == null) {
+            if (null == target) {
                 p.sendMessage("Target is null");
                 return;
             }
@@ -61,7 +62,7 @@ public class LiberateCMD extends Command {
                 return;
             }
             String t = context.get(type);
-            if (!(t.equalsIgnoreCase("puppet") || t.equalsIgnoreCase("free"))) {
+            if (!("puppet".equalsIgnoreCase(t) || "free".equalsIgnoreCase(t))) {
                 p.sendMessage("Not a valid type");
                 return;
             }

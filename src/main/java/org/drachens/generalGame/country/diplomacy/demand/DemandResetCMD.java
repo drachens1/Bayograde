@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.diplomacy.demand;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.DemandManager;
@@ -16,18 +17,18 @@ public class DemandResetCMD extends Command {
     public DemandResetCMD() {
         super("reset");
         setCondition((sender, s) -> hasDemand(sender));
-        var types1 = ArgumentType.String("types1")
+        Argument<String> types1 = ArgumentType.String("types1")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemand(sender)) return;
                     suggestion.addEntry(new SuggestionEntry("demanded"));
                     suggestion.addEntry(new SuggestionEntry("offer"));
                 });
 
-        var types2 = ArgumentType.String("types2")
+        Argument<String> types2 = ArgumentType.String("types2")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemand(sender)) return;
                     String start = context.get(types1);
-                    if (!(start.equalsIgnoreCase("demanded") || start.equalsIgnoreCase("offer"))) return;
+                    if (!("demanded".equalsIgnoreCase(start) || "offer".equalsIgnoreCase(start))) return;
                     suggestion.addEntry(new SuggestionEntry("annexation"));
                     suggestion.addEntry(new SuggestionEntry("provinces"));
                     suggestion.addEntry(new SuggestionEntry("puppets"));
@@ -55,26 +56,22 @@ public class DemandResetCMD extends Command {
                 case "annexation":
                     if (demand) {
                         ww2Demands.resetDemandedAnnexation();
-                    } else
-                        ww2Demands.resetOfferAnnexation();
+                    } else ww2Demands.resetOfferAnnexation();
                     break;
                 case "provinces":
                     if (demand) {
                         ww2Demands.resetDemandedProvinces();
-                    } else
-                        ww2Demands.resetOfferProvinces();
+                    } else ww2Demands.resetOfferProvinces();
                     break;
                 case "puppets":
                     if (demand) {
                         ww2Demands.resetDemandedPuppets();
-                    } else
-                        ww2Demands.resetOfferPuppets();
+                    } else ww2Demands.resetOfferPuppets();
                     break;
                 case "payments":
                     if (demand) {
                         ww2Demands.resetDemandedPayments();
-                    } else
-                        ww2Demands.resetOfferPayments();
+                    } else ww2Demands.resetOfferPayments();
                     break;
             }
         }, types1, types2);
@@ -83,8 +80,7 @@ public class DemandResetCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

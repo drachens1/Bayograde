@@ -11,12 +11,11 @@ import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.events.NewDay;
-import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 
 import java.util.HashMap;
 
-public class ClicksCountry extends Country implements Saveable {
+public class ClicksCountry extends Country {
 
     public ClicksCountry(HashMap<CurrencyTypes, Currencies> startingCurrencies, String name, Component nameComponent, Material block, Material border, Ideology defaultIdeologies, Instance instance, HashMap<String, LawCategory> laws) {
         super(name, nameComponent, block, border, defaultIdeologies, instance, new ClicksVault(startingCurrencies), laws);

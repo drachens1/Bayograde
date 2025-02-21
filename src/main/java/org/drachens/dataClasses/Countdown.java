@@ -1,10 +1,12 @@
 package org.drachens.dataClasses;
 
+import lombok.Getter;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.ContinentalManagers;
 
 public class Countdown {
     private int timeLeft;
+    @Getter
     private final Runnable runnable;
     public Countdown(int timeLeft, Runnable runnable){
         this.timeLeft=timeLeft;
@@ -16,8 +18,5 @@ public class Countdown {
     public int removeOne(){
         timeLeft--;
         return timeLeft;
-    }
-    public Runnable getRunnable(){
-        return runnable;
     }
 }

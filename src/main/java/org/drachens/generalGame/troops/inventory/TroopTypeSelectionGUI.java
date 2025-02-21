@@ -25,7 +25,7 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 public class TroopTypeSelectionGUI extends InventoryGUI {
     private final DivisionDesign design;
     private final int slot;
-    private HashMap<Integer, DivisionType> divTypeHash = new HashMap<>();
+    private HashMap<Integer, DivisionType> divTypeHash;
 
     public TroopTypeSelectionGUI(HashMap<Integer, DivisionType> dHashMap, DivisionDesign design, int slot) {
         this.divTypeHash = dHashMap;

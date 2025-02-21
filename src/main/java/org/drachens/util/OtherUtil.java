@@ -7,7 +7,9 @@ import org.intellij.lang.annotations.RegExp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OtherUtil {
+public enum OtherUtil {
+    ;
+
     public static String posToString(Pos pos) {
         return pos.x() + ", " + pos.z();
     }
@@ -17,16 +19,16 @@ public class OtherUtil {
         float half = rad / 2;
 
         return new float[]{
-                0f, (float) Math.sin(half),
-                0f, (float) Math.cos(half)
+                0.0f, (float) Math.sin(half),
+                0.0f, (float) Math.cos(half)
         };
     }
 
     public static String formatPlaytime(long seconds) {
         long months = seconds / (30L * 24 * 60 * 60);
-        seconds %= (30L * 24 * 60 * 60);
+        seconds %= 30L * 24 * 60 * 60;
         long days = seconds / (24 * 60 * 60);
-        seconds %= (24 * 60 * 60);
+        seconds %= 24 * 60 * 60;
         long hours = seconds / 3600;
         seconds %= 3600;
         long minutes = seconds / 60;
@@ -34,24 +36,24 @@ public class OtherUtil {
 
         StringBuilder formattedTime = new StringBuilder();
 
-        if (months > 0) {
-            formattedTime.append(months).append(" Month").append(months > 1 ? "s" : "").append(" ");
+        if (0 < months) {
+            formattedTime.append(months).append(" Month").append(1 < months ? "s" : "").append(' ');
         }
 
-        if (days > 0) {
-            formattedTime.append(days).append(" Day").append(days > 1 ? "s" : "").append(" ");
+        if (0 < days) {
+            formattedTime.append(days).append(" Day").append(1 < days ? "s" : "").append(' ');
         }
 
-        if (hours > 0) {
-            formattedTime.append(hours).append(" Hour").append(hours > 1 ? "s" : "").append(" ");
+        if (0 < hours) {
+            formattedTime.append(hours).append(" Hour").append(1 < hours ? "s" : "").append(' ');
         }
 
-        if (minutes > 0) {
-            formattedTime.append(minutes).append(" Minute").append(minutes > 1 ? "s" : "").append(" ");
+        if (0 < minutes) {
+            formattedTime.append(minutes).append(" Minute").append(1 < minutes ? "s" : "").append(' ');
         }
 
-        if (seconds > 0) {
-            formattedTime.append(seconds).append(" Second").append(seconds != 1 ? "s" : "");
+        if (0 < seconds) {
+            formattedTime.append(seconds).append(" Second").append(1 != seconds ? "s" : "");
         }
 
         return formattedTime.toString().trim();

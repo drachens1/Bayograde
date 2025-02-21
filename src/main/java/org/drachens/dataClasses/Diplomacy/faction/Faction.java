@@ -31,7 +31,7 @@ public abstract class Faction {
     private Component description;
     private Component nameComponent;
 
-    public Faction(Country leader, String name, Modifier modifier) {
+    protected Faction(Country leader, String name, Modifier modifier) {
         this.leader = leader;
         this.name = name;
         this.modifier = modifier;
@@ -133,7 +133,7 @@ public abstract class Faction {
 
     public void removeInvite(Country country) {
         invites.remove(country);
-        country.getDiplomacy().removeInvite(InvitesEnum.faction,getStringName());
+        country.getDiplomacy().removeInvite(InvitesEnum.faction, this.name);
     }
 
     public void sendMessage(Component message) {

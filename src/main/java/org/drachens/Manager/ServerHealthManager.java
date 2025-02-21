@@ -29,15 +29,15 @@ public class ServerHealthManager {
     }
 
     private double calculateTPS(long tickDuration) {
-        if (tickDuration <= 0) return 25.0;
-        return (1_000_000_000.0 / tickDuration);
+        if (0 >= tickDuration) return 25.0;
+        return 1_000_000_000.0 / tickDuration;
     }
 
     private void logTPS(double tps) {
         long currentTime = System.currentTimeMillis();
         tpsHistory.add(new TPSData(tps, currentTime));
 
-        if (tpsHistory.size() > 3000) {
+        if (3000 < this.tpsHistory.size()) {
             tpsHistory.removeFirst();
         }
     }
@@ -48,7 +48,7 @@ public class ServerHealthManager {
 
     public Double getTpsFromSecondsAgo(int seconds) {
         long targetTime = System.currentTimeMillis() - (seconds * 1000L);
-        for (int i = tpsHistory.size() - 1; i >= 0; i--) {
+        for (int i = tpsHistory.size() - 1; 0 <= i; i--) {
             TPSData data = tpsHistory.get(i);
             if (data.timestamp <= targetTime) {
                 return data.tps;

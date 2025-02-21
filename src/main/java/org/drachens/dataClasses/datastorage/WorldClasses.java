@@ -13,7 +13,7 @@ public abstract class WorldClasses implements Saveable {
     private final ProvinceManager provinceManager;
     private final DataStorer dataStorer;
 
-    public WorldClasses(CountryDataManager countryDataManager, ClientEntsToLoad clientEntsToLoad, ProvinceManager provinceManager, DataStorer dataStorer){
+    protected WorldClasses(CountryDataManager countryDataManager, ClientEntsToLoad clientEntsToLoad, ProvinceManager provinceManager, DataStorer dataStorer){
         this.countryDataManager=countryDataManager;
         this.clientEntsToLoad=clientEntsToLoad;
         this.provinceManager=provinceManager;

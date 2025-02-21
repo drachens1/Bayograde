@@ -32,7 +32,7 @@ public class Modifier implements Cloneable {
         this.eventsRunners = c.eventsRunners;
         this.modifierCommands = c.modifierCommands;
         this.identifier = c.identifier;
-        if (c.description != null) this.startDescription = c.description;
+        if (null != c.description) this.startDescription = c.description;
         display = c.display;
         conditionEnums = c.conditionEnums;
         createDescription();
@@ -45,7 +45,7 @@ public class Modifier implements Cloneable {
         this.eventsRunners = new ArrayList<>(c.eventsRunners);
         this.modifierCommands = new ArrayList<>(c.modifierCommands);
         this.identifier = c.identifier;
-        if (c.description != null) this.startDescription = c.description;
+        if (null != c.description) this.startDescription = c.description;
         display = c.display;
         conditionEnums = new HashSet<>(c.conditionEnums);
         createDescription();
@@ -65,7 +65,7 @@ public class Modifier implements Cloneable {
     }
 
     public void createDescription() {
-        if (!shouldDisplay() || justCompName == null) return;
+        if (!shouldDisplay() || null == this.justCompName) return;
         List<Component> boostComp = new ArrayList<>();
         if (!boostHashMap.isEmpty()) {
             boostComp.add(Component.text()
@@ -75,13 +75,13 @@ public class Modifier implements Cloneable {
             for (Entry<BoostEnum, Float> e : boostHashMap.entrySet()) {
                 float value = e.getValue();
                 Component symbol;
-                if (e.getValue() < 0) {
+                if (0 > e.getValue()) {
                     symbol = e.getKey().getNegSymbol();
                 } else {
                     symbol = e.getKey().getPosSymbol();
                 }
                 if (e.getKey().isPercentage()) {
-                    if (value > 0) {
+                    if (0 < value) {
                         boostComp.add(Component.text()
                                 .append(Component.text("+" + Math.round(value * 100), NamedTextColor.GREEN))
                                 .append(Component.text("%", NamedTextColor.GREEN))
@@ -89,23 +89,21 @@ public class Modifier implements Cloneable {
                                 .appendNewline().build());
                     } else {
                         boostComp.add(Component.text()
-                                .append(Component.text(Math.round(value * 100), NamedTextColor.RED))
-                                .append(Component.text("%", NamedTextColor.RED))
-                                .append(symbol)
-                                .appendNewline().build());
+                                    .append(Component.text(Math.round(value * 100), NamedTextColor.RED))
+                                    .append(Component.text("%", NamedTextColor.RED))
+                                    .append(symbol)
+                                    .appendNewline().build());
                     }
+                } else if (0 < value) {
+                    boostComp.add(Component.text()
+                            .append(Component.text("+" + value, NamedTextColor.GREEN))
+                            .append(symbol)
+                            .appendNewline().build());
                 } else {
-                    if (value > 0) {
-                        boostComp.add(Component.text()
-                                .append(Component.text("+" + value, NamedTextColor.GREEN))
-                                .append(symbol)
-                                .appendNewline().build());
-                    } else {
-                        boostComp.add(Component.text()
+                    boostComp.add(Component.text()
                                 .append(Component.text(value, NamedTextColor.RED))
                                 .append(symbol)
                                 .appendNewline().build());
-                    }
                 }
             }
         }
@@ -131,7 +129,7 @@ public class Modifier implements Cloneable {
             }
         }
 
-        if (startDescription == null) {
+        if (null == this.startDescription) {
             description = Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(justCompName)
@@ -157,7 +155,7 @@ public class Modifier implements Cloneable {
     }
 
     public void addModifier(Modifier c) {
-        c.getBoostHashMap().forEach(this::addBoost);
+        c.boostHashMap.forEach(this::addBoost);
         update();
     }
 
@@ -167,16 +165,16 @@ public class Modifier implements Cloneable {
     }
 
     public void addBoost(BoostEnum boostEnum, float amount) {
-        float current = boostHashMap.getOrDefault(boostEnum, 0f);
+        float current = boostHashMap.getOrDefault(boostEnum, 0.0f);
         boostHashMap.put(boostEnum, current + amount);
         update();
     }
 
     public void addBoosts(HashMap<BoostEnum, Float> boosts) {
-        boosts.forEach(((boostEnum, aFloat) -> {
-            float current = boostHashMap.getOrDefault(boostEnum, 0f);
+        boosts.forEach((boostEnum, aFloat) -> {
+            float current = boostHashMap.getOrDefault(boostEnum, 0.0f);
             boostHashMap.put(boostEnum, current + aFloat);
-        }));
+        });
         update();
     }
 
@@ -209,7 +207,7 @@ public class Modifier implements Cloneable {
     }
 
     public float getBoost(BoostEnum boostEnum) {
-        return boostHashMap.getOrDefault(boostEnum, 0f);
+        return boostHashMap.getOrDefault(boostEnum, 0.0f);
     }
 
     public Component getName() {

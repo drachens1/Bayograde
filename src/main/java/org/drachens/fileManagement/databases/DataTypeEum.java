@@ -1,5 +1,8 @@
 package org.drachens.fileManagement.databases;
 
+import lombok.Getter;
+
+@Getter
 public enum DataTypeEum {
     LONG("bigint"),
     BIGSTRING("TEXT"),
@@ -12,7 +15,4 @@ public enum DataTypeEum {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 }

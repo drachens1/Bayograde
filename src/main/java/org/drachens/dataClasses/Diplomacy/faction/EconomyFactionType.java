@@ -39,7 +39,7 @@ public class EconomyFactionType extends Faction implements Saveable {
     }
 
     public void updateFactionModifier() {
-        float totalDistance = 0f;
+        float totalDistance = 0.0f;
         int numOfCountries = 0;
         Instance instance = getLeader().getInfo().getCapital().getInstance();
         for (Country country : getMembers()) {
@@ -55,10 +55,10 @@ public class EconomyFactionType extends Faction implements Saveable {
     }
 
     private float calculateBoost(float distance, int numOfCountries, Instance instance) {
-        if (numOfCountries == 1) return 0f;
+        if (1 == numOfCountries) return 0.0f;
         float boost = distance / numOfCountries;
         MapGen mapGenerator = ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
-        float mapSize = (mapGenerator.getSizeX() + mapGenerator.getSizeY()) / 2f;
+        float mapSize = (mapGenerator.getSizeX() + mapGenerator.getSizeY()) / 2.0f;
         return boost * mapSize;
     }
 

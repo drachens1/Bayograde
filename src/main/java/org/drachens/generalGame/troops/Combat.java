@@ -61,8 +61,8 @@ public class Combat implements Saveable {
     private void resolveAttack() {
         for (Troop attacker : new ArrayList<>(attackers)) {
             for (Troop defender : new ArrayList<>(defenders)) {
-                float attackerDamage = attacker.getDamage() * (attacker.getStrength()/100);
-                float defenderDamage = defender.getDamage() * (defender.getStrength()/100);
+                float attackerDamage = attacker.getDamage() * (attacker.getStrength() / 100);
+                float defenderDamage = defender.getDamage() * (defender.getStrength() / 100);
 
                 float attackerDamageReduction = defender.getDefence() / (defender.getDefence() + attacker.getDamage());
                 float defenderDamageReduction = attacker.getDefence() / (attacker.getDefence() + defender.getDamage());
@@ -73,17 +73,17 @@ public class Combat implements Saveable {
                 attacker.setHealth(attacker.getHealth() - (defenderDamage * (1 - attackerDamageReduction)));
                 attacker.setOrg(attacker.getOrg() - (defenderDamage * (1 - attackerDamageReduction) * 0.2f));
 
-                if (defender.getOrg() <= 0) {
+                if (0 >= defender.getOrg()) {
                     defender.retreat();
                     removeDefender(defender);
-                }else if (defender.getHealth() <= 0){
+                } else if (0 >= defender.getHealth()) {
                     defender.kill();
                 }
 
-                if (attacker.getOrg() <= 0) {
+                if (0 >= attacker.getOrg()) {
                     attacker.retreat();
                     removeAttacker(attacker);
-                }else if (attacker.getHealth() <= 0){
+                } else if (0 >= attacker.getHealth()) {
                     attacker.kill();
                 }
             }

@@ -2,16 +2,19 @@ package dev.ng5m;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
 
-public class Util {
-    public static String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+public enum Util {
+    ;
+    public static final String alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static List<Player> getAllOnlinePlayers() {
         return MinecraftServer.getConnectionManager().getOnlinePlayers().stream().toList();
@@ -20,7 +23,7 @@ public class Util {
     public static String randomAlNum(int length) {
         StringBuilder sb = new StringBuilder(length);
 
-        var random = new Random();
+        Random random = new Random();
         for (int i = 0; i < length; i++) {
             sb.append(alnum.charAt(random.nextInt(alnum.length())));
         }
@@ -32,8 +35,8 @@ public class Util {
         StringBuilder sb = new StringBuilder();
 
         try {
-            var lines = Files.readAllLines(path);
-            for (var line : lines) {
+            List<@NotNull String> lines = Files.readAllLines(path);
+            for (String line : lines) {
                 sb.append(line);
             }
         } catch (Exception e) {
@@ -45,7 +48,7 @@ public class Util {
 
     public static void writeString(File file, String s) {
         try {
-            var writer = new FileWriter(file);
+            FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8);
             writer.write(s);
             writer.close();
         } catch (Exception x) {

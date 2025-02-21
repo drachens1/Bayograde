@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.diplomacy.demand;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
@@ -29,14 +30,14 @@ public class DemandIncomingCMD extends Command {
         super("incoming");
         setCondition((sender, s) -> hasDemandSent(sender));
 
-        var options = ArgumentType.String("Demands")
+        Argument<String> options = ArgumentType.String("Demands")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemandSent(sender)) return;
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getDiplomacy().getDemandCountries());
                 });
 
-        var choice = ArgumentType.String("choice")
+        Argument<String> choice = ArgumentType.String("choice")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     if (!p.getCountry().getDiplomacy().getDemandCountries().contains(context.get(options))) return;
@@ -46,7 +47,7 @@ public class DemandIncomingCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("view"));
                 });
 
-        var third = ArgumentType.String("view")
+        Argument<String> third = ArgumentType.String("view")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (Objects.equals(context.get(choice), "view")) {
                         suggestion.addEntry(new SuggestionEntry("off"));
@@ -66,13 +67,13 @@ public class DemandIncomingCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
-            if (from == null) {
+            if (null == from) {
                 sendMessage(p, notSent);
                 return;
             }
 
             Demand sentDemand = p.getCountry().getDiplomacy().getDemand(from.getName());
-            if (sentDemand == null) {
+            if (null == sentDemand) {
                 sendMessage(p, notSent);
                 return;
             }
@@ -96,7 +97,7 @@ public class DemandIncomingCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country from = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(options));
-            if (from == null) {
+            if (null == from) {
                 sendMessage(p, notSent);
                 return;
             }
@@ -141,8 +142,7 @@ public class DemandIncomingCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

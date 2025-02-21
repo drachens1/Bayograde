@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.Countries;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
 import org.drachens.dataClasses.additional.Modifier;
@@ -9,6 +10,7 @@ import org.drachens.interfaces.Saveable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Leader implements Saveable {
     private final List<Modifier> modifiers;
     private final Component name;
@@ -17,40 +19,27 @@ public class Leader implements Saveable {
 
     public Leader(create leaderBuilder) {
         name = leaderBuilder.name;
-        if (leaderBuilder.description != null) description = leaderBuilder.description;
+        if (null != leaderBuilder.description) description = leaderBuilder.description;
         modifiers = leaderBuilder.modifier;
-    }
-
-    public Component getName() {
-        return name;
     }
 
     public List<Modifier> getModifier() {
         return modifiers;
     }
 
-    public Component getDescription() {
-        return description;
-    }
-
     public void createDescription() {
-        if (description == null) {
+        if (null == this.description) {
             List<Component> modifierComps = new ArrayList<>();
             for (Modifier modifier : modifiers) {
-                if (modifier.shouldDisplay())
-                    modifierComps.add(Component.text()
-                            .appendNewline()
-                            .append(modifier.getDescription())
-                            .build());
+                if (modifier.shouldDisplay()) modifierComps.add(Component.text()
+                        .appendNewline()
+                        .append(modifier.getDescription())
+                        .build());
             }
             description = Component.text()
                     .append(modifierComps)
                     .build();
         }
-    }
-
-    public IdeologyTypes getIdeologyTypes() {
-        return ideologyTypes;
     }
 
     public void setIdeologyTypes(IdeologyTypes ideologyTypes) {

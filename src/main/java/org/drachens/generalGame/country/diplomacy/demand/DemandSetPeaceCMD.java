@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.diplomacy.demand;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentBoolean;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -14,9 +15,9 @@ public class DemandSetPeaceCMD extends Command {
 
     public DemandSetPeaceCMD() {
         super("peace");
-        var option = ArgumentType.Boolean("option");
+        ArgumentBoolean option = ArgumentType.Boolean("option");
 
-        setCondition(((sender, s) -> hasDemand(sender)));
+        setCondition((sender, s) -> hasDemand(sender));
 
         addSyntax((sender, context) -> {
             if (!hasDemand(sender)) return;
@@ -29,8 +30,7 @@ public class DemandSetPeaceCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

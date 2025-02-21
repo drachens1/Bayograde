@@ -1,5 +1,6 @@
 package org.drachens.fileManagement;
 
+import lombok.Getter;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.customTypes.WhitelistFile;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Getter
 public class ConfigFileManager {
     private String logMsg;
     private String logCmds;
@@ -39,19 +41,4 @@ public class ConfigFileManager {
         }
     }
 
-    public String getLogMsg() {
-        return logMsg;
-    }
-
-    public String getLogCmds() {
-        return logCmds;
-    }
-
-    public WhitelistFile getWhitelistFile() {
-        return whitelistFile;
-    }
-
-    public ServerPropertiesFile getServerPropertiesFile() {
-        return serverPropertiesFile;
-    }
 }

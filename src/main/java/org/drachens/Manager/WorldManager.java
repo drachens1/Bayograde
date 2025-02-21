@@ -70,9 +70,9 @@ public class WorldManager {
                 generalChanges(p);
                 if (p.isPremium()&&p.getPlayerJson().isCustomLoginMessageActive()){
                     CustomLoginRecord clr = p.getPlayerJson().getCustomLoginMessage();
-                    handlePremiumLogin(p,clr.leave(),clr,p.getInstance(),def.onPlayerLeave(p));
+                    handlePremiumLogin(p,clr.leave(),clr,p.getInstance(), def.onPlayerLeave(p));
                 }else {
-                    broadcast(def.onPlayerLeave(p),p.getInstance());
+                    broadcast(def.onPlayerLeave(p), p.getInstance());
                 }
                 if (p.isUsingMod()) playerModsManager.removePlayer(p, e.getInstance());
                 p.addPlayTime(LocalTime.now());
@@ -111,7 +111,7 @@ public class WorldManager {
         ContinentalManagers.permissions.playerOp(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
-        if (!p.hasRank(RankEnum.default_rank.getRank())){
+        if (!p.hasRank(RankEnum.default_rank.getRank())) {
             RankEnum.default_rank.getRank().addPlayer(p);
         }
         p.refreshCommands();
@@ -121,19 +121,19 @@ public class WorldManager {
             CustomLoginRecord clr = p.getPlayerJson().getCustomLoginMessage();
             handlePremiumLogin(p,clr.join(),clr,p.getInstance(), def.onPlayerJoin(p));
         }else {
-            broadcast(def.onPlayerJoin(p),p.getInstance());
+            broadcast(def.onPlayerJoin(p), p.getInstance());
         }
-        if (p.hasPermission("admin")){
+        if (p.hasPermission("admin")) {
             ContinentalManagers.adminManager.addAdmin(p);
         }
         //p.sendPluginMessage("continentalmod", "joined");
     }
 
     private void handlePremiumLogin(CPlayer p, String msg, CustomLoginRecord clr, Instance instance, Component alt){
-        if (msg.isBlank()){
-            broadcast(alt,instance);
-        }else {
-            broadcast(clr.toMessage(msg,p),instance);
+        if (msg.isBlank()) {
+            broadcast(alt, instance);
+        } else {
+            broadcast(clr.toMessage(msg, p), instance);
         }
     }
 
@@ -148,7 +148,7 @@ public class WorldManager {
     }
 
     private void generalChanges(CPlayer p){
-        if (ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner!=null){
+        if (null != ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner) {
             p.setWorldClasses(ContinentalManagers.world(p.getInstance()));
         }
     }

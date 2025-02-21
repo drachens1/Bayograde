@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
+import net.minestom.server.command.builder.arguments.ArgumentString;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
@@ -23,20 +25,18 @@ public class CreateCMD extends Command {
 
         setCondition((sender, s) -> notInAFaction(sender));
 
-        var type = ArgumentType.Word("type")
+        Argument<String> type = ArgumentType.Word("type")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
-                        if (country == null) return;
-                        if (!country.isInAnEconomicFaction())
-                            suggestion.addEntry(new SuggestionEntry("Economy"));
-                        if (!country.isInAMilitaryFaction())
-                            suggestion.addEntry(new SuggestionEntry("Military"));
+                        if (null == country) return;
+                        if (!country.isInAnEconomicFaction()) suggestion.addEntry(new SuggestionEntry("Economy"));
+                        if (!country.isInAMilitaryFaction()) suggestion.addEntry(new SuggestionEntry("Military"));
                     }
 
                 });
 
-        var nameArg = ArgumentType.String("factionName");
+        ArgumentString nameArg = ArgumentType.String("factionName");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage /faction create <type> <name> "));
 
 
@@ -84,7 +84,7 @@ public class CreateCMD extends Command {
     private boolean notInAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isInAllFactions();
+            return null != country && country.isInAllFactions();
         }
         return false;
     }

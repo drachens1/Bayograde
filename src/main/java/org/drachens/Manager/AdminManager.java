@@ -1,5 +1,6 @@
 package org.drachens.Manager;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.enums.AdminMessageType;
@@ -8,6 +9,7 @@ import org.drachens.player_types.CPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class AdminManager {
     private final List<CPlayer> admins = new ArrayList<>();
 
@@ -17,7 +19,7 @@ public class AdminManager {
 
     public void broadcast(AdminMessageType adminMessageType, Component msg, Instance instance){
         admins.forEach(player -> {
-            if (player.getInstance()!=instance)return;
+            if (player.getInstance()!=instance) return;
             player.sendMessage(Component.text().append(adminMessageType.prefix).append(msg));
         });
     }
@@ -30,7 +32,4 @@ public class AdminManager {
         admins.remove(p);
     }
 
-    public List<CPlayer> getAdmins(){
-        return admins;
-    }
 }

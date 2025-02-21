@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
@@ -18,12 +19,11 @@ public class WarsInfoCMD extends Command {
     public WarsInfoCMD() {
         super("wars");
 
-        var countries = getCountriesArg();
+        Argument<String> countries = getCountriesArg();
 
         setDefaultExecutor((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
-            if (p.getCountry() == null) {
+            if (!(sender instanceof CPlayer p)) return;
+            if (null == p.getCountry()) {
                 p.sendMessage("You need to join a country or do /country info wars <country>");
                 return;
             }
@@ -32,10 +32,9 @@ public class WarsInfoCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
+            if (!(sender instanceof CPlayer p)) return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("That is not a valid country");
                 return;
             }

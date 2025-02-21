@@ -8,9 +8,9 @@ import org.drachens.player_types.CPlayer;
 public class LeaveCMD extends Command {
     public LeaveCMD() {
         super("leave");
-        setCondition(((sender, commandString) -> inCountry(sender)));
+        setCondition((sender, commandString) -> inCountry(sender));
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             country.removePlayer(p);
@@ -19,6 +19,6 @@ public class LeaveCMD extends Command {
 
     private boolean inCountry(CommandSender sender){
         CPlayer p = (CPlayer) sender;
-        return p.getCountry()!=null;
+        return null != p.getCountry();
     }
 }

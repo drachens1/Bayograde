@@ -30,8 +30,8 @@ public class BuildItem extends HotbarItemButton {
     public void onRightClickOnBlock(OnUse onUse) {
         Country country = onUse.player().getCountry();
         Province province = ContinentalManagers.world(onUse.instance()).provinceManager().getProvince(onUse.pos());
-        if (country == null || province == null) return;
-        if (province.getBuilding() != null && province.getBuilding().getBuildTypes() == buildingEnum.getBuildTypes().getIdentifier()) {
+        if (null == country || null == province) return;
+        if (null != province.getBuilding() && province.getBuilding().getBuildTypes() == buildingEnum.getBuildTypes().getIdentifier()) {
             province.getBuilding().upgrade(1, country, onUse.player());
         } else {
             List<Clientside> clientsides = onUse.player().getClientSideExtras(ClientSideExtras.can_build);
@@ -49,9 +49,9 @@ public class BuildItem extends HotbarItemButton {
         CPlayer p = (CPlayer) e.getPlayer();
         Point point = e.getPlayer().getTargetBlockPosition(5);
         Pos pos;
-        if (point == null){
-            pos = new Pos(0,0,0);
-        }else {
+        if (null == point) {
+            pos = new Pos(0, 0, 0);
+        } else {
             pos = new Pos(point);
         }
         ItemDisplay itemDisplay = new ItemDisplay(itemBuilder(buildingEnum.getBuildTypes().getMaterial()),pos , ItemDisplay.DisplayType.NONE, p.getInstance());
@@ -75,9 +75,9 @@ public class BuildItem extends HotbarItemButton {
     public void onLeftClickOnBlock(OnUse onUse) {
         CPlayer p = onUse.player();
         List<Clientside> clientsides = p.getClientSideExtras(ClientSideExtras.can_build);
-        if (clientsides.isEmpty())return;
+        if (clientsides.isEmpty()) return;
         ItemDisplay i = (ItemDisplay) clientsides.getFirst();
-        i.addYaw(90f);
+        i.addYaw(90.0f);
     }
 
     @Override
@@ -85,16 +85,16 @@ public class BuildItem extends HotbarItemButton {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
         Point point = e.getPlayer().getTargetBlockPosition(10);
-        if (point == null)return;
+        if (null == point) return;
         Pos pos = new Pos(point);
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(pos);
         List<Clientside> clientsides = p.getClientSideExtras(ClientSideExtras.can_build);
-        if (clientsides.isEmpty())return;
+        if (clientsides.isEmpty()) return;
         ItemDisplay i = (ItemDisplay) clientsides.getFirst();
-        if (pos == i.getPos())return;
-        if (country == null || province == null) return;
+        if (pos == i.getPos()) return;
+        if (null == country || null == province) return;
         i.setPos(pos.add(0.5,1.5,0.5));
-        if (province.getBuilding()!=null){
+        if (null != province.getBuilding()){
             if (buildingEnum.getBuildTypes().requirementsToUpgrade(province.getBuilding(),country, 1,null)){
                 i.setItem(buildingEnum.getBuildTypes().getCanItem(province));
                 return;

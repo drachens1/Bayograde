@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.manage;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.events.countries.CountryCoopPlayerEvent;
@@ -15,7 +16,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class CooperateCMD extends Command {
     public CooperateCMD() {
         super("co-op");
-        var players = ArgumentType.String("Username")
+        Argument<String> players = ArgumentType.String("Username")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer player = (CPlayer) sender;
                     List<String> playerNames = new ArrayList<>();
@@ -27,8 +28,8 @@ public class CooperateCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer senders = (CPlayer) sender;
             CPlayer p = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(context.get(players));
-            if (p == null) return;
-            if (p.getCountry() != null) return;
+            if (null == p) return;
+            if (null != p.getCountry()) return;
             EventDispatcher.call(new CountryCoopPlayerEvent(senders.getCountry(), p));
         }, players);
     }

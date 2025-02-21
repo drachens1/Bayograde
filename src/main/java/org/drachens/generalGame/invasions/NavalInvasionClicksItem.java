@@ -35,12 +35,12 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     private final Component noWater = Component.text("It needs to be adjacent to water", NamedTextColor.RED);
     private final HashMap<CPlayer, Pair<Province, Province>> playerPairHashMap = new HashMap<>();
     private final ConfirmCMD confirm;
-    int[][] directions = {
+    final int[][] directions = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1},
             {0, 0}
     };
-    int[][] directions2 = {
+    final int[][] directions2 = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1}
     };
 
@@ -53,12 +53,12 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     public void onLeftClickOnBlock(OnUse onUse) {
         CPlayer p = onUse.player();
         Country country = p.getCountry();
-        if (country == null) {
+        if (null == country) {
             p.sendMessage(error);
             return;
         }
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
-        if (province == null) {
+        if (null == province) {
             p.sendMessage(provinceNoExist);
             return;
         }
@@ -73,7 +73,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
         Pair<Province, Province> a = playerPairHashMap.getOrDefault(p, new Pair<>(null, null));
         playerPairHashMap.put(p, new Pair<>(province, a.component2()));
         p.sendMessage(selectedInvasionPoint);
-        if (a.component2() != null) {
+        if (null != a.component2()) {
             p.sendMessage(Component.text()
                     .append(Component.text("Naval invasion:", NamedTextColor.BLUE))
                     .appendNewline()
@@ -97,12 +97,12 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
     public void onRightClickOnBlock(OnUse onUse) {
         CPlayer p = onUse.player();
         Country country = p.getCountry();
-        if (country == null) {
+        if (null == country) {
             p.sendMessage(error);
             return;
         }
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
-        if (province == null) {
+        if (null == province) {
             p.sendMessage(provinceNoExist);
             return;
         }
@@ -117,7 +117,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
         Pair<Province, Province> a = playerPairHashMap.getOrDefault(p, new Pair<>(null, null));
         playerPairHashMap.put(p, new Pair<>(a.component1(), province));
         p.sendMessage(selectedAttackPoint);
-        if (a.component1() != null) {
+        if (null != a.component1()) {
             p.sendMessage(Component.text()
                     .append(Component.text("Naval invasion:", NamedTextColor.BLUE))
                     .appendNewline()
@@ -151,7 +151,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
 
     public void navalInvade(CPlayer p, Province province1, Province province2) {
         Country country = p.getCountry();
-        if (country == null) {
+        if (null == country) {
             p.sendMessage(error);
             return;
         }
@@ -166,7 +166,7 @@ public class NavalInvasionClicksItem extends HotbarItemButton {
         Country target = province2.getOccupier();
         for (int[] d : directions) {
             Province province = province2.add(d[0], d[1]);
-            if (province != null && province.getOccupier() != null && country.canFight(target)) {
+            if (null != province && null != province.getOccupier() && country.canFight(target)) {
                 province.capture(country);
             }
         }

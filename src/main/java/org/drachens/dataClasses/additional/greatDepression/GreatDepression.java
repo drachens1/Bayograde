@@ -45,7 +45,7 @@ public class GreatDepression implements ModifierCommand, Saveable {
         Country country = p.getCountry();
         Modifier modifier = country.getEconomy().getModifier("great_depression");
         GreatDepressionEventsRunner eventsRunner = (GreatDepressionEventsRunner) modifier.getEventsRunners().getFirst();
-        if (eventsRunner.getTimeSinceLast() < 70) {
+        if (70 > eventsRunner.getTimeSinceLast()) {
             p.sendMessage(notEnoughTime);
             return;
         }

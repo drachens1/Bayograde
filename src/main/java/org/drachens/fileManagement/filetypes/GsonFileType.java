@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 public abstract class GsonFileType extends GsonStringMaker {
     private final File file;
 
-    public GsonFileType(String path) {
+    protected GsonFileType(String path) {
         super(readFile(path));
         this.file = new File(path);
     }
@@ -25,7 +25,7 @@ public abstract class GsonFileType extends GsonStringMaker {
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             StringBuilder json = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
+            while (null != (line = reader.readLine())) {
                 json.append(line);
             }
             return json.toString();

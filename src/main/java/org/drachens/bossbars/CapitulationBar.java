@@ -15,14 +15,14 @@ public class CapitulationBar extends HideableBossBar {
 
     public void setProgress(double progress) {
         capBar.progress(bound(progress));
-        if (progress == 1) {
+        if (1 == progress) {
             hide();
         } else show();
     }
 
     public float bound(double d) {
-        if (d > 1) return 1;
-        if (d < 0) return 0;
+        if (1 < d) return 1;
+        if (0 > d) return 0;
         return (float) d;
     }
 }

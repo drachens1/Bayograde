@@ -37,7 +37,7 @@ public class TroopTrainerGUI extends InventoryGUI {
         int y = 0;
         int x = 1;
         for (DivisionDesign divisionDesign : country.getDivisionDesigns()) {
-            if (x > 8) {
+            if (8 < x) {
                 x = 1;
                 y += 18;
             }
@@ -55,8 +55,8 @@ public class TroopTrainerGUI extends InventoryGUI {
             addButton(y + x + 10, profile.getEdit());
             x += 2;
         }
-        if (country.getDivisionDesigns().size() < 11) addButton(y + x + 1, addNew());
-        for (int i = 0; i < 54; i += 9) {
+        if (11 > country.getDivisionDesigns().size()) addButton(y + x + 1, addNew());
+        for (int i = 0; 54 > i; i += 9) {
             addButton(i, sideButtons());
         }
         addButton(52, sideButtons());

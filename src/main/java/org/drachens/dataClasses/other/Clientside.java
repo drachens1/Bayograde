@@ -31,7 +31,7 @@ public abstract class Clientside {
     public Pos pos;
     private AnimationType animation;
 
-    public Clientside(Instance instance, Pos pos) {
+    protected Clientside(Instance instance, Pos pos) {
         this.entityId = Entity.generateId();
         this.uuid = UUID.randomUUID();
         this.instance = instance;

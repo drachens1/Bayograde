@@ -22,9 +22,9 @@ public class AdvancementManager {
             CPlayer player = e.p();
             String eventName = e.identifier();
             HashMap<String, Pair<Integer, List<Pair<Advancement, net.minestom.server.advancements.Advancement>>>> playerEvents = playersAdvancementHashMap.get(player.getUuid());
-            if (playerEvents == null) return;
+            if (null == playerEvents) return;
             Pair<Integer, List<Pair<Advancement, net.minestom.server.advancements.Advancement>>> pair = playerEvents.get(eventName);
-            if (pair == null) return;
+            if (null == pair) return;
             int count = pair.component1() + 1;
             player.getPlayerJson().addAchievementEventTriggered(eventName, count);
             List<Pair<Advancement, net.minestom.server.advancements.Advancement>> advancements = pair.component2();
@@ -57,7 +57,7 @@ public class AdvancementManager {
         HashMap<String, Integer> eventCountHashmap = playerJson.getEventAchievementTrigger();
         advancementSections.forEach(advancementSection -> {
             String name = advancementSection.getIdentifier() + p.getUuid();
-            if (advancementManager.getTab(name) != null) {
+            if (null != this.advancementManager.getTab(name)) {
                 Objects.requireNonNull(advancementManager.getTab(name)).addViewer(p);
                 return;
             }

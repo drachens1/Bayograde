@@ -9,7 +9,7 @@ public enum Direction {
     SOUTH(0, -1),
     WEST(1, 0);
 
-    public static Map<Direction, Direction> opposites = Map.of(
+    public static final Map<Direction, Direction> opposites = Map.of(
             NORTH, SOUTH,
             EAST, WEST,
             SOUTH, NORTH,

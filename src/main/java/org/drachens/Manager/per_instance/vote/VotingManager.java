@@ -26,7 +26,7 @@ public class VotingManager {
     private final HashMap<Player, VotingOption> votes = new HashMap<>();
     private final VoteBar voteBar;
     private final Instance instance;
-    private boolean voted = false;
+    private boolean voted;
     private Task task;
     private VotingOption winner;
 
@@ -43,7 +43,7 @@ public class VotingManager {
     }
 
     public void setWinner() {
-        int wc = 0;
+        final int wc = 0;
         winner = null;
         HashMap<VotingOption, Integer> count = new HashMap<>();
         for (Map.Entry<Player, VotingOption> e : votes.entrySet()) {
@@ -52,8 +52,8 @@ public class VotingManager {
             count.put(e.getValue(),c);
         }
         count.forEach((votingOption, integer) -> {
-            if (wc<integer){
-                winner=votingOption;
+            if (wc<integer) {
+                winner = votingOption;
             }
         });
     }
@@ -82,11 +82,11 @@ public class VotingManager {
         voteBar.start();
         instance.getPlayers().forEach(player -> {
             CPlayer p = (CPlayer) player;
-            if (p.isAutoVoteActive()){
+            if (p.isAutoVoteActive()) {
                 EventDispatcher.call(new VoteEvent(p, VotingWinner.valueOf(p.getPlayerJson().getAutoVoteOption()).getVotingOption()));
             }
         });
-        if (task != null) task.cancel();
+        if (null != this.task) task.cancel();
         task = MinecraftServer.getSchedulerManager().buildTask(() -> {
             if (!voted) {
                 broadcast(Component.text()

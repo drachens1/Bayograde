@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.info;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentString;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -14,7 +15,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class Leader extends Command {
     public Leader() {
         super("leader");
-        var countries = ArgumentType.String("Countries");
+        ArgumentString countries = ArgumentType.String("Countries");
         countries.setSuggestionCallback((sender, context, suggestion) -> {
             if (!(sender instanceof Player p)) {
                 return;
@@ -23,11 +24,9 @@ public class Leader extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof Player p))
-                return;
+            if (!(sender instanceof Player p)) return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null)
-                return;
+            if (null == country) return;
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(country.getInfo().getLeader().getName())

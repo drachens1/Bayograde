@@ -7,6 +7,6 @@ import org.drachens.player_types.CPlayer;
 public class ExampleCMD extends Command {
     public ExampleCMD() {
         super("example");
-        setDefaultExecutor(((sender, context) -> ContinentalManagers.guiManager.openGUI(new ExampleGUI(), (CPlayer) sender)));
+        setDefaultExecutor((sender, context) -> ContinentalManagers.guiManager.openGUI(new ExampleGUI(), (CPlayer) sender));
     }
 }

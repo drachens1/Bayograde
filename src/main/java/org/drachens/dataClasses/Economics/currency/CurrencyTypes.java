@@ -1,8 +1,10 @@
 package org.drachens.dataClasses.Economics.currency;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+@Getter
 public class CurrencyTypes {
     private final String identifier;
     private final Component name;
@@ -20,15 +22,4 @@ public class CurrencyTypes {
         this.identifier = identifier;
     }
 
-    public Component getName() {
-        return name;
-    }
-
-    public Component getSymbol() {
-        return symbol;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
 }

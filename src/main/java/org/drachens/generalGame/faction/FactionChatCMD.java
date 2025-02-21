@@ -3,6 +3,7 @@ package org.drachens.generalGame.faction;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -20,7 +21,7 @@ public class FactionChatCMD extends Command {
     public FactionChatCMD() {
         super("chat");
 
-        var factionsArg = ArgumentType.String("faction name")
+        Argument<String> factionsArg = ArgumentType.String("faction name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
@@ -40,7 +41,7 @@ public class FactionChatCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Faction faction = ContinentalManagers.world(p.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (faction == null || !faction.containsCountry(p.getCountry())) return;
+            if (null == faction || !faction.containsCountry(p.getCountry())) return;
             FactionChat factionChat = faction.getFactionChat();
             boolean current = active.getOrDefault(p, false);
             current = !current;
@@ -62,7 +63,7 @@ public class FactionChatCMD extends Command {
     private boolean isInAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isInAFaction();
+            return null != country && country.isInAFaction();
         }
         return false;
     }

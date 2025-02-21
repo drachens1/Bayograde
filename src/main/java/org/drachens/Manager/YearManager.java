@@ -6,7 +6,7 @@ import org.drachens.bossbars.YearBar;
 import java.util.HashMap;
 
 public class YearManager {
-    HashMap<Instance, YearBar> yearBars = new HashMap<>();
+    final  HashMap<Instance, YearBar> yearBars = new HashMap<>();
 
     public YearBar getYearBar(Instance instance) {
         return yearBars.get(instance);

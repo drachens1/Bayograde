@@ -27,17 +27,17 @@ public class InventoryManager {
     public InventoryManager() {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
         globEHandler.addListener(PlayerUseItemEvent.class, e ->
-                runThread(()->handleButtonUse(new OnUse((CPlayer) e.getPlayer(),true,false,null,e.getInstance()))));
+                runThread(()-> handleButtonUse(new OnUse((CPlayer) e.getPlayer(),true,false,null,e.getInstance()))));
 
         globEHandler.addListener(PlayerUseItemOnBlockEvent.class, e ->
-                runThread(()->handleButtonUse(new OnUse((CPlayer) e.getPlayer(),true,true,new Pos(e.getPosition()),e.getInstance()))));
+                runThread(()-> handleButtonUse(new OnUse((CPlayer) e.getPlayer(),true,true,new Pos(e.getPosition()),e.getInstance()))));
 
         globEHandler.addListener(PlayerStartDiggingEvent.class, e ->
-                runThread(()->handleButtonUse(new OnUse((CPlayer) e.getPlayer(),false,true,new Pos(e.getBlockPosition()),e.getInstance()))));
+                runThread(()-> handleButtonUse(new OnUse((CPlayer) e.getPlayer(),false,true,new Pos(e.getBlockPosition()),e.getInstance()))));
 
-        globEHandler.addListener(PlayerChangeHeldSlotEvent.class,e-> runThread(()->handleSlotChange(e)));
+        globEHandler.addListener(PlayerChangeHeldSlotEvent.class,e-> runThread(()-> handleSlotChange(e)));
 
-        globEHandler.addListener(PlayerMoveEvent.class, e->runThread(()->handleMove(e)));
+        globEHandler.addListener(PlayerMoveEvent.class, e->runThread(()-> handleMove(e)));
 
         globEHandler.addListener(ItemDropEvent.class, e-> e.setCancelled(true));
     }
@@ -47,18 +47,16 @@ public class InventoryManager {
         activeButton.computeIfPresent(player, (p, button) -> {
             if (!delay.hasCooldown(p)) {
                 delay.startCooldown(p);
-                if (onUse.onBlock()){
-                    if (onUse.rightClick()){
+                if (onUse.onBlock()) {
+                    if (onUse.rightClick()) {
                         button.onRightClickOnBlock(onUse);
-                    }else {
+                    } else {
                         button.onLeftClickOnBlock(onUse);
                     }
-                }else {
-                    if (onUse.rightClick()){
-                        button.onRightClick(onUse);
-                    }else {
-                        button.onLeftClick(onUse);
-                    }
+                } else if (onUse.rightClick()) {
+                    button.onRightClick(onUse);
+                } else {
+                    button.onLeftClick(onUse);
                 }
             }
             return button;
@@ -75,14 +73,14 @@ public class InventoryManager {
             int slot = event.getNewSlot();
 
             if (slot >= buttons.size()) {
-                if (lastButton != null) lastButton.onSwapFrom(event);
+                if (null != lastButton) lastButton.onSwapFrom(event);
                 activeButton.remove(player);
                 return hotbar;
             }
 
             HotbarItemButton newButton = buttons.get(slot);
             if (newButton != lastButton) {
-                if (lastButton != null) lastButton.onSwapFrom(event);
+                if (null != lastButton) lastButton.onSwapFrom(event);
                 newButton.onSwapTo(event);
                 activeButton.put(player, newButton);
             }
@@ -108,7 +106,7 @@ public class InventoryManager {
 
     private void changeInventory(CPlayer p, HotbarInventory inventory) {
         p.getInventory().clear();
-        inventory.getItems(p).forEach((itemStack -> p.getInventory().addItemStack(itemStack.getItem())));
+        inventory.getItems(p).forEach(itemStack -> p.getInventory().addItemStack(itemStack.getItem()));
         activeHotBar.put(p, inventory);
     }
 }

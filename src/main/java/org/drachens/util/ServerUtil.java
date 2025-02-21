@@ -81,7 +81,8 @@ import static org.drachens.Manager.defaults.ContinentalManagers.putWorldClass;
 import static org.drachens.util.Messages.logCmd;
 import static org.drachens.util.OtherUtil.runThread;
 
-public class ServerUtil {
+public enum ServerUtil {
+    ;
     private static final HashSet<Chunk> allowedChunks = new HashSet<>();
     private static final HashMap<PlayerConnection, List<Rank>> playerRanks = new HashMap<>();
     private static MinecraftServer srv;
@@ -92,22 +93,20 @@ public class ServerUtil {
     }
 
     public static void initSrv() {
-        if (srv != null) {
+        if (null != ServerUtil.srv) {
             return;
         }
         srv = MinecraftServer.init();
     }
 
     public static void startSrv() {
-        if (srv == null || MinecraftServer.isStarted()) {
+        if (null == ServerUtil.srv || MinecraftServer.isStarted()) {
             return;
         }
         ServerPropertiesFile serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
         if (serverPropertiesFile.isVelocity()) {
             VelocityProxy.enable(serverPropertiesFile.getSecret());
-        }
-        else
-            MojangAuth.init();
+        } else MojangAuth.init();
         srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
     }
 
@@ -142,7 +141,7 @@ public class ServerUtil {
                     )
             );
         }
-        GlobalEventHandler globEHandler = getEventHandler();
+        GlobalEventHandler globEHandler = ServerUtil.globalEventHandler;
 
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(false));
 
@@ -175,7 +174,7 @@ public class ServerUtil {
             List<Component> components = new ArrayList<>();
             Country c = p.getCountry();
             Component prefix;
-            if (c == null) {
+            if (null == c) {
                 prefix = Component.text("spectator", NamedTextColor.GRAY, TextDecoration.BOLD);
             } else {
                 prefix = c.getPrefix();
@@ -189,7 +188,7 @@ public class ServerUtil {
             components.add(Component.text(" : ", NamedTextColor.GRAY));
             components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
             components.add(Component.text(" "));
-            if (p.isPremium()&&p.getPlayerJson().isSuffixActive()){
+            if (p.isPremium()&&p.getPlayerJson().isSuffixActive()) {
                 components.add(Component.text(p.getPlayerJson().getSuffix()));
             }
             return Component.text().append(components).build();
@@ -210,7 +209,7 @@ public class ServerUtil {
 
         globEHandler.addListener(PlayerMoveEvent.class, e -> {
             final Player p = e.getPlayer();
-            if (p.getPosition().y() < 0) {
+            if (0 > p.getPosition().y()) {
                 p.teleport(ContinentalManagers.worldManager.getWorld(p.getInstance()).getSpawnPoint());
             }
         });
@@ -220,7 +219,7 @@ public class ServerUtil {
 
         AtomicInteger i = new AtomicInteger();
         globEHandler.addListener(NewDay.class,e->{
-            if (i.get() ==7){
+            if (7 == i.get()){
                 ContinentalManagers.world(e.world()).countryDataManager().getCountries().forEach(country -> country.nextWeek(e));
                 i.set(0);
             }
@@ -235,7 +234,7 @@ public class ServerUtil {
                     defaultCountryScoreboard.updateAll();
                 }
             });
-            String time = e.day() + "/" + e.month() + "|" + e.year();
+            String time = e.day() + "/" + e.month() + '|' + e.year();
             ContinentalManagers.playerModsManager.getPlayers(e.world()).forEach(player -> player.sendPluginMessage("continentalmod:time", time));
             runThread(()->ContinentalManagers.world(e.world()).countryDataManager().getCountries().forEach(country -> country.nextDay(e)));
         });
@@ -243,8 +242,7 @@ public class ServerUtil {
         globEHandler.addListener(PlayerBlockBreakEvent.class, e -> e.setCancelled(true));
 
         List<VotingOptionCMD> votingOptionsCMD = new ArrayList<>();
-        for (VotingOption votingOption : votingOptions)
-            votingOptionsCMD.add(new VotingOptionCMD(votingOption));
+        for (VotingOption votingOption : votingOptions) votingOptionsCMD.add(new VotingOptionCMD(votingOption));
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
 

@@ -23,7 +23,7 @@ import static org.drachens.util.ServerUtil.blockVecToPos;
 public class ClickWarSystem implements War {
     private final CurrencyTypes cost = CurrencyEnum.production.getCurrencyType();
     private final Payment payment = new Payment(cost, 1);
-    int[][] directions = {
+    final int[][] directions = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1},
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
     };
@@ -36,9 +36,9 @@ public class ClickWarSystem implements War {
             int offsetY = direction[1];
 
             Province province = ContinentalManagers.world(instance).provinceManager().getProvince(position.add(offsetX, 0, offsetY));
-            if (province != null && province.getOccupier() != null && country.isMilitaryFriend(province.getOccupier())) {
+            if (null != province && null != province.getOccupier() && country.isMilitaryFriend(province.getOccupier())) {
                 adjacentCount++;
-                if (adjacentCount >= 3) {
+                if (3 <= adjacentCount) {
                     return province;
                 }
             }
@@ -58,22 +58,24 @@ public class ClickWarSystem implements War {
     public void onClick(PlayerStartDiggingEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
-        if (country == null) return;
+        if (null == country) return;
         Instance instance = e.getInstance();
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
-        if (province == null || province.getOccupier() == null || !province.getOccupier().isAtWar(country.getName())) return;
+        if (null == province || null == province.getOccupier() || !province.getOccupier().isAtWar(country.getName()))
+            return;
         if (!country.canMinusCost(payment)) {
             p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;
         }
         Province atkFrom = AdjacentBlocks(province.getPos(), country, instance);
-        if (atkFrom == null) return;
+        if (null == atkFrom) return;
         country.removePayment(payment);
         province.capture(atkFrom.getOccupier());
     }
 
     public Province canCapture(Province province, Country country){
-        if (province == null || province.getOccupier() == null || !province.getOccupier().isAtWar(country.getName())||!country.canMinusCost(payment)) return null;
+        if (null == province || null == province.getOccupier() || !province.getOccupier().isAtWar(country.getName()) || !country.canMinusCost(payment))
+            return null;
         return AdjacentBlocks(province.getPos(), country, country.getInstance());
     }
 }

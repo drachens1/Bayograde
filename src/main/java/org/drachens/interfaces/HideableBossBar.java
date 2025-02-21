@@ -9,9 +9,9 @@ import java.util.List;
 public abstract class HideableBossBar {
     private final BossBar bossBar;
     private final List<Player> players = new ArrayList<>();
-    private boolean shown = false;
+    private boolean shown;
 
-    public HideableBossBar(BossBar bossBar) {
+    protected HideableBossBar(BossBar bossBar) {
         this.bossBar = bossBar;
     }
 

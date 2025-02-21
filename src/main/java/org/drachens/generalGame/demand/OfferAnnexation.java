@@ -25,7 +25,7 @@ public class OfferAnnexation extends HotbarItemButton {
     public void onRightClickOnBlock(OnUse onUse) {
         CPlayer p = onUse.player();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
-        if (province == null) return;
+        if (null == province) return;
         Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();
@@ -41,7 +41,7 @@ public class OfferAnnexation extends HotbarItemButton {
     public void onLeftClickOnBlock(OnUse onUse) {
         CPlayer p = onUse.player();
         Province province = ContinentalManagers.world(p.getInstance()).provinceManager().getProvince(onUse.pos());
-        if (province == null) return;
+        if (null == province) return;
         Demand demand = demandManager.getDemand(p.getCountry());
         Country from = p.getCountry();
         Country provinceCountry = province.getOccupier();

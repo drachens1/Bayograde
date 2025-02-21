@@ -21,7 +21,7 @@ public class ResearchCountry {
     private final HashSet<String> completedResearch = new HashSet<>();
     private final List<Building> researchCentersBuildings = new ArrayList<>();
     private final Modifier researchModifier;
-    private ResearchOption current = null;
+    private ResearchOption current;
     private Payment researchCurrent;
     private Runnable onFinishResearch;
     private final Country c;
@@ -35,11 +35,11 @@ public class ResearchCountry {
     }
 
     public void newWeek(NewDay newDay) {
-        if (current != null) {
+        if (null != this.current) {
             researchCurrent.remove(c.getResearch().researchVault().getResearch());
-            if (researchCurrent.getAmount() <= 0) {
+            if (0 >= this.researchCurrent.getAmount()) {
                 EventDispatcher.call(new ResearchCompletionEvent(c.getInstance(), c, current));
-                if (onFinishResearch != null) {
+                if (null != this.onFinishResearch) {
                     onFinishResearch.run();
                     onFinishResearch = null;
                 }
@@ -48,17 +48,17 @@ public class ResearchCountry {
     }
 
     public void addResearchCenter(Building building) {
-        if (building.getBuildTypes() != BuildingEnum.researchCenter) return;
+        if (BuildingEnum.researchCenter != building.getBuildTypes()) return;
         researchCentersBuildings.add(building);
     }
 
     public void removeResearchCenter(Building building) {
-        if (building.getBuildTypes() != BuildingEnum.researchCenter) return;
+        if (BuildingEnum.researchCenter != building.getBuildTypes()) return;
         researchCentersBuildings.remove(building);
     }
 
     public boolean isResearching() {
-        return current != null;
+        return null != this.current;
     }
 
     public ResearchOption getCurrentResearch() {
@@ -72,7 +72,7 @@ public class ResearchCountry {
 
     public void completeActiveResearch() {
         completedResearch.add(current.getIdentifier());
-        if (current.getModifier() != null) {
+        if (null != this.current.getModifier()) {
             researchModifier.addModifier(current.getModifier());
         }
         current = null;

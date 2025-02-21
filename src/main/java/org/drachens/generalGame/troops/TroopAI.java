@@ -34,14 +34,14 @@ public class TroopAI implements AIManager, Saveable {
 
     @Override
     public AI createAIForCountry(Country country) {
-        AI ai = new TroopAI.FactorySpammer(country);
+        AI ai = new FactorySpammer(country);
         ais.put(country, ai);
         return ai;
     }
 
     @Override
     public void tick(Instance instance) {
-        ais.forEach(((country, ai) -> ai.tick()));
+        ais.forEach((country, ai) -> ai.tick());
     }
 
     @Override
@@ -58,26 +58,29 @@ public class TroopAI implements AIManager, Saveable {
             this.country = country;
         }
 
+        @Override
         public void tick() {
             buildFactory(new ArrayList<>(country.getMilitary().getCities()));
         }
 
         private void buildFactory(List<Province> cities) {
-            if (cities.isEmpty()) return;
-            Province province = cities.get(r.nextInt(cities.size()));
-            if (province.getBuilding() != null) {
-                if (factory.requirementsToUpgrade(province.getBuilding(), country, 1, null)) {
-                    factory.upgrade(1, province.getBuilding(), country, null);
+            while (true) {
+                if (cities.isEmpty()) {
+                    return;
                 }
-            } else {
-                if (factory.canBuild(country, province, null)) {
-                    factory.forceBuild(country, province, null);
-                } else {
+                final Province province = cities.get(this.r.nextInt(cities.size()));
+                if (null != province.getBuilding()) {
+                    if (this.factory.requirementsToUpgrade(province.getBuilding(), this.country, 1, null))
+                        this.factory.upgrade(1, province.getBuilding(), this.country, null);
+                } else if (this.factory.canBuild(this.country, province, null))
+                    this.factory.forceBuild(this.country, province, null);
+                else {
                     cities.remove(province);
-                    buildFactory(cities);
+                    continue;
                 }
-            }
 
+                return;
+            }
         }
     }
 }

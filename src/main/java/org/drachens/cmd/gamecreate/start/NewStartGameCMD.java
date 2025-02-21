@@ -3,6 +3,7 @@ package org.drachens.cmd.gamecreate.start;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.ArgumentWord;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.dataClasses.customgame.CustomGameWorld;
@@ -17,14 +18,14 @@ public class NewStartGameCMD extends Command {
 
         List<String> strings = new ArrayList<>();
         votingOptionsCMD.forEach(votingOption -> strings.add(votingOption.getName()));
-        var votingOptions = ArgumentType.Word("voting")
+        ArgumentWord votingOptions = ArgumentType.Word("voting")
                 .from(strings.toArray(new String[0]));
 
-        var name = ArgumentType.Word("name");
+        ArgumentWord name = ArgumentType.Word("name");
 
-        addSyntax((sender,context)->{},votingOptions);
+        addSyntax((sender, context)->{},votingOptions);
 
-        addSyntax((sender,context)->{
+        addSyntax((sender, context)->{
             CPlayer p = (CPlayer) sender;
             if (!strings.contains(context.get(votingOptions))){
                 p.sendMessage(Component.text("Not a valid option"));

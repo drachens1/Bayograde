@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -20,7 +21,7 @@ public class ResearchOptionCMD extends Command {
     public ResearchOptionCMD() {
         super("start");
 
-        var choice = ArgumentType.String("choice")
+        Argument<String> choice = ArgumentType.String("choice")
                 .setSuggestionCallback((sender, context, suggestion) -> getSuggestionBasedOnInput(suggestion, getAvailable(sender)));
 
         setCondition((sender, s) -> !notCountry(sender));
@@ -32,7 +33,7 @@ public class ResearchOptionCMD extends Command {
             Country country = p.getCountry();
             TechTree tree = ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getTree();
             ResearchOption researchOption = tree.getResearchOption(context.get(choice));
-            if (researchOption == null) {
+            if (null == researchOption) {
                 return;
             }
             if (researchOption.canResearch(country.getResearch().researchCountry())) {
@@ -44,10 +45,7 @@ public class ResearchOptionCMD extends Command {
     }
 
     private boolean notCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            return p.getCountry() == null;
-        }
-        return true;
+        return !(sender instanceof CPlayer p) || (null == p.getCountry());
     }
 
     private List<String> getAvailable(CommandSender sender) {

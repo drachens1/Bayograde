@@ -9,14 +9,14 @@ public class LeaveGameCMD extends Command {
     public LeaveGameCMD() {
         super("leave");
 
-        setCondition((sender,s)->{
+        setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
             return p.isInOwnGame();
         });
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
-            if (!p.isInOwnGame())return;
+            if (!p.isInOwnGame()) return;
             if (p.getInstance() != ContinentalManagers.worldManager.getDefaultWorld().getInstance()) {
                 p.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
             }

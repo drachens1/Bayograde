@@ -12,7 +12,7 @@ import java.util.List;
 public class LoanInfoCMD extends Command {
     public LoanInfoCMD() {
         super("loan_info");
-        setCondition(((sender, s) -> isLeaderOfCountry(sender)));
+        setCondition((sender, s) -> isLeaderOfCountry(sender));
         setDefaultExecutor((sender, context) -> {
             if (!isLeaderOfCountry(sender)) {
                 sender.sendMessage("You are not the leader of a country");
@@ -29,8 +29,7 @@ public class LoanInfoCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

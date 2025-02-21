@@ -15,7 +15,7 @@ public class AdvancementSection {
     private final Component description;
     private final FrameType frameType;
 
-    private AdvancementSection(AdvancementSection.Create create) {
+    private AdvancementSection(Create create) {
         identifier = create.identifier;
         item = create.item;
         advancements = create.advancements;

@@ -19,7 +19,7 @@ public class PuppetChat implements Channel {
     @Override
     public void onChat(PlayerChatEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
-        if (overlord == p.getCountry() || overlord.getDiplomacy().getPuppets().contains(p.getCountry())) {
+        if (this.overlord == p.getCountry() || overlord.getDiplomacy().getPuppets().contains(p.getCountry())) {
             Component msg = Component.text()
                     .append(MessageEnum.puppetChat.getComponent())
                     .append(Component.text(p.getUsername()))

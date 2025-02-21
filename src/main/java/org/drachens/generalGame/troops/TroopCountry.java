@@ -38,7 +38,7 @@ public class TroopCountry extends Country {
         super(name, nameComponent, block, border, defaultIdeologies, instance, new ClicksVault(startingCurrencies), laws);
 
         HashMap<Integer, DivisionType> norm = new HashMap<>();
-        int[] slots = new int[]{12, 13, 14, 21, 22, 23, 30, 31, 32};
+        int[] slots = {12, 13, 14, 21, 22, 23, 30, 31, 32};
         for (int i : slots) {
             norm.put(i, DivisionTypeEnum.ww2_infantry.getDivisionType());
         }
@@ -66,7 +66,7 @@ public class TroopCountry extends Country {
 
     @Override
     public void newDay(NewDay newDay) {
-        new HashMap<>(divisionTrainingQueueHashMap).forEach(((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay()));
+        new HashMap<>(divisionTrainingQueueHashMap).forEach((building, divisionTrainingQueue) -> divisionTrainingQueue.newDay());
     }
 
     @Override
@@ -77,7 +77,7 @@ public class TroopCountry extends Country {
     @Override
     public void removeOccupied(Province province) {
         super.removeOccupied(province);
-        if (province.getBuilding() != null) {
+        if (null != province.getBuilding()) {
             divisionTrainingQueueHashMap.remove(province.getBuilding());
         }
     }

@@ -19,7 +19,7 @@ public class ManageCMD extends Command {
     private boolean leaderOfAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isLeaderOfAFaction();
+            return null != country && country.isLeaderOfAFaction();
         }
         return false;
     }

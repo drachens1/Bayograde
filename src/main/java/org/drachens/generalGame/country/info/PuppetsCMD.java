@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.info;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
@@ -16,13 +17,12 @@ public class PuppetsCMD extends Command {
     public PuppetsCMD() {
         super("puppets");
 
-        var countries = getCountriesArg();
+        Argument<String> countries = getCountriesArg();
 
         setDefaultExecutor((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
+            if (!(sender instanceof CPlayer p)) return;
             Country target = p.getCountry();
-            if (target == null) {
+            if (null == target) {
                 p.sendMessage("Join a country or do /country info puppet <country>");
                 return;
             }
@@ -38,10 +38,9 @@ public class PuppetsCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
+            if (!(sender instanceof CPlayer p)) return;
             Country target = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (target == null) {
+            if (null == target) {
                 p.sendMessage("That is not a valid country");
                 return;
             }

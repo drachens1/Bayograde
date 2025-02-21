@@ -7,7 +7,7 @@ public class CreationCMD extends Command {
     public CreationCMD() {
         super("creation");
 
-        setCondition((sender,s)->{
+        setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
             return p.isLeaderOfOwnGame();
         });

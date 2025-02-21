@@ -5,7 +5,7 @@ import net.minestom.server.scoreboard.Sidebar;
 
 public class ScoreboardBuilder {
     private final Sidebar sidebar;
-    int lineNum = 0;
+    int lineNum;
 
     public ScoreboardBuilder(Component title) {
         sidebar = new Sidebar(title);

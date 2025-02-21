@@ -52,7 +52,8 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.ServerUtil.initSrv;
 import static org.drachens.util.ServerUtil.setupAll;
 
-public class Main {
+public enum Main {
+    ;
     private static final String[] firstName = {
             "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth",
             "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen",
@@ -178,25 +179,25 @@ public class Main {
     private static void createAdvancements() {
         AdvancementManager advancementManager = ContinentalManagers.advancementManager;
         advancementManager.register(new AdvancementSection.Create("magic", Material.BROWN_DYE, FrameType.TASK, Component.text("WW2 inspired", NamedTextColor.WHITE), Component.text("The advancement tree for the ww2 inspired mode", NamedTextColor.GRAY))
-                .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, 1, 0, Component.text("10 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 10f, "factoryBuilt"))
-                .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, 2, 0, Component.text("30 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built1", 30f, "factoryBuilt"))
-                .addAdvancement(new Advancement("facs_built3", Material.OAK_BOAT, FrameType.GOAL, 3, 0, Component.text("50 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built2", 50f, "factoryBuilt"))
-                .addAdvancement(new Advancement("facs_built4", Material.OAK_BOAT, FrameType.GOAL, 4, 0, Component.text("100 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_build3", 100f, "factoryBuilt"))
-                .addAdvancement(new Advancement("facs_built5", Material.OAK_BOAT, FrameType.GOAL, 5, 0, Component.text("1000 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_build4", 1000f, "factoryBuilt"))
+                .addAdvancement(new Advancement("facs_built1", Material.OAK_BOAT, FrameType.GOAL, 1, 0, Component.text("10 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 10.0f, "factoryBuilt"))
+                .addAdvancement(new Advancement("facs_built2", Material.OAK_BOAT, FrameType.GOAL, 2, 0, Component.text("30 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built1", 30.0f, "factoryBuilt"))
+                .addAdvancement(new Advancement("facs_built3", Material.OAK_BOAT, FrameType.GOAL, 3, 0, Component.text("50 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_built2", 50.0f, "factoryBuilt"))
+                .addAdvancement(new Advancement("facs_built4", Material.OAK_BOAT, FrameType.GOAL, 4, 0, Component.text("100 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_build3", 100.0f, "factoryBuilt"))
+                .addAdvancement(new Advancement("facs_built5", Material.OAK_BOAT, FrameType.GOAL, 5, 0, Component.text("1000 Factories built", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "facs_build4", 1000.0f, "factoryBuilt"))
                 //War
-                .addAdvancement(new Advancement("conquer", Material.IRON_SWORD, FrameType.GOAL, 0, 2, Component.text("Conquer", NamedTextColor.GOLD), Component.text("Attack a country to complete", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "captureBlock"))
-                .addAdvancement(new Advancement("speedrun", Material.IRON_SWORD, FrameType.GOAL, 0, 3, Component.text("Speedrun", NamedTextColor.GOLD), Component.text("Conquer the world in one year", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1f, "capturedWorldInOneYear"))
-                .addAdvancement(new Advancement("nowarconquer", Material.IRON_SWORD, FrameType.GOAL, 1, 2, Component.text("Not a drop", NamedTextColor.GOLD), Component.text("Conquer the world without starting a war", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1f, "nowarconq"))
-                .addAdvancement(new Advancement("properconquest", Material.IRON_SWORD, FrameType.GOAL, -1, 2, Component.text("Victory in the face of foe", NamedTextColor.GOLD), Component.text("Conquer the world when there is 5 people online", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1f, "conquerwhenothers"))
+                .addAdvancement(new Advancement("conquer", Material.IRON_SWORD, FrameType.GOAL, 0, 2, Component.text("Conquer", NamedTextColor.GOLD), Component.text("Attack a country to complete", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1.0f, "captureBlock"))
+                .addAdvancement(new Advancement("speedrun", Material.IRON_SWORD, FrameType.GOAL, 0, 3, Component.text("Speedrun", NamedTextColor.GOLD), Component.text("Conquer the world in one year", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1.0f, "capturedWorldInOneYear"))
+                .addAdvancement(new Advancement("nowarconquer", Material.IRON_SWORD, FrameType.GOAL, 1, 2, Component.text("Not a drop", NamedTextColor.GOLD), Component.text("Conquer the world without starting a war", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1.0f, "nowarconq"))
+                .addAdvancement(new Advancement("properconquest", Material.IRON_SWORD, FrameType.GOAL, -1, 2, Component.text("Victory in the face of foe", NamedTextColor.GOLD), Component.text("Conquer the world when there is 5 people online", NamedTextColor.GRAY, TextDecoration.ITALIC), "conquer", 1.0f, "conquerwhenothers"))
                 //diplomacy
-                .addAdvancement(new Advancement("diplomacy", Material.BOOK, FrameType.GOAL, 1, 3, Component.text("Diplomacy", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "diplomacy"))
-                .addAdvancement(new Advancement("factioncreation", Material.BOOK, FrameType.GOAL, 2, 3, Component.text("Created a faction", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "factionCreate"))
-                .addAdvancement(new Advancement("merger", Material.BOOK, FrameType.GOAL, 2, 3, Component.text("Merged into a country", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "mergeCountries"))
-                .addAdvancement(new Advancement("coop", Material.BOOK, FrameType.GOAL, 3, 2, Component.text("Win as a co-op", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1f, "coopwin"))
+                .addAdvancement(new Advancement("diplomacy", Material.BOOK, FrameType.GOAL, 1, 3, Component.text("Diplomacy", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1.0f, "diplomacy"))
+                .addAdvancement(new Advancement("factioncreation", Material.BOOK, FrameType.GOAL, 2, 3, Component.text("Created a faction", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1.0f, "factionCreate"))
+                .addAdvancement(new Advancement("merger", Material.BOOK, FrameType.GOAL, 2, 3, Component.text("Merged into a country", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1.0f, "mergeCountries"))
+                .addAdvancement(new Advancement("coop", Material.BOOK, FrameType.GOAL, 3, 2, Component.text("Win as a co-op", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "diplomacy", 1.0f, "coopwin"))
                 //research
-                .addAdvancement(new Advancement("research", Material.BROWN_DYE, FrameType.GOAL, 2, 5, Component.text("Research", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1f, "research"))
-                .addAdvancement(new Advancement("allofthem", Material.BROWN_DYE, FrameType.GOAL, 3, 5, Component.text("ALL OF THEM?!", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1f, "allofthem"))
-                .addAdvancement(new Advancement("gunmaster", Material.BROWN_DYE, FrameType.GOAL, 0, 5, Component.text("Research the whole gun tree", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1f, "guntreeall"))
+                .addAdvancement(new Advancement("research", Material.BROWN_DYE, FrameType.GOAL, 2, 5, Component.text("Research", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), null, 1.0f, "research"))
+                .addAdvancement(new Advancement("allofthem", Material.BROWN_DYE, FrameType.GOAL, 3, 5, Component.text("ALL OF THEM?!", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1.0f, "allofthem"))
+                .addAdvancement(new Advancement("gunmaster", Material.BROWN_DYE, FrameType.GOAL, 0, 5, Component.text("Research the whole gun tree", NamedTextColor.GOLD), Component.text("", NamedTextColor.GRAY, TextDecoration.ITALIC), "research", 1.0f, "guntreeall"))
                 .build());
     }
 
@@ -233,7 +234,7 @@ public class Main {
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
-        c.put(production, new Currencies(production, 1000f));
+        c.put(production, new Currencies(production, 1000.0f));
 
         Material capMaterial = Material.CYAN_DYE;
         Material effMaterial = Material.CYAN_DYE;
@@ -250,27 +251,27 @@ public class Main {
                 .ideologyTypes(ideologyTypesList)
                 .tree(new TechTree.Create(Component.text("Tech", NamedTextColor.BLUE))
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_efficiency, Component.text("Increases production", NamedTextColor.DARK_PURPLE), Component.text("Factories efficiency", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                .addResearchOption(new ResearchOption.Create("ww2_eff1", itemBuilder(effMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_eff1", itemBuilder(effMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.production, 0.1f)
                                                 .build())
                                         .setName(Component.text("Streamline Production 1"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_eff2", itemBuilder(effMaterial), 1000f)
+                                .addResearchOption(new ResearchOption.Create("ww2_eff2", itemBuilder(effMaterial), 1000.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.production, 0.1f)
                                                 .build())
                                         .addRequires("ww2_eff1")
                                         .setName(Component.text("Streamline Production 2"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_eff3", itemBuilder(effMaterial), 2000f)
+                                .addResearchOption(new ResearchOption.Create("ww2_eff3", itemBuilder(effMaterial), 2000.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.production, 0.1f)
                                                 .build())
                                         .addRequires("ww2_eff2")
                                         .setName(Component.text("Streamline Production 3"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_eff4", itemBuilder(effMaterial), 3000f)
+                                .addResearchOption(new ResearchOption.Create("ww2_eff4", itemBuilder(effMaterial), 3000.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.production, 0.1f)
                                                 .build())
@@ -279,27 +280,27 @@ public class Main {
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.factory_capacity, Component.text("Increases factory capacity", NamedTextColor.DARK_PURPLE), Component.text("Factory capacity", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                .addResearchOption(new ResearchOption.Create("ww2_cap1", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 20f)
+                                .addResearchOption(new ResearchOption.Create("ww2_cap1", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 20.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
                                                 .build())
                                         .setName(Component.text("Capacity increase 1"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_cap2", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_cap2", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
                                                 .build())
                                         .addRequires("ww2_cap1")
                                         .setName(Component.text("Capacity increase 2"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_cap3", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 150f)
+                                .addResearchOption(new ResearchOption.Create("ww2_cap3", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 150.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
                                                 .build())
                                         .addRequires("ww2_cap2")
                                         .setName(Component.text("Capacity increase 3"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_cap4", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 200f)
+                                .addResearchOption(new ResearchOption.Create("ww2_cap4", itemBuilder(capMaterial, Component.text("Capacity increase", NamedTextColor.GOLD)), 200.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.buildingSlotBoost, 0.1f)
                                                 .build())
@@ -308,7 +309,7 @@ public class Main {
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.radar, Component.text("Radar tech tree increases coordination massively", NamedTextColor.DARK_PURPLE), Component.text("Radar", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                .addResearchOption(new ResearchOption.Create("ww2_radar1", itemBuilder(radMaterial), 30f)
+                                .addResearchOption(new ResearchOption.Create("ww2_radar1", itemBuilder(radMaterial), 30.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.planes, 0.1f)
                                                 .build())
@@ -316,44 +317,44 @@ public class Main {
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.penicillin, Component.text("Antibiotics research means less people die", NamedTextColor.DARK_PURPLE), Component.text("Antibiotics", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                .addResearchOption(new ResearchOption.Create("ww2_antibiotics1", itemBuilder(antiBiotics), 30f)
+                                .addResearchOption(new ResearchOption.Create("ww2_antibiotics1", itemBuilder(antiBiotics), 30.0f)
                                         .setName(Component.text("Antibiotics"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.airoplane, Component.text("Airoplane research!", NamedTextColor.DARK_PURPLE), Component.text("Airoplane", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                .addResearchOption(new ResearchOption.Create("ww2_air1", itemBuilder(planMaterial), 30f)
+                                .addResearchOption(new ResearchOption.Create("ww2_air1", itemBuilder(planMaterial), 30.0f)
                                         .setName(Component.text("Don't research this"))
                                         .build())
                                 .build())
                         .addCategory(new ResearchCategory.Create(ResearchCategoryEnum.guns, Component.text("Better guns", NamedTextColor.DARK_PURPLE), Component.text("GUNS", NamedTextColor.GRAY, TextDecoration.ITALIC))
-                                .addResearchOption(new ResearchOption.Create("ww2_guns1", itemBuilder(gunMaterial), 30f)
+                                .addResearchOption(new ResearchOption.Create("ww2_guns1", itemBuilder(gunMaterial), 30.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.3f)
                                                 .build())
                                         .setName(Component.text("Enhanced accuracy"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_guns2", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_guns2", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, -0.1f)
                                                 .build())
                                         .addRequires("ww2_guns1")
                                         .setName(Component.text("Streamlined production"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_guns3", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_guns3", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, -0.1f)
                                                 .build())
                                         .addRequires("ww2_guns2")
                                         .setName(Component.text("Streamlined production 2"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_semi_auto", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_semi_auto", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .build())
                                         .addRequires("ww2_guns3")
                                         .setName(Component.text("Research semi automatic weapons"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_semi_gas", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_semi_gas", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.08f)
@@ -361,7 +362,7 @@ public class Main {
                                         .addRequires("ww2_semi_auto")
                                         .setName(Component.text("Make the semi automatic weapons gas operated"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_semi_bigger_magazine", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_semi_bigger_magazine", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.08f)
@@ -369,14 +370,14 @@ public class Main {
                                         .addRequires("ww2_semi_gas")
                                         .setName(Component.text("Develop bigger magazines"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_submachine", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_submachine", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .build())
                                         .addRequires("ww2_guns3")
                                         .setName(Component.text("Create a submachine gun"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_folding_stacks", itemBuilder(gunMaterial), 200f)
+                                .addResearchOption(new ResearchOption.Create("ww2_folding_stacks", itemBuilder(gunMaterial), 200.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.1f)
@@ -384,7 +385,7 @@ public class Main {
                                         .addRequires("ww2_submachine")
                                         .setName(Component.text("Create folding stacks"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_full_auto", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_full_auto", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.1f)
@@ -392,7 +393,7 @@ public class Main {
                                         .addRequires("ww2_guns3")
                                         .setName(Component.text("Begin fully automatic guns development"))
                                         .build())
-                                .addResearchOption(new ResearchOption.Create("ww2_cooling", itemBuilder(gunMaterial), 100f)
+                                .addResearchOption(new ResearchOption.Create("ww2_cooling", itemBuilder(gunMaterial), 100.0f)
                                         .setModifier(new Modifier.create(null)
                                                 .addBoost(BoostEnum.gunCost, 0.1f)
                                                 .addBoost(BoostEnum.gunAccuracy, 0.05f)
@@ -417,13 +418,13 @@ public class Main {
 
     private static List<Leader> getLeaders(Modifier modifier, TextColor color) {
         List<Leader> leaders = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; 100 > i; i++) {
             leaders.add(new Leader.create(Component.text(getName(), color)).addModifier(modifier).build());
         }
         return leaders;
     }
 
     private static String getName() {
-        return firstName[new Random().nextInt(0, firstName.length)] + " " + lastName[new Random().nextInt(0, lastName.length)];
+        return firstName[new Random().nextInt(0, firstName.length)] + ' ' + lastName[new Random().nextInt(0, lastName.length)];
     }
 }

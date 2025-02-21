@@ -4,7 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.number.ArgumentFloat;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -22,21 +24,21 @@ public class DemandAddPaymentCMD extends Command {
     public DemandAddPaymentCMD() {
         super("payment");
 
-        var types = ArgumentType.String("types")
+        Argument<String> types = ArgumentType.String("types")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemand(sender)) return;
                     suggestion.addEntry(new SuggestionEntry("offer"));
                     suggestion.addEntry(new SuggestionEntry("demand"));
                 });
 
-        var payments = ArgumentType.String("currency")
+        Argument<String> payments = ArgumentType.String("currency")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (hasDemand(sender)) {
                         suggestion.addEntry(new SuggestionEntry(CurrencyEnum.production.name()));
                     }
                 });
 
-        var amount = ArgumentType.Float("Amount");
+        ArgumentFloat amount = ArgumentType.Float("Amount");
 
         Component currencyDoesntExist = Component.text()
                 .append(MessageEnum.country.getComponent())
@@ -52,11 +54,11 @@ public class DemandAddPaymentCMD extends Command {
         addSyntax((sender, context) -> {
             if (!hasDemand(sender)) return;
             String choice = context.get(types);
-            if (!(choice.equalsIgnoreCase("offer") || choice.equalsIgnoreCase("demand"))) return;
+            if (!("offer".equalsIgnoreCase(choice) || "demand".equalsIgnoreCase(choice))) return;
             CPlayer p = (CPlayer) sender;
             WW2Demands demand = (WW2Demands) demandManager.getDemand(p.getCountry());
             CurrencyTypes currencyTypes = CurrencyEnum.valueOf(context.get(payments)).getCurrencyType();
-            if (currencyTypes == null) {
+            if (null == currencyTypes) {
                 p.sendMessage(currencyDoesntExist);
                 return;
             }
@@ -81,8 +83,7 @@ public class DemandAddPaymentCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

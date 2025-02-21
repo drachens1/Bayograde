@@ -8,7 +8,7 @@ import org.drachens.player_types.CPlayer;
 public class ToggleLoginMessageCMD extends Command {
     public ToggleLoginMessageCMD() {
         super("toggle");
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             boolean current = !p.getPlayerJson().isAutoVoteActive();
             p.getPlayerJson().setLoginMessageActive(current);
@@ -16,6 +16,6 @@ public class ToggleLoginMessageCMD extends Command {
                     .append(Component.text("Active: ", NamedTextColor.GREEN))
                     .append(Component.text(current))
                     .build());
-        }));
+        });
     }
 }

@@ -2,10 +2,12 @@ package org.drachens.fileManagement.customTypes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
 import org.drachens.fileManagement.filetypes.GsonFileType;
 
 import java.util.HashSet;
 
+@Getter
 public class WhitelistFile extends GsonFileType {
     private final HashSet<String> players = new HashSet<>();
     public WhitelistFile() {
@@ -33,10 +35,6 @@ public class WhitelistFile extends GsonFileType {
     public void toggle(boolean b){
         set(new JsonPrimitive(b),"whitelist","active");
         saveToFile();
-    }
-
-    public HashSet<String> getPlayers(){
-        return players;
     }
 
     public boolean whiteListContains(String player){

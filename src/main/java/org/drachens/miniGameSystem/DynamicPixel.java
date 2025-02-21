@@ -1,7 +1,11 @@
 package org.drachens.miniGameSystem;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minestom.server.item.Material;
 
+@Getter
+@Setter
 public class DynamicPixel {
     private final int weight;
     private Pixel location;
@@ -12,28 +16,11 @@ public class DynamicPixel {
         this.weight = weight;
         this.material = material;
     }
-
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
-    }
-
     public int weight() {
         return weight;
     }
 
     public Material material() {
         return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
-
-    public void setLocation(Pixel pixel) {
-        this.location = pixel;
     }
 }

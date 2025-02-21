@@ -16,7 +16,7 @@ public class PuppetCMD extends Command {
     private boolean isOrHasPuppets(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && (country.hasOverlord() || country.hasPuppets());
+            return null != country && (country.hasOverlord() || country.hasPuppets());
         }
         return false;
     }

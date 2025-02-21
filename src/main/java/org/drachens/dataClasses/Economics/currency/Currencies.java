@@ -1,10 +1,12 @@
 package org.drachens.dataClasses.Economics.currency;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.interfaces.Saveable;
 
+@Getter
 public class Currencies implements Cloneable, Saveable {
     private final CurrencyTypes currencyType;
     private float amount;
@@ -19,16 +21,8 @@ public class Currencies implements Cloneable, Saveable {
         this.amount = amount;
     }
 
-    public CurrencyTypes getCurrencyType() {
-        return currencyType;
-    }
-
     public Component getName() {
         return currencyType.getName();
-    }
-
-    public float getAmount() {
-        return amount;
     }
 
     public void add(float add) {
@@ -51,6 +45,7 @@ public class Currencies implements Cloneable, Saveable {
         amount -= minus;
     }
 
+    @Override
     public Currencies clone() {
         try {
             return (Currencies) super.clone();

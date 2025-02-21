@@ -1,6 +1,7 @@
 package org.drachens.generalGame.country.diplomacy.justifywar;
 
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -13,7 +14,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class JustifyCancelCMD extends Command {
     public JustifyCancelCMD() {
         super("cancel");
-        var countries = ArgumentType.String("War_justifications")
+        Argument<String> countries = ArgumentType.String("War_justifications")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
                         return;
@@ -29,7 +30,7 @@ public class JustifyCancelCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             WarJustification warJustification = country.getDiplomacy().getWarJustification(context.get(countries));
-            if (warJustification == null) return;
+            if (null == warJustification) return;
             EventDispatcher.call(new WarJustificationCancelEvent(warJustification, country));
         }, countries);
     }

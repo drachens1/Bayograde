@@ -3,7 +3,9 @@ package org.drachens.generalGame.country.diplomacy.nonaggression;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -16,9 +18,9 @@ import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCoun
 public class NonAggressionCreateCMD extends Command {
     public NonAggressionCreateCMD() {
         super("create");
-        var countries = getCountriesArgExcludingPlayersCountry();
+        Argument<String> countries = getCountriesArgExcludingPlayersCountry();
 
-        var length = ArgumentType.Integer("length");
+        ArgumentInteger length = ArgumentType.Integer("length");
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             p.sendMessage(Component.text("Proper usage /country diplomacy non-aggression create <target>", NamedTextColor.RED));
@@ -28,7 +30,7 @@ public class NonAggressionCreateCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (to == null) return;
+            if (null == to) return;
             NonAggressionPact nonAggressionPact = new NonAggressionPact(country, to, context.get(length));
             EventDispatcher.call(new NonAggressionOfferEvent(nonAggressionPact));
         }, countries, length);

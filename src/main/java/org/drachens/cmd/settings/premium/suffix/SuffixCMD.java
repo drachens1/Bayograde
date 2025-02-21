@@ -9,12 +9,12 @@ public class SuffixCMD extends Command {
     public SuffixCMD() {
         super("suffix");
 
-        setCondition(((sender, commandString) -> {
+        setCondition((sender, commandString) -> {
             CPlayer p = (CPlayer) sender;
             return p.isPremium();
-        }));
+        });
 
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             p.sendMessage(Component.text()
                     .append(Component.text("Suffix: ", NamedTextColor.GREEN))
@@ -23,7 +23,7 @@ public class SuffixCMD extends Command {
                     .append(Component.text("Active: ", NamedTextColor.GREEN))
                     .append(Component.text(p.getPlayerJson().isSuffixActive()))
                     .build());
-        }));
+        });
 
         addSubcommand(new HelpSuffixCMD());
         addSubcommand(new SetSuffixCMD());

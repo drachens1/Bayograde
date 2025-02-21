@@ -3,7 +3,9 @@ package org.drachens.cmd.settings.premium.login;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentStringArray;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.ArgumentWord;
 import org.drachens.Manager.ChatCensor;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.fileManagement.customTypes.player.CustomLoginRecord;
@@ -17,10 +19,10 @@ public class SetLoginMessageCMD extends Command {
 
         ChatCensor chatCensor = ContinentalManagers.chatCensor;
 
-        var option = ArgumentType.Word("option")
+        ArgumentWord option = ArgumentType.Word("option")
                 .from("join", "change-world-join", "change-world-leave", "leave");
 
-        var loginMessage = ArgumentType.StringArray("message");
+        ArgumentStringArray loginMessage = ArgumentType.StringArray("message");
 
         setDefaultExecutor((sender, context) -> sender.sendMessage(Component.text("If you need help do /settings login-message help", NamedTextColor.RED)));
 
@@ -36,7 +38,7 @@ public class SetLoginMessageCMD extends Command {
             }
 
             CustomLoginRecord clr = p.getPlayerJson().getCustomLoginMessage();
-            if (clr == null) {
+            if (null == clr) {
                 clr = new CustomLoginRecord("", "", "", "");
             }
 
@@ -64,6 +66,6 @@ public class SetLoginMessageCMD extends Command {
     }
 
     private String safeValue(String value) {
-        return (value != null) ? value : "";
+        return (null != value) ? value : "";
     }
 }

@@ -44,7 +44,7 @@ public class Troop implements Saveable {
     private DivisionDesign design;
     private Task t;
     private final HashSet<Country> countries = new HashSet<>();
-    private boolean dead = false;
+    private boolean dead;
 
     public Troop(Province province, TrainedTroop trainedTroop, AStarPathfinderVoids troopPathing) {
         this.troopPathing = troopPathing;
@@ -75,15 +75,15 @@ public class Troop implements Saveable {
     }
 
     public void move(Province to) {
-        if (task != null && task.isAlive()) task.cancel();
+        if (null != this.task && task.isAlive()) task.cancel();
         startMoveAnimation();
-        if (province.distance(to)<=1){
+        if (1 >= this.province.distance(to)){
             task = scheduler.buildTask(()-> moveBlock(to)).delay(1200, ChronoUnit.MILLIS).schedule();
             return;
         }
         task = scheduler.buildTask(new Runnable() {
             final List<AStarPathfinderXZ.Node> path = country.getMilitary().getAStarPathfinder().findPath(province, to, country, troopPathing);
-            int current = 0;
+            int current;
 
             @Override
             public void run() {
@@ -103,17 +103,16 @@ public class Troop implements Saveable {
 
         if (to.getOccupier() == country || to.getOccupier().isMilitaryFriend(country)) {
             moveToFriendly(to);
-        } else
-            moveToEnemy(to);
+        } else moveToEnemy(to);
 
         countries.clear();
         Set<Country> removed = new HashSet<>(countries);
         to.getNeighbours().forEach(p -> {
             Country occp = p.getOccupier();
-            if (country!=occp){
+            if (country !=occp){
                 addOccp(occp);
                 removed.remove(occp);
-                if (p.getTroops()!=null){
+                if (null != p.getTroops()) {
                     p.getTroops().forEach(troop1 -> troop1.addOccp(country));
                 }
             }
@@ -125,7 +124,7 @@ public class Troop implements Saveable {
     private void addOccp(Country occp){
         if (!countries.contains(occp)){
             int diplo = country.getDiplomaticRelations(occp.getName());
-            if (!(diplo==6||diplo==5)){
+            if (!(6 == diplo || 5 == diplo)){
                 countries.add(occp);
                 occp.addClientside(enemy);
             }
@@ -133,11 +132,11 @@ public class Troop implements Saveable {
     }
 
     public boolean canMove(Province province) {
-        return province != null;
+        return null != province;
     }
 
     public void moveToFriendly(Province to) {
-        if (t!=null)t.cancel();
+        if (null != this.t) t.cancel();
         t = scheduler.buildTask(this::cull).delay(600,ChronoUnit.MILLIS).schedule();
         smoothMove(to);
         move(to, province);
@@ -181,8 +180,8 @@ public class Troop implements Saveable {
     }
 
     private void moveNear(){
-        for (Province neigh : province.getNeighbours()){
-            if (country.isMilitaryFriend(neigh.getOccupier())){
+        for (Province neigh : province.getNeighbours()) {
+            if (country.isMilitaryFriend(neigh.getOccupier())) {
                 moveBlock(neigh);
                 return;
             }
@@ -191,7 +190,7 @@ public class Troop implements Saveable {
     }
 
     public void kill() {
-        if (isDead()){
+        if (this.dead) {
             return;
         }
         System.out.println("dead");
@@ -199,10 +198,10 @@ public class Troop implements Saveable {
         province.removeTroop(this);
         country.removeTroop(this);
         countries.forEach(country1 -> country1.removeClientside(enemy));
-        if (country.isInAMilitaryFaction()){
+        if (country.isInAMilitaryFaction()) {
             country.getEconomy().getMilitaryFactionType().getMembers().forEach(country1 -> country1.removeClientside(ally));
         }
-        if (country.hasPuppets()){
+        if (country.hasPuppets()) {
             country.getDiplomacy().getPuppets().forEach(country1 -> country1.removeClientside(ally));
         }
         if (country.hasOverlord()){
@@ -214,8 +213,8 @@ public class Troop implements Saveable {
         enemy.dispose();
     }
     private void cull(){
-        if (province.getTroops().size()>=2){
-            if (province.getTroops().getFirst()!=this){
+        if (2 <= this.province.getTroops().size()){
+            if (province.getTroops().getFirst()!=this) {
                 hideDisplays();
             }
         }else {
@@ -248,13 +247,13 @@ public class Troop implements Saveable {
     }
 
     private void stopAnimations(){
-        if (troop.getAnimation()!=null){
+        if (null != this.troop.getAnimation()) {
             troop.getAnimation().stop(troop);
         }
-        if (ally.getAnimation()!=null){
+        if (null != this.ally.getAnimation()) {
             ally.getAnimation().stop(ally);
         }
-        if (enemy.getAnimation()!=null){
+        if (null != this.enemy.getAnimation()) {
             enemy.getAnimation().stop(enemy);
         }
     }

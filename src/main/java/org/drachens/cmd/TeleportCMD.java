@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import org.drachens.util.MessageEnum;
@@ -14,9 +15,9 @@ public class TeleportCMD extends Command {
     public TeleportCMD() {
         super("teleport", "tp");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /teleport <x> <y> <z>"));
-        var x = ArgumentType.Integer("x");
-        var y = ArgumentType.Integer("y");
-        var z = ArgumentType.Integer("z");
+        ArgumentInteger x = ArgumentType.Integer("x");
+        ArgumentInteger y = ArgumentType.Integer("y");
+        ArgumentInteger z = ArgumentType.Integer("z");
         addSyntax((sender, context) -> {
             if (!(sender instanceof Player p)) {
                 return;

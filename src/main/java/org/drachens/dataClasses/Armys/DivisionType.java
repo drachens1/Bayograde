@@ -12,9 +12,9 @@ public class DivisionType implements Saveable {
     private float def;
     private float org;
     private float speed;
-    private float trainingTime;
+    private final float trainingTime;
     private Payment payment;
-    private ItemStack icon;
+    private final ItemStack icon;
 
     public DivisionType(String name, float atk, float def, float org, float hp, float speed, float trainingTime, Payment payment, ItemStack icon) {
         this.name = name;

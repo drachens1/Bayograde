@@ -44,7 +44,7 @@ public class Loan implements Saveable {
     }
 
     public void payThisWeek() {
-        if (balanceToPayOff <= 0) {
+        if (0 >= this.balanceToPayOff) {
             return;
         }
         balanceToPayOff -= perWeek;

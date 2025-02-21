@@ -64,7 +64,7 @@ public class AStarPathfinderXZ {
 
     private boolean isValid(int x, int z, Country country, AStarPathfinderVoids aStarPathfinderVoids) {
         Province p = provinceManager.getProvince(x,z);
-        return p != null && aStarPathfinderVoids.isWalkable(p, country);
+        return null != p && aStarPathfinderVoids.isWalkable(p, country);
     }
 
     private int heuristic(int x, int z, int goalX, int goalZ) {
@@ -76,7 +76,7 @@ public class AStarPathfinderXZ {
     }
     private List<Node> reconstructPath(Node node) {
         List<Node> path = new ArrayList<>();
-        while (node != null) {
+        while (null != node) {
             path.add(node);
             node = node.parent;
         }
@@ -85,8 +85,9 @@ public class AStarPathfinderXZ {
     }
 
     public static class Node {
-        public Province province;
-        int x, z, gCost, fCost;
+        public final Province province;
+        final int x, z;
+        int gCost, fCost;
         Node parent;
 
         public Node(int x, int z, Node parent, int gCost, int fCost, ProvinceManager provinceManager) {
@@ -95,7 +96,7 @@ public class AStarPathfinderXZ {
             this.parent = parent;
             this.gCost = gCost;
             this.fCost = fCost;
-            this.province= provinceManager.getProvince(x,z);
+            this.province = provinceManager.getProvince(x,z);
         }
     }
 }

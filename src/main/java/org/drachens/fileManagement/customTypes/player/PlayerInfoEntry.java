@@ -17,7 +17,7 @@ public class PlayerInfoEntry implements Entry {
 
     public PlayerInfoEntry(GameProfile gameProfile, Table table) {
         this.gameProfile = gameProfile;
-        this.uuid= gameProfile.uuid().toString();
+        this.uuid = gameProfile.uuid().toString();
         this.table = table;
         insert();
     }
@@ -51,13 +51,14 @@ public class PlayerInfoEntry implements Entry {
             } catch (SQLException e) {
                 System.err.println("Error inserting the info " + e.getMessage());
             }
-            playerJson = new PlayerJson("",gameProfile);
+            playerJson = new PlayerJson("", gameProfile);
         } else {
             load();
         }
     }
 
 
+    @Override
     public void load() {
         String sql = "SELECT * FROM " + table.getTableName() + " WHERE uuid = ?";
 
@@ -68,10 +69,10 @@ public class PlayerInfoEntry implements Entry {
             if (resultSet.next()) {
                 String jsonData = resultSet.getString(2);
 
-                if (jsonData==null||jsonData.isEmpty()){
-                    playerJson = new PlayerJson("",gameProfile);
-                }else {
-                    playerJson = new PlayerJson(jsonData,gameProfile);
+                if (null == jsonData || jsonData.isEmpty()) {
+                    playerJson = new PlayerJson("", gameProfile);
+                } else {
+                    playerJson = new PlayerJson(jsonData, gameProfile);
                 }
             }
         } catch (SQLException e) {

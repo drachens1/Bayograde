@@ -225,8 +225,7 @@ public class WW2Demands extends Demand {
                     .build());
             if (peace) {
                 comps.add(Component.text(String.valueOf(true), NamedTextColor.GREEN));
-            } else
-                comps.add(Component.text(String.valueOf(false), NamedTextColor.RED));
+            } else comps.add(Component.text(String.valueOf(false), NamedTextColor.RED));
         }
 
         return Component.text()

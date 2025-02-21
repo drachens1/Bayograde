@@ -1,6 +1,8 @@
 package org.drachens.fileManagement.databases;
 
+import lombok.Getter;
 import org.mariadb.jdbc.Connection;
+import org.mariadb.jdbc.Statement;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,12 +11,13 @@ import java.util.HashMap;
 public class Database {
     private final String database;
     private final HashMap<String, Table> tableHashMap = new HashMap<>();
+    @Getter
     private Connection connection;
 
     public Database(String database, String host, int port, String user, String password) {
         this.database = database;
         try {
-            connection = (Connection) DriverManager.getConnection("jdbc:mariadb://" + host + ":" + port + "/" + database + "?user=" + user + "&password=" + password);
+            connection = (Connection) DriverManager.getConnection("jdbc:mariadb://" + host + ':' + port + '/' + database + "?user=" + user + "&password=" + password);
         } catch (Exception e) {
             System.err.println("Error connecting to the database " + e.getMessage());
         }
@@ -33,7 +36,7 @@ public class Database {
         try {
             String createStatement = table.getCreateStatement();
             System.out.println(createStatement);
-            org.mariadb.jdbc.Statement stmt = getConnection().createStatement();
+            Statement stmt = this.connection.createStatement();
             stmt.execute(createStatement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -45,7 +48,4 @@ public class Database {
         return database;
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
 }

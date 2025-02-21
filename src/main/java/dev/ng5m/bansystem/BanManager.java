@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import dev.ng5m.Util;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
 
@@ -15,6 +17,8 @@ import java.util.function.Function;
 
 public class BanManager {
     private final File file;
+    @Setter
+    @Getter
     private Function<Player, Component> banMessage = p -> Component.text("You have been banned from the server.");
 
     public BanManager(File file) {
@@ -30,14 +34,6 @@ public class BanManager {
         }
     }
 
-    public Function<Player, Component> getBanMessage() {
-        return banMessage;
-    }
-
-    public void setBanMessage(Function<Player, Component> banMessage) {
-        this.banMessage = banMessage;
-    }
-
     private JsonObject getRoot() {
         String read = Util.readFile(file.toPath());
         JsonElement parser = JsonParser.parseString(read);
@@ -46,13 +42,13 @@ public class BanManager {
     }
 
     private void write(JsonObject root) {
-        var serialized = root.toString();
+        String serialized = root.toString();
 
         Util.writeString(file, serialized);
     }
 
     public void banPlayer(UUID uuid, long duration) {
-        var root = removeEntry(uuid);
+        JsonObject root = removeEntry(uuid);
 
         root.add(uuid.toString(), new JsonPrimitive(System.currentTimeMillis() + duration));
 
@@ -60,21 +56,18 @@ public class BanManager {
     }
 
     public JsonObject removeEntry(UUID uuid) {
-        var root = getRoot();
+        JsonObject root = getRoot();
 
-        if (root.has(uuid.toString()))
-            root.remove(uuid.toString());
+        if (root.has(uuid.toString())) root.remove(uuid.toString());
 
         write(root);
         return root;
     }
 
     public boolean isBanned(UUID player) {
-        var root = getRoot();
+        JsonObject root = getRoot();
 
-        if (!root.has(player.toString()))
-            return false;
+        return root.has(player.toString()) && (System.currentTimeMillis() <= root.get(player.toString()).getAsLong());
 
-        return System.currentTimeMillis() <= root.get(player.toString()).getAsLong();
     }
 }

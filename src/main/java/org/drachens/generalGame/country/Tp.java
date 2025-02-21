@@ -1,6 +1,7 @@
 package org.drachens.generalGame.country;
 
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -12,13 +13,12 @@ public class Tp extends Command {
     public Tp() {
         super("tp");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Default usage: /country tp <country>"));
-        var countries = getCountriesArg();
+        Argument<String> countries = getCountriesArg();
 
         setDefaultExecutor((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
+            if (!(sender instanceof CPlayer p)) return;
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("Join a country or do /country tp <country>");
                 return;
             }
@@ -26,10 +26,9 @@ public class Tp extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof Player p))
-                return;
+            if (!(sender instanceof Player p)) return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("That is not a valid country");
                 return;
             }

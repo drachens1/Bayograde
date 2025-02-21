@@ -1,61 +1,28 @@
 package org.drachens.fileManagement.databases;
 
-import java.util.HashMap;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Table {
     private final String tableName;
     private final String createStatement;
-    private final HashMap<String, Column> columns;
     private final String updateMsg;
     private final String primaryKeyName;
     private Database database;
 
-    private Table(String tableName, String createStatement, HashMap<String, Column> columns, String primaryKeyName) {
+    private Table(String tableName, String createStatement, String primaryKeyName) {
         this.tableName = tableName;
         this.createStatement = createStatement;
-        this.columns = columns;
         this.primaryKeyName = primaryKeyName;
         updateMsg = "UPDATE " + tableName + " SET ";
-        columns.forEach((key, value) -> {
-            value.setTable(this);
-            value.setColumnNumber(createStatement.indexOf(key));
-        });
-    }
-
-    public Column getColumn(String identifier) {
-        if (!columns.containsKey(identifier)) System.err.println(identifier + " not in columns array");
-        return columns.get(identifier);
-    }
-
-    public String getCreateStatement() {
-        return createStatement;
-    }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
-
-    public String getUpdateMsg() {
-        return updateMsg;
-    }
-
-    public String getPrimaryKeyName() {
-        return primaryKeyName;
     }
 
     public static class Create {
         private final StringBuilder createStatementBuilder;
         private final String tableName;
-        private final HashMap<String, Column> columns = new HashMap<>();
-        private String primaryKey = null;
+        private String primaryKey;
 
         public Create(String tableName) {
             this.tableName = tableName;
@@ -64,7 +31,7 @@ public class Table {
 
         public Create addColumn(String name, DataTypeEum dataType, boolean primaryKey, boolean notNull) {
             createStatementBuilder.append(name)
-                    .append(" ")
+                    .append(' ')
                     .append(dataType.getName());
 
             if (primaryKey) {
@@ -74,17 +41,15 @@ public class Table {
                 createStatementBuilder.append(" NOT NULL ");
             }
 
-            columns.put(name, new Column(name));
             createStatementBuilder.append(", ");
             return this;
         }
 
         public Create addColumn(String name, DataTypeEum dataType) {
             createStatementBuilder.append(name)
-                    .append(" ")
+                    .append(' ')
                     .append(dataType.getName());
 
-            columns.put(name, new Column(name));
             createStatementBuilder.append(", ");
             return this;
         }
@@ -92,12 +57,12 @@ public class Table {
 
         public Table build() {
             int length = createStatementBuilder.length();
-            if (primaryKey != null) {
+            if (null != this.primaryKey) {
                 createStatementBuilder.append(" PRIMARY KEY (").append(primaryKey).append("));");
             } else {
                 createStatementBuilder.replace(length - 2, length, ");");
             }
-            return new Table(tableName, createStatementBuilder.toString(), columns, primaryKey);
+            return new Table(tableName, createStatementBuilder.toString(), primaryKey);
         }
     }
 }

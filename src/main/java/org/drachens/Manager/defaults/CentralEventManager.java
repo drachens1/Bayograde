@@ -76,7 +76,7 @@ public class CentralEventManager {
     public CentralEventManager() {
         GlobalEventHandler globEHandler = MinecraftServer.getGlobalEventHandler();
         ConfirmCMD confirm = (ConfirmCMD) MinecraftServer.getCommandManager().getCommand("confirm");
-        if (confirm==null)return;
+        if (null == confirm) return;
 
         globEHandler.addListener(StartGameEvent.class, e -> {
             Instance instance = e.instance();
@@ -87,8 +87,8 @@ public class CentralEventManager {
 
             e.votingOption().getMapGenerator().generate(e.instance(), e.votingOption());
             InventoryEnum hotbarInventory = e.votingOption().getDefaultInventory();
-            if (hotbarInventory != null)
-                e.instance().getPlayers().forEach(p -> ContinentalManagers.inventoryManager.assignInventory((CPlayer) p, hotbarInventory));
+            if (null != hotbarInventory)
+                e.instance().getPlayers().forEach(p -> inventoryManager.assignInventory((CPlayer) p, hotbarInventory));
 
             YearManager yearManager = ContinentalManagers.yearManager;
             if (!yearManager.contains(instance)) {
@@ -97,11 +97,11 @@ public class CentralEventManager {
             YearBar yearBar = yearManager.getYearBar(instance);
             yearBar.run(e.votingOption());
 
-            if (ContinentalManagers.world(instance).isGlobalGameWorldClass()){
+            if (ContinentalManagers.world(instance).isGlobalGameWorldClass()) {
                 broadcast(Component.text().append(MessageEnum.system.getComponent())
                         .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
                         .append(Component.text(" has won!!", NamedTextColor.GREEN)).build(), e.instance());
-            }else if (ContinentalManagers.world(instance).isCustomGameWorldClass()) {
+            } else if (ContinentalManagers.world(instance).isCustomGameWorldClass()) {
                 broadcast(Component.text().append(MessageEnum.system.getComponent())
                         .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
                         .append(Component.text(" has started", NamedTextColor.GREEN)).build(), e.instance());
@@ -115,9 +115,9 @@ public class CentralEventManager {
             Player player = e.getPlayer();
             if (!player.isSneaking()) return;
             Province p = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(new Pos(e.getBlockPosition()));
-            if (p == null || provinceDelay.hasCooldown(player)) return;
+            if (null == p || provinceDelay.hasCooldown(player)) return;
             provinceDelay.startCooldown(player);
-            if (p.getOccupier() == null) {
+            if (null == p.getOccupier()) {
                 return;
             }
             player.sendMessage(p.getDescription((CPlayer) player));
@@ -132,14 +132,14 @@ public class CentralEventManager {
                 yearBar.cancelTask();
                 globalGameWorldClass.votingManager().reset();
                 CountryDataManager countryDataManager = globalGameWorldClass.countryDataManager();
-                countryDataManager.getCountries().forEach((Country::endGame));
+                countryDataManager.getCountries().forEach(Country::endGame);
                 ClientEntsToLoad clientEntsToLoad = globalGameWorldClass.clientEntsToLoad();
-                if (clientEntsToLoad.getClientSides(e.instance()) != null) {
-                    new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach((Clientside::dispose));
+                if (null != clientEntsToLoad.getClientSides(e.instance())) {
+                    new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach(Clientside::dispose);
                 }
                 e.instance().getPlayers().forEach(player -> {
                     CPlayer p = (CPlayer) player;
-                    if (p.getCountry() != null) {
+                    if (null != p.getCountry()) {
                         p.getCountry().removePlayer(p);
                     }
                 });
@@ -160,14 +160,14 @@ public class CentralEventManager {
                 YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
                 yearBar.cancelTask();
                 CountryDataManager countryDataManager = customGameWorldClass.countryDataManager();
-                countryDataManager.getCountries().forEach((Country::endGame));
+                countryDataManager.getCountries().forEach(Country::endGame);
                 ClientEntsToLoad clientEntsToLoad = customGameWorldClass.clientEntsToLoad();
-                if (clientEntsToLoad.getClientSides(e.instance()) != null) {
-                    new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach((Clientside::dispose));
+                if (null != clientEntsToLoad.getClientSides(e.instance())) {
+                    new ArrayList<>(clientEntsToLoad.getClientSides(e.instance())).forEach(Clientside::dispose);
                 }
                 e.instance().getPlayers().forEach(player -> {
                     CPlayer p = (CPlayer) player;
-                    if (p.getCountry() != null) {
+                    if (null != p.getCountry()) {
                         p.getCountry().removePlayer(p);
                     }
                 });
@@ -304,7 +304,8 @@ public class CentralEventManager {
         });
 
         globEHandler.addListener(FactionCreateEvent.class, e -> {
-            if (!ContinentalManagers.world(e.creator().getInstance()).dataStorer().votingOption.isFactionsEnabled())return;
+            if (!ContinentalManagers.world(e.creator().getInstance()).dataStorer().votingOption.isFactionsEnabled())
+                return;
             Country creator = e.creator();
             Faction faction = e.newFaction();
             broadcast(Component.text()

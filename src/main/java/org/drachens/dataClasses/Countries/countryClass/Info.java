@@ -32,7 +32,7 @@ public class Info {
     private Component originalName;
     private Leader leader;
     private CPlayer playerLeader;
-    private Country overlord = null;
+    private Country overlord;
     private final Instance instance;
     private final List<CPlayer> players;
     private final List<Clientside> clientsides = new ArrayList<>();
@@ -66,19 +66,19 @@ public class Info {
     }
 
     public void addMaxCapitulationPoints(float amount){
-        maxCapitulationPoints+=amount;
+        maxCapitulationPoints +=amount;
     }
 
     public void minusMaxCapitulationPoints(float amount){
-        maxCapitulationPoints-=amount;
+        maxCapitulationPoints -=amount;
     }
 
     public void addCapitulationPoints(float amount){
-        capitulationPoints+=amount;
+        capitulationPoints +=amount;
     }
 
     public void minusCapitulationPoints(float amount){
-        capitulationPoints-=amount;
+        capitulationPoints -=amount;
     }
 
     public void addPlayer(CPlayer player){
@@ -95,7 +95,7 @@ public class Info {
 
     public void addClientside(Clientside clientside){
         clientsides.add(clientside);
-        getPlayers().forEach(clientside::addViewer);
+        this.players.forEach(clientside::addViewer);
     }
 
     public void addClientsides(List<Clientside> clientsides){
@@ -104,7 +104,7 @@ public class Info {
 
     public void removeClientside(Clientside clientside){
         clientsides.remove(clientside);
-        getPlayers().forEach(clientside::removeViewer);
+        this.players.forEach(clientside::removeViewer);
     }
 
     public void removeClientsides(List<Clientside> clientsides){

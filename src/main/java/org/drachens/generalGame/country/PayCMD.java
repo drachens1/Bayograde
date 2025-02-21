@@ -3,7 +3,9 @@ package org.drachens.generalGame.country;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.number.ArgumentFloat;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -20,9 +22,9 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class PayCMD extends Command {
     public PayCMD() {
         super("pay");
-        setCondition((sender,s)->isLeaderOfCountry(sender));
+        setCondition((sender, s)-> isLeaderOfCountry(sender));
 
-        var countries = ArgumentType.String("Countries")
+        Argument<String> countries = ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!isLeaderOfCountry(sender)) {
                         return;
@@ -33,7 +35,7 @@ public class PayCMD extends Command {
                     getSuggestionBasedOnInput(suggestion, countries1);
                 });
 
-        var amount = ArgumentType.Float("amount");
+        ArgumentFloat amount = ArgumentType.Float("amount");
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
 
         addSyntax((sender, context) -> {
@@ -42,7 +44,7 @@ public class PayCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (to == null) return;
+            if (null == to) return;
             Country from = p.getCountry();
             float value = context.get(amount);
             Payment payment = new Payment(production, value);
@@ -68,8 +70,7 @@ public class PayCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

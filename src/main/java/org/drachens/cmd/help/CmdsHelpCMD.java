@@ -6,8 +6,8 @@ public class CmdsHelpCMD extends Command {
     public CmdsHelpCMD() {
         super("commands");
 
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
 
-        }));
+        });
     }
 }

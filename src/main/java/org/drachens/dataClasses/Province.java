@@ -50,7 +50,7 @@ public class Province implements Saveable {
     private Material material;
     private boolean city;
     private List<Province> neighbours;
-    private boolean isBorder = false;
+    private boolean isBorder;
 
     public Province(Pos pos, Instance instance, Country occupier, List<Province> neighbours) {
         this.pos = pos;
@@ -82,7 +82,7 @@ public class Province implements Saveable {
 
     public Component getDescription(CPlayer p) {
         Country country = p.getCountry();
-        if (country != null && country.isPlayerLeader(p)) {
+        if (null != country && country.isPlayerLeader(p)) {
             if (country == occupier) {
                 return createSecretDescription().append(Component.text()
                                 .append(Component.text("[EXTRA]", NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -92,7 +92,8 @@ public class Province implements Saveable {
                         .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
                                 .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
-            } else if (country.isAlly(occupier)) {
+            }
+            if (country.isAlly(occupier)) {
                 return createSecretDescription().append(Component.text()
                         .append(Component.text("[DIPLOMATIC OPTIONS]", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
@@ -101,16 +102,15 @@ public class Province implements Saveable {
                         .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
                                 .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName()))));
-            } else {
-                return createPublicDescription().append(Component.text()
-                                .append(Component.text("[DIPLOMATIC OPTIONS]", NamedTextColor.GOLD, TextDecoration.BOLD))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
-                                .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
-                                .build())
-                        .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
-                                .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
             }
+            return createPublicDescription().append(Component.text()
+                            .append(Component.text("[DIPLOMATIC OPTIONS]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the diplomatic options for the occupier", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country diplomacy view_options " + occupier.getName()))
+                            .build())
+                    .append(Component.text().append(Component.text(" [INFO]", NamedTextColor.GOLD, TextDecoration.BOLD))
+                            .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the information options", NamedTextColor.GRAY)))
+                            .clickEvent(ClickEvent.runCommand("/country info options " + occupier.getName())));
         }
         return createPublicDescription();
     }
@@ -120,16 +120,15 @@ public class Province implements Saveable {
     }
 
     private Component createSecretDescription() {
-        if (isCity()) {
-            if (occupier.getInfo().getCapital() == this)
-                return createSecretCapitalDescription();
+        if (this.city) {
+            if (occupier.getInfo().getCapital() == this) return createSecretCapitalDescription();
             return createSecretCityDescription();
         }
         return createSecretProvinceDescription();
     }
 
     private Component createProvinceDescription() {
-        if (occupier == null) return unoccupied;
+        if (null == this.occupier) return unoccupied;
         return Component.text()
                 .append(Component.text("_______/", NamedTextColor.BLUE))
                 .append(Component.text("Province", TextColor.color(51, 129, 255)))
@@ -144,7 +143,7 @@ public class Province implements Saveable {
 
     private Component createSecretCapitalDescription() {
         List<Component> comps = new ArrayList<>();
-        if (building != null) {
+        if (null != this.building) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text(building.getBuildTypes().name()))
@@ -173,7 +172,7 @@ public class Province implements Saveable {
 
     private Component createSecretCityDescription() {
         List<Component> comps = new ArrayList<>();
-        if (building != null) {
+        if (null != this.building) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text(building.getBuildTypes().name()))
@@ -201,7 +200,7 @@ public class Province implements Saveable {
 
     private Component createSecretProvinceDescription() {
         List<Component> comps = new ArrayList<>();
-        if (building != null) {
+        if (null != this.building) {
             comps.add(Component.text()
                     .append(Component.text("Building: "))
                     .append(Component.text(building.getBuildTypes().name()))
@@ -229,19 +228,17 @@ public class Province implements Saveable {
 
     public void setOccupier(Country attacker) {
         attacker.captureProvince(this);
-        if (occupier != null) {
+        if (null != this.occupier) {
             occupier.removeOccupied(this);
-            if (isCity())
-                this.occupier.cityCaptured(attacker, this);
+            if (this.city) this.occupier.cityCaptured(attacker, this);
         }
-        if (isCity()) {
+        if (this.city) {
             if (attacker.getMilitary().containsMajorCityBlock(this))
                 this.setCity(attacker.getMilitary().getMajorCityBlock(this));
-            else
-                setCity(1);
+            else setCity(1);
             attacker.addCity(this);
         }
-        if (building != null) {
+        if (null != this.building) {
             building.capture(attacker);
         }
         this.occupier = attacker;
@@ -249,21 +246,19 @@ public class Province implements Saveable {
     }
 
     public void liberate(Country attacker) {
-        if (occupier != null) {
+        if (null != this.occupier) {
             occupier.removeOccupied(this);
-            if (isCity())
-                this.occupier.removeCityWithoutHarm(this);
+            if (this.city) this.occupier.removeCityWithoutHarm(this);
         }
-        if (building != null) {
+        if (null != this.building) {
             building.capture(attacker);
         }
         this.occupier = attacker;
         attacker.captureProvince(this);
-        if (isCity()) {
+        if (this.city) {
             if (attacker.getMilitary().containsMajorCityBlock(this))
                 setCity(attacker.getMilitary().getMajorCityBlock(this));
-            else
-                setCity(1);
+            else setCity(1);
             attacker.addCity(this);
         }
         updateBorders();
@@ -287,7 +282,7 @@ public class Province implements Saveable {
     }
 
     public double distance(Province province) {
-        return getPos().distance(province.getPos());
+        return this.pos.distance(province.pos);
     }
 
     public void setBlock(Material block) {
@@ -312,7 +307,7 @@ public class Province implements Saveable {
 
     //6 = capital
     public void setCity(int lvl) {
-        if (!city) if (occupier != null) occupier.addCity(this);
+        if (!city) if (null != this.occupier) occupier.addCity(this);
         this.city = true;
         this.setBlock(cities[lvl]);
         material = cities[lvl];
@@ -325,9 +320,9 @@ public class Province implements Saveable {
     }
 
     public void updateProv(Province p) {
-        if (p.isCity()) return;
-        for (Province p2 : p.getNeighbours()) {
-            if (p2.getOccupier() != p.getOccupier()) {
+        if (p.city) return;
+        for (Province p2 : p.neighbours) {
+            if (p2.occupier != p.occupier) {
                 p.setBorder();
                 return;
             }
@@ -344,7 +339,7 @@ public class Province implements Saveable {
     }
 
     public boolean isThereCombat() {
-        return combat != null;
+        return null != this.combat;
     }
 
     public void setCore(Country country) {
@@ -352,7 +347,7 @@ public class Province implements Saveable {
     }
 
     public boolean isBorder() {
-        return isBorder && !isCity();
+        return isBorder && !this.city;
     }
 
     public Province add(int x, int z) {
@@ -360,7 +355,7 @@ public class Province implements Saveable {
     }
 
     public JsonElement getReference(){
-        return new JsonPrimitive(pos.x()+","+pos.z());
+        return new JsonPrimitive(pos.x()+","+ pos.z());
     }
 
     @Override
@@ -368,7 +363,7 @@ public class Province implements Saveable {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("pos",new JsonPrimitive(pos.toString()));
         jsonObject.add("occupier",new JsonPrimitive(occupier.getName()));
-        jsonObject.add("combat",combat.toJson());
+        jsonObject.add("combat", combat.toJson());
         JsonArray jsonArray = new JsonArray();
         troops.forEach(troop -> jsonArray.add(troop.toJson()));
         jsonObject.add("troops",jsonArray);

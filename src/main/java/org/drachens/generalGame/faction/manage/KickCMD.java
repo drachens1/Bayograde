@@ -2,6 +2,7 @@ package org.drachens.generalGame.faction.manage;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
@@ -20,11 +21,11 @@ public class KickCMD extends Command {
         super("kick");
         setCondition((sender, s) -> leaderOfAFaction(sender));
 
-        var factionsArg = ArgumentType.String("factionName")
+        Argument<String> factionsArg = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
-                        if (country != null) {
+                        if (null != country) {
                             if (country.isEconomyFactionLeader()) {
                                 suggestion.addEntry(new SuggestionEntry(country.getEconomy().getEconomyFactionType().getStringName()));
                             }
@@ -35,7 +36,7 @@ public class KickCMD extends Command {
                     }
                 });
 
-        var countryArg = ArgumentType.String("countryName")
+        Argument<String> countryArg = ArgumentType.String("countryName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         getSuggestionBasedOnInput(suggestion, getCountryNames(player.getInstance()));
@@ -46,7 +47,7 @@ public class KickCMD extends Command {
             CPlayer player = (CPlayer) sender;
             Country country = ContinentalManagers.world(player.getInstance()).countryDataManager().getCountryFromName(context.get(countryArg));
             Faction faction1 = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factionsArg));
-            if (country == null || faction1 == null) return;
+            if (null == country || null == faction1) return;
             if (!faction1.getMembers().contains(country)) return;
             EventDispatcher.call(new FactionKickEvent(faction1, country));
 
@@ -56,7 +57,7 @@ public class KickCMD extends Command {
     private boolean leaderOfAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isLeaderOfAFaction();
+            return null != country && country.isLeaderOfAFaction();
         }
         return false;
     }

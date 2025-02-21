@@ -31,7 +31,7 @@ import static org.drachens.util.Messages.sendMessage;
 
 public class Factory extends BuildTypes {
     private final Payment produces;
-    private final Payment payment = new Payment(CurrencyEnum.production, 5f);
+    private final Payment payment = new Payment(CurrencyEnum.production, 5.0f);
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the factory : 5 Production", NamedTextColor.RED))
             .build();
@@ -43,26 +43,26 @@ public class Factory extends BuildTypes {
             .build();
     private final HashMap<Material, Integer> materialLvls = new HashMap<>();
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
-    int[] smokeFrames = {2, 3};
+    final int[] smokeFrames = {2, 3};
     private final Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, smokeFrames);
 
     public Factory() {
         super(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, Material.CYAN_DYE, BuildingEnum.factory,
                 province -> {
             Building building = province.getBuilding();
-            if (building==null){
-                return itemBuilder(Material.CYAN_DYE,22);
+            if (null == building) {
+                return itemBuilder(Material.CYAN_DYE, 22);
             }
-            return itemBuilder(Material.CYAN_DYE,building.getCurrentLvl()*2+22);
+            return itemBuilder(Material.CYAN_DYE, building.getCurrentLvl() * 2 + 22);
                 },
                 province -> {
             Building building = province.getBuilding();
-            if (building==null){
-                return itemBuilder(Material.CYAN_DYE,23);
+            if (null == building) {
+                return itemBuilder(Material.CYAN_DYE, 23);
             }
-            return itemBuilder(Material.CYAN_DYE,building.getCurrentLvl()*2+23);
+            return itemBuilder(Material.CYAN_DYE, building.getCurrentLvl() * 2 + 23);
                 });
-        produces = new Payment(CurrencyEnum.production, 1000f);
+        produces = new Payment(CurrencyEnum.production, 1000.0f);
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);
         materialLvls.put(Material.LIME_GLAZED_TERRACOTTA, 3);
@@ -91,8 +91,9 @@ public class Factory extends BuildTypes {
 
     @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
-        if (province.getOccupier() != country && country.getDiplomacy().containsPuppet(province.getOccupier())) return false;
-        if (province.getBuilding() != null) return false;
+        if (province.getOccupier() != country && country.getDiplomacy().containsPuppet(province.getOccupier()))
+            return false;
+        if (null != province.getBuilding()) return false;
         if (!province.isCity()) return false;
         if (!country.canMinusCost(payment)) {
             sendMessage(p, cantAffordMsg);
@@ -117,8 +118,8 @@ public class Factory extends BuildTypes {
         if (building.getCurrentLvl() + add > maxLvl) {
             sendMessage(p, maxCapacityReached);
             return false;
-        } else
-            return true;
+        }
+        return true;
     }
 
     public int getMaxLvl(Building building){
@@ -127,7 +128,7 @@ public class Factory extends BuildTypes {
         int maxLvl = materialLvls.get(province.getMaterial());
         maxLvl = Math.round(maxLvl * country.getBoost(BoostEnum.buildingSlotBoost));
         int min = materialLvls.get(province.getMaterial());
-        if (maxLvl<min)maxLvl=min;
+        if (maxLvl<min) maxLvl = min;
         return maxLvl;
     }
 
@@ -147,13 +148,13 @@ public class Factory extends BuildTypes {
     protected void onUpgrade(int amount, Building building) {
         int num = building.getCurrentLvl() + amount;
         ItemDisplay itemDisplay = building.getItemDisplay();
-        if (num <= 0) {
+        if (0 >= num) {
             building.delete();
         }
         building.setCurrent(num);
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));
         int add = (num - 1) * 2;
-        int[] newFrames = new int[]{2 + add, 3 + add};
+        int[] newFrames = {2 + add, 3 + add};
         System.out.println(Arrays.toString(newFrames) +" : "+building.getCurrentLvl());
         Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, newFrames);
         smokeAnimation.start(itemDisplay, true);

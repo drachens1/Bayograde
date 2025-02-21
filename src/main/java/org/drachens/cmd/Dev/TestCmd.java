@@ -7,7 +7,7 @@ public class TestCmd extends Command {
     public TestCmd() {
         super("test");
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
             System.out.println(p.getCountry().toJson());
         });

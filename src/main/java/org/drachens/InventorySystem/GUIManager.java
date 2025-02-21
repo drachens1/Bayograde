@@ -28,21 +28,19 @@ public class GUIManager {
 
     public void handleClick(InventoryPreClickEvent e) {
         InventoryHandler handler = this.activeInventories.get(e.getInventory());
-        if (handler != null)
-            handler.onClick(e);
+        if (null != handler) handler.onClick(e);
 
     }
 
     public void handleOpen(InventoryOpenEvent e) {
         InventoryHandler handler = this.activeInventories.get(e.getInventory());
-        if (handler != null)
-            handler.onOpen(e);
+        if (null != handler) handler.onOpen(e);
     }
 
     public void handleClose(InventoryCloseEvent event) {
         Inventory inventory = event.getNewInventory();
         InventoryHandler handler = this.activeInventories.get(inventory);
-        if (handler != null) {
+        if (null != handler) {
             handler.onClose(event);
             this.unregisterInventory(inventory);
         }

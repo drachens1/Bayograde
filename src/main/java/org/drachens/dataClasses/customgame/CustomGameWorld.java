@@ -37,19 +37,17 @@ import java.util.List;
 public class CustomGameWorld extends World {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     private final VotingOption votingOption;
-    private final CPlayer p;
     private final List<CPlayer> players = new ArrayList<>();
     private final Component welcomeMessage;
-    private boolean started = false;
+    private boolean started;
 
     public CustomGameWorld(CPlayer p, VotingOption votingOption){
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
         getInstance().setBlock(0,0,0,Block.DIAMOND_BLOCK);
         ContinentalManagers.worldManager.registerWorld(this);
-        welcomeMessage=Component.text()
+        welcomeMessage =Component.text()
                 .append(Component.text("| Welcome to a custom game.\n| These are basically the same as the global one but\n| the owner: "+p.getUsername()+" can activate certain DLC's \n| Also there is no voting period\n|\n| You are currently in the waiting period you can do anything but time wont advance\n| Until "+p.getUsername()+" starts the game", NamedTextColor.GREEN))
                 .build();
-        this.p=p;
         this.votingOption=votingOption;
         p.sendMessage(Component.text()
                         .append(Component.text("| Welcome to a custom game.\n| You can activate any DLC's if you have any\n| Commands:\n| /manage creation complete #Starts the game\n| /manage creation cancel #Cancels the waiting period\n| /manage invite <player> #Invites a player\n| /manage kick <player> #Kicks a player\n| /manage options #Shows the options/clickable options for commands to make it easier\n| You need to start the game for time to advance\n| That's all! have fun!",NamedTextColor.GREEN))
@@ -67,7 +65,7 @@ public class CustomGameWorld extends World {
     }
 
     public void complete(){
-        started=true;
+        started =true;
         ContinentalManagers.yearManager.getYearBar(getInstance()).run(votingOption);
     }
 
@@ -78,7 +76,7 @@ public class CustomGameWorld extends World {
     @Override
     public void addPlayer(CPlayer p) {
         players.add(p);
-        if (!p.isLeaderOfOwnGame())p.sendMessage(welcomeMessage);
+        if (!p.isLeaderOfOwnGame()) p.sendMessage(welcomeMessage);
         p.setInOwnGame(true);
         p.refreshCommands();
         Instance instance = p.getInstance();
@@ -87,9 +85,8 @@ public class CustomGameWorld extends World {
         final Component footer = Component.text("----------------");
         p.sendPlayerListHeaderAndFooter(header, footer);
         InventoryEnum inventoryEnum = ContinentalManagers.world(instance).dataStorer().votingOption.getDefaultInventory();
-        if (inventoryEnum != null)
-            ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
-        if (ContinentalManagers.yearManager.getYearBar(instance) == null) {
+        if (null != inventoryEnum) ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
+        if (null == ContinentalManagers.yearManager.getYearBar(instance)) {
             ContinentalManagers.yearManager.addBar(instance);
         }
         ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
@@ -102,58 +99,58 @@ public class CustomGameWorld extends World {
         p.setLeaderOfOwnGame(false);
         p.refreshCommands();
         ContinentalManagers.yearManager.getYearBar(getInstance()).removePlayer(p);
-        if (p.getCountry() != null) {
+        if (null != p.getCountry()) {
             p.getCountry().removePlayer(p);
         }
         p.addPlayTime(LocalTime.now());
         Country country = p.getCountry();
-        if (country != null) country.removePlayer(p);
+        if (null != country) country.removePlayer(p);
     }
 
     @Override
     public void playerBlockInteract(PlayerBlockInteractEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+        if (null != ContinentalManagers.world(e.getInstance()).dataStorer().votingOption)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
     }
 
     @Override
     public void playerUseItem(PlayerUseItemEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+        if (null != ContinentalManagers.world(e.getInstance()).dataStorer().votingOption)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
     }
 
     @Override
     public void playerStartDigging(PlayerStartDiggingEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+        if (null != ContinentalManagers.world(e.getInstance()).dataStorer().votingOption)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
     }
 
     @Override
     public void playerMove(PlayerMoveEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == null) return;
+        if (null == ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner) return;
         CPlayer p = (CPlayer) e.getPlayer();
         Point point = p.getTargetBlockPosition(10);
-        if (point == null) return;
+        if (null == point) return;
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(point);
-        if (province == null) return;
-        if (province.getOccupier() == null) {
+        if (null == province) return;
+        if (null == province.getOccupier()) {
             p.sendActionBar(Component.text("Unoccupied", NamedTextColor.GOLD, TextDecoration.BOLD));
         } else {
-            if (province.getOccupier().getComponentName() == null) {
+            if (null == province.getOccupier().getComponentName()) {
                 System.err.println("Something went wrong drastically");
                 return;
             }
-            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == VotingWinner.ww2_troops) {
-                if (province.getTroops() != null && province.getOccupier() != null && p.getCountry() != null && (province.getOccupier().isMilitaryAlly(p.getCountry())||p.getCountry()==province.getOccupier())) {
+            if (VotingWinner.ww2_troops == ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner) {
+                if (null != province.getTroops() && null != province.getOccupier() && null != p.getCountry() && (province.getOccupier().isMilitaryAlly(p.getCountry()) || p.getCountry() == province.getOccupier())) {
                     List<Troop> troops = province.getTroops();
-                    float meanHp = 0f;
-                    float meanOrg = 0f;
-                    float meanStrength = 0f;
-                    float meanDef = 0f;
-                    float meanSped = 0f;
-                    float meanDmg = 0f;
+                    float meanHp = 0.0f;
+                    float meanOrg = 0.0f;
+                    float meanStrength = 0.0f;
+                    float meanDef = 0.0f;
+                    float meanSped = 0.0f;
+                    float meanDmg = 0.0f;
                     int troopCount = troops.size();
-                    if (troopCount == 0) {
+                    if (0 == troopCount) {
                         p.sendActionBar(province.getOccupier().getComponentName());
                         return;
                     }
@@ -184,7 +181,7 @@ public class CustomGameWorld extends World {
                     return;
                 }
             }
-            if (province.getOccupier()==null)return;
+            if (null == province.getOccupier()) return;
             p.sendActionBar(province.getOccupier().getComponentName());
         }
     }

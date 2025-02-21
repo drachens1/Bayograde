@@ -1,6 +1,7 @@
 package org.drachens.generalGame.country.diplomacy;
 
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -14,7 +15,7 @@ public class UnconditionalSurrenderCMD extends Command {
     public UnconditionalSurrenderCMD() {
         super("unconditional_surrender");
 
-        var countriesAtWar = ArgumentType.String("Countries ")
+        Argument<String> countriesAtWar = ArgumentType.String("Countries ")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
                         return;
@@ -30,7 +31,7 @@ public class UnconditionalSurrenderCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country other = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countriesAtWar));
-            if (other == null) {
+            if (null == other) {
                 p.sendMessage("That is not a valid country");
                 return;
             }

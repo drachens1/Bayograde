@@ -26,27 +26,27 @@ public class YearBar extends HideableBossBar {
     }
 
     public void cancelTask() {
-        if (task != null) task.cancel();
+        if (null != this.task) task.cancel();
     }
 
     public void run(VotingOption votingOption) {
         show();
-        if (task != null) task.cancel();
+        if (null != this.task) task.cancel();
         task = MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             final int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
             final int endYear = votingOption.getEndYear();
-            int day = 0;
-            int month = 0;
+            int day;
+            int month;
             int year = votingOption.getStartingYear();
 
             @Override
             public void run() {
-                yearBar.name(Component.text(day + "/" + month + "/" + year, NamedTextColor.GOLD));
+                yearBar.name(Component.text(day + "/" + month + '/' + year, NamedTextColor.GOLD));
                 day++;
                 if (day > daysInMonth[month]) {
                     day = 1;
                     month++;
-                    if (month > 11) {
+                    if (11 < this.month) {
                         month = 0;
                         year++;
                     }

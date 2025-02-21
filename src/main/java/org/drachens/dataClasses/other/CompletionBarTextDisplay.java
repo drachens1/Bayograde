@@ -14,7 +14,7 @@ public class CompletionBarTextDisplay {
     private final String fullBar = "||||||||||||||||||||||||||";
     private Component additional;
     private final TextColor colour;
-    private float progress = 1f;
+    private float progress = 1.0f;
 
     public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour, Component additional) {
         pos = pos.add(0.5, 0, 0.5);
@@ -30,8 +30,8 @@ public class CompletionBarTextDisplay {
     }
 
     public void setProgress(float progress) {
-        if (progress > 1f) progress = 1f;
-        if (progress < 0f) {
+        if (1.0f < progress) progress = 1.0f;
+        if (0.0f > progress) {
             return;
         }
         this.progress = progress;

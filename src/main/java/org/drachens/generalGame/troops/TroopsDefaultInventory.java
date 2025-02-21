@@ -29,8 +29,8 @@ public class TroopsDefaultInventory implements HotbarInventory {
     @Override
     public List<HotbarItemButton> getItems(CPlayer player) {
         Instance instance = player.getInstance();
-        if (ContinentalManagers.generalManager.researchEnabled(instance)){
-            return addToList(defaultButtons,new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research));
+        if (ContinentalManagers.generalManager.researchEnabled(instance)) {
+            return addToList(defaultButtons, new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.research));
         }
         return defaultButtons;
     }

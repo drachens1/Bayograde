@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -22,7 +23,7 @@ public class ResearchAfterCMD extends Command {
     public ResearchAfterCMD() {
         super("after");
 
-        var choice = ArgumentType.String("choice")
+        Argument<String> choice = ArgumentType.String("choice")
                 .setSuggestionCallback((sender, context, suggestion) -> getSuggestionBasedOnInput(suggestion, getAvailable(sender)));
 
         setCondition((sender, s) -> !notCountry(sender));
@@ -56,10 +57,7 @@ public class ResearchAfterCMD extends Command {
     }
 
     private boolean notCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            return p.getCountry() == null;
-        }
-        return true;
+        return !(sender instanceof CPlayer p) || (null == p.getCountry());
     }
 
     private List<String> getAvailable(CommandSender sender) {

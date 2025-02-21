@@ -7,7 +7,7 @@ import net.minestom.server.item.ItemStack;
 public abstract class HotbarItemButton {
     private final ItemStack item;
 
-    public HotbarItemButton(ItemStack item) {
+    protected HotbarItemButton(ItemStack item) {
         this.item = item;
     }
 

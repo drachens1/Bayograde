@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CommandsUtil {
+public enum CommandsUtil {
+    ;
+
     public static Argument<String> getCountriesArg() {
         return ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
@@ -43,9 +45,8 @@ public class CommandsUtil {
         return ContinentalManagers.world(instance).countryDataManager().getFactionNames();
     }
 
-    public static Suggestion suggestions(List<String> suggestion, Suggestion suggestions) {
+    public static void suggestions(List<String> suggestion, Suggestion suggestions) {
         suggestion.forEach(s -> suggestions.addEntry(new SuggestionEntry(s)));
-        return suggestions;
     }
 
     public static String cutInput(String input) {
@@ -53,23 +54,28 @@ public class CommandsUtil {
         return inp[inp.length - 1];
     }
 
-    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, List<String> list) {
+    public static void getSuggestionBasedOnInput(Suggestion suggestion, List<String> list) {
         String input = cutInput(suggestion.getInput());
-        if (input.endsWith("\0")) return suggestions(list, suggestion);
-        return suggestions(list.stream()
+        if (input.endsWith("\0")) {
+            suggestions(list, suggestion);
+            return;
+        }
+        suggestions(list.stream()
                 .filter(suggestions -> suggestions.toLowerCase().startsWith(input))
                 .collect(Collectors.toList()), suggestion);
     }
 
-    public static Suggestion suggestions(Set<String> suggestion, Suggestion suggestions) {
+    public static void suggestions(Set<String> suggestion, Suggestion suggestions) {
         suggestion.forEach(s -> suggestions.addEntry(new SuggestionEntry(s)));
-        return suggestions;
     }
 
-    public static Suggestion getSuggestionBasedOnInput(Suggestion suggestion, Set<String> list) {
+    public static void getSuggestionBasedOnInput(Suggestion suggestion, Set<String> list) {
         String input = cutInput(suggestion.getInput());
-        if (input.endsWith("\0")) return suggestions(list, suggestion);
-        return suggestions(list.stream()
+        if (input.endsWith("\0")) {
+            suggestions(list, suggestion);
+            return;
+        }
+        suggestions(list.stream()
                 .filter(suggestions -> suggestions.toLowerCase().startsWith(input))
                 .collect(Collectors.toList()), suggestion);
     }
@@ -77,7 +83,7 @@ public class CommandsUtil {
     public static String arrayToSentence(String[] args){
         StringBuilder b = new StringBuilder();
         for (String arg : args) {
-            b.append(arg).append(" ");
+            b.append(arg).append(' ');
         }
         return b.toString();
     }

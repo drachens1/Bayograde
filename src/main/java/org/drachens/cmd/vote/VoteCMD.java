@@ -9,7 +9,7 @@ import java.util.List;
 public class VoteCMD extends Command {
     public VoteCMD(List<VotingOptionCMD> votingOptionsCMD) {
         super("vote", "v");
-        setCondition((sender,s)->{
+        setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
             return ContinentalManagers.generalManager.votingEnabled(p.getInstance());
         });

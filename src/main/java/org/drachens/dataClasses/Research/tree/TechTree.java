@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Research.tree;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.drachens.dataClasses.Research.ResearchCountry;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public class TechTree {
     private final HashMap<String, List<String>> researchAfterHashMap = new HashMap<>();
     private final List<ResearchCategory> researchCategories;
@@ -34,14 +36,6 @@ public class TechTree {
         }
     }
 
-    public Component getName() {
-        return name;
-    }
-
-    public List<ResearchCategory> getResearchCategories() {
-        return researchCategories;
-    }
-
     public ResearchOption getResearchOption(String identifier) {
         return identifierHashMap.get(identifier);
     }
@@ -55,7 +49,7 @@ public class TechTree {
     }
 
     public List<String> getAvailable(ResearchCountry country) {
-        List<String> available = getNoRequiresString();
+        List<String> available = this.noRequires;
         country.getCompletedResearch().forEach(completedResearch -> {
             available.remove(completedResearch);
             available.addAll(getAfter(completedResearch));

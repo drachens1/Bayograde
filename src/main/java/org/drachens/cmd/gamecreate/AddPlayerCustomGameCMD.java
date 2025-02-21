@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentString;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -14,12 +15,12 @@ public class AddPlayerCustomGameCMD extends Command {
     public AddPlayerCustomGameCMD() {
         super("invite");
 
-        var players = ArgumentType.String("username");
+        ArgumentString players = ArgumentType.String("username");
 
-        addSyntax((sender,context)->{
+        addSyntax((sender, context)->{
             CPlayer p = (CPlayer) sender;
             Player target = MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(context.get(players));
-            if (target==null){
+            if (null == target){
                 p.sendMessage(Component.text("That player is null", NamedTextColor.RED));
                 return;
             }

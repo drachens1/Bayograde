@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.Armys;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.item.Material;
@@ -26,7 +27,7 @@ public class DivisionTrainingQueue implements Saveable {
     private final List<TrainedTroop> divisionDesign = new ArrayList<>();
     private final Building building;
     private final Animation trainingAnimation = new Animation(500, Material.ORANGE_DYE, new int[]{20, 21, 22, 23});
-    private int count = 0;
+    private int count;
     private TrainedTroop trainedTroop;
     private float time;
 
@@ -38,7 +39,7 @@ public class DivisionTrainingQueue implements Saveable {
     public void addToQueue(DivisionDesign design) {
         count++;
         updateX();
-        float total = 0f;
+        float total = 0.0f;
         for (Map.Entry<Integer, DivisionType> e : design.getDesign().entrySet()) {
             total += e.getValue().getTrainingTime();
         }
@@ -67,8 +68,8 @@ public class DivisionTrainingQueue implements Saveable {
 
     public void newDay() {
         if (divisionDesign.isEmpty()) return;
-        trainedTroop.subtractTime(1f);
-        if (trainedTroop.getTrainingTime() <= 0f) {
+        trainedTroop.subtractTime(1.0f);
+        if (0.0f >= this.trainedTroop.getTrainingTime()) {
             finishTrainedTroop(trainedTroop);
         } else {
             completionBarTextDisplay.setProgress(trainedTroop.getTrainingTime() / time);
@@ -87,7 +88,7 @@ public class DivisionTrainingQueue implements Saveable {
             trainingAnimation.stop(building.getItemDisplay());
             building.getItemDisplay().setItem(itemBuilder(Material.ORANGE_DYE, 19));
         } else {
-            completionBarTextDisplay.setProgress(1f);
+            completionBarTextDisplay.setProgress(1.0f);
             TrainedTroop next = divisionDesign.getFirst();
             this.trainedTroop = next;
             time = next.time;
@@ -99,10 +100,11 @@ public class DivisionTrainingQueue implements Saveable {
         return null;
     }
 
+    @Getter
     public static class TrainedTroop {
         private final TroopCountry country;
         private final TroopType troopType;
-        private float strength = 100f;
+        private float strength = 100.0f;
         private DivisionDesign design;
         private float time;
 
@@ -129,7 +131,7 @@ public class DivisionTrainingQueue implements Saveable {
             HashSet<Float> floats = new HashSet<>();
             difference.getPayments().forEach(payment -> floats.add(payment.getAmount()));
             strength = calculateMean(floats);
-            time = design2.calculateTime();
+            time = design2.getDesign().size();
         }
 
         private void calculateStrength() {
@@ -142,29 +144,13 @@ public class DivisionTrainingQueue implements Saveable {
         }
 
         private float calculateMean(HashSet<Float> stuff) {
-            float total = 0f;
+            float total = 0.0f;
             int num = 0;
             for (Float f : stuff) {
                 total += f;
                 num++;
             }
             return total / num;
-        }
-
-        public TroopType getTroopType() {
-            return troopType;
-        }
-
-        public float getStrength() {
-            return strength;
-        }
-
-        public TroopCountry getCountry() {
-            return country;
-        }
-
-        public DivisionDesign getDesign() {
-            return design;
         }
 
         public float getTrainingTime() {

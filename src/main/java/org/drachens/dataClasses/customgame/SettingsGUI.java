@@ -16,16 +16,14 @@ import static org.drachens.util.InventoryUtil.outlineInventory;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class SettingsGUI extends InventoryGUI {
-    private boolean instaBuild = false;
+    private boolean instaBuild;
     private boolean AIEnabled = true;
     private boolean factionsEnabled = true;
     private boolean researchEnabled = true;
-    private long speed = 1L;
-    private long progressionRate = 1L;
-    private final String votingOption;
+    private final long speed = 1L;
+    private final long progressionRate = 1L;
 
     public SettingsGUI(String votingOption){
-        this.votingOption=votingOption;
     }
     @Override
     protected Inventory createInventory() {
@@ -36,10 +34,10 @@ public class SettingsGUI extends InventoryGUI {
     public void decorate(@NotNull CPlayer player) {
         outlineInventory(this, outline(itemBuilder(Material.BLUE_STAINED_GLASS_PANE, Component.text("", NamedTextColor.AQUA))));
         addExitButton(this);
-        addButton(10,instaBuildOption());
-        addButton(12,aiEnabledOption());
-        addButton(14,factionsEnabledOption());
-        addButton(16,researchEnabledOption());
+        addButton(10, instaBuildOption());
+        addButton(12, aiEnabledOption());
+        addButton(14, factionsEnabledOption());
+        addButton(16, researchEnabledOption());
         super.decorate(player);
     }
 
@@ -53,14 +51,13 @@ public class SettingsGUI extends InventoryGUI {
     private InventoryButton instaBuildOption(){
         return new InventoryButton()
                 .creator(player -> {
-                    if (instaBuild){
+                    if (instaBuild) {
                         return itemBuilder(Material.GREEN_CONCRETE, Component.text("Insta Build"));
-                    }else {
-                        return itemBuilder(Material.RED_CONCRETE, Component.text("Insta Build"));
                     }
+                    return itemBuilder(Material.RED_CONCRETE, Component.text("Insta Build"));
                 })
                 .consumer(e ->{
-                    instaBuild=!instaBuild;
+                    instaBuild =!instaBuild;
                     getInventory().update();
                 });
     }
@@ -70,9 +67,8 @@ public class SettingsGUI extends InventoryGUI {
                 .creator(player -> {
                     if (AIEnabled) {
                         return itemBuilder(Material.GREEN_CONCRETE, Component.text("AI Enabled"));
-                    } else {
-                        return itemBuilder(Material.RED_CONCRETE, Component.text("AI Enabled"));
                     }
+                    return itemBuilder(Material.RED_CONCRETE, Component.text("AI Enabled"));
                 })
                 .consumer(e -> {
                     AIEnabled = !AIEnabled;
@@ -85,9 +81,8 @@ public class SettingsGUI extends InventoryGUI {
                 .creator(player -> {
                     if (factionsEnabled) {
                         return itemBuilder(Material.GREEN_CONCRETE, Component.text("Factions Enabled"));
-                    } else {
-                        return itemBuilder(Material.RED_CONCRETE, Component.text("Factions Enabled"));
                     }
+                    return itemBuilder(Material.RED_CONCRETE, Component.text("Factions Enabled"));
                 })
                 .consumer(e -> {
                     factionsEnabled = !factionsEnabled;
@@ -100,9 +95,8 @@ public class SettingsGUI extends InventoryGUI {
                 .creator(player -> {
                     if (researchEnabled) {
                         return itemBuilder(Material.GREEN_CONCRETE, Component.text("Research Enabled"));
-                    } else {
-                        return itemBuilder(Material.RED_CONCRETE, Component.text("Research Enabled"));
                     }
+                    return itemBuilder(Material.RED_CONCRETE, Component.text("Research Enabled"));
                 })
                 .consumer(e -> {
                     researchEnabled = !researchEnabled;

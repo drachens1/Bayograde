@@ -12,7 +12,7 @@ public abstract class Demand implements Saveable {
     private final Country fromCountry;
     private final Country toCountry;
 
-    public Demand(Country fromCountry, Country toCountry) {
+    protected Demand(Country fromCountry, Country toCountry) {
         this.fromCountry = fromCountry;
         this.toCountry = toCountry;
     }

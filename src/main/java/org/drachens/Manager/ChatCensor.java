@@ -35,7 +35,7 @@ public class ChatCensor {
                 if (pattern.matcher(msg).find()) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(Component.text("Failed sending message", NamedTextColor.RED));
-                    ContinentalManagers.adminManager.broadcast(AdminMessageType.swears,Component.text(msg));
+                    ContinentalManagers.adminManager.broadcast(AdminMessageType.swears, Component.text(msg));
                     return;
                 }
             }
@@ -49,7 +49,7 @@ public class ChatCensor {
         }
         for (Pattern pattern : bannedPatterns) {
             if (pattern.matcher(msg).find()) {
-                ContinentalManagers.adminManager.broadcast(AdminMessageType.swears,Component.text(msg));
+                ContinentalManagers.adminManager.broadcast(AdminMessageType.swears, Component.text(msg));
                 return false;
             }
         }
@@ -82,13 +82,13 @@ public class ChatCensor {
     public void addBannedWords(List<String> words) {
         words.forEach(word -> {
             String regex = createRegexPattern(word);
-            if (regex.isBlank())return;
+            if (regex.isBlank()) return;
             bannedPatterns.add(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
         });
     }
 
     private String normalize(String input) {
-        if (input == null) return "";
+        if (null == input) return "";
         input = input.toLowerCase()
                 .replaceAll("0", "o")
                 .replaceAll("1", "i")

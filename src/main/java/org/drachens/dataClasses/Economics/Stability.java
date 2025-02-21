@@ -24,7 +24,7 @@ public class Stability implements Saveable {
         stabilityTotal = startingStability;
         this.country = country;
         stabilityModifier = new Modifier.create(Component.text("Stability", NamedTextColor.GREEN, TextDecoration.BOLD), "stability")
-                .addBoost(BoostEnum.production, (startingStability - 50f) / 100)
+                .addBoost(BoostEnum.production, (startingStability - 50.0f) / 100)
                 .build();
 
         country.addModifier(stabilityModifier);
@@ -38,9 +38,9 @@ public class Stability implements Saveable {
         }
         prevBase = stabilityBase;
         float stabilityGain = country.getBoost(BoostEnum.stabilityGain);
-        stabilityTotal = stabilityTotal + stabilityGain;
-        visibleStability = bound(100f, 0f, stabilityTotal);
-        stabilityModifier.setBoost(BoostEnum.production, (visibleStability - 50f) / 100);
+        stabilityTotal += stabilityGain;
+        visibleStability = bound(100.0f, 0.0f, stabilityTotal);
+        stabilityModifier.setBoost(BoostEnum.production, (visibleStability - 50.0f) / 100);
     }
 
     public float getStability() {

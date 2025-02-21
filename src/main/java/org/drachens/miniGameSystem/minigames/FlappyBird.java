@@ -18,6 +18,7 @@ import org.drachens.dataClasses.World;
 import org.drachens.miniGameSystem.MiniGame;
 import org.drachens.miniGameSystem.MiniGameRunnable;
 import org.drachens.miniGameSystem.Sprite;
+import org.drachens.miniGameSystem.minigames.FlappyBird.FlappyWorld;
 import org.drachens.player_types.CPlayer;
 
 import java.io.File;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
 
-public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
+public class FlappyBird extends MiniGame<FlappyWorld> {
     public static final File db = new File("flappy.json");
     private static final double gravity = 0.5;
     private static final String SID_BIRD = "bird";
@@ -37,13 +38,13 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
     private final FlappyBar flappyBar;
     private final List<PipeSprite> pipes = new ArrayList<>();
     private final CPlayer player;
-    private double pos = 0;
-    private boolean gameEnded = false;
-    private boolean gameStarted = false;
-    private int score = 0;
+    private double pos;
+    private boolean gameEnded;
+    private final boolean gameStarted;
+    private int score;
 
     public FlappyBird(CPlayer p, int xMax, int yMax) {
-        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyBird.FlappyWorld(xMax, yMax));
+        super(p, xMax, yMax, Material.BLUE_CONCRETE, new FlappyWorld(xMax, yMax));
         this.yMax = yMax;
         this.player = p;
 
@@ -54,11 +55,11 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
         MinecraftServer.getPacketListenerManager().setPlayListener(ClientSteerBoatPacket.class, (clientSteerVehiclePacket, player) -> {
             if (player != this.player) return;
             if (clientSteerVehiclePacket.leftPaddleTurning() || clientSteerVehiclePacket.rightPaddleTurning())
-                this.pos += gravity * 2d;
+                this.pos += gravity * 2.0d;
         });
 
-        this.pos = yMax / 2d - 1d;
-        this.realX = xMax / 2d;
+        this.pos = yMax / 2.0d - 1.0d;
+        this.realX = xMax / 2.0d;
 
         pipePair();
 
@@ -66,7 +67,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
                         " Y\n"
                                 + "YYY"
                 ).setIngredient('Y', Material.YELLOW_CONCRETE)
-                .setCollisionFunction((collided) -> {
+                .setCollisionFunction(collided -> {
                     if (!collided.getIdentifier().equals(SID_PIPE)) return;
 
                     loseCallback();
@@ -81,7 +82,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
         int pipeHeight = new Random(new Random().nextLong()).nextInt(10) + (score / 20);
 
         pipeSprite(true, pipeHeight, new Pos(realX + 10, yMax, 0));
-        pipeSprite(false, pipeHeight, new Pos(realX + 10, yMax / 2d - pipeHeight, 0));
+        pipeSprite(false, pipeHeight, new Pos(realX + 10, this.yMax / 2.0d - pipeHeight, 0));
     }
 
     private void pipeSprite(boolean down, int height, Pos pos) {
@@ -119,9 +120,8 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
 
         if (root.has(player)) {
             return root.get(player).getAsInt();
-        } else {
-            return -1;
         }
+        return -1;
     }
 
     private void loseCallback() {
@@ -141,14 +141,14 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
 
     private void mainLoop() {
         pipes.forEach(pipeSprite -> {
-            pipeSprite.realX += 0.2 + (score / 100d);
+            pipeSprite.realX += 0.2 + (score / 100.0d);
             pipeSprite.delete();
             pipeSprite.setPos(pipeSprite.getPos().withX(floor(pipeSprite.realX)));
         });
 
-        double scoreDiv = score / 100d;
+        double scoreDiv = score / 100.0d;
         double gap = 15 - (
-                scoreDiv > 3 ? scoreDiv : 3
+                3 < scoreDiv ? scoreDiv : 3
         );
 
         if (pipes.getLast().realX >= gap) {
@@ -165,7 +165,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
         private FlappyBird flappyBird;
 
         public FlappyWorld(double xMax, double yMax) {
-            super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(xMax / 2d, yMax / 2d, -(xMax / 2d)));
+            super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(xMax / 2.0d, yMax / 2.0d, -(xMax / 2.0d)));
         }
 
         public void setInstance(FlappyBird flappyBird) {
@@ -196,7 +196,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
         private final BossBar bossBar;
 
         public FlappyBar() {
-            bossBar = BossBar.bossBar(Component.text(), 1f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+            bossBar = BossBar.bossBar(Component.text(), 1.0f, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
         }
 
         public void addPlayer(Player p) {
@@ -216,7 +216,7 @@ public class FlappyBird extends MiniGame<FlappyBird.FlappyWorld> {
     }
 
     class PipeSprite extends Sprite {
-        public double realX = 0;
+        public double realX;
 
         public PipeSprite(int height, boolean down, Pos pos) {
             super(pos, FlappyBird.this.getMonitor(), SID_PIPE, (MiniGameRunnable) null);

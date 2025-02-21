@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.arguments.ArgumentWord;
 import org.drachens.cmd.vote.VotingOptionCMD;
 import org.drachens.player_types.CPlayer;
 
@@ -16,7 +17,7 @@ public class SetAutoVoteCMD extends Command {
         
         List<String> strings = new ArrayList<>();
         votingOptionsCMD.forEach(votingOption -> strings.add(votingOption.getName()));
-        var votingOptions = ArgumentType.Word("voting")
+        ArgumentWord votingOptions = ArgumentType.Word("voting")
                 .from(strings.toArray(new String[0]));
 
         addSyntax((sender, context) -> {

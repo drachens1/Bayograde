@@ -20,7 +20,7 @@ public class PlayerModsManager {
             if ("continentalmod:valid".equals(channel)) {
                 p.sendPluginMessage(e.getIdentifier(), e.getMessage());
                 CPlayer player = (CPlayer) p;
-                player.setIsUsingMod(true);
+                player.setUsingMod(true);
                 System.out.println("Is using mod : " + player);
                 putPlayer(player, p.getInstance());
             }

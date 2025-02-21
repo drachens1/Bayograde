@@ -9,14 +9,14 @@ public class CancelCreationCMD extends Command {
     public CancelCreationCMD() {
         super("cancel");
 
-        setCondition((sender,s)->{
+        setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
             return p.isLeaderOfOwnGame();
         });
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
-            if (!p.isLeaderOfOwnGame())return;
+            if (!p.isLeaderOfOwnGame()) return;
             CustomGameWorld customGameWorld = (CustomGameWorld) ContinentalManagers.worldManager.getWorld(p.getInstance());
             customGameWorld.delete();
         });

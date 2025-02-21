@@ -8,7 +8,7 @@ public class GameManageCMD extends Command {
     public GameManageCMD() {
         super("manage");
 
-        setCondition((sender,s)->{
+        setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
             return p.isLeaderOfOwnGame();
         });

@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.Armys;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -18,6 +20,8 @@ import java.util.Map;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
+@Getter
+@Setter
 public class DivisionDesign implements Saveable {
     private final Profile profile;
     private final TroopCountry country;
@@ -33,11 +37,11 @@ public class DivisionDesign implements Saveable {
     public DivisionDesign(String name, HashMap<Integer, DivisionType> design, TroopCountry country) {
         this.design = design;
         this.paymentList = new Payments();
-        this.hp = 0f;
-        this.atk = 0f;
-        this.def = 0f;
-        this.speed = 0f;
-        this.org = 0f;
+        this.hp = 0.0f;
+        this.atk = 0.0f;
+        this.def = 0.0f;
+        this.speed = 0.0f;
+        this.org = 0.0f;
         this.country = country;
         this.name = name;
         profile = new Profile(itemBuilder(Material.ORANGE_DYE, Component.text(name)), this);
@@ -59,11 +63,11 @@ public class DivisionDesign implements Saveable {
     }
 
     public void calculate() {
-        this.hp = 0f;
-        this.atk = 0f;
-        this.def = 0f;
-        this.speed = 0f;
-        this.org = 0f;
+        this.hp = 0.0f;
+        this.atk = 0.0f;
+        this.def = 0.0f;
+        this.speed = 0.0f;
+        this.org = 0.0f;
         paymentList = new Payments();
         for (Map.Entry<Integer, DivisionType> e : design.entrySet()) {
             DivisionType d = e.getValue();
@@ -76,11 +80,6 @@ public class DivisionDesign implements Saveable {
         }
         paymentList.compress();
     }
-
-    public HashMap<Integer, DivisionType> getDesign() {
-        return design;
-    }
-
     public void setDesign(HashMap<Integer, DivisionType> design) {
         this.design = design;
         calculate();
@@ -94,64 +93,8 @@ public class DivisionDesign implements Saveable {
         return design.get(slot);
     }
 
-    public float getAtk() {
-        return atk;
-    }
-
-    public void setAtk(float atk) {
-        this.atk = atk;
-    }
-
-    public float getDef() {
-        return def;
-    }
-
-    public void setDef(float def) {
-        this.def = def;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
-    public float getHp() {
-        return hp;
-    }
-
-    public void setHp(float hp) {
-        this.hp = hp;
-    }
-
     public Payments getCost() {
         return paymentList;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public float calculateTime() {
-        return design.size();
-    }
-
-    public TroopCountry getCountry() {
-        return country;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public float getOrg() {
-        return org;
     }
 
     @Override
@@ -159,6 +102,7 @@ public class DivisionDesign implements Saveable {
         return null;
     }
 
+    @Getter
     public static class Profile {
         private final InventoryButton train = new InventoryButton()
                 .creator(player -> ItemStack.builder(Material.GREEN_STAINED_GLASS)
@@ -177,9 +121,7 @@ public class DivisionDesign implements Saveable {
                     .creator(player -> ItemStack.builder(Material.YELLOW_STAINED_GLASS)
                             .customName(Component.text("Edit"))
                             .build())
-                    .consumer(e -> {
-                        ContinentalManagers.guiManager.openGUI(new TroopEditGUI(new HashMap<>(design.getDesign()), design), (CPlayer) e.getPlayer());
-                    });
+                    .consumer(e -> ContinentalManagers.guiManager.openGUI(new TroopEditGUI(new HashMap<>(design.getDesign()), design), (CPlayer) e.getPlayer()));
             delete = new InventoryButton()
                     .creator(player -> ItemStack.builder(Material.RED_STAINED_GLASS)
                             .customName(Component.text("Delete"))
@@ -194,20 +136,5 @@ public class DivisionDesign implements Saveable {
             face = face.withLore(lore);
         }
 
-        public ItemStack getFace() {
-            return face;
-        }
-
-        public InventoryButton getTrain() {
-            return train;
-        }
-
-        public InventoryButton getEdit() {
-            return edit;
-        }
-
-        public InventoryButton getDelete() {
-            return delete;
-        }
     }
 }

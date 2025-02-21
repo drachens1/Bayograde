@@ -10,7 +10,7 @@ import java.util.Map;
 public class Monitor {
     private final Instance instance;
     private final Map<Pos, Pixel> pixelHashMap = new HashMap<>();
-    private Material defaultMaterial;
+    private final Material defaultMaterial;
 
     public Monitor(Instance instance, Material defaultMaterial) {
         this.instance = instance;
@@ -24,14 +24,14 @@ public class Monitor {
 
     public void addDynamicPixel(Pos pos, DynamicPixel dynamicPixel) {
         Pixel pixel = pixelHashMap.get(pos);
-        if (pixel != null) {
+        if (null != pixel) {
             pixel.add(dynamicPixel);
         }
     }
 
     public void removeDynamicPixel(Pos pos, DynamicPixel dynamicPixel) {
         Pixel pixel = pixelHashMap.get(pos);
-        if (pixel != null) {
+        if (null != pixel) {
             pixel.remove(dynamicPixel);
         }
     }

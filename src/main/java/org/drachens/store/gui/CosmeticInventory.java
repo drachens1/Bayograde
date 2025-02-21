@@ -20,7 +20,7 @@ import static org.drachens.util.InventoryUtil.*;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class CosmeticInventory extends InventoryGUI {
-    CosmeticsManager cosmeticsManager = ContinentalManagers.cosmeticsManager;
+    final CosmeticsManager cosmeticsManager = ContinentalManagers.cosmeticsManager;
 
     @Override
     protected Inventory createInventory() {
@@ -35,7 +35,7 @@ public class CosmeticInventory extends InventoryGUI {
         List<String> cosmetics = player.getCosmetics();
         for (int i = 0; i < cosmetics.size(); i++) {
             StoreItem storeItem = cosmeticsManager.getStoreItem(cosmetics.get(i));
-            if (storeItem == null) {
+            if (null == storeItem) {
                 i -= 1;
                 continue;
             }

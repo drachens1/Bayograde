@@ -71,10 +71,10 @@ public class Economy {
     }
 
     public float getBoost(BoostEnum boostType) {
-        if (boostType.isPercentage()){
-            return boostHashmap.getOrDefault(boostType,1f);
+        if (boostType.isPercentage()) {
+            return boostHashmap.getOrDefault(boostType, 1.0f);
         }
-        return boostHashmap.getOrDefault(boostType,0f);
+        return boostHashmap.getOrDefault(boostType, 0.0f);
     }
 
     public void addBoost(BoostEnum boostType, float value) {
@@ -166,9 +166,11 @@ public class Economy {
         buildTypesListHashMap.computeIfAbsent(building.getBuildTypes(), k -> new ArrayList<>()).add(building);
     }
 
-    public boolean removeBuilding(Building building) {
+    public void removeBuilding(Building building) {
         List<Building> buildings = buildTypesListHashMap.get(building.getBuildTypes());
-        return buildings != null && buildings.remove(building);
+        if (null != buildings) {
+            buildings.remove(building);
+        }
     }
 
     public void removeAllBuildingOfType(BuildingEnum type) {

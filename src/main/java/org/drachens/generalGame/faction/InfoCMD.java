@@ -1,6 +1,7 @@
 package org.drachens.generalGame.faction;
 
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -15,7 +16,7 @@ public class InfoCMD extends Command {
 
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /faction info <faction>"));
 
-        var factions = ArgumentType.String("factionName")
+        Argument<String> factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     Player p = (Player) sender;
                     getSuggestionBasedOnInput(suggestion, getFactionNames(p.getInstance()));
@@ -24,7 +25,7 @@ public class InfoCMD extends Command {
         addSyntax((sender, s) -> {
             Player p = (Player) sender;
             Faction faction1 = ContinentalManagers.world(p.getInstance()).countryDataManager().getFaction(s.get(factions));
-            if (faction1 == null) {
+            if (null == faction1) {
                 p.sendMessage("Faction not found");
                 return;
             }

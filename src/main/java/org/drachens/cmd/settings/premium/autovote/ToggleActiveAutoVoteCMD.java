@@ -9,7 +9,7 @@ public class ToggleActiveAutoVoteCMD extends Command {
     public ToggleActiveAutoVoteCMD() {
         super("toggle");
 
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             boolean current = !p.getPlayerJson().isAutoVoteActive();
             p.getPlayerJson().setAutoVoteActive(current);
@@ -17,6 +17,6 @@ public class ToggleActiveAutoVoteCMD extends Command {
                             .append(Component.text("Active: ", NamedTextColor.GREEN))
                             .append(Component.text(current))
                     .build());
-        }));
+        });
     }
 }

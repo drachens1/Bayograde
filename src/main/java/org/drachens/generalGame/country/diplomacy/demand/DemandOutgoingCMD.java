@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.diplomacy.demand;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -16,13 +17,13 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class DemandOutgoingCMD extends Command {
     public DemandOutgoingCMD() {
         super("out_going");
-        var demands = ArgumentType.String("demands")
+        Argument<String> demands = ArgumentType.String("demands")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getDiplomacy().getOutgoingDemands());
                 });
 
-        var choice = ArgumentType.String("choice")
+        Argument<String> choice = ArgumentType.String("choice")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     if (!p.getCountry().getDiplomacy().getDemandCountries().contains(context.get(demands))) return;
@@ -30,7 +31,7 @@ public class DemandOutgoingCMD extends Command {
                     suggestion.addEntry(new SuggestionEntry("view"));
                 });
 
-        var third = ArgumentType.String("view")
+        Argument<String> third = ArgumentType.String("view")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (Objects.equals(context.get(choice), "view")) {
                         suggestion.addEntry(new SuggestionEntry("off"));
@@ -47,7 +48,7 @@ public class DemandOutgoingCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Demand demand = country.getDiplomacy().getOutgoingDemand(context.get(demands));
-            if (demand == null) return;
+            if (null == demand) return;
             switch (context.get(choice)) {
                 case "cancel":
                     demand.getToCountry().removeDemand(demand, demand.getFromCountry().getName());
@@ -60,7 +61,7 @@ public class DemandOutgoingCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             WW2Demands demand = (WW2Demands) country.getDiplomacy().getOutgoingDemand(context.get(demands));
-            if (demand == null) return;
+            if (null == demand) return;
             switch (context.get(choice)) {
                 case "cancel":
                     demand.getToCountry().removeDemand(demand, demand.getFromCountry().getName());
@@ -81,8 +82,7 @@ public class DemandOutgoingCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

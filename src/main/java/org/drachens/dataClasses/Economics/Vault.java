@@ -21,7 +21,7 @@ public abstract class Vault implements Saveable {
     protected final List<Loan> loans;
     protected Country country;
 
-    public Vault(HashMap<CurrencyTypes, Currencies> startingCurrencies) {
+    protected Vault(HashMap<CurrencyTypes, Currencies> startingCurrencies) {
         this.amount = new HashMap<>(startingCurrencies);
         this.loans = new ArrayList<>();
     }
@@ -39,7 +39,7 @@ public abstract class Vault implements Saveable {
 
     public void addPayment(Payment payment) {
         amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
-            if (existingCurrency == null) {
+            if (null == existingCurrency) {
                 return new Currencies(key, payment.getAmount());
             }
             existingCurrency.add(payment);
@@ -49,7 +49,7 @@ public abstract class Vault implements Saveable {
 
     public void minusPayment(Payment payment) {
         amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
-            if (existingCurrency == null) {
+            if (null == existingCurrency) {
                 return new Currencies(key, -payment.getAmount());
             }
             existingCurrency.minus(payment);
@@ -60,7 +60,7 @@ public abstract class Vault implements Saveable {
     public void minusPayment(Payment payment, Country beneficiary) {
         beneficiary.getEconomy().getVault().addPayment(payment);
         amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
-            if (existingCurrency == null) {
+            if (null == existingCurrency) {
                 return new Currencies(key, -payment.getAmount());
             }
             existingCurrency.minus(payment);
@@ -88,7 +88,7 @@ public abstract class Vault implements Saveable {
         copy.remove(minus);
         currencies.minus(payment);
         Payment p = new Payment(currencyTypes, Math.abs(currencies.getAmount()));
-        currencies.set(0f);
+        currencies.set(0.0f);
         return p;
     }
 
@@ -124,11 +124,11 @@ public abstract class Vault implements Saveable {
         Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
         List<Building> buildings = country.getEconomy().getBuildingType(BuildingEnum.factory);
         extraCalcIncrease();
-        if (buildings == null) return;
+        if (null == buildings) return;
 
         Payments toCountry = new Payments();
         Payments toOverlord = new Payments();
-        boolean overlord = country.getInfo().getOverlord() != null;
+        boolean overlord = null != this.country.getInfo().getOverlord();
 
         buildings.forEach(building -> {
             Payment payment = factory.generate(building);
@@ -155,13 +155,13 @@ public abstract class Vault implements Saveable {
 
     public boolean canMinus(Payment payment) {
         Currencies currency = amount.get(payment.getCurrencyType());
-        return currency != null && currency.getAmount() >= payment.getAmount();
+        return null != currency && currency.getAmount() >= payment.getAmount();
     }
 
     public boolean canMinus(Payments payments) {
         for (Payment payment : payments.getPayments()) {
             Currencies currency = amount.get(payment.getCurrencyType());
-            if (currency == null || currency.getAmount() <= payment.getAmount()) {
+            if (null == currency || currency.getAmount() <= payment.getAmount()) {
                 return false;
             }
         }
@@ -171,10 +171,10 @@ public abstract class Vault implements Saveable {
     public float subtractMaxAmountPossible(Payment payment) {
         if (canMinus(payment)) {
             minusPayment(payment);
-            return 0f;
+            return 0.0f;
         }
         Currencies currency = amount.get(payment.getCurrencyType());
-        if (currency != null) {
+        if (null != currency) {
             return payment.getAmount() - currency.getAmount();
         }
         return payment.getAmount();

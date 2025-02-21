@@ -27,13 +27,13 @@ public class TpsCMD extends Command {
                     .append(Component.text(serverHealthManager.getTps()))
                     .appendNewline()
                     .append(Component.text("TPS 10s ago: "))
-                    .append(Component.text(ten == null ? "No data" : serverHealthManager.getTpsFromSecondsAgo(10).toString()))
+                    .append(Component.text(null == ten ? "No data" : serverHealthManager.getTpsFromSecondsAgo(10).toString()))
                     .appendNewline()
                     .append(Component.text("TPS 1m ago: "))
-                    .append(Component.text(sixty == null ? "No data" : sixty.toString()))
+                    .append(Component.text(null == sixty ? "No data" : sixty.toString()))
                     .appendNewline()
                     .append(Component.text("TPS 5m ago: "))
-                    .append(Component.text(five == null ? "No data" : five.toString()))
+                    .append(Component.text(null == five ? "No data" : five.toString()))
                     .appendNewline()
                     .build());
         });

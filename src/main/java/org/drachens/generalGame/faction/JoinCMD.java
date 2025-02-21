@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -23,7 +24,7 @@ public class JoinCMD extends Command {
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /faction join <faction>"));
         setCondition((sender, s) -> notInAFaction(sender));
 
-        var factions = ArgumentType.String("factionName")
+        Argument<String> factions = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof Player player) {
                         getSuggestionBasedOnInput(suggestion, getFactionNames(player.getInstance()));
@@ -41,7 +42,7 @@ public class JoinCMD extends Command {
             }
 
             Faction faction = ContinentalManagers.world(player.getInstance()).countryDataManager().getFaction(context.get(factions));
-            if (faction == null) {
+            if (null == faction) {
                 player.sendMessage("Cannot find that faction.");
                 return;
             }
@@ -53,7 +54,7 @@ public class JoinCMD extends Command {
     private boolean notInAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isInAllFactions();
+            return null != country && country.isInAllFactions();
         }
         return false;
     }

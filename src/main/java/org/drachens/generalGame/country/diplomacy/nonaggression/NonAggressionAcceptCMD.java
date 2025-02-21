@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.diplomacy.nonaggression;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.enums.InvitesEnum;
@@ -19,7 +20,7 @@ public class NonAggressionAcceptCMD extends Command {
     public NonAggressionAcceptCMD() {
         super("accept");
 
-        var countries = ArgumentType.String("countries")
+        Argument<String> countries = ArgumentType.String("countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!(sender instanceof CPlayer p)) {
                         return;
@@ -37,7 +38,7 @@ public class NonAggressionAcceptCMD extends Command {
                 return;
             }
             NonAggressionPact nonAggressionPact = (NonAggressionPact) country.getDiplomacy().getInvite(InvitesEnum.nonaggression,input);
-            if (nonAggressionPact==null){
+            if (null == nonAggressionPact) {
                 return;
             }
             country.getDiplomacy().removeInvite(InvitesEnum.nonaggression,input);

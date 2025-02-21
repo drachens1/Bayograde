@@ -32,8 +32,9 @@ public class DynamicAnimation extends AnimationType {
         return frames;
     }
 
+    @Override
     public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
-        if (itemDisplay.getAnimation() != null) itemDisplay.getAnimation().stop(itemDisplay);
+        if (null != itemDisplay.getAnimation()) itemDisplay.getAnimation().stop(itemDisplay);
         itemDisplay.setAnimation(this);
         scheduleNextFrame(itemDisplay, 0, repeat);
         return this;
@@ -50,20 +51,20 @@ public class DynamicAnimation extends AnimationType {
             if (nextFrame >= frames.length) {
                 if (repeat) {
                     scheduleNextFrame(itemDisplay, 0, true);
-                    return;
                 } else {
                     taskHashMap.remove(itemDisplay);
-                    return;
                 }
+                return;
             }
 
             scheduleNextFrame(itemDisplay, nextFrame, repeat);
         }).delay(delay, ChronoUnit.MILLIS).schedule());
     }
 
+    @Override
     public void stop(ItemDisplay itemDisplay) {
         Task task = taskHashMap.get(itemDisplay);
-        if (task != null) {
+        if (null != task) {
             task.cancel();
             taskHashMap.remove(itemDisplay);
             itemDisplay.setItem(itemBuilder(item, frames[0][1]));
@@ -73,8 +74,7 @@ public class DynamicAnimation extends AnimationType {
     private long getDelay(int current) {
         if (0 <= current - 1) {
             return frames[current - 1][0];
-        } else {
-            return frames[frames.length - 1][0];
         }
+        return frames[frames.length - 1][0];
     }
 }

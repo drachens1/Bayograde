@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -25,7 +26,7 @@ public class DemandStartCMD extends Command {
 
         DemandManager demandManager = ContinentalManagers.demandManager;
 
-        var countries = getCountriesArgExcludingPlayersCountry();
+        Argument<String> countries = getCountriesArgExcludingPlayersCountry();
 
         Component doesntExist = Component.text()
                 .append(MessageEnum.country.getComponent())
@@ -37,7 +38,7 @@ public class DemandStartCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country from = p.getCountry();
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (to == null) {
+            if (null == to) {
                 p.sendMessage(doesntExist);
                 return;
             }
@@ -55,8 +56,7 @@ public class DemandStartCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

@@ -1,5 +1,6 @@
 package org.drachens.dataClasses;
 
+import lombok.Getter;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Chunk;
@@ -13,6 +14,7 @@ import org.drachens.player_types.CPlayer;
 import java.util.HashMap;
 import java.util.HashSet;
 
+@Getter
 public class ImaginaryWorld {
     private final boolean blockUpdatesFromPlayers;
     private final Instance instance;
@@ -36,14 +38,9 @@ public class ImaginaryWorld {
         ghostBlocksHashMap.forEach((chunk, ghosty) -> ghosty.forEach((pos, block) -> PacketSendingUtils.sendPacket(p, new BlockChangePacket(pos, instance.getBlock(pos)))));
     }
 
-    public HashSet<Player> getPlayers() {
-        return players;
-    }
-
     public boolean isThereAGhostBlock(Pos pos) {
         Chunk chunk = instance.getChunk(pos.chunkX(), pos.chunkZ());
-        if (!ghostBlocksHashMap.containsKey(chunk)) return false;
-        return ghostBlocksHashMap.get(chunk).containsKey(pos);
+        return ghostBlocksHashMap.containsKey(chunk) && ghostBlocksHashMap.get(chunk).containsKey(pos);
     }
 
     public void addGhostBlock(Pos pos, Block block) {
@@ -77,16 +74,8 @@ public class ImaginaryWorld {
 
     public void loadChunk(Player p, Chunk chunk) {
         HashMap<Pos, BlockChangePacket> ghosty = ghostBlocksHashMap.get(chunk);
-        if (ghosty == null) return;
+        if (null == ghosty) return;
         ghosty.forEach((pos, packet) -> PacketSendingUtils.sendPacket(p, packet));
-    }
-
-    public Instance getInstance() {
-        return instance;
-    }
-
-    public boolean isBlockUpdatesFromPlayers() {
-        return blockUpdatesFromPlayers;
     }
 
     public BlockChangePacket getGhostBlockPacket(Pos pos) {

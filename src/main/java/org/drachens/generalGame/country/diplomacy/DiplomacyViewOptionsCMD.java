@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -20,13 +21,13 @@ import static org.drachens.util.CommandsUtil.getCountriesArgExcludingPlayersCoun
 public class DiplomacyViewOptionsCMD extends Command {
     public DiplomacyViewOptionsCMD() {
         super("view_options");
-        var countries = getCountriesArgExcludingPlayersCountry();
+        Argument<String> countries = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             Country against = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (against == null) {
+            if (null == against) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
@@ -42,7 +43,7 @@ public class DiplomacyViewOptionsCMD extends Command {
                     .appendNewline()
                     .build());
             if (!country.getDiplomacy().hasCondition(ConditionEnum.cant_start_a_war) && country.canFight(against)) {
-                if (country.getDiplomacy().getCompletedWarJustification(against.getName()) != null) {
+                if (null != country.getDiplomacy().getCompletedWarJustification(against.getName())) {
                     WarJustification warJustification = country.getDiplomacy().getCompletedWarJustification(against.getName());
                     comps.add(Component.text()
                             .append(Component.text(" [DECLARE WAR] ", NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -50,7 +51,7 @@ public class DiplomacyViewOptionsCMD extends Command {
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to declare war", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country diplomacy declare-war " + against.getName()))
                             .build());
-                } else if (country.getDiplomacy().getWarJustification(against.getName()) != null) {
+                } else if (null != country.getDiplomacy().getWarJustification(against.getName())) {
                     WarJustification warJustification = country.getDiplomacy().getWarJustification(against.getName());
                     comps.add(Component.text()
                             .append(Component.text(" [Justification time : ", NamedTextColor.GOLD, TextDecoration.BOLD))
@@ -70,7 +71,7 @@ public class DiplomacyViewOptionsCMD extends Command {
                 comps.add(Component.text()
                         .append(Component.text(" [NON-AGGRESSION-PACT] ", NamedTextColor.GOLD, TextDecoration.BOLD))
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to send this player a non aggression pact offer", NamedTextColor.GRAY)))
-                        .clickEvent(ClickEvent.suggestCommand("/country diplomacy non-aggression-pact create " + against.getName()+" "))
+                        .clickEvent(ClickEvent.suggestCommand("/country diplomacy non-aggression-pact create " + against.getName()+ ' '))
                         .build());
                 comps.add(Component.newline());
             }

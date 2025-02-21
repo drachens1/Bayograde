@@ -46,19 +46,18 @@ public class ContinentalWorld extends World {
         p.sendPlayerListHeaderAndFooter(header, footer);
         GlobalGameWorldClass globalGameWorldClass = ContinentalManagers.world(instance).getAsGlobalGameWorldClass();
         globalGameWorldClass.getAsGlobalGameWorldClass().votingManager().getVoteBar().addPlayer(p);
-        if (globalGameWorldClass.getAsGlobalGameWorldClass().votingManager() != null && globalGameWorldClass.dataStorer().votingOption != null) {
+        if (null != globalGameWorldClass.getAsGlobalGameWorldClass().votingManager() && null != globalGameWorldClass.dataStorer().votingOption) {
             InventoryEnum inventoryEnum = globalGameWorldClass.dataStorer().votingOption.getDefaultInventory();
-            if (inventoryEnum != null)
-                ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
+            if (null != inventoryEnum) ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
         }
-        if (ContinentalManagers.yearManager.getYearBar(instance) == null) {
+        if (null == ContinentalManagers.yearManager.getYearBar(instance)) {
             ContinentalManagers.yearManager.addBar(instance);
         }
         ContinentalManagers.yearManager.getYearBar(instance).addPlayer(p);
         globalGameWorldClass.clientEntsToLoad().loadPlayer(p);
-        if (globalGameWorldClass.votingManager().getVoteBar().isShown()){
-            if (p.isPremium() && p.getPlayerJson().isAutoVoteActive()){
-                EventDispatcher.call(new VoteEvent(p,VotingWinner.valueOf(p.getPlayerJson().getAutoVoteOption()).getVotingOption()));
+        if (globalGameWorldClass.votingManager().getVoteBar().isShown()) {
+            if (p.isPremium() && p.getPlayerJson().isAutoVoteActive()) {
+                EventDispatcher.call(new VoteEvent(p, VotingWinner.valueOf(p.getPlayerJson().getAutoVoteOption()).getVotingOption()));
             }
         }
     }
@@ -67,58 +66,58 @@ public class ContinentalWorld extends World {
     public void removePlayer(CPlayer p) {
         ContinentalManagers.world(getInstance()).getAsGlobalGameWorldClass().votingManager().getVoteBar().removePlayer(p);
         ContinentalManagers.yearManager.getYearBar(getInstance()).removePlayer(p);
-        if (p.getCountry() != null) {
+        if (null != p.getCountry()) {
             p.getCountry().removePlayer(p);
         }
         p.addPlayTime(LocalTime.now());
         Country country = p.getCountry();
-        if (country != null) country.removePlayer(p);
+        if (null != country) country.removePlayer(p);
     }
 
     @Override
     public void playerBlockInteract(PlayerBlockInteractEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+        if (null != ContinentalManagers.world(e.getInstance()).dataStorer().votingOption)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
     }
 
     @Override
     public void playerUseItem(PlayerUseItemEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+        if (null != ContinentalManagers.world(e.getInstance()).dataStorer().votingOption)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
     }
 
     @Override
     public void playerStartDigging(PlayerStartDiggingEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingOption != null)
+        if (null != ContinentalManagers.world(e.getInstance()).dataStorer().votingOption)
             ContinentalManagers.world(e.getInstance()).dataStorer().votingOption.getWar().onClick(e);
     }
 
     @Override
     public void playerMove(PlayerMoveEvent e) {
-        if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == null) return;
+        if (null == ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner) return;
         CPlayer p = (CPlayer) e.getPlayer();
         Point point = p.getTargetBlockPosition(10);
-        if (point == null) return;
+        if (null == point) return;
         Province province = ContinentalManagers.world(e.getInstance()).provinceManager().getProvince(point);
-        if (province == null) return;
-        if (province.getOccupier() == null) {
+        if (null == province) return;
+        if (null == province.getOccupier()) {
             p.sendActionBar(Component.text("Unoccupied", NamedTextColor.GOLD, TextDecoration.BOLD));
         } else {
-            if (province.getOccupier().getComponentName() == null) {
+            if (null == province.getOccupier().getComponentName()) {
                 System.err.println("Something went wrong drastically");
                 return;
             }
-            if (ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner == VotingWinner.ww2_troops) {
-                if (province.getTroops() != null && province.getOccupier() != null && p.getCountry() != null && (province.getOccupier().isMilitaryAlly(p.getCountry())||p.getCountry()==province.getOccupier())) {
+            if (VotingWinner.ww2_troops == ContinentalManagers.world(e.getInstance()).dataStorer().votingWinner) {
+                if (null != province.getTroops() && null != province.getOccupier() && null != p.getCountry() && (province.getOccupier().isMilitaryAlly(p.getCountry()) || p.getCountry() == province.getOccupier())) {
                     List<Troop> troops = province.getTroops();
-                    float meanHp = 0f;
-                    float meanOrg = 0f;
-                    float meanStrength = 0f;
-                    float meanDef = 0f;
-                    float meanSped = 0f;
-                    float meanDmg = 0f;
+                    float meanHp = 0.0f;
+                    float meanOrg = 0.0f;
+                    float meanStrength = 0.0f;
+                    float meanDef = 0.0f;
+                    float meanSped = 0.0f;
+                    float meanDmg = 0.0f;
                     int troopCount = troops.size();
-                    if (troopCount == 0) {
+                    if (0 == troopCount) {
                         p.sendActionBar(province.getOccupier().getComponentName());
                         return;
                     }
@@ -149,7 +148,7 @@ public class ContinentalWorld extends World {
                     return;
                 }
             }
-            if (province.getOccupier()==null)return;
+            if (null == province.getOccupier()) return;
             p.sendActionBar(province.getOccupier().getComponentName());
         }
     }

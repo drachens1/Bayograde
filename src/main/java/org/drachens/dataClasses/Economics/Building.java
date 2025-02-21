@@ -69,7 +69,7 @@ public class Building implements Saveable {
     @Override
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("province",province.getReference());
+        jsonObject.add("province", province.getReference());
         jsonObject.add("lvl",new JsonPrimitive(current));
         return jsonObject;
     }

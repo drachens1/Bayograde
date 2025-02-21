@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
+import net.minestom.server.command.builder.arguments.ArgumentString;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -17,11 +19,11 @@ public class RenameCMD extends Command {
         super("rename");
         setCondition((sender, s) -> leaderOfAFaction(sender));
 
-        var factionsArg = ArgumentType.String("factionName")
+        Argument<String> factionsArg = ArgumentType.String("factionName")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
-                        if (country != null) {
+                        if (null != country) {
                             if (country.isEconomyFactionLeader()) {
                                 suggestion.addEntry(new SuggestionEntry(country.getEconomy().getEconomyFactionType().getStringName()));
                             }
@@ -32,7 +34,7 @@ public class RenameCMD extends Command {
                     }
                 });
 
-        var newName = ArgumentType.String("name");
+        ArgumentString newName = ArgumentType.String("name");
 
         Component notLeader = Component.text()
                 .append(MessageEnum.faction.getComponent())
@@ -64,7 +66,7 @@ public class RenameCMD extends Command {
     private boolean leaderOfAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isLeaderOfAFaction();
+            return null != country && country.isLeaderOfAFaction();
         }
         return false;
     }

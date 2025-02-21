@@ -22,7 +22,7 @@ public abstract class StoreItem {
     private final int modelData;
     private final Component purchased = Component.text("purchased", NamedTextColor.GREEN, TextDecoration.BOLD);
 
-    public StoreItem(String identifier, int cost, Material material, Component name, int modelData) {
+    protected StoreItem(String identifier, int cost, Material material, Component name, int modelData) {
         this.cost = cost;
         this.material = material;
         this.name = name;
@@ -41,16 +41,14 @@ public abstract class StoreItem {
 
     public List<Component> getBoughtDescription() {
         List<Component> comps = new ArrayList<>();
-        if (description != null)
-            comps.add(description);
+        if (null != this.description) comps.add(description);
         return comps;
     }
 
     public List<Component> getDescription(CPlayer p) {
         List<Component> comps = new ArrayList<>();
         comps.add(Component.text().append(Component.text("Costs: ")).append(Component.text(cost)).appendNewline().build());
-        if (description != null)
-            comps.add(description);
+        if (null != this.description) comps.add(description);
         if (p.hasCosmetic(identifier)) {
             comps.add(purchased);
         }

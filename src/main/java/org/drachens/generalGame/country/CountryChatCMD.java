@@ -41,7 +41,7 @@ public class CountryChatCMD extends Command {
     private boolean isInCountry(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null;
+            return null != country;
         }
         return false;
     }

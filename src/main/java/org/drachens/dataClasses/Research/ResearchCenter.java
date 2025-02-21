@@ -20,7 +20,7 @@ public class ResearchCenter extends BuildTypes {
             .append(Component.text("You cannot afford the research center : 5 Production", NamedTextColor.RED))
             .build();
 
-    private final Payments payments = new Payments(new Payment(CurrencyEnum.production, 5f));
+    private final Payments payments = new Payments(new Payment(CurrencyEnum.production, 5.0f));
 
     public ResearchCenter() {
         super(new int[]{3}, Material.BROWN_DYE, BuildingEnum.researchCenter);
@@ -37,7 +37,7 @@ public class ResearchCenter extends BuildTypes {
     @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
-        if (province.getBuilding() != null) return false;
+        if (null != province.getBuilding()) return false;
         if (!country.canMinusCosts(payments)) {
             sendMessage(p, cantAffordMsg);
             return false;
@@ -55,9 +55,9 @@ public class ResearchCenter extends BuildTypes {
     }
 
     public Payment generate(Building building) {
-        Payment central = new Payment(CurrencyEnum.research, 0f);
+        Payment central = new Payment(CurrencyEnum.research, 0.0f);
         for (Province province : building.getProvince().getNeighbours()) {
-            if (province.getBuilding() == null) continue;
+            if (null == province.getBuilding()) continue;
             if (province.getBuilding().getSynonyms().contains("research")) {
                 Building building1 = province.getBuilding();
                 if (!(building1.getBuildTypes().getBuildTypes() instanceof ResearchBuilding researchBuilding)) {

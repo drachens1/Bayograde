@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonUtil {
+public enum JsonUtil {
+    ;
+
     public static <T> void addToList(T value, Class<T> clazz, JsonObject root, String... path) {
         JsonObject parent = getOrCreateParent(root, path);
         String key = path[path.length - 1];
@@ -24,7 +26,7 @@ public class JsonUtil {
         }
     }
 
-    public static <T> void removeFromList(T value, Class<T> clazz, JsonObject root,String... path) {
+    public static <T> void removeFromList(T value, Class<T> clazz, JsonObject root, String... path) {
         JsonObject parent = getOrCreateParent(root, path);
         String key = path[path.length - 1];
 
@@ -37,7 +39,7 @@ public class JsonUtil {
         parent.add(key, array);
     }
 
-    public static <T> List<T> getFromList(Class<T> clazz, JsonObject root,String... path) {
+    public static <T> List<T> getFromList(Class<T> clazz, JsonObject root, String... path) {
         JsonObject parent = getOrCreateParent(root, path);
         String key = path[path.length - 1];
 
@@ -61,7 +63,7 @@ public class JsonUtil {
         return list;
     }
 
-    public static <T> HashMap<String, T> loadHashMap(Class<T> clazz, JsonObject root,String... path) {
+    public static <T> HashMap<String, T> loadHashMap(Class<T> clazz, JsonObject root, String... path) {
         JsonObject parent = getOrCreateParent(root, path);
         String key = path[path.length - 1];
 

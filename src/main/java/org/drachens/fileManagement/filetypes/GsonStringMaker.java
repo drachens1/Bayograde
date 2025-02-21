@@ -1,6 +1,7 @@
 package org.drachens.fileManagement.filetypes;
 
 import com.google.gson.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,15 +10,16 @@ import java.util.Map;
 
 public abstract class GsonStringMaker {
     private final Gson gson;
+    @Getter
     private JsonObject config;
 
-    public GsonStringMaker(String json) {
+    protected GsonStringMaker(String json) {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         loadFromJson(json);
     }
 
     private void loadFromJson(String json) {
-        if (json==null||json.isBlank()){
+        if (null == json || json.isBlank()){
             this.config = new JsonObject();
             return;
         }
@@ -33,10 +35,6 @@ public abstract class GsonStringMaker {
         return gson.toJson(config);
     }
 
-
-    public JsonObject getConfig() {
-        return config;
-    }
 
     private JsonObject getOrCreateParent(JsonObject root, String... path) {
         JsonObject current = root;

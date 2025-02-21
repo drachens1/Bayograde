@@ -17,7 +17,7 @@ public class ImaginaryWorldManager {
         MinecraftServer.getGlobalEventHandler().addListener(PlayerChunkLoadEvent.class, e -> {
             Player p = e.getPlayer();
             ImaginaryWorld imaginaryWorlds = instanceImaginaryWorldHashMap.get(p);
-            if (imaginaryWorlds == null) return;
+            if (null == imaginaryWorlds) return;
             imaginaryWorlds.loadChunk(p, e.getInstance().getChunk(e.getChunkX(), e.getChunkZ()));
         });
         MinecraftServer.getGlobalEventHandler().addListener(PlayerPacketOutEvent.class, e -> {

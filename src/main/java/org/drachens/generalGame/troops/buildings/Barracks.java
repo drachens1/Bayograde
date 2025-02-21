@@ -20,7 +20,7 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.Messages.sendMessage;
 
 public class Barracks extends BuildTypes {
-    private final Payment payment = new Payment(CurrencyEnum.production, 10f);
+    private final Payment payment = new Payment(CurrencyEnum.production, 10.0f);
     private final Component cantAffordMsg = Component.text()
             .append(Component.text("You cannot afford the barracks : 5 Production", NamedTextColor.RED))
             .build();
@@ -45,7 +45,7 @@ public class Barracks extends BuildTypes {
     public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country) return false;
         if (!country.canMinusCost(payment)) {
-            if (p!=null) p.sendMessage(cantAffordMsg);
+            if (null != p) p.sendMessage(cantAffordMsg);
             return false;
         }
         return true;

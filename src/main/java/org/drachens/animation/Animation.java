@@ -30,11 +30,12 @@ public class Animation extends AnimationType {
         return delayBetween;
     }
 
+    @Override
     public AnimationType startProper(ItemDisplay itemDisplay, boolean repeat) {
-        if (itemDisplay.getAnimation() != null) itemDisplay.getAnimation().stop(itemDisplay);
+        if (null != itemDisplay.getAnimation()) itemDisplay.getAnimation().stop(itemDisplay);
         itemDisplay.setAnimation(this);
         addTask(itemDisplay, getScheduler().buildTask(new Runnable() {
-            int current = 0;
+            int current;
 
             @Override
             public void run() {
@@ -53,6 +54,7 @@ public class Animation extends AnimationType {
         return this;
     }
 
+    @Override
     public void stop(ItemDisplay itemDisplay) {
         cancelTask(itemDisplay);
     }

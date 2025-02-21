@@ -3,6 +3,8 @@ package org.drachens.fileManagement.customTypes.player;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import lombok.Getter;
+import lombok.Setter;
 import net.minestom.server.network.player.GameProfile;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.fileManagement.filetypes.GsonStringMaker;
@@ -15,6 +17,8 @@ import java.util.List;
 
 import static org.drachens.util.Messages.getTime;
 
+@Getter
+@Setter
 public class PlayerJson extends GsonStringMaker {
     private final GameProfile gameProfile;
     private CPlayer p;
@@ -22,11 +26,11 @@ public class PlayerJson extends GsonStringMaker {
     private Long playtime;
     private List<String> ranks;
     private CustomLoginRecord customLoginMessage;
-    private boolean customLoginMessageActive = false;
-    private boolean premium = false;
-    private boolean autoVoteActive = false;
+    private boolean customLoginMessageActive;
+    private boolean premium;
+    private boolean autoVoteActive;
     private String autoVoteOption;
-    private boolean suffixActive = false;
+    private boolean suffixActive;
     private String suffix;
 
     public PlayerJson(String json, GameProfile gameProfile) {
@@ -37,9 +41,9 @@ public class PlayerJson extends GsonStringMaker {
 
     @Override
     protected void initialLoad() {
-        if (getConfig().getAsJsonObject("activity").has("playtime")){
+        if (getConfig().getAsJsonObject("activity").has("playtime")) {
             playtime = getConfig().getAsJsonObject("activity").get("playtime").getAsLong();
-        }else {
+        } else {
             playtime = 0L;
         }
         p.setOriginalPlayTime(playtime);
@@ -48,14 +52,14 @@ public class PlayerJson extends GsonStringMaker {
         permissions.forEach(p::addPermission);
         eventAchievementTrigger = loadHashMap(Integer.class,"achievements","completed");
         set(new JsonPrimitive(getTime()),"activity","last-online");
-        if (ranks.contains("legatus")||ranks.contains("deratus")){
+        if (ranks.contains("legatus")|| ranks.contains("deratus")){
             premiumSetDefaults();
             premiumLoad();
         }
     }
 
     protected void premiumSetDefaults(){
-        premium=true;
+        premium =true;
         addDefault("","premium","login-message","join");
         addDefault("","premium","login-message","change-join");
         addDefault("","premium","login-message","change-leave");
@@ -75,8 +79,8 @@ public class PlayerJson extends GsonStringMaker {
         String changeLeave = loginMSG.get("change-leave").getAsString();
         String leave = loginMSG.get("leave").getAsString();
         customLoginMessageActive = loginMSG.get("active").getAsBoolean();
-        if (join != null && changeJoin != null && changeLeave != null && leave != null){
-            customLoginMessage = new CustomLoginRecord(join,changeJoin,changeLeave,leave);
+        if (null != join && null != changeJoin && null != changeLeave && null != leave) {
+            customLoginMessage = new CustomLoginRecord(join, changeJoin, changeLeave, leave);
         }
         autoVoteOption = premium.getAsJsonObject("auto-vote").get("current").getAsString();
         autoVoteActive = premium.getAsJsonObject("auto-vote").get("active").getAsBoolean();
@@ -86,7 +90,7 @@ public class PlayerJson extends GsonStringMaker {
 
     public void laterInit(){
          new ArrayList<>(ranks).forEach(string ->{
-            if (string.isBlank())return;
+            if (string.isBlank()) return;
             Rank rank = RankEnum.valueOf(string).getRank();
             rank.addPlayer(p);
         });
@@ -120,17 +124,13 @@ public class PlayerJson extends GsonStringMaker {
         removeFromList(toAdd,String.class,"ranks");
     }
 
-    public HashMap<String, Integer> getEventAchievementTrigger() {
-        return eventAchievementTrigger;
-    }
-
     public void addAchievementEventTriggered(String identifier, int count) {
         eventAchievementTrigger.put(identifier, count);
         saveHashMap(eventAchievementTrigger, Integer.class,"achievements","completed");
     }
 
     public void setCustomLoginMessage(CustomLoginRecord clr){
-        this.customLoginMessage=clr;
+        this.customLoginMessage =clr;
         set(clr.join(),"premium","login-message","join");
         set(clr.changeJoin(),"premium","login-message","change-join");
         set(clr.changeLeave(),"premium","login-message","change-leave");
@@ -142,33 +142,9 @@ public class PlayerJson extends GsonStringMaker {
         set(new JsonPrimitive(b),"premium","login-message","active");
     }
 
-    public boolean isCustomLoginMessageActive(){
-        return customLoginMessageActive;
-    }
-
-    public CustomLoginRecord getCustomLoginMessage(){
-        return customLoginMessage;
-    }
-
-    public boolean isPremium(){
-        return premium;
-    }
-
-    public void setPremium(boolean b){
-        premium=b;
-    }
-    
-    public boolean isAutoVoteActive(){
-        return autoVoteActive;
-    }
-
     public void setAutoVoteActive(boolean autoVoteActive) {
         this.autoVoteActive = autoVoteActive;
         set(new JsonPrimitive(autoVoteActive),"premium","auto-vote","active");
-    }
-
-    public String getAutoVoteOption(){
-        return autoVoteOption;
     }
 
     public void setAutoVoteOption(String autoVoteOption) {
@@ -177,22 +153,14 @@ public class PlayerJson extends GsonStringMaker {
     }
 
     public void setPlayer(CPlayer player){
-        this.p=player;
+        this.p =player;
         p.setPlayerJson(this);
         initialLoad();
     }
 
-    public boolean isSuffixActive(){
-        return suffixActive;
-    }
-
     public void setSuffixActive(boolean b){
-        this.suffixActive=b;
+        this.suffixActive =b;
         set(new JsonPrimitive(b),"premium","suffix","active");
-    }
-
-    public String getSuffix(){
-        return suffix;
     }
 
     public void setSuffix(String suffix){

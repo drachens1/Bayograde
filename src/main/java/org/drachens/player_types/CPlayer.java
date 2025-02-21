@@ -1,5 +1,7 @@
 package org.drachens.player_types;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.entity.Player;
@@ -26,6 +28,8 @@ import java.util.*;
 
 import static org.drachens.util.OtherUtil.formatPlaytime;
 
+@Getter
+@Setter
 public class CPlayer extends Player {
     private final List<String> permissions = new ArrayList<>();
 
@@ -43,20 +47,12 @@ public class CPlayer extends Player {
     private LocalTime lastCheck;
     private PlayerJson playerJson;
     private PlayerInfoEntry playerInfoEntry;
-    private boolean isUsingMod = false;
-    private boolean leaderOfOwnGame = false;
-    private boolean isInOwnGame = false;
+    private boolean isUsingMod;
+    private boolean leaderOfOwnGame;
+    private boolean isInOwnGame;
 
     public CPlayer(@NotNull PlayerConnection playerConnection, @NotNull GameProfile gameProfile) {
         super(playerConnection, gameProfile);
-    }
-
-    public PlayerInfoEntry getPlayerInfoEntry() {
-        return playerInfoEntry;
-    }
-
-    public void setIsUsingMod(boolean b) {
-        isUsingMod = b;
     }
 
     public boolean isUsingMod() {
@@ -66,31 +62,21 @@ public class CPlayer extends Player {
     public void setPlayerDataFile(PlayerInfoEntry playerInfoEntry) {
         this.playerInfoEntry = playerInfoEntry;
     }
-    
-    public void setPlayerJson(PlayerJson playerJson){
-        this.playerJson=playerJson;
-    }
 
     public void setOriginalPlayTime(Long pt) {
         this.playTime = pt;
     }
 
     public void addPlayTime(LocalTime localTime) {
-        if (lastCheck == null)
-            lastCheck = joinTime;
+        if (null == this.lastCheck) lastCheck = joinTime;
 
-        if (playTime == null) {
+        if (null == this.playTime) {
             playTime = 0L;
-            lastCheck = localTime;
         } else {
             playTime += Duration.between(lastCheck, localTime).toSeconds();
-            lastCheck = localTime;
         }
+        lastCheck = localTime;
         playerJson.setPlaytime(playTime);
-    }
-
-    public void setJoinTime(LocalTime instant) {
-        this.joinTime = instant;
     }
 
     public String getPlayTimeString() {
@@ -99,25 +85,13 @@ public class CPlayer extends Player {
 
     public void setHead() {
         PlayerSkin playerSkin = getSkin();
-        if (playerSkin == null) {
+        if (null == playerSkin) {
             System.err.println("Players skin was null!");
             return;
         }
         headItem = ItemStack.builder(Material.PLAYER_HEAD).set(ItemComponent.PROFILE, new HeadProfile(playerSkin))
                 .customName(Component.text(getUsername(), NamedTextColor.GOLD))
                 .build();
-    }
-
-    public Country getCountry() {
-        return this.country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public UUID getLastMessenger() {
-        return this.lastMessenger;
     }
 
     public void setLastMessenger(Player player) {
@@ -128,7 +102,7 @@ public class CPlayer extends Player {
         ranks.add(rank);
         ownedCosmetics.addAll(rank.getCosmetics());
         playerJson.addRank(rank.getIdentifier());
-        if (!rank.getIdentifier().equalsIgnoreCase("default_rank")){
+        if (!"default_rank".equalsIgnoreCase(rank.getIdentifier())){
             refreshCommands();
             playerJson.setPremium(true);
         }
@@ -138,7 +112,7 @@ public class CPlayer extends Player {
         ranks.remove(rank);
         rank.getCosmetics().forEach(ownedCosmetics::remove);
         playerJson.removeRank(rank.getIdentifier());
-        if (!ranks.contains(RankEnum.deratus.getRank())||ranks.contains(RankEnum.legatus.getRank())){
+        if (!ranks.contains(RankEnum.deratus.getRank())|| ranks.contains(RankEnum.legatus.getRank())) {
             playerJson.setPremium(false);
         }
     }
@@ -179,9 +153,9 @@ public class CPlayer extends Player {
 
     public void removeClientSide(ClientSideExtras clientSideExtras, Clientside clientSide){
         List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
-        if (clientsides.remove(clientSide)){
-            clientSides.put(clientSideExtras,clientsides);
-        }else {
+        if (clientsides.remove(clientSide)) {
+            clientSides.put(clientSideExtras, clientsides);
+        } else {
             clientSides.remove(clientSideExtras);
         }
     }
@@ -195,10 +169,10 @@ public class CPlayer extends Player {
     public void removeClientSides(ClientSideExtras clientSideExtras, List<Clientside> toRemove){
         List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
         clientsides.removeAll(toRemove);
-        if (clientsides.isEmpty()){
+        if (clientsides.isEmpty()) {
             clientSides.remove(clientSideExtras);
-        }else {
-            clientSides.put(clientSideExtras,clientsides);
+        } else {
+            clientSides.put(clientSideExtras, clientsides);
         }
     }
 
@@ -210,14 +184,6 @@ public class CPlayer extends Player {
         List<Clientside> clientsides = clientSides.getOrDefault(clientSideExtras,new ArrayList<>());
         clientsides.forEach(Clientside::dispose);
         this.clientSides.remove(clientSideExtras);
-    }
-
-    public PlayerJson getPlayerJson(){
-        return playerJson;
-    }
-
-    public PriorityQueue<Rank> getRanks(){
-        return ranks;
     }
 
     public Rank getDominantRank(){
@@ -232,27 +198,11 @@ public class CPlayer extends Player {
         return playerJson.isAutoVoteActive();
     }
 
-    public boolean isLeaderOfOwnGame() {
-        return leaderOfOwnGame;
-    }
-
-    public void setLeaderOfOwnGame(boolean b){
-        this.leaderOfOwnGame=b;
-    }
-
     public boolean isInOwnGame(){
         return isInOwnGame;
     }
 
     public void setInOwnGame(boolean b){
-        this.isInOwnGame=b;
-    }
-
-    public void setWorldClasses(WorldClasses worldClasses){
-        this.worldClasses=worldClasses;
-    }
-
-    public WorldClasses getWorldClasses(){
-        return worldClasses;
+        this.isInOwnGame =b;
     }
 }

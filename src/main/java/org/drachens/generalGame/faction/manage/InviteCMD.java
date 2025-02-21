@@ -2,6 +2,7 @@ package org.drachens.generalGame.faction.manage;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.event.EventDispatcher;
@@ -19,7 +20,7 @@ public class InviteCMD extends Command {
         setCondition((sender, s) -> leaderOfAFaction(sender));
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /faction invite <country_name> "));
 
-        var factionsArg = ArgumentType.String("faction name")
+        Argument<String> factionsArg = ArgumentType.String("faction name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         Country country = player.getCountry();
@@ -32,7 +33,7 @@ public class InviteCMD extends Command {
                     }
                 });
 
-        var countryArg = getCountriesArgExcludingPlayersCountry();
+        Argument<String> countryArg = getCountriesArgExcludingPlayersCountry();
 
         addSyntax((sender, context) -> {
             sender.sendMessage("Proper usage /faction manage invite <faction name> <country name>");
@@ -51,7 +52,7 @@ public class InviteCMD extends Command {
     private boolean leaderOfAFaction(CommandSender sender) {
         if (sender instanceof CPlayer player) {
             Country country = player.getCountry();
-            return country != null && country.isLeaderOfAFaction();
+            return null != country && country.isLeaderOfAFaction();
         }
         return false;
     }

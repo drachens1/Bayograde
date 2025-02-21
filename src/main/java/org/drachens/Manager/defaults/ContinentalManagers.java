@@ -12,7 +12,8 @@ import org.drachens.store.CosmeticsManager;
 
 import java.util.HashMap;
 
-public class ContinentalManagers {
+public enum ContinentalManagers {
+    ;
     public static final PlayerModsManager playerModsManager = new PlayerModsManager();
     public static final ConfigFileManager configFileManager = new ConfigFileManager();
     public static final PermissionsUtil permissions = new PermissionsUtil();
@@ -37,7 +38,7 @@ public class ContinentalManagers {
     public static Database database;
 
     public static WorldClasses world(Instance instance) {
-        return worldClassesHashMap.get(instance);
+        return ContinentalManagers.worldClassesHashMap.get(instance);
     }
 
     private static final HashMap<Instance, WorldClasses> worldClassesHashMap = new HashMap<>();

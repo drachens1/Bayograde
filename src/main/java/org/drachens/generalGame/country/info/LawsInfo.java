@@ -18,7 +18,7 @@ public class LawsInfo extends Command {
 
         setCondition((sender, s) -> {
             CPlayer p = (CPlayer) sender;
-            return p.getCountry() != null;
+            return null != p.getCountry();
         });
 
         setDefaultExecutor((sender, context) -> {
@@ -26,7 +26,7 @@ public class LawsInfo extends Command {
                 return;
             }
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage(Component.text("Join a country in order to execute this command", NamedTextColor.RED));
                 return;
             }
@@ -37,7 +37,7 @@ public class LawsInfo extends Command {
     private Component getLawsDescription(Country country, CPlayer p) {
         List<Component> comps = new ArrayList<>();
         if (country.isPlayerLeader(p)) {
-            country.getEconomy().getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
+            country.getEconomy().getLaws().forEach((string, lawCategory) -> comps.add(Component.text()
                     .append(Component.text(string))
                     .append(Component.text(" : "))
                     .append(lawCategory.getCurrent().modifier().getName())
@@ -47,14 +47,14 @@ public class LawsInfo extends Command {
                             .clickEvent(ClickEvent.runCommand("/country edit laws change-options " + string))
                     )
                     .appendNewline()
-                    .build())));
+                    .build()));
         } else {
-            country.getEconomy().getLaws().forEach(((string, lawCategory) -> comps.add(Component.text()
+            country.getEconomy().getLaws().forEach((string, lawCategory) -> comps.add(Component.text()
                     .append(Component.text(string))
                     .append(Component.text(" : "))
                     .append(lawCategory.getCurrent().modifier().getName())
                     .appendNewline()
-                    .build())));
+                    .build()));
         }
 
         return Component.text()

@@ -9,10 +9,11 @@ import net.minestom.server.instance.Instance;
 
 import java.time.Duration;
 
-public class MiniGameUtil {
+public enum MiniGameUtil {
+    ;
 
     public static void startGameLoop(int fps, Runnable task) {
-        Preconditions.assertTrue(fps > 0, "FPS must be a positive non-zero value");
+        Preconditions.assertTrue(0 < fps, "FPS must be a positive non-zero value");
 
         MinecraftServer.getSchedulerManager().buildTask(task).repeat(Duration.ofMillis(1000 / fps)).schedule();
     }

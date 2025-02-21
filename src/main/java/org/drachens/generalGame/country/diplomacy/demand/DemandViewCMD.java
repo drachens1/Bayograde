@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.diplomacy.demand;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.Manager.DemandManager;
@@ -21,7 +22,7 @@ public class DemandViewCMD extends Command {
 
         setCondition((sender, s) -> hasDemand(sender));
 
-        var on = ArgumentType.String("")
+        Argument<String> on = ArgumentType.String("")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (!hasDemand(sender)) return;
                     suggestion.addEntry(new SuggestionEntry("on"));
@@ -32,7 +33,7 @@ public class DemandViewCMD extends Command {
             if (!hasDemand(sender)) return;
             CPlayer p = (CPlayer) sender;
             WW2Demands demand = (WW2Demands) demandManager.getDemand(p.getCountry());
-            if (demand == null) return;
+            if (null == demand) return;
             switch (context.get(on)) {
                 case "on":
                     demand.showPlayer(p);
@@ -50,8 +51,7 @@ public class DemandViewCMD extends Command {
     private boolean isLeaderOfCountry(CommandSender sender) {
         if (sender instanceof CPlayer p) {
             Country country = p.getCountry();
-            if (country == null) return false;
-            return country.isPlayerLeader(p);
+            return (null != country) && country.isPlayerLeader(p);
         }
         return false;
     }

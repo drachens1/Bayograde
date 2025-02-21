@@ -1,5 +1,6 @@
 package org.drachens.dataClasses;
 
+import lombok.Getter;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.*;
 import net.minestom.server.instance.Instance;
@@ -8,12 +9,13 @@ import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.block.Block;
 import org.drachens.player_types.CPlayer;
 
+@Getter
 public abstract class World {
     private final Instance instance;
     private final InstanceContainer instanceContainer;
     private final Pos spawnPoint;
 
-    public World(InstanceContainer instance, Pos spawnPoint) {
+    protected World(InstanceContainer instance, Pos spawnPoint) {
         this.instance = instance;
         this.instanceContainer = instance;
         this.spawnPoint = spawnPoint;
@@ -66,15 +68,4 @@ public abstract class World {
 
     }
 
-    public Instance getInstance() {
-        return instance;
-    }
-
-    public InstanceContainer getInstanceContainer() {
-        return instanceContainer;
-    }
-
-    public Pos getSpawnPoint() {
-        return spawnPoint;
-    }
 }

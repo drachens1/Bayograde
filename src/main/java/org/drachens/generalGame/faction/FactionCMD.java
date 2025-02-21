@@ -10,7 +10,7 @@ public class FactionCMD extends Command {
         super("faction");
 
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /faction <command>"));
-        setCondition((sender,s)->{
+        setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
             return ContinentalManagers.generalManager.factionsEnabled(p.getInstance());
         });

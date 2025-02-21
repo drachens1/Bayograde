@@ -17,7 +17,7 @@ public abstract class InventoryGUI implements InventoryHandler {
     private final Inventory inventory;
     private final Map<Integer, InventoryButton> buttonMap = new HashMap<>();
 
-    public InventoryGUI() {
+    protected InventoryGUI() {
         this.inventory = this.createInventory();
     }
 
@@ -42,7 +42,7 @@ public abstract class InventoryGUI implements InventoryHandler {
         event.getPlayer().openInventory((Inventory) Objects.requireNonNull(event.getInventory()));
         int slot = event.getSlot();
         InventoryButton button = this.buttonMap.get(slot);
-        if (button != null && button.getEventConsumer() != null) {
+        if (null != button && null != button.getEventConsumer()) {
             button.getEventConsumer().accept(event);
         }
     }

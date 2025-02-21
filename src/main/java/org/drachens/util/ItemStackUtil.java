@@ -8,7 +8,9 @@ import net.minestom.server.tag.Tag;
 
 import java.util.List;
 
-public class ItemStackUtil {
+public enum ItemStackUtil {
+    ;
+
     public static ItemStack itemBuilder(Material material) {
         return ItemStack.of(material).builder()
                 .maxStackSize(1)

@@ -20,7 +20,7 @@ public class IdeologyGain implements EventsRunner, Saveable {
 
     @Override
     public boolean newDay() {
-        if (count < 1) {
+        if (1 > this.count) {
             return true;
         }
         country.getIdeology().addIdeology(ideologyTypes, dailyIncrease);

@@ -10,7 +10,7 @@ public class BanSystemEvents  {
         MinecraftServer.getGlobalEventHandler().addListener(AsyncPlayerPreLoginEvent.class, e->{
             if (Constants.BAN_MANAGER.isBanned(e.getGameProfile().uuid())) {
                 Player p = e.getConnection().getPlayer();
-                if (p==null)return;
+                if (null == p) return;
                 p.kick(Constants.BAN_MANAGER.getBanMessage().apply(p));
             }
         });

@@ -3,6 +3,7 @@ package org.drachens.generalGame.country.edit.laws;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -16,17 +17,17 @@ public class LawsChangeCMD extends Command {
     public LawsChangeCMD() {
         super("change");
 
-        var law2 = ArgumentType.String("categories")
+        Argument<String> law2 = ArgumentType.String("categories")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getEconomy().getLawNames());
                 });
 
-        var options = ArgumentType.String("options")
+        Argument<String> options = ArgumentType.String("options")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     LawCategory law = p.getCountry().getEconomy().getLaw(context.get(law2));
-                    if (law == null) {
+                    if (null == law) {
                         suggestion.addEntry(new SuggestionEntry("Invalid category inputted"));
                         return;
                     }
@@ -38,7 +39,7 @@ public class LawsChangeCMD extends Command {
                 return;
             }
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage(Component.text("Join a country in order to execute this command", NamedTextColor.RED));
                 return;
             }
@@ -56,12 +57,12 @@ public class LawsChangeCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             LawCategory lawCategory = country.getEconomy().getLaw(context.get(law2));
-            if (lawCategory == null) {
+            if (null == lawCategory) {
                 p.sendMessage(Component.text("That law category is null", NamedTextColor.RED));
                 return;
             }
             Law law = lawCategory.getLaw(context.get(options));
-            if (law == null) {
+            if (null == law) {
                 p.sendMessage(Component.text("That law is null", NamedTextColor.RED));
                 return;
             }

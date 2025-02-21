@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentStringArray;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.sound.SoundEvent;
@@ -14,12 +15,12 @@ import org.drachens.player_types.CPlayer;
 public class ReplyCMD extends Command {
     public ReplyCMD() {
         super("reply", "r");
-        var msg = ArgumentType.StringArray("msg");
+        ArgumentStringArray msg = ArgumentType.StringArray("msg");
         setDefaultExecutor((sender, context) -> sender.sendMessage("Proper usage: /r <msg>"));
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Player to = MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(p.getLastMessenger());
-            if (to == null) {
+            if (null == to) {
                 p.sendMessage(Component.text("You have no one to reply to", NamedTextColor.RED));
                 return;
             }
@@ -32,7 +33,7 @@ public class ReplyCMD extends Command {
     private String buildString(String[] msg) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : msg) {
-            stringBuilder.append(s).append(" ");
+            stringBuilder.append(s).append(' ');
         }
         return stringBuilder.toString();
     }
@@ -51,6 +52,6 @@ public class ReplyCMD extends Command {
                 .append(Component.text(" : ", NamedTextColor.GOLD))
                 .append(Component.text(msg, NamedTextColor.GOLD))
                 .build());
-        to.playSound(Sound.sound(SoundEvent.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.Source.MASTER, 1f, 1f));
+        to.playSound(Sound.sound(SoundEvent.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.Source.MASTER, 1.0f, 1.0f));
     }
 }

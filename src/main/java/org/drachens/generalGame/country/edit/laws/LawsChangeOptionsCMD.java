@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.laws.LawCategory;
@@ -20,7 +21,7 @@ public class LawsChangeOptionsCMD extends Command {
     public LawsChangeOptionsCMD() {
         super("change-options");
 
-        var lawSet = ArgumentType.String("law")
+        Argument<String> lawSet = ArgumentType.String("law")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     getSuggestionBasedOnInput(suggestion, p.getCountry().getEconomy().getLawNames());
@@ -31,7 +32,7 @@ public class LawsChangeOptionsCMD extends Command {
                 return;
             }
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage(Component.text("Join a country in order to execute this command", NamedTextColor.RED));
                 return;
             }
@@ -46,17 +47,17 @@ public class LawsChangeOptionsCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             LawCategory lawCategory = country.getEconomy().getLaw(context.get(lawSet));
-            if (lawCategory == null) {
+            if (null == lawCategory) {
                 p.sendMessage(Component.text("That law category is null", NamedTextColor.RED));
                 return;
             }
             List<Component> comps = new ArrayList<>();
-            lawCategory.getLawsStuff().forEach((law -> comps.add(Component.text()
+            lawCategory.getLawsStuff().forEach(law -> comps.add(Component.text()
                     .append(law.modifier().getName())
                     .appendNewline()
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to view the options to change this to", NamedTextColor.GRAY)))
-                    .clickEvent(ClickEvent.runCommand("/country edit laws change " + lawCategory.getIdentifier() + " " + law.identifier()))
-                    .build())));
+                    .clickEvent(ClickEvent.runCommand("/country edit laws change " + lawCategory.getIdentifier() + ' ' + law.identifier()))
+                    .build()));
             comps.removeLast();
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))

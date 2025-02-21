@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
@@ -16,14 +17,14 @@ public class GeneralCMD extends Command {
     public GeneralCMD() {
         super("general");
 
-        var countries = getCountriesArg();
+        Argument<String> countries = getCountriesArg();
 
         setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("Join a country or do /country info general <country>");
                 return;
             }
@@ -31,10 +32,9 @@ public class GeneralCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
+            if (!(sender instanceof CPlayer p)) return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("That is not a valid country");
                 return;
             }
@@ -44,7 +44,7 @@ public class GeneralCMD extends Command {
 
     private void sendPlayer(Country country, CPlayer p) {
         Component c = country.getInfo().getDescription();
-        if (country.getInfo().getPlayerLeader() == null) {
+        if (null == country.getInfo().getPlayerLeader()) {
             p.sendMessage(c.appendNewline().append(Component.text("[JOIN]", NamedTextColor.GOLD, TextDecoration.BOLD)
                     .clickEvent(ClickEvent.runCommand("/country join " + country.getName()))
                     .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to join a country", NamedTextColor.GOLD)))));

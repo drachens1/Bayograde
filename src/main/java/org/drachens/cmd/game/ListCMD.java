@@ -9,9 +9,9 @@ public class ListCMD extends Command {
         super("list");
         setDefaultExecutor((sender, context) -> {
             StringBuilder players = new StringBuilder();
-            players.append("Player list:").append("\n");
+            players.append("Player list:").append('\n');
             for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-                players.append(p.getUsername()).append(",");
+                players.append(p.getUsername()).append(',');
             }
             players.setCharAt(players.lastIndexOf(","), ' ');
             sender.sendMessage(players.toString());

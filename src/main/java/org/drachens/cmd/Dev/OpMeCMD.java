@@ -13,11 +13,11 @@ public class OpMeCMD extends Command {
     public OpMeCMD() {
         super("op-me");
 
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             if (players.contains(p.getUsername())) {
                 ContinentalManagers.permissions.playerOp(p);
             }
-        }));
+        });
     }
 }

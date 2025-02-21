@@ -2,6 +2,7 @@ package org.drachens.cmd.Dev.ban;
 
 import dev.ng5m.Constants;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.ArgumentString;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.player_types.CPlayer;
 
@@ -12,7 +13,7 @@ import static org.drachens.util.PlayerUtil.getUUIDFromName;
 public class UnbanCMD extends Command {
     public UnbanCMD() {
         super("unban");
-        var player = ArgumentType.String("player");
+        ArgumentString player = ArgumentType.String("player");
         setCondition((sender, s) -> {
             CPlayer p = (CPlayer) sender;
             return p.hasPermission("unban");
@@ -25,7 +26,7 @@ public class UnbanCMD extends Command {
             CPlayer p = (CPlayer) sender;
             System.out.println(p.getUsername() + " has unbanned " + context.get(player));
             UUID u = getUUIDFromName(context.get(player));
-            if (u == null) {
+            if (null == u) {
                 sender.sendMessage("Player is null");
                 return;
             }

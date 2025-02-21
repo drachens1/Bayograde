@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.info;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -17,14 +18,14 @@ public class BordersInfoCMD extends Command {
         super("borders");
 
 
-        var countries = getCountriesArg();
+        Argument<String> countries = getCountriesArg();
 
         setDefaultExecutor((sender, context) -> {
             if (!(sender instanceof CPlayer p)) {
                 return;
             }
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("Join a country or do /country info general <country>");
                 return;
             }
@@ -32,10 +33,9 @@ public class BordersInfoCMD extends Command {
         });
 
         addSyntax((sender, context) -> {
-            if (!(sender instanceof CPlayer p))
-                return;
+            if (!(sender instanceof CPlayer p)) return;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("That is not a valid country");
                 return;
             }

@@ -13,7 +13,7 @@ import org.drachens.player_types.CPlayer;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ShowGeneralInfo extends HotbarItemButton {
-    ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
+    final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
 
     public ShowGeneralInfo() {
         super(itemBuilder(Material.BOOK, Component.text("Show General Info"), 5));

@@ -56,7 +56,7 @@ public class ClicksAI implements AIManager, Saveable {
 
     @Override
     public void tick(Instance instance) {
-        ais.forEach(((country, ai) -> ai.tick()));
+        ais.forEach((country, ai) -> ai.tick());
     }
 
     @Override
@@ -74,35 +74,33 @@ public class ClicksAI implements AIManager, Saveable {
             this.country = country;
         }
 
+        @Override
         public void tick() {
             if (canBuild) return;
-            int count = (int) (country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()) / 5f);
+            int count = (int) (country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()) / 5.0f);
             buildFactory(new ArrayList<>(country.getMilitary().getCities()), count);
         }
 
         private void buildFactory(List<Province> cities, int count) {
-            if (cities.isEmpty()) {
-                if (country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()) > 10f) {
-                    canBuild = true;
+            while (true) {
+                if (cities.isEmpty()) {
+                    if (10.0f < country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()))
+                        this.canBuild = true;
+                    return;
                 }
-                return;
-            }
-            Province province = cities.get(r.nextInt(cities.size()));
-            if (province.getBuilding() != null) {
-                if (factory.requirementsToUpgrade(province.getBuilding(), country, 1, null)) {
-                    factory.upgrade(1, province.getBuilding(), country, null);
-                }
-            } else {
-                if (factory.canBuild(country, province, null)) {
-                    factory.forceBuild(country, province, null);
-                } else {
+                final Province province = cities.get(this.r.nextInt(cities.size()));
+                if (null != province.getBuilding()) {
+                    if (this.factory.requirementsToUpgrade(province.getBuilding(), this.country, 1, null))
+                        this.factory.upgrade(1, province.getBuilding(), this.country, null);
+                } else if (this.factory.canBuild(this.country, province, null))
+                    this.factory.forceBuild(this.country, province, null);
+                else {
                     cities.remove(province);
-                    buildFactory(cities, count);
+                    this.buildFactory(cities, count);
                 }
-            }
-            count--;
-            if (count > 1) {
-                buildFactory(cities, count);
+                count--;
+                if (1 < count) continue;
+                return;
             }
         }
     }
@@ -198,9 +196,9 @@ public class ClicksAI implements AIManager, Saveable {
 
         @Override
         public void tick() {
-            if (!country.getMilitary().getBordersWars().isEmpty()){
+            if (!country.getMilitary().getBordersWars().isEmpty()) {
                 conquerCountry(new ArrayList<>(country.getMilitary().getBordersWars()));
-            } else if (country.getDiplomacy().getWarJustificationCountries().isEmpty()){
+            } else if (country.getDiplomacy().getWarJustificationCountries().isEmpty()) {
                 startAWar();
             }
         }
@@ -209,7 +207,7 @@ public class ClicksAI implements AIManager, Saveable {
             List<String> s = country.getMilitary().getBorders().stream().toList();
             String count = s.get(new Random().nextInt(0,s.size()));
             Country atk = ContinentalManagers.world(country.getInstance()).countryDataManager().getCountryFromName(count);
-            if (!country.canFight(atk) || country.isAtWar(atk.getName())){
+            if (!country.canFight(atk) || country.isAtWar(atk.getName())) {
                 return;
             }
             WarGoalType w = WarGoalTypeEnum.surprise.getWarGoalType();
@@ -218,26 +216,32 @@ public class ClicksAI implements AIManager, Saveable {
         }
 
         public void conquerCountry(List<String> s) {
-            Country atk = ContinentalManagers.world(country.getInstance()).countryDataManager().getCountryFromName(s.getFirst());
-            List<Province> provinces = country.getMilitary().getBorder(s.getFirst());
-            if (provinces==null){
-                s.remove(atk.getName());
-                if (s.isEmpty())return;
-                conquerCountry(s);
-                return;
-            }
+            while (true) {
+                final Country atk = ContinentalManagers.world(this.country.getInstance()).countryDataManager().getCountryFromName(s.getFirst());
+                final List<Province> provinces = this.country.getMilitary().getBorder(s.getFirst());
+                if (null == provinces) {
+                    s.remove(atk.getName());
+                    if (s.isEmpty()) {
+                        return;
+                    }
 
-            for (Province province : new ArrayList<>(provinces)){
-                Province from = clickWarSystem.canCapture(province,country);
-                if (from!=null){
-                    country.removePayment(payment);
-                    province.capture(from.getOccupier());
+                    continue;
                 }
-                return;
+
+                for (final Province province : new ArrayList<>(provinces)) {
+                    final Province from = this.clickWarSystem.canCapture(province, this.country);
+                    if (null != from) {
+                        this.country.removePayment(this.payment);
+                        province.capture(from.getOccupier());
+                    }
+                    return;
+                }
+                s.remove(atk.getName());
+                if (s.isEmpty()) {
+                    return;
+                }
+
             }
-            s.remove(atk.getName());
-            if (s.isEmpty())return;
-            conquerCountry(s);
         }
     }
 }

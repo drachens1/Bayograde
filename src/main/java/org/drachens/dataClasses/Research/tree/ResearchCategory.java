@@ -1,11 +1,13 @@
 package org.drachens.dataClasses.Research.tree;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.drachens.dataClasses.Research.ResearchCategoryEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ResearchCategory {
     private final ResearchCategoryEnum researchCategoryEnum;
     private final Component description;
@@ -17,18 +19,6 @@ public class ResearchCategory {
         this.researchCategoryEnum = create.researchCategoryEnum;
         this.type = create.type;
         this.researchOptionList = create.researchOptionList;
-    }
-
-    public Component getDescription() {
-        return description;
-    }
-
-    public Component getType() {
-        return type;
-    }
-
-    public List<ResearchOption> getResearchOptionList() {
-        return researchOptionList;
     }
 
     public ResearchCategoryEnum getIdentifier() {

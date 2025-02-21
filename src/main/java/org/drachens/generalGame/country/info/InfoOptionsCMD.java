@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
@@ -19,12 +20,12 @@ public class InfoOptionsCMD extends Command {
     public InfoOptionsCMD() {
         super("options");
 
-        var countries = getCountriesArg();
+        Argument<String> countries = getCountriesArg();
 
         setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage(Component.text("You need to join a country first", NamedTextColor.RED));
                 return;
             }
@@ -34,7 +35,7 @@ public class InfoOptionsCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage(Component.text("That is not a valid country", NamedTextColor.RED));
                 return;
             }

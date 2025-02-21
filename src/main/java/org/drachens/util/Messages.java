@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Messages {
+public enum Messages {
+    ;
+
     public static void sendMessage(CPlayer p, Component msg) {
-        if (p != null) p.sendMessage(msg);
+        if (null != p) p.sendMessage(msg);
     }
 
     public static void globalBroadcast(String msg) {
@@ -55,10 +57,10 @@ public class Messages {
         try {
             FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogCmds(), true);
             try {
-                if (w != null) {
-                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + cmd);
+                if (null != w) {
+                    f.write(w.getDimensionName() + ' ' + getTime() + ' ' + playerName + ':' + cmd);
                 } else {
-                    f.write(getTime() + " " + playerName + ":" + cmd);
+                    f.write(getTime() + ' ' + playerName + ':' + cmd);
                 }
                 f.write("\n");
                 f.close();
@@ -74,10 +76,10 @@ public class Messages {
         try {
             FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
             try {
-                if (w != null) {
-                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msg);
+                if (null != w) {
+                    f.write(w.getDimensionName() + ' ' + getTime() + ' ' + playerName + ':' + msg);
                 } else {
-                    f.write(getTime() + " " + playerName + ":" + msg);
+                    f.write(getTime() + ' ' + playerName + ':' + msg);
                 }
                 f.write("\n");
                 f.close();
@@ -95,10 +97,10 @@ public class Messages {
         try {
             FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
             try {
-                if (w != null) {
-                    f.write(w.getDimensionName() + " " + getTime() + " " + playerName + ":" + msgS);
+                if (null != w) {
+                    f.write(w.getDimensionName() + ' ' + getTime() + ' ' + playerName + ':' + msgS);
                 } else {
-                    f.write(getTime() + " " + playerName + ":" + msgS);
+                    f.write(getTime() + ' ' + playerName + ':' + msgS);
                 }
                 f.write("\n");
                 f.close();

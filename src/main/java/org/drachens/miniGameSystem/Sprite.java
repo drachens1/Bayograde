@@ -62,7 +62,7 @@ public class Sprite {
 
 
     public void onCollision(Sprite collided, Pos pos) {
-        if (miniGameRunnable == null) return;
+        if (null == this.miniGameRunnable) return;
         miniGameRunnable.run(collided, pos);
     }
 
@@ -73,7 +73,7 @@ public class Sprite {
         private MiniGameRunnable collisionFunction;
 
         public static void loadLayout(int weight, String layout, Map<Character, Material> ingredients, Sprite sprite) {
-            var spl = layout.split("\n");
+            String[] spl = layout.split("\n");
 
             for (int y = 0; y < spl.length; ++y) {
                 for (int x = 0; x < spl[y].length(); ++x) {

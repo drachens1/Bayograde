@@ -12,7 +12,7 @@ public abstract class MiniGame<W extends World> {
     private final Monitor monitor;
     private final W world;
 
-    public MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, W world) {
+    protected MiniGame(CPlayer p, int xMax, int yMax, Material defaultMaterial, W world) {
         this.world = world;
         ContinentalManagers.worldManager.registerWorld(world);
         Instance instance = world.getInstance();

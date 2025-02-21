@@ -2,6 +2,7 @@ package org.drachens.generalGame.country.loan;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
@@ -19,7 +20,7 @@ public class LoanAcceptCMD extends Command {
                 .append(MessageEnum.country.getComponent())
                 .append(Component.text("You don't have a loan request from that country"))
                 .build();
-        var countries = ArgumentType.String("Countries")
+        Argument<String> countries = ArgumentType.String("Countries")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     List<String> countries1 = new ArrayList<>();

@@ -2,6 +2,7 @@ package org.drachens.generalGame.country;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.ModifierCommand;
@@ -13,19 +14,19 @@ public class ModifiersCMD extends Command {
     public ModifiersCMD() {
         super("modifiers");
 
-        var modifier = ArgumentType.String("modifier")
+        Argument<String> modifier = ArgumentType.String("modifier")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
                     getSuggestionBasedOnInput(suggestion, country.getEconomy().getModifierNames());
                 });
 
-        var second = ArgumentType.String("input")
+        Argument<String> second = ArgumentType.String("input")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
                     ModifierCommand modifierCommand = country.getEconomy().getModifierCommmand(context.get(modifier));
-                    if (modifierCommand == null) {
+                    if (null == modifierCommand) {
                         p.sendMessage("You do not have that modifier");
                         return;
                     }
@@ -42,7 +43,7 @@ public class ModifiersCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ModifierCommand modifierCommand = country.getEconomy().getModifierCommmand(context.get(modifier));
-            if (modifierCommand == null) {
+            if (null == modifierCommand) {
                 p.sendMessage("You do not have that modifier");
                 return;
             }
@@ -53,7 +54,7 @@ public class ModifiersCMD extends Command {
             CPlayer p = (CPlayer) sender;
             Country country = p.getCountry();
             ModifierCommand modifierCommand = country.getEconomy().getModifierCommmand(context.get(modifier));
-            if (modifierCommand == null) {
+            if (null == modifierCommand) {
                 p.sendMessage("You do not have that modifier");
                 return;
             }
@@ -63,6 +64,6 @@ public class ModifiersCMD extends Command {
 
     private boolean notInCountry(CommandSender sender) {
         CPlayer p = (CPlayer) sender;
-        return p.getCountry() == null;
+        return null == p.getCountry();
     }
 }

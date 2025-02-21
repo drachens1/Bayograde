@@ -28,11 +28,11 @@ public class TroopMover extends HotbarItemButton {
     public void onRightClickOnBlock(OnUse onUse) {
         Province province = ContinentalManagers.world(onUse.instance()).provinceManager().getProvince(onUse.pos());
         CPlayer p = onUse.player();
-        if (province == null) return;
+        if (null == province) return;
         if (nextProv.containsKey(p)) {
             p.sendActionBar(Component.text("Moved"));
             List<Troop> troops = nextProv.get(p);
-            if (troops.isEmpty()){
+            if (troops.isEmpty()) {
                 p.sendActionBar(Component.text("empty"));
             }
             List<Troop> toRemove = new ArrayList<>();

@@ -6,14 +6,13 @@ import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.Vault;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;
-import org.drachens.interfaces.Saveable;
 
 import java.util.HashMap;
 import java.util.List;
 
 import static org.drachens.util.JsonUtil.saveHashMap;
 
-public class ClicksVault extends Vault implements Saveable {
+public class ClicksVault extends Vault {
     public ClicksVault(HashMap<CurrencyTypes, Currencies> startingCurrencies) {
         super(startingCurrencies);
     }

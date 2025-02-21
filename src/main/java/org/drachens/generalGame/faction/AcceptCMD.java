@@ -2,6 +2,7 @@ package org.drachens.generalGame.faction;
 
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -19,7 +20,7 @@ public class AcceptCMD extends Command {
 
         setCondition((sender, s) -> hasInvites(sender));
 
-        var factionNames = ArgumentType.String("faction_name")
+        Argument<String> factionNames = ArgumentType.String("faction_name")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     if (sender instanceof CPlayer player) {
                         getSuggestionBasedOnInput(suggestion, player.getCountry().getDiplomacy().getInviteKeys(InvitesEnum.faction));
@@ -31,7 +32,7 @@ public class AcceptCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer cPlayer = (CPlayer) sender;
             Faction faction = ContinentalManagers.world(cPlayer.getInstance()).countryDataManager().getFaction(context.get(factionNames));
-            if (faction == null) {
+            if (null == faction) {
                 cPlayer.sendMessage("Faction not found");
                 return;
             }
@@ -47,8 +48,7 @@ public class AcceptCMD extends Command {
     private boolean hasInvites(CommandSender sender) {
         if (sender instanceof CPlayer cPlayer) {
             Country country = cPlayer.getCountry();
-            if (country == null) return false;
-            return country.getDiplomacy().getInviteKeys(InvitesEnum.faction).isEmpty();
+            return (null != country) && country.getDiplomacy().getInviteKeys(InvitesEnum.faction).isEmpty();
         }
         return false;
     }

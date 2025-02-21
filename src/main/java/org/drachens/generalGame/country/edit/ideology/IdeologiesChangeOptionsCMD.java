@@ -22,7 +22,7 @@ public class IdeologiesChangeOptionsCMD extends Command {
             Country country = p.getCountry();
             Ideology ideology = country.getIdeology();
             List<Component> comps = new ArrayList<>();
-            ideology.getIdeologies().forEach(((ideologyTypes, aFloat) -> comps.add(Component.text()
+            ideology.getIdeologies().forEach((ideologyTypes, aFloat) -> comps.add(Component.text()
                     .append(ideologyTypes.getName())
                     .append(Component.text(" "))
                     .append(Component.text(Math.round(aFloat)))
@@ -32,7 +32,7 @@ public class IdeologiesChangeOptionsCMD extends Command {
                             .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to boost the ideology", NamedTextColor.GRAY)))
                             .clickEvent(ClickEvent.runCommand("/country edit ideologies boost " + ideologyTypes.getIdentifier())))
                     .appendNewline()
-                    .build())));
+                    .build()));
             p.sendMessage(Component.text()
                     .append(Component.text("_______/", NamedTextColor.BLUE))
                     .append(country.getComponentName())

@@ -19,9 +19,6 @@ public class ResearchCMD extends Command {
     }
 
     private boolean inCountry(CommandSender sender) {
-        if (sender instanceof CPlayer p) {
-            return p.getCountry() != null&& ContinentalManagers.generalManager.researchEnabled(p.getInstance());
-        }
-        return true;
+        return !(sender instanceof CPlayer p) || ((null != p.getCountry()) && ContinentalManagers.generalManager.researchEnabled(p.getInstance()));
     }
 }

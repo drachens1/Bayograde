@@ -14,7 +14,6 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ColoursEnum;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
 import org.drachens.Manager.defaults.enums.ModifiersEnum;
-import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.dataClasses.Countries.Ideology;
@@ -43,12 +42,12 @@ import static org.drachens.util.Messages.logMsg;
 public class MapGeneratorManager extends MapGen {
     private final HashMap<String, LawCategory> laws = new HashMap<>();
     private final List<CountryType> countryTypes;
-    HashMap<String, Integer> gMax = new HashMap<>(); //og = 4
-    HashMap<String, Integer> rgMax = new HashMap<>(); //og = 2
-    HashMap<String, Integer> yMax = new HashMap<>(); //og = 2
-    HashMap<String, Integer> lMax = new HashMap<>(); //og = 2
-    HashMap<String, Integer> grMax = new HashMap<>(); //og = 2
-    int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
+    final HashMap<String, Integer> gMax = new HashMap<>(); //og = 4
+    final HashMap<String, Integer> rgMax = new HashMap<>(); //og = 2
+    final HashMap<String, Integer> yMax = new HashMap<>(); //og = 2
+    final HashMap<String, Integer> lMax = new HashMap<>(); //og = 2
+    final HashMap<String, Integer> grMax = new HashMap<>(); //og = 2
+    final int[][] directions = {{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
     private ProvinceManager provinceManager;
     private List<CountryType> countryNames;
     private HashMap<CurrencyTypes, Currencies> currenciesHashMap;
@@ -66,7 +65,7 @@ public class MapGeneratorManager extends MapGen {
         List<LawCategory> lawCategories = new ArrayList<>();
         lawCategories.add(new LawCategory.Create("Conscription")
                 .setDefault("volunteer")
-                .addLaw(new Law("high", new Modifier.create(Component.text("Everyone serves"), "everyone_serves").addBoost(BoostEnum.recruitablePop, 1f).build(), null))
+                .addLaw(new Law("high", new Modifier.create(Component.text("Everyone serves"), "everyone_serves").addBoost(BoostEnum.recruitablePop, 1.0f).build(), null))
                 .addLaw(new Law("all-adults", new Modifier.create(Component.text("All adults serve"), "all_adults_served").addBoost(BoostEnum.recruitablePop, 0.5f).build(), null))
                 .addLaw(new Law("all-men", new Modifier.create(Component.text("All men serve"), "all_men_serve").addBoost(BoostEnum.recruitablePop, 0.3f).build(), null))
                 .addLaw(new Law("mass", new Modifier.create(Component.text("Mass conscription"), "mass_conscription").addBoost(BoostEnum.recruitablePop, 0.1f).build(), null))
@@ -113,7 +112,7 @@ public class MapGeneratorManager extends MapGen {
 
         Leader georgeV = new Leader.create(Component.text("George V")).setDescription(Component.text("\nKing of the United Kingdom, British Dominions and the Emperor of India", NamedTextColor.GRAY)).build();
 
-        CountryType[] countryTypes = new CountryType[]{//Those with puppets MUST be first
+        CountryType[] countryTypes = {//Those with puppets MUST be first
                 //Europe
                 new CountryType(IdeologiesEnum.ww2_conservatist, Component.text("Austria", ColoursEnum.WHITE.getTextColor()), "Austria", Material.SNOW_BLOCK, Material.WHITE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Kurt Schuschnigg")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_conservatist,  Component.text("Albania", ColoursEnum.PURPLE.getTextColor()), "Albania", Material.PURPLE_WOOL, Material.PURPLE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Zog I")).build(), null),
@@ -124,7 +123,7 @@ public class MapGeneratorManager extends MapGen {
                 new CountryType(IdeologiesEnum.ww2_conservatist, Component.text("Estonia", ColoursEnum.CYAN.getTextColor()), "Estonia", Material.WARPED_WART_BLOCK, Material.CYAN_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Konstantin Päts")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_conservatist, Component.text("Finland", ColoursEnum.WHITE.getTextColor()), "Finland", Material.WHITE_CONCRETE, Material.WHITE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Pehr Evind Svinhufvud")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_liberalist, Component.text("France", ColoursEnum.CYAN.getTextColor()), "France", Material.LIGHT_BLUE_TERRACOTTA, Material.PURPLE_CONCRETE_POWDER, CityNum.major, null, new Leader.create(Component.text("Albert Lebrun")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_fascist,  Component.text("German Reich", ColoursEnum.GRAY.getTextColor()), "GermanReich", Material.CYAN_TERRACOTTA, Material.GRAY_CONCRETE_POWDER, CityNum.superPower, null, new Leader.create(Component.text("Adolf Hitler")).addModifier(new Modifier.create(Component.text("Hitler"), "hitler").addBoost(BoostEnum.stabilityBase, 5f).addBoost(BoostEnum.production, 0.05f).build()).build(), null),
+                new CountryType(IdeologiesEnum.ww2_fascist,  Component.text("German Reich", ColoursEnum.GRAY.getTextColor()), "GermanReich", Material.CYAN_TERRACOTTA, Material.GRAY_CONCRETE_POWDER, CityNum.superPower, null, new Leader.create(Component.text("Adolf Hitler")).addModifier(new Modifier.create(Component.text("Hitler"), "hitler").addBoost(BoostEnum.stabilityBase, 5.0f).addBoost(BoostEnum.production, 0.05f).build()).build(), null),
                 new CountryType(IdeologiesEnum.ww2_conservatist,  Component.text("Greece", ColoursEnum.BLUE.getTextColor()), "Greece", Material.LIGHT_BLUE_CONCRETE_POWDER, Material.LIGHT_BLUE_CONCRETE, CityNum.superPower, null, new Leader.create(Component.text("George II")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist,  Component.text("Hungary", ColoursEnum.GRAY.getTextColor()), "Hungary", Material.SCULK, Material.BLACK_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Miklós Horthy")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_neutral, Component.text("Ireland", ColoursEnum.LIME.getTextColor()), "Ireland", Material.LIME_CONCRETE_POWDER, Material.LIME_CONCRETE, CityNum.minor, null, new Leader.create(Component.text("Domhnall Ua Buachalla")).build(), null),
@@ -236,7 +235,7 @@ public class MapGeneratorManager extends MapGen {
             for (int y = -getSizeY(); y < getSizeY(); y++) {
                 double noiseValue = noisePipeline.evaluateNoise(x, y);
                 Pos pos = new Pos(x, 0, y);
-                if (noiseValue < 0.01) {
+                if (0.01 > noiseValue) {
                     instance.setBlock(pos, Material.BLUE_STAINED_GLASS.block());
                 } else {
                     land.add(new FlatPos(x, y));
@@ -254,14 +253,14 @@ public class MapGeneratorManager extends MapGen {
             Country newCount = createCountry(i);
             countries.add(newCount);
             countryDataManager.addCountry(newCount);
-            if (newCount != null && Objects.equals(newCount.getName(), "Soviet-Union")) {
+            if (null != newCount && Objects.equals(newCount.getName(), "Soviet-Union")) {
                 soviet = newCount;
             }
         }
         for (int i = 0; i < countries.size(); i++) {
             Country country = countries.get(i);
-            country.getIdeology().addIdeology(votingOption.getIdeologyTypes().get(new Random().nextInt(votingOption.getIdeologyTypes().size())), new Random().nextFloat(0, 15f));
-            if (countryNames.get(i).overlord() != null) {
+            country.getIdeology().addIdeology(votingOption.getIdeologyTypes().get(new Random().nextInt(votingOption.getIdeologyTypes().size())), new Random().nextFloat(0, 15.0f));
+            if (null != this.countryNames.get(i).overlord()) {
                 String overlord = countryNames.get(i).overlord();
                 Country c = countryDataManager.getCountryFromName(overlord);
                 country.setOverlord(c);
@@ -283,16 +282,16 @@ public class MapGeneratorManager extends MapGen {
         }
         Country country;
         switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-            case VotingWinner.ww2_clicks ->
+            case ww2_clicks ->
                     country = new ClicksCountry(newCurrencies, countryName.identifier(), countryName.name(), countryName.block(), countryName.border(), defIdeology, instance, laws);
-            case VotingWinner.ww2_troops ->
+            case ww2_troops ->
                     country = new TroopCountry(newCurrencies, countryName.identifier(), countryName.name(), countryName.block(), countryName.border(), defIdeology, instance, laws);
             default ->
                     throw new IllegalArgumentException("Unexpected value: " + ContinentalManagers.world(instance).dataStorer().votingWinner);
         }
         country.getIdeology().setCurrentIdeology(countryName.ideologiesEnum.getIdeologyTypes());
-        country.getIdeology().addIdeology(countryName.ideologiesEnum().getIdeologyTypes(), new Random().nextFloat(40f, 80f));
-        if (!countryName.identifier.equals("Soviet-Union")) {
+        country.getIdeology().addIdeology(countryName.ideologiesEnum().getIdeologyTypes(), new Random().nextFloat(40.0f, 80.0f));
+        if (!"Soviet-Union".equals(countryName.identifier)) {
             Modifier m = ModifiersEnum.great_depression.getModifier().independantClone();
             m.addEventsRunner(new GreatDepressionEventsRunner(country, m));
             country.addModifier(m);
@@ -300,27 +299,28 @@ public class MapGeneratorManager extends MapGen {
         Leader leader = countryName.leader();
         leader.setIdeologyTypes(countryName.ideologiesEnum());
         country.setLeader(leader);
-        if (countryName.extra != null) {
+        if (null != countryName.extra) {
             for (Modifier modifier : countryName.extra()) {
                 country.addModifier(modifier);
             }
         }
-        if (countryName.overlord() != null) {
+        if (null != countryName.overlord()) {
             country.setOverlord(countryDataManager.getCountryFromName(countryName.overlord()));
         }
         return country;
     }
 
     private void startCountry(int i, Queue<FlatPos>[] countryQueues, List<Country> countries) {
-        countryQueues[i] = new LinkedList<>();
-        FlatPos seedPos = chooseStartingPos();
-        countryQueues[i].add(seedPos);
-        if (!countryHashMap.containsKey(seedPos)) {
-            land.remove(seedPos);
-            countryHashMap.put(seedPos, countries.get(i));
-            capitals.put(seedPos, countries.get(i));
-        } else {
-            startCountry(i, countryQueues, countries);
+        while (true) {
+            countryQueues[i] = new LinkedList<>();
+            final FlatPos seedPos = this.chooseStartingPos();
+            countryQueues[i].add(seedPos);
+            if (!this.countryHashMap.containsKey(seedPos)) {
+                this.land.remove(seedPos);
+                this.countryHashMap.put(seedPos, countries.get(i));
+                this.capitals.put(seedPos, countries.get(i));
+            } else continue;
+            return;
         }
     }
 
@@ -374,30 +374,30 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void borders(List<Country> countries) {
-        countryHashMap.forEach(((flatPos, country) -> {
+        countryHashMap.forEach((flatPos, country) -> {
             Province province = new Province(new Pos(flatPos.x(), 0, flatPos.z()), instance, country, new ArrayList<>());
             province.initialOccupier(country);
             province.setCore(country);
             provinceManager.registerProvince(flatPos.x(), flatPos.z(), province);
-        }));
-        countryHashMap.forEach(((flatPos, country) -> {
+        });
+        countryHashMap.forEach((flatPos, country) -> {
             List<FlatPos> f = getNeighbours(flatPos);
             List<Province> p = new ArrayList<>();
             f.forEach(flatPos1 -> {
                 Province province = ContinentalManagers.world(instance).provinceManager().getProvince(flatPos1);
-                if (province == null) return;
+                if (null == province) return;
                 p.add(province);
             });
             Province province = provinceManager.getProvince(flatPos);
             province.setNeighbours(p);
             check(province);
-        }));
-        capitals.forEach(((flatPos, country) -> {
+        });
+        capitals.forEach((flatPos, country) -> {
             Province province = provinceManager.getProvince(flatPos);
             province.setCity(6);
             country.setCapital(province);
             country.getMilitary().addMajorCityBlock(province, Material.EMERALD_BLOCK);
-        }));
+        });
         generateCities(countries);
     }
 
@@ -431,7 +431,7 @@ public class MapGeneratorManager extends MapGen {
 
     private void generateCities(List<Country> countries) {
         switch (ContinentalManagers.world(instance).dataStorer().votingWinner) {
-            case VotingWinner.ww2_clicks -> {
+            case ww2_clicks -> {
                 for (Country c : countries) {
                     ClicksCountry country = (ClicksCountry) c;
                     cityTypeGen(80, 5, gMax.get(country.getName()), country);
@@ -442,7 +442,7 @@ public class MapGeneratorManager extends MapGen {
                     country.calculateCapitulationPercentage();
                 }
             }
-            case VotingWinner.ww2_troops -> {
+            case ww2_troops -> {
                 for (Country c : countries) {
                     TroopCountry country = (TroopCountry) c;
                     cityTypeGen(80, 5, gMax.get(country.getName()), country);
@@ -461,7 +461,7 @@ public class MapGeneratorManager extends MapGen {
 
     private void cityTypeGen(int amount, int index, int max, Country country) {
         int t = country.getMilitary().getOccupies().size() / amount;
-        if (!(t < 1)) for (int i = 0; i < t; i++) {
+        if (!(1 > t)) for (int i = 0; i < t; i++) {
             if (t > max) break;
             Province p = country.getMilitary().getOccupies().get(new Random().nextInt(country.getMilitary().getOccupies().size()));
             if (p.isCity()) {

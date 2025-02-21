@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -18,7 +19,7 @@ import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 public class KickPlayerCustomGameCMD extends Command {
     public KickPlayerCustomGameCMD() {
         super("kick");
-        var players = ArgumentType.String("username")
+        Argument<String> players = ArgumentType.String("username")
                 .setSuggestionCallback((sender,context,suggestion)->{
                     CPlayer p = (CPlayer) sender;
                     List<String> playerss = new ArrayList<>();
@@ -26,10 +27,10 @@ public class KickPlayerCustomGameCMD extends Command {
                     getSuggestionBasedOnInput(suggestion,playerss);
                 });
 
-        addSyntax((sender,context)->{
+        addSyntax((sender, context)->{
             CPlayer p = (CPlayer) sender;
             Player target = MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(context.get(players));
-            if (target==null){
+            if (null == target){
                 p.sendMessage(Component.text("That player is null", NamedTextColor.RED));
                 return;
             }

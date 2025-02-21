@@ -25,20 +25,18 @@ public class MilitaryFactionType extends Faction implements Saveable {
 
     @Override
     public void addMember(Country country) {
-        if (country instanceof TroopCountry troopCountry)
-            getMembers().forEach(member -> {
-                TroopCountry troopCountry1 = (TroopCountry) member;
-                troopCountry.getInfo().addClientsides(troopCountry1.getAlliedTroopClientsides());
-            });
+        if (country instanceof TroopCountry troopCountry) getMembers().forEach(member -> {
+            TroopCountry troopCountry1 = (TroopCountry) member;
+            troopCountry.getInfo().addClientsides(troopCountry1.getAlliedTroopClientsides());
+        });
     }
 
     @Override
     public void removeMember(Country country) {
-        if (country instanceof TroopCountry troopCountry)
-            getMembers().forEach(member -> {
-                TroopCountry troopCountry1 = (TroopCountry) member;
-                troopCountry.getInfo().removeClientsides(troopCountry1.getAlliedTroopClientsides());
-            });
+        if (country instanceof TroopCountry troopCountry) getMembers().forEach(member -> {
+            TroopCountry troopCountry1 = (TroopCountry) member;
+            troopCountry.getInfo().removeClientsides(troopCountry1.getAlliedTroopClientsides());
+        });
     }
 
     public void addTroop(Troop troop, Country country) {

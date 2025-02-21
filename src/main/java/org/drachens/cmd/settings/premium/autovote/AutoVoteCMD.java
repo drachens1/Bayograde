@@ -18,7 +18,7 @@ public class AutoVoteCMD extends Command {
             return p.hasRank(RankEnum.deratus.getRank());
         });
 
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             p.sendMessage(Component.text()
                             .append(Component.text("Auto Vote: ",NamedTextColor.GREEN))
@@ -27,7 +27,7 @@ public class AutoVoteCMD extends Command {
                             .append(Component.text("Active: ", NamedTextColor.GREEN))
                             .append(Component.text(p.getPlayerJson().isAutoVoteActive()))
                     .build());
-        }));
+        });
 
         addSubcommand(new SetAutoVoteCMD(votingOptionsCMD));
         addSubcommand(new HelpAutoVoteCMD());

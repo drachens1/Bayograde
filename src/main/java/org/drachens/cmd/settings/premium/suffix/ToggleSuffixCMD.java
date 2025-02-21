@@ -9,7 +9,7 @@ public class ToggleSuffixCMD extends Command {
     public ToggleSuffixCMD() {
         super("toggle");
 
-        setDefaultExecutor(((sender, context) -> {
+        setDefaultExecutor((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             boolean current = !p.getPlayerJson().isSuffixActive();
             p.getPlayerJson().setSuffixActive(current);
@@ -17,6 +17,6 @@ public class ToggleSuffixCMD extends Command {
                     .append(Component.text("Active: ", NamedTextColor.GREEN))
                     .append(Component.text(current))
                     .build());
-        }));
+        });
     }
 }

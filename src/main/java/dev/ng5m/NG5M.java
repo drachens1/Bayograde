@@ -50,7 +50,7 @@ public class NG5M {
     private void setupHTTP(){
         try {
             httpServer.createContext("/purchase_success", exchange -> {
-                if (!("POST".equals(exchange.getRequestMethod()))) {
+                if (!"POST".equals(exchange.getRequestMethod())) {
                     OutputStream os = exchange.getResponseBody();
                     String response = "Bad method: " + exchange.getRequestMethod();
                     exchange.sendResponseHeaders(405, response.length());
@@ -62,7 +62,7 @@ public class NG5M {
 
                 InputStream req = exchange.getRequestBody();
 
-                String json = new String(req.readAllBytes());
+                String json = new String(req.readAllBytes(), StandardCharsets.UTF_8);
 
                 PurchaseGson purchaseGson = new Gson().fromJson(json, PurchaseGson.class);
                 boolean success = purchaseGson.verify();
@@ -71,7 +71,7 @@ public class NG5M {
             });
 
             httpServer.createContext("/purchase_cancel", exchange -> {
-                if (!("POST".equals(exchange.getRequestMethod()))) {
+                if (!"POST".equals(exchange.getRequestMethod())) {
                     OutputStream os = exchange.getResponseBody();
                     String response = "Bad method: " + exchange.getRequestMethod();
                     exchange.sendResponseHeaders(405, response.length());
@@ -83,7 +83,7 @@ public class NG5M {
 
                 InputStream req = exchange.getRequestBody();
 
-                String json = new String(req.readAllBytes());
+                String json = new String(req.readAllBytes(), StandardCharsets.UTF_8);
 
                 PurchaseGson purchaseGson = new Gson().fromJson(json, PurchaseGson.class);
                 boolean success = purchaseGson.verify();

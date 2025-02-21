@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Research.tree;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -12,6 +13,7 @@ import org.drachens.dataClasses.additional.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ResearchOption {
     private final Component descript;
     private final Component name;
@@ -34,15 +36,11 @@ public class ResearchOption {
     }
 
     public boolean canResearch(ResearchCountry country) {
-        return !country.isResearching() && country.hasResearchedAll(getRequires()) && !country.hasResearchedAny(getOr()) && !country.hasResearched(identifier);
+        return !country.isResearching() && country.hasResearchedAll(this.requiresString) && !country.hasResearchedAny(this.orString) && !country.hasResearched(identifier);
     }
 
     public Payment getCost() {
         return cost.clone();
-    }
-
-    public Modifier getModifier() {
-        return modifier;
     }
 
     public List<String> getOr() {
@@ -51,22 +49,6 @@ public class ResearchOption {
 
     public List<String> getRequires() {
         return requiresString;
-    }
-
-    public ItemStack getItem() {
-        return item;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Component getName() {
-        return name;
-    }
-
-    public Component getDescript() {
-        return descript;
     }
 
     public static class Create {
@@ -129,12 +111,12 @@ public class ResearchOption {
                         .appendNewline()
                         .build()));
             }
-            if (modifier != null && !modifier.getBoostHashMap().isEmpty()) {
+            if (null != this.modifier && !modifier.getBoostHashMap().isEmpty()) {
                 comps.add(Component.text()
                         .append(Component.text("Boosts: "))
                         .appendNewline().build());
                 modifier.getBoostHashMap().forEach((boostEnum, aFloat) -> {
-                    if (aFloat < 0) {
+                    if (0 > aFloat) {
                         comps.add(Component.text()
                                 .append(Component.text(aFloat))
                                 .append(boostEnum.getNegSymbol())

@@ -18,7 +18,7 @@ import static org.drachens.util.JsonUtil.saveHashMap;
 public class Ideology implements Saveable {
     private final Country country;
     private final HashMap<IdeologyTypes, Float> ideologies;
-    public float total = 0f;
+    public float total;
     private IdeologyTypes currentIdeology;
 
     private Ideology(HashMap<IdeologyTypes, Float> ideologies, Country country) {
@@ -31,20 +31,20 @@ public class Ideology implements Saveable {
         this.country = null;
         this.ideologies = new HashMap<>();
         for (IdeologyTypes ideologyTypes : votingOption.getIdeologyTypes()) {
-            ideologies.put(ideologyTypes, 0f);
+            ideologies.put(ideologyTypes, 0.0f);
         }
         normalizeIdeologies();
     }
 
     private void normalizeIdeologies() {
-        float totalPercentage = 0f;
+        float totalPercentage = 0.0f;
 
         for (Float value : ideologies.values()) {
             totalPercentage += value;
         }
 
-        if (totalPercentage < 100f) {
-            float deficit = 100f - totalPercentage;
+        if (100.0f > totalPercentage) {
+            float deficit = 100.0f - totalPercentage;
             int ideologyCount = ideologies.size();
             float increment = deficit / ideologyCount;
 
@@ -56,7 +56,7 @@ public class Ideology implements Saveable {
     }
 
     public void setCurrentIdeology(IdeologyTypes currentIdeology) {
-        if (this.currentIdeology != null) {
+        if (null != this.currentIdeology) {
             country.removeModifier(this.currentIdeology.getModifier());
         }
         country.addModifier(currentIdeology.getModifier());
@@ -68,23 +68,23 @@ public class Ideology implements Saveable {
             percentage += ideologies.get(ideology);
         }
 
-        if (percentage < 0f) {
-            percentage = 0f;
-        } else if (percentage > 100f) {
-            percentage = 100f;
+        if (0.0f > percentage) {
+            percentage = 0.0f;
+        } else if (100.0f < percentage) {
+            percentage = 100.0f;
         }
 
-        float totalPercentage = total + percentage - (ideologies.getOrDefault(ideology, 0f));
+        float totalPercentage = this.total + percentage - ideologies.getOrDefault(ideology, 0.0f);
 
-        if (totalPercentage > 100f) {
-            float scaleFactor = 100f / totalPercentage;
+        if (100.0f < totalPercentage) {
+            float scaleFactor = 100.0f / totalPercentage;
             for (Map.Entry<IdeologyTypes, Float> entry : ideologies.entrySet()) {
                 float currentPercentage = entry.getValue();
                 ideologies.put(entry.getKey(), currentPercentage * scaleFactor);
             }
         }
         ideologies.put(ideology, percentage);
-        total = 0f;
+        total = 0.0f;
         for (Float value : ideologies.values()) {
             total += value;
         }
@@ -93,19 +93,18 @@ public class Ideology implements Saveable {
     public void changeLeadingIdeology() {
         Pair<IdeologyTypes, Float> highest = getIdeologyTypesFloatPair();
 
-        if (currentIdeology == null) {
-            if (country.getInfo().getLeader() == null) {
+        if (null == this.currentIdeology) {
+            if (null == this.country.getInfo().getLeader()) {
                 List<Leader> leaders = highest.left().getLeaders();
                 country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
                 currentIdeology = highest.left();
                 return;
-            } else {
-                currentIdeology = country.getInfo().getLeader().getIdeologyTypes();
             }
+            currentIdeology = country.getInfo().getLeader().getIdeologyTypes();
         }
         List<Leader> leaders = new ArrayList<>(currentIdeology.getLeaders());
         if (currentIdeology != highest.left()) {
-            if (country.getInfo().getLeader() != null)
+            if (null != this.country.getInfo().getLeader())
                 country.removeModifier(country.getInfo().getLeader().getIdeologyTypes().getModifier());
             country.setLeader(leaders.get(new Random().nextInt(0, leaders.size())));
         }
@@ -125,7 +124,7 @@ public class Ideology implements Saveable {
             }
         };
         for (Map.Entry<IdeologyTypes, Float> e : ideologies.entrySet()) {
-            if (highest.right() == null || highest.right() < e.getValue()) {
+            if (null == highest.right() || highest.right() < e.getValue()) {
                 highest = new Pair<>() {
                     @Override
                     public IdeologyTypes left() {
@@ -155,7 +154,7 @@ public class Ideology implements Saveable {
     @Override
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("Current",currentIdeology.toJson());
+        jsonObject.add("Current", currentIdeology.toJson());
         jsonObject.add("total",new JsonPrimitive(total));
         HashMap<String,Float> ideologiesCopy = new HashMap<>();
         ideologies.forEach((ideologyTypes, aFloat) -> ideologiesCopy.put(ideologyTypes.getIdentifier(),aFloat));

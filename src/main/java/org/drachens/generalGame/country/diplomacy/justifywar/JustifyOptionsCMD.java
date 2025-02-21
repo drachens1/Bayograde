@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.player_types.CPlayer;
@@ -18,7 +19,7 @@ public class JustifyOptionsCMD extends Command {
     public JustifyOptionsCMD() {
         super("options");
 
-        var countries = getCountriesArgExcludingPlayersCountry();
+        Argument<String> countries = getCountriesArgExcludingPlayersCountry();
 
         setDefaultExecutor((sender, context) -> {
             sender.sendMessage("proper usage /country diplomacy justify options <country>");
@@ -27,7 +28,7 @@ public class JustifyOptionsCMD extends Command {
         addSyntax((sender, context) -> {
             CPlayer p = (CPlayer) sender;
             Country country = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
-            if (country == null) {
+            if (null == country) {
                 p.sendMessage("That country is not valid");
                 return;
             }

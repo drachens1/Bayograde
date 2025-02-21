@@ -13,7 +13,7 @@ import org.drachens.player_types.CPlayer;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class ShowEconomy extends HotbarItemButton {
-    ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
+    final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
 
     public ShowEconomy() {
         super(itemBuilder(Material.BOOK, Component.text("Show Economy"), 1));

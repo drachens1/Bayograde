@@ -8,19 +8,19 @@ import static org.drachens.util.OtherUtil.replaceWith;
 
 public record CustomLoginRecord(String join, String changeJoin, String changeLeave, String leave) {
     public Component getComponent() {
-        Component joinComponent = (join != null)
+        Component joinComponent = (null != this.join)
                 ? MiniMessage.miniMessage().deserialize(join)
                 : Component.text("Unset");
 
-        Component changeJoinComponent = (changeJoin != null)
+        Component changeJoinComponent = (null != this.changeJoin)
                 ? MiniMessage.miniMessage().deserialize(changeJoin)
                 : Component.text("Unset");
 
-        Component changeLeaveComponent = (changeLeave != null)
+        Component changeLeaveComponent = (null != this.changeLeave)
                 ? MiniMessage.miniMessage().deserialize(changeLeave)
                 : Component.text("Unset");
 
-        Component leaveComponent = (leave != null)
+        Component leaveComponent = (null != this.leave)
                 ? MiniMessage.miniMessage().deserialize(leave)
                 : Component.text("Unset");
 

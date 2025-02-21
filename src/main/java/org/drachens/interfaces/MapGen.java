@@ -13,7 +13,7 @@ public abstract class MapGen {
     private final int sizeX;
     private final int sizeY;
 
-    public MapGen(int sizeX, int sizeY) {
+    protected MapGen(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
@@ -21,7 +21,7 @@ public abstract class MapGen {
     public abstract void onGenerate(Instance instance, VotingOption votingOption);
 
     public void generate(Instance instance, VotingOption votingOption){
-        runThread(()->onGenerate(instance,votingOption));
+        runThread(()-> onGenerate(instance,votingOption));
     }
 
     public int getSizeX() {
@@ -37,8 +37,7 @@ public abstract class MapGen {
     }
 
     public void removeGenerating(Instance instance) {
-        if (generating.contains(instance))
-            this.generating.remove(instance);
+        if (generating.contains(instance)) this.generating.remove(instance);
     }
 
     public boolean isGenerating(Instance instance) {

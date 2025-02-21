@@ -12,7 +12,7 @@ import org.drachens.player_types.CPlayer;
 public abstract class ResearchBuilding extends BuildTypes {
     protected final BuildingEnum researchCenter = BuildingEnum.researchCenter;
 
-    public ResearchBuilding(int[] lvls, Material material, BuildingEnum identifier) {
+    protected ResearchBuilding(int[] lvls, Material material, BuildingEnum identifier) {
         super(lvls, material, identifier);
     }
 

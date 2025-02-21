@@ -26,7 +26,7 @@ public class FactoryButton extends BuildItem {
     public void additionalOnSwapFrom(PlayerChangeHeldSlotEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
-        if (country==null)return;
+        if (null == country) return;
         List<Clientside> clientsides = new ArrayList<>();
         p.getClientSideExtras(ClientSideExtras.factory_built).forEach(Clientside::dispose);
         p.removeClientSides(ClientSideExtras.factory_built,clientsides);
@@ -36,11 +36,11 @@ public class FactoryButton extends BuildItem {
     public void additionalOnSwapTo(PlayerChangeHeldSlotEvent e) {
         CPlayer p = (CPlayer) e.getPlayer();
         Country country = p.getCountry();
-        if (country==null)return;
+        if (null == country) return;
         List<Clientside> newClientSides = new ArrayList<>();
         Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
         List<Building> facs = country.getEconomy().getBuildingType(BuildingEnum.factory);
-        if (facs==null)return;
+        if (null == facs) return;
         facs.forEach(factor-> newClientSides.add(TextDisplay.create(factor.getCountry().getInstance(),
                 factor.getProvince().getPos().add(0.5,2,0.5), Component.text()
                         .append(Component.text(factor.getCurrentLvl()))

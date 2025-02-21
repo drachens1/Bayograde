@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Economics;
 
+import lombok.Getter;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -12,6 +13,7 @@ import java.util.function.Function;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
+@Getter
 public abstract class BuildTypes {
     protected final int[] lvlsModelData;
     private final Material material;
@@ -19,7 +21,7 @@ public abstract class BuildTypes {
     private final Function<Province, ItemStack> canItem;
     private final Function<Province, ItemStack> cantItem;
 
-    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
+    protected BuildTypes(int[] lvls, Material material, BuildingEnum identifier) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
@@ -28,7 +30,7 @@ public abstract class BuildTypes {
         cantItem = integer -> i;
     }
 
-    public BuildTypes(int[] lvls, Material material, BuildingEnum identifier, Function<Province, ItemStack> canItem, Function<Province, ItemStack> cantItem) {
+    protected BuildTypes(int[] lvls, Material material, BuildingEnum identifier, Function<Province, ItemStack> canItem, Function<Province, ItemStack> cantItem) {
         this.lvlsModelData = lvls;
         this.material = material;
         this.identifier = identifier;
@@ -96,14 +98,6 @@ public abstract class BuildTypes {
 
     public int getLvl(int current) {
         return lvlsModelData[current];
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public BuildingEnum getIdentifier() {
-        return identifier;
     }
 
     public HashSet<String> getSynonyms() {

@@ -28,7 +28,7 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 public class TroopEditGUI extends InventoryGUI {
     private final DivisionDesign design;
     private final HashMap<Integer, DivisionType> divTypeHash;
-    private final int[] coords = new int[]{11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 29, 30, 31, 32, 33, 38, 39, 40, 41, 42};
+    private final int[] coords = {11, 12, 13, 14, 15, 20, 21, 22, 23, 24, 29, 30, 31, 32, 33, 38, 39, 40, 41, 42};
 
     public TroopEditGUI(HashMap<Integer, DivisionType> dHashMap, DivisionDesign design) {
         this.divTypeHash = dHashMap;
@@ -48,13 +48,12 @@ public class TroopEditGUI extends InventoryGUI {
                 addButton(i, selectDivisionType(divTypeHash.get(i)));
             } else {
                 addButton(i, selectDivisionTypeEmpty());
-
             }
         }
-        for (int i = 16; i < 44; i += 9) {
+        for (int i = 16; 44 > i; i += 9) {
             addButton(i, sideButtons());
         }
-        for (int i = 10; i < 39; i += 9) {
+        for (int i = 10; 39 > i; i += 9) {
             addButton(i, sideButtons());
         }
         addButton(4, viewStats());
@@ -93,11 +92,11 @@ public class TroopEditGUI extends InventoryGUI {
     protected InventoryButton viewStats() {
         return new InventoryButton()
                 .creator(player -> {
-                    float hp = 0f;
-                    float atk = 0f;
-                    float def = 0f;
-                    float speed = 0f;
-                    float org = 0f;
+                    float hp = 0.0f;
+                    float atk = 0.0f;
+                    float def = 0.0f;
+                    float speed = 0.0f;
+                    float org = 0.0f;
                     Payments paymentList = new Payments();
                     for (Map.Entry<Integer, DivisionType> e : divTypeHash.entrySet()) {
                         DivisionType d = e.getValue();

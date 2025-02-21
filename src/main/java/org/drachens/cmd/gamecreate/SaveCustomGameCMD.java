@@ -8,7 +8,7 @@ public class SaveCustomGameCMD extends Command {
     public SaveCustomGameCMD() {
         super("save");
 
-        setDefaultExecutor((sender,context)->{
+        setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
             ContinentalManagers.saveManager.save(p.getInstance());
         });

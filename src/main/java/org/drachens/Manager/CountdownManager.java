@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CountdownManager {
-    HashMap<Instance, List<Countdown>> countdownHashMap = new HashMap<>();
+    final HashMap<Instance, List<Countdown>> countdownHashMap = new HashMap<>();
     public CountdownManager(){
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class,e->{
             List<Countdown> toRemove = new ArrayList<>();
             countdownHashMap.getOrDefault(e.world(),new ArrayList<>()).forEach(countdown -> {
-                if (countdown.removeOne()<=0){
+                if (0 >= countdown.removeOne()){
                     countdown.getRunnable().run();
                     toRemove.add(countdown);
                 }
