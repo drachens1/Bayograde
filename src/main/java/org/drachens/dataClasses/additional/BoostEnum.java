@@ -1,10 +1,12 @@
 package org.drachens.dataClasses.additional;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.function.Function;
 
+@Getter
 public enum BoostEnum {
     justification("\uD83D\uDC31", "\uD83E\uDD9D", true),
     ideologyGain("\uD83D\uDC29", "\uD83D\uDC3A", true),
@@ -20,34 +22,14 @@ public enum BoostEnum {
     gunCost("Gun Cost", "Gun Cost", true),
     gunAccuracy("gunacc1", "gunacc2", true);
 
-    private Component posSymbol;
-    private Component negSymbol;
-    private boolean percentage;
+    private final Component posSymbol;
+    private final Component negSymbol;
+    private final boolean percentage;
     private Function<Float, Component> c;
 
     BoostEnum(String posSymbol, String negSymbol, boolean percentage) {
         this.posSymbol = Component.text(posSymbol, NamedTextColor.WHITE);
         this.negSymbol = Component.text(negSymbol, NamedTextColor.WHITE);
         this.percentage = percentage;
-    }
-
-    BoostEnum(Function<Float, Component> c) {
-        this.c = c;
-    }
-
-    public Component getPosSymbol() {
-        return posSymbol;
-    }
-
-    public Component getNegSymbol() {
-        return negSymbol;
-    }
-
-    public boolean isPercentage() {
-        return percentage;
-    }
-
-    public Function<Float, Component> getFunction() {
-        return c;
     }
 }

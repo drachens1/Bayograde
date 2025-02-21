@@ -1,5 +1,6 @@
 package org.drachens.animation;
 
+import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.item.Material;
 import net.minestom.server.timer.Scheduler;
@@ -13,7 +14,9 @@ import java.util.HashMap;
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
 public class DynamicAnimation extends AnimationType {
+    @Getter
     private final Material item;
+    @Getter
     private final int[][] frames;
     private final Scheduler scheduler = MinecraftServer.getSchedulerManager();
     private final HashMap<ItemDisplay, Task> taskHashMap = new HashMap<>();
@@ -22,14 +25,6 @@ public class DynamicAnimation extends AnimationType {
         this.item = item;
         this.frames = frames;
         System.out.println(Arrays.deepToString(frames) +" Frames");
-    }
-
-    public Material getItem(){
-        return item;
-    }
-
-    public int[][] getFrames(){
-        return frames;
     }
 
     @Override

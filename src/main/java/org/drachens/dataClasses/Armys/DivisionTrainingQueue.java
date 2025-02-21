@@ -78,7 +78,7 @@ public class DivisionTrainingQueue implements Saveable {
 
     private void finishTrainedTroop(TrainedTroop trainedTroop) {
         Province province = building.getProvince();
-        Troop troop = new Troop(province, trainedTroop, PathingEnum.ww2.getaStarPathfinderVoids());
+        Troop troop = new Troop(province, trainedTroop, PathingEnum.ww2.getAStarPathfinderVoids());
         removeFromQueue(trainedTroop);
         TroopCountry troopCountry = (TroopCountry) building.getCountry();
         troopCountry.addTroop(troop);

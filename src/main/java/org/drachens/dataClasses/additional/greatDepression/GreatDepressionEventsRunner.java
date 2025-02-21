@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.additional.greatDepression;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.Manager.defaults.enums.ColoursEnum;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
+@Setter
 public class GreatDepressionEventsRunner implements EventsRunner, Saveable {
     private final Country country;
     private final Modifier greatDepression;
@@ -112,62 +116,6 @@ public class GreatDepressionEventsRunner implements EventsRunner, Saveable {
                 .appendNewline()
                 .append(comps)
                 .build();
-    }
-
-    public int getTimeSinceLast() {
-        return timeSinceLast;
-    }
-
-    public void setTimeSinceLast(int timeSinceLast) {
-        this.timeSinceLast = timeSinceLast;
-    }
-
-    public boolean isAbandonGoldStandard() {
-        return abandonGoldStandard;
-    }
-
-    public void setAbandonGoldStandard(boolean abandonGoldStandard) {
-        this.abandonGoldStandard = abandonGoldStandard;
-    }
-
-    public boolean isDevalueCurrencyComp() {
-        return devalueCurrencyComp;
-    }
-
-    public void setDevalueCurrencyComp(boolean devalueCurrencyComp) {
-        this.devalueCurrencyComp = devalueCurrencyComp;
-    }
-
-    public boolean isProtectionismComp() {
-        return protectionismComp;
-    }
-
-    public void setProtectionismComp(boolean protectionismComp) {
-        this.protectionismComp = protectionismComp;
-    }
-
-    public boolean isRecovery() {
-        return recovery;
-    }
-
-    public void setRecovery(boolean recovery) {
-        this.recovery = recovery;
-    }
-
-    public boolean isReform() {
-        return reform;
-    }
-
-    public void setReform(boolean reform) {
-        this.reform = reform;
-    }
-
-    public boolean isRelief() {
-        return relief;
-    }
-
-    public void setRelief(boolean relief) {
-        this.relief = relief;
     }
 
     @Override

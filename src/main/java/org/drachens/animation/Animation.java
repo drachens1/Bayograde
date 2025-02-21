@@ -1,5 +1,6 @@
 package org.drachens.animation;
 
+import lombok.Getter;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.other.ItemDisplay;
 
@@ -7,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
+@Getter
 public class Animation extends AnimationType {
     private final int[] frames;
     private final Material item;
@@ -16,18 +18,6 @@ public class Animation extends AnimationType {
         this.delayBetween = delayBetween;
         this.item = item;
         this.frames = frames;
-    }
-
-    public Material getItem(){
-        return item;
-    }
-
-    public int[] getFrames(){
-        return frames;
-    }
-
-    public long getDelayBetween(){
-        return delayBetween;
     }
 
     @Override

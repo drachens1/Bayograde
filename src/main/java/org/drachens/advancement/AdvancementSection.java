@@ -1,5 +1,7 @@
 package org.drachens.advancement;
 
+import lombok.Builder;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
@@ -7,6 +9,8 @@ import net.minestom.server.item.Material;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
+@Getter
 public class AdvancementSection {
     private final String identifier;
     private final Material item;
@@ -22,30 +26,6 @@ public class AdvancementSection {
         title = create.title;
         description = create.description;
         frameType = create.frameType;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Material getItem() {
-        return item;
-    }
-
-    public List<Advancement> getAdvancements() {
-        return advancements;
-    }
-
-    public Component getTitle() {
-        return title;
-    }
-
-    public Component getDescription() {
-        return description;
-    }
-
-    public FrameType getFrameType() {
-        return frameType;
     }
 
     public static class Create {

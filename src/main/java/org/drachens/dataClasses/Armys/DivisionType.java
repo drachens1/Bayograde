@@ -1,10 +1,14 @@
 package org.drachens.dataClasses.Armys;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
+import lombok.Setter;
 import net.minestom.server.item.ItemStack;
 import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.interfaces.Saveable;
 
+@Getter
+@Setter
 public class DivisionType implements Saveable {
     private String name;
     private float hp;
@@ -28,68 +32,12 @@ public class DivisionType implements Saveable {
         this.trainingTime = trainingTime;
     }
 
-    public float getHp() {
-        return hp;
-    }
-
-    public void setHp(float hp) {
-        this.hp = hp;
-    }
-
-    public float getAtk() {
-        return atk;
-    }
-
-    public void setAtk(float atk) {
-        this.atk = atk;
-    }
-
-    public float getDef() {
-        return def;
-    }
-
-    public void setDef(float def) {
-        this.def = def;
-    }
-
-    public float getOrg() {
-        return org;
-    }
-
-    public void setOrg(float org) {
-        this.org = org;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
     public Payment getCost() {
         return payment;
     }
 
     public void setCost(Payment payment) {
         this.payment = payment;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ItemStack getIcon() {
-        return icon;
-    }
-
-    public float getTrainingTime() {
-        return trainingTime;
     }
 
     @Override

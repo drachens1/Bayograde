@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Armys;
 
+import lombok.Getter;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.drachens.animation.Animation;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;
 
+@Getter
 public class TroopType {
     private final Animation moveAnimation;
     private final DynamicAnimation shootingAnimation;
@@ -60,45 +62,5 @@ public class TroopType {
             System.out.println("AllyMove: "+allyMoveFrames[i]);
         }
         this.allyMoveAnimation =new Animation(moveAnimation.getDelayBetween(), moveAnimation.getItem(), allyMoveFrames);
-    }
-
-    public Animation getMoveAnimation() {
-        return moveAnimation;
-    }
-
-    public DynamicAnimation getShootingAnimation() {
-        return shootingAnimation;
-    }
-
-    public AnimationType getStandstillAnimation() {
-        return standstillAnimation;
-    }
-
-    public Animation getEnemyMoveAnimation() {
-        return enemyMoveAnimation;
-    }
-
-    public DynamicAnimation getEnemyShootingAnimation() {
-        return enemyShootAnimation;
-    }
-
-    public Animation getAllyMoveAnimation() {
-        return allyMoveAnimation;
-    }
-
-    public DynamicAnimation getAllyShootingAnimation() {
-        return allyShootAnimation;
-    }
-
-    public ItemStack getOwnTroop() {
-        return ownTroop;
-    }
-
-    public ItemStack getAllyTroop() {
-        return allyTroop;
-    }
-
-    public ItemStack getEnemyTroop() {
-        return enemyTroop;
     }
 }

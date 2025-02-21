@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.additional;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,12 +16,19 @@ import java.util.Map.Entry;
 public class Modifier implements Cloneable {
     private final Component justCompName;
     private final List<Country> appliedCountries = new ArrayList<>();
+    @Getter
     private final HashMap<BoostEnum, Float> boostHashMap;
+    @Getter
     private final HashSet<ConditionEnum> conditionEnums;
+    @Getter
     private final List<EventsRunner> eventsRunners;
+    @Getter
     private final List<ModifierCommand> modifierCommands;
+    @Getter
     private final String identifier;
+    @Getter
     private Component name;
+    @Getter
     private Component description;
     private Component startDescription;
     private Modifier oldModifier;
@@ -52,16 +60,8 @@ public class Modifier implements Cloneable {
         oldModifier = this.clone();
     }
 
-    public HashMap<BoostEnum, Float> getBoostHashMap() {
-        return boostHashMap;
-    }
-
     public boolean shouldDisplay() {
         return display;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public void createDescription() {
@@ -178,24 +178,12 @@ public class Modifier implements Cloneable {
         update();
     }
 
-    public List<EventsRunner> getEventsRunners() {
-        return eventsRunners;
-    }
-
     public void addEventsRunner(EventsRunner eventsRunner) {
         eventsRunners.add(eventsRunner);
     }
 
     public void removeEventsRunner(EventsRunner eventsRunner) {
         eventsRunners.remove(eventsRunner);
-    }
-
-    public HashSet<ConditionEnum> getConditionEnums() {
-        return conditionEnums;
-    }
-
-    public List<ModifierCommand> getModifierCommands() {
-        return modifierCommands;
     }
 
     public void addCondition(ConditionEnum conditionEnum) {
@@ -210,17 +198,9 @@ public class Modifier implements Cloneable {
         return boostHashMap.getOrDefault(boostEnum, 0.0f);
     }
 
-    public Component getName() {
-        return name;
-    }
-
     public void setName(Component name) {
         this.name = name;
         update();
-    }
-
-    public Component getDescription() {
-        return description;
     }
 
     public void setDescription(Component description) {
@@ -263,6 +243,7 @@ public class Modifier implements Cloneable {
         }
     }
 
+    //todo lombok builder
     public static class create {
         private final Component name;
         private final List<ModifierCommand> modifierCommands = new ArrayList<>();
