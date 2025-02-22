@@ -8,8 +8,6 @@ import org.drachens.dataClasses.Economics.currency.Payment;
 import org.drachens.dataClasses.Research.ResearchCenter;
 import org.drachens.dataClasses.Research.ResearchCountry;
 
-import java.util.List;
-
 public class ResearchVault {
     private final Currencies research = new Currencies(CurrencyEnum.research, 0.0f);
     private final ResearchCenter researchCenter = (ResearchCenter) BuildingEnum.researchCenter.getBuildTypes();

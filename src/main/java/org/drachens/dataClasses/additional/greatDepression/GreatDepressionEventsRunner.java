@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.additional.greatDepression;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -16,10 +17,11 @@ import org.drachens.util.MessageEnum;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
-public class GreatDepressionEventsRunner implements EventsRunner, Saveable {
+public class GreatDepressionEventsRunner extends EventsRunner {
     private final Country country;
     private final Modifier greatDepression;
     private final HashMap<BoostEnum, Float> boostHashMap = new HashMap<>();
@@ -120,6 +122,27 @@ public class GreatDepressionEventsRunner implements EventsRunner, Saveable {
 
     @Override
     public JsonElement toJson() {
-        return null;
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.addProperty("country", country.toString());
+        jsonObject.addProperty("greatDepression", greatDepression.toString());
+        jsonObject.addProperty("count", count);
+        jsonObject.addProperty("timeSinceLast", timeSinceLast);
+        jsonObject.addProperty("protectionismComp", protectionismComp);
+        jsonObject.addProperty("devalueCurrencyComp", devalueCurrencyComp);
+        jsonObject.addProperty("abandonGoldStandard", abandonGoldStandard);
+        jsonObject.addProperty("relief", relief);
+        jsonObject.addProperty("recovery", recovery);
+        jsonObject.addProperty("reform", reform);
+        jsonObject.addProperty("completed", completed);
+
+        JsonObject boostJsonObject = new JsonObject();
+        for (Map.Entry<BoostEnum, Float> entry : boostHashMap.entrySet()) {
+            boostJsonObject.addProperty(entry.getKey().toString(), entry.getValue());
+        }
+
+        jsonObject.add("boostHashMap", boostJsonObject);
+
+        return jsonObject;
     }
 }

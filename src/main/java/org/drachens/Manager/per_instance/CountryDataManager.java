@@ -7,8 +7,11 @@ import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import net.minestom.server.instance.Instance;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.bossbars.YearBar;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Diplomacy.faction.Faction;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
@@ -81,12 +84,6 @@ public class CountryDataManager implements Saveable {
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
 
-        JsonArray countryNamesJsonArray = new JsonArray();
-        for (String countryName : countryNameList) {
-            countryNamesJsonArray.add(new JsonPrimitive(countryName));
-        }
-        jsonObject.add("countries", countryNamesJsonArray);
-
         JsonArray factionNamesArray = new JsonArray();
         for (String countryName : factionNames) {
             factionNamesArray.add(new JsonPrimitive(countryName));
@@ -95,9 +92,26 @@ public class CountryDataManager implements Saveable {
 
         JsonArray countriesJsonArray = new JsonArray();
         for (Country country : countries) {
-            countriesJsonArray.add(country.toJson());
+            JsonObject jsonObject1 = new JsonObject();
+            jsonObject1.add(country.getName(),country.toJson());
+            countriesJsonArray.add(jsonObject1);
         }
         jsonObject.add("countries", countriesJsonArray);
+
+        JsonArray provinces = new JsonArray();
+        ContinentalManagers.world(instance).provinceManager().getProvinceHashMap().forEach((flatPos, province) -> provinces.add(province.getActualJson()));
+        jsonObject.add("provinces",provinces);
+
+        JsonObject extra = new JsonObject();
+
+        YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
+        extra.add("day",new JsonPrimitive(yearBar.getDay()));
+        extra.add("month",new JsonPrimitive(yearBar.getMonth()));
+        extra.add("year",new JsonPrimitive(yearBar.getYear()));
+        jsonObject.add("extra",extra);
+
+        VotingOption votingOption = ContinentalManagers.world(instance).dataStorer().votingOption;
+        jsonObject.add("voting",votingOption.toJson());
         return jsonObject;
     }
 }

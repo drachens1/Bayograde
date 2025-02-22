@@ -1,5 +1,9 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -14,6 +18,7 @@ import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.additional.ModifierCommand;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.CompletionBarTextDisplay;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +27,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class Economy {
+public class Economy implements Saveable {
     private final Vault vault;
     private EconomyFactionType economyFactionType;
     private MilitaryFactionType militaryFactionType;
@@ -191,5 +196,22 @@ public class Economy {
 
     public ModifierCommand getModifierCommmand(String key){
         return modifierCommandsHashMap.get(key);
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject json = new JsonObject();
+        json.add("vault", vault.toJson());
+        json.add("economyFactionType", gson.toJsonTree(economyFactionType));
+        json.add("militaryFactionType", gson.toJsonTree(militaryFactionType));
+        json.add("loanRequests", gson.toJsonTree(loanRequests));
+        json.add("boostHashmap", gson.toJsonTree(boostHashmap));
+        json.add("modifiers",gson.toJsonTree(modifiers));
+        json.add("laws", gson.toJsonTree(laws));
+        JsonArray events = new JsonArray();
+        eventsRunners.forEach(eventsRunner -> events.add(eventsRunner.toJson()));
+        json.add("eventsRunners", events);
+        json.add("buildTypesListHashMap", gson.toJsonTree(buildTypesListHashMap));
+        return json;
     }
 }

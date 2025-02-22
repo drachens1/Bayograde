@@ -3,7 +3,7 @@ package org.drachens.dataClasses.additional;
 import com.google.gson.JsonElement;
 import org.drachens.interfaces.Saveable;
 
-public class Purges implements EventsRunner, Saveable {
+public class Purges extends EventsRunner implements Saveable {
     @Override
     public boolean newDay() {
         return false;

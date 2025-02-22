@@ -436,9 +436,7 @@ public class WW2Demands extends Demand {
         demandedAnnexation.forEach(country -> demandAnnex.add(country.getReference()));
         jsonObject.add("demandAnnexation", demandAnnex);
 
-        JsonArray demandProv = new JsonArray();
-        demandedProvinces.forEach(province -> demandProv.add(province.getReference()));
-        jsonObject.add("demandProvinces", demandProv);
+        jsonObject.add("demandProvinces", gson.toJsonTree(demandedProvinces));
 
         JsonArray demandPuppets = new JsonArray();
         demandedPuppets.forEach(country -> demandPuppets.add(country.getReference()));
@@ -452,9 +450,7 @@ public class WW2Demands extends Demand {
         offeredAnnexation.forEach(country -> offerAnnex.add(country.getReference()));
         jsonObject.add("offeredAnnexation", offerAnnex);
 
-        JsonArray offerProv = new JsonArray();
-        offeredProvinces.forEach(province -> offerProv.add(province.getReference()));
-        jsonObject.add("offeredProvinces", offerProv);
+        jsonObject.add("offeredProvinces", gson.toJsonTree(offeredProvinces));
 
         JsonArray offerPuppets = new JsonArray();
         offeredPuppets.forEach(country -> offerPuppets.add(country.getReference()));

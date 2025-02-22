@@ -1,5 +1,7 @@
 package org.drachens.dataClasses.additional;
 
-public interface EventsRunner {
-    boolean newDay();
+import org.drachens.interfaces.Saveable;
+
+public abstract class EventsRunner implements Saveable {
+    public abstract boolean newDay();
 }

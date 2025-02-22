@@ -1,6 +1,8 @@
 package org.drachens.dataClasses;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Builder;
 import lombok.Getter;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
@@ -11,9 +13,11 @@ import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.Saveable;
 import org.drachens.interfaces.War;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter
@@ -46,6 +50,22 @@ public class VotingOption implements Saveable {
 
     @Override
     public JsonElement toJson() {
-        return null;
+        JsonObject jsonObject = new JsonObject();
+
+        jsonObject.add("name",new JsonPrimitive(name));
+
+        jsonObject.addProperty("countries", countries);
+        jsonObject.addProperty("startingYear", startingYear);
+        jsonObject.addProperty("endYear", endYear);
+        jsonObject.addProperty("dayLength", dayLength);
+        jsonObject.addProperty("name", name);
+        jsonObject.addProperty("instaBuild", instaBuild);
+        jsonObject.addProperty("AIEnabled", AIEnabled);
+        jsonObject.addProperty("factionsEnabled", factionsEnabled);
+        jsonObject.addProperty("researchEnabled", researchEnabled);
+        jsonObject.addProperty("speed", speed);
+        jsonObject.addProperty("progressionRate", progressionRate);
+
+        return jsonObject;
     }
 }

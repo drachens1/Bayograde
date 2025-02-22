@@ -1,8 +1,13 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.dataClasses.Countries.CountryChat;
@@ -12,6 +17,7 @@ import org.drachens.dataClasses.Diplomacy.PuppetChat;
 import org.drachens.dataClasses.Economics.Stability;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.Clientside;
+import org.drachens.interfaces.Saveable;
 import org.drachens.player_types.CPlayer;
 
 import java.util.ArrayList;
@@ -19,7 +25,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Info {
+public class Info implements Saveable {
     private String name;
     private Material block;
     private Material border;
@@ -113,5 +119,26 @@ public class Info {
 
     public boolean hasClientside(Clientside clientside){
         return clientsides.contains(clientside);
+    }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject json = new JsonObject();
+
+        json.add("name", new JsonPrimitive(name));
+        json.add("block", new JsonPrimitive(block.name()));
+        json.add("border", new JsonPrimitive(border.name()));
+        json.add("capital", capital.toJson());
+        json.add("capitulationPoints", new JsonPrimitive(capitulationPoints));
+        json.add("maxCapitulationPoints", new JsonPrimitive(maxCapitulationPoints));
+        json.add("capitulated", new JsonPrimitive(capitulated));
+        json.add("prefix", new JsonPrimitive(PlainTextComponentSerializer.plainText().serialize(prefix)));
+        json.add("description", gson.toJsonTree(PlainTextComponentSerializer.plainText().serialize(description)));
+        json.add("originalName", gson.toJsonTree(PlainTextComponentSerializer.plainText().serialize(originalName)));
+        json.add("leader", leader.toJson());
+        json.add("ideology", ideology.toJson());
+        json.add("stability", stability.toJson());
+
+        return json;
     }
 }

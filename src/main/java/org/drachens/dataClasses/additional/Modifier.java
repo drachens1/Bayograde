@@ -1,11 +1,14 @@
 package org.drachens.dataClasses.additional;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;
+import org.drachens.interfaces.Saveable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,22 +16,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class Modifier implements Cloneable {
+@Getter
+public class Modifier implements Saveable, Cloneable  {
     private final Component justCompName;
     private final List<Country> appliedCountries = new ArrayList<>();
-    @Getter
     private final HashMap<BoostEnum, Float> boostHashMap;
-    @Getter
     private final HashSet<ConditionEnum> conditionEnums;
-    @Getter
     private final List<EventsRunner> eventsRunners;
-    @Getter
     private final List<ModifierCommand> modifierCommands;
-    @Getter
     private final String identifier;
-    @Getter
     private Component name;
-    @Getter
     private Component description;
     private Component startDescription;
     private Modifier oldModifier;
@@ -243,7 +240,16 @@ public class Modifier implements Cloneable {
         }
     }
 
-    //todo lombok builder
+    @Override
+    public JsonElement toJson() {
+        System.out.println("identifier");
+        return new JsonPrimitive(identifier);
+    }
+
+    public JsonElement actualJson() {
+        return new JsonPrimitive(identifier);
+    }
+
     public static class create {
         private final Component name;
         private final List<ModifierCommand> modifierCommands = new ArrayList<>();

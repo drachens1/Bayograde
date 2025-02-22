@@ -1,5 +1,8 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.drachens.Manager.DemandManager;
@@ -10,15 +13,16 @@ import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Province;
+import org.drachens.interfaces.Saveable;
 
 import java.util.*;
 
 @Getter
 @Setter
-public class Diplomacy {
+public class Diplomacy implements Saveable {
     private final List<Country> puppets;
     private final HashSet<String> countryWars;
-    //1 = war 2 = neutral 3 = eco ally 4 = non aggression 5 = puppet/overlord 6 = mil ally
+    //1 = war 2 = neutral 3 = eco ally 4 = non-aggression 5 = puppet/overlord 6 = mil ally
     private final HashMap<String, Integer> diplomacy;
     private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap;
     private final HashMap<String, WarJustification> warJustificationHashMap;
@@ -38,7 +42,7 @@ public class Diplomacy {
                      HashMap<String, List<Province>> bordersProvince, HashSet<String> bordersWars,
                      HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap,
                      HashMap<String, Demand> demandHashMap, HashMap<String, Demand> outgoingDemands,
-                     HashSet<ConditionEnum> conditionEnums, Country country) {
+                     HashSet<ConditionEnum> conditionEnums) {
         this.puppets = puppets;
         this.countryWars = countryWars;
         this.diplomacy = diplomacy;
@@ -267,6 +271,24 @@ public class Diplomacy {
 
     public boolean containsCondition(ConditionEnum condition) {
         return conditionEnums.contains(condition);
+    }
+
+    public JsonElement toJson() {
+        JsonObject json = new JsonObject();
+
+        json.add("countryWars", gson.toJsonTree(countryWars));
+        json.add("diplomacy", gson.toJsonTree(diplomacy));
+        json.add("nonAggressionPactHashMap", gson.toJsonTree(nonAggressionPactHashMap));
+        json.add("warJustificationHashMap", gson.toJsonTree(warJustificationHashMap));
+        json.add("completedWarJustifications", gson.toJsonTree(completedWarJustifications));
+        json.add("bordersProvince", gson.toJsonTree(bordersProvince));
+        json.add("bordersWars", gson.toJsonTree(bordersWars));
+        json.add("invitesHashMap", gson.toJsonTree(invitesHashMap));
+        json.add("demandHashMap", gson.toJsonTree(demandHashMap));
+        json.add("outgoingDemands", gson.toJsonTree(outgoingDemands));
+        json.add("conditionEnums", gson.toJsonTree(conditionEnums));
+
+        return json;
     }
 }
 

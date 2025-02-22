@@ -1,6 +1,7 @@
 package org.drachens.Manager.per_instance;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import org.drachens.dataClasses.FlatPos;
@@ -10,6 +11,7 @@ import org.drachens.interfaces.Saveable;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class ProvinceManager implements Saveable {
     private Map<FlatPos, Province> provinceHashMap;
 

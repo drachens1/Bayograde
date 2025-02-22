@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.other;
 
-import lombok.experimental.SuperBuilder;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@SuperBuilder
 public class TextDisplay extends Clientside {
     private final boolean followPlayer;
     public Component text;
@@ -32,8 +30,19 @@ public class TextDisplay extends Clientside {
     public byte bitmask;
     private EntityMetaDataPacket entityMetaDataPacket;
     private EntityTeleportPacket entityTeleportPacket;
-    private boolean hidden;
-    private final boolean offset;
+    private boolean hidden = false;
+
+    private TextDisplay(create c) {
+        super(c.instance, c.pos);
+        this.text = c.text;
+        this.lineWidth = c.lineWidth;
+        this.backgroundColor = c.backgroundColor;
+        this.opacity = c.opacity;
+        this.bitmask = c.bitmask;
+        this.followPlayer = c.followPlayer;
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
+        createEntityMetaDataPacket();
+    }
 
     private void createEntityMetaDataPacket() {
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
@@ -60,9 +69,10 @@ public class TextDisplay extends Clientside {
         map.put(9, Metadata.VarInt(ticks));//duration in ticks
         if (addition) {
             map.put(11, Metadata.Vector3(to.asVec()));
-        } else if (0 != to.y()) {
-            map.put(11, Metadata.Vector3(to.sub(this.pos.x(), pos.y(), pos.z())));
-        } else map.put(11, Metadata.Vector3(to.sub(pos.x(), 0, pos.z())));
+        } else if (to.y() != 0) {
+            map.put(11, Metadata.Vector3(to.sub(pos.x(), pos.y(), pos.z())));
+        } else
+            map.put(11, Metadata.Vector3(to.sub(pos.x(), 0, pos.z())));
 
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), new EntityMetaDataPacket(entityId, map));
     }
@@ -80,13 +90,8 @@ public class TextDisplay extends Clientside {
         createEntityMetaDataPacket();
     }
 
-    @Override
     public void setPos(Pos pos) {
-        if (offset) {
-            this.pos = pos.add(0.5, 0, 0.5);
-        } else {
-            this.pos = pos;
-        }
+        this.pos = pos;
         entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityTeleportPacket);
     }
@@ -95,15 +100,15 @@ public class TextDisplay extends Clientside {
     public void addCountry(Country country) {
         List<CPlayer> players = country.getInfo().getPlayers();
         addPlayers(players);
-        if (hidden) return;
+        if (hidden)return;
         List<Player> players1 = new ArrayList<>(players);
 
         PacketSendingUtils.sendGroupedPacket(players1, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
-                this.pos,
-                0.0f, 0, (short) 0, (short) 0, (short) 0
+                pos,
+                0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
         PacketSendingUtils.sendGroupedPacket(players1, entityMetaDataPacket);
@@ -114,8 +119,9 @@ public class TextDisplay extends Clientside {
     @Override
     public void removeCountry(Country country) {
         List<CPlayer> players = country.getInfo().getPlayers();
-        removePlayers(players);
-        if (hidden) return;
+        
+            removePlayers(players);
+        if (hidden)return;
 
         PacketSendingUtils.sendGroupedPacket(new ArrayList<>(players), new DestroyEntitiesPacket(this.entityId));
     }
@@ -123,14 +129,14 @@ public class TextDisplay extends Clientside {
     @Override
     public void addViewer(CPlayer p) {
         addPlayer(p);
-        if (hidden) return;
+        if (hidden)return;
 
         PacketSendingUtils.sendPacket(p, new SpawnEntityPacket(
                 entityId,
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
                 pos,
-                0.0f, 0, (short) 0, (short) 0, (short) 0
+                0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
         PacketSendingUtils.sendPacket(p, entityMetaDataPacket);
@@ -140,8 +146,9 @@ public class TextDisplay extends Clientside {
 
     @Override
     public void removeViewer(CPlayer p) {
-        addViewer(p);
-        if (hidden) return;
+        
+            addViewer(p);
+        if (hidden)return;
 
         PacketSendingUtils.sendPacket(p, new DestroyEntitiesPacket(this.entityId));
     }
@@ -153,7 +160,7 @@ public class TextDisplay extends Clientside {
                 uuid,
                 EntityType.TEXT_DISPLAY.id(),
                 pos,
-                0.0f, 0, (short) 0, (short) 0, (short) 0
+                0f, 0, (short) 0, (short) 0, (short) 0
         );
     }
 
@@ -163,28 +170,71 @@ public class TextDisplay extends Clientside {
     }
 
     public void hide(){
-        if (hidden) return;
-        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), getDestroyPacket());
-        hidden =true;
+        if (hidden)return;
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(),getDestroyPacket());
+        hidden=true;
     }
 
     public void show(){
-        if (!hidden) return;
-        PacketSendingUtils.sendGroupedPacket(getAsPlayers(), getSpawnPacket());
-        hidden =false;
+        if (!hidden)return;
+        PacketSendingUtils.sendGroupedPacket(getAsPlayers(),getSpawnPacket());
+        hidden=false;
     }
 
-    public static TextDisplayBuilder create(Instance instance, Pos pos, Component text){
-        return TextDisplay.builder()
-                .instance(instance)
-                .pos(pos)
-                .text(text);
-    }
+    public static class create {
+        private final Instance instance;
+        private final Component text;
+        public int lineWidth = 200;
+        public int backgroundColor = 1;
+        public byte opacity = 1;
+        public byte bitmask = 1;
+        private Pos pos;
+        private boolean followPlayer = false;
 
-    public static TextDisplayBuilder create(Province province, Component text){
-        return TextDisplay.builder()
-                .instance(province.getInstance())
-                .pos(province.getPos())
-                .text(text);
+        public create(Pos pos, Instance instance, Component text) {
+            this.pos = pos;
+            this.instance = instance;
+            this.text = text;
+        }
+
+        public create(Province province, Component text) {
+            this.pos = province.getPos();
+            this.instance = province.getInstance();
+            this.text = text;
+        }
+
+        public create setFollowPlayer(boolean active) {
+            this.followPlayer = active;
+            return this;
+        }
+
+        public create setLineWidth(int lineWidth) {
+            this.lineWidth = lineWidth;
+            return this;
+        }
+
+        public create setBackgroundColour(int colour) {
+            this.backgroundColor = colour;
+            return this;
+        }
+
+        public create setOpacity(byte b) {
+            this.opacity = b;
+            return this;
+        }
+
+        public create setBitMask(byte b) {
+            this.bitmask = b;
+            return this;
+        }
+
+        public create withOffset() {
+            pos = pos.add(0.5, 1.5, 0.5);
+            return this;
+        }
+
+        public TextDisplay build() {
+            return new TextDisplay(this);
+        }
     }
 }

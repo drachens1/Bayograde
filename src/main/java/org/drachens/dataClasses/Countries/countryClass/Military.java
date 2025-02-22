@@ -1,5 +1,9 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import net.minestom.server.instance.Instance;
@@ -7,13 +11,14 @@ import net.minestom.server.item.Material;
 import org.drachens.bossbars.CapitulationBar;
 import org.drachens.dataClasses.ImaginaryWorld;
 import org.drachens.dataClasses.Province;
+import org.drachens.interfaces.Saveable;
 import org.drachens.util.AStarPathfinderXZ;
 
 import java.util.*;
 
 @Getter
 @Setter
-public class Military {
+public class Military implements Saveable {
     private final ImaginaryWorld warsWorld;
     private final ImaginaryWorld allyWorld;
     private final List<Province> occupies;
@@ -23,8 +28,9 @@ public class Military {
     private final HashMap<Province, Material> majorCityBlocks = new HashMap<>();
     private final HashSet<String> countryWars = new HashSet<>();
     private final HashSet<String> bordersWars = new HashSet<>();
-    private final AStarPathfinderXZ aStarPathfinder;
     private final CapitulationBar capitulationBar = new CapitulationBar();
+    private final AStarPathfinderXZ aStarPathfinder;
+
 
     public Military(List<Province> occupies,
                     List<Province> cities, HashMap<String, List<Province>> occupiesOthersCores,
@@ -175,4 +181,24 @@ public class Military {
     public Set<String> getBorderWars() {
         return new HashSet<>(bordersWars);
     }
+
+    @Override
+    public JsonElement toJson() {
+        JsonObject json = new JsonObject();
+        json.add("occupies", gson.toJsonTree(occupies));
+        json.add("cities", gson.toJsonTree(cities));
+        json.add("occupiesOthersCores", gson.toJsonTree(occupiesOthersCores));
+        json.add("borderProvinces", gson.toJsonTree(borderProvinces));
+        JsonArray majorBlocks = new JsonArray();
+        majorCityBlocks.forEach((province, material) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add(material.name(),province.toJson());
+            majorBlocks.add(jsonObject);
+        });
+        json.add("majorCityBlocks", majorBlocks);
+        json.add("countryWars", gson.toJsonTree(countryWars));
+        json.add("bordersWars", gson.toJsonTree(bordersWars));
+        return json;
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -76,7 +77,7 @@ public abstract class Country implements Cloneable, Saveable {
         this.diplomacy = new Diplomacy(new ArrayList<>(), new HashSet<>(), new HashMap<>(),
                 new HashMap<>(), new HashMap<>(), new HashMap<>(),
                 new HashMap<>(), new HashSet<>(), new HashMap<>(),
-                new HashMap<>(), new HashMap<>(), new HashSet<>(), this);
+                new HashMap<>(), new HashMap<>(), new HashSet<>());
 
         HashMap<String, LawCategory> tempLaws = new HashMap<>();
         laws.forEach((key, value) -> tempLaws.put(key, new LawCategory(value, this)));
@@ -804,7 +805,13 @@ public abstract class Country implements Cloneable, Saveable {
 
     @Override
     public JsonElement toJson() {
-        return new JsonObject();
+        JsonObject json = new JsonObject();
+        json.add("diplomacy",diplomacy.toJson());
+        json.add("economy",economy.toJson());
+        json.add("info",info.toJson());
+        json.add("military",military.toJson());
+        json.add("abstract",abstractToJson());
+        return json;
     }
 
     public Block getBlockForProvince(Province province) {

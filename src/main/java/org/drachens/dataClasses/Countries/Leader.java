@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.Countries;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.drachens.Manager.defaults.enums.IdeologiesEnum;
@@ -54,7 +55,7 @@ public class Leader implements Saveable {
 
     @Override
     public JsonElement toJson() {
-        return null;
+        return new JsonPrimitive("bob");
     }
 
     public static class create {

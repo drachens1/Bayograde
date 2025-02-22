@@ -14,7 +14,8 @@ public class CountdownManager {
     public CountdownManager(){
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class,e->{
             List<Countdown> toRemove = new ArrayList<>();
-            countdownHashMap.getOrDefault(e.world(),new ArrayList<>()).forEach(countdown -> {
+            if (!countdownHashMap.containsKey(e.world()))return;
+            new ArrayList<>(countdownHashMap.get(e.world())).forEach(countdown -> {
                 if (0 >= countdown.removeOne()){
                     countdown.getRunnable().run();
                     toRemove.add(countdown);

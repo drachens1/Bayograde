@@ -18,8 +18,8 @@ public class CompletionBarTextDisplay {
 
     public CompletionBarTextDisplay(Pos pos, Instance instance, TextColor colour, Component additional) {
         pos = pos.add(0.5, 0, 0.5);
-        textDisplay = TextDisplay.create(instance, pos, Component.text(fullBar, colour))
-                .followPlayer(true)
+        textDisplay = new TextDisplay.create(pos, instance, Component.text(fullBar, colour))
+                .setFollowPlayer(true)
                 .build();
         this.colour = colour;
         this.additional=additional;

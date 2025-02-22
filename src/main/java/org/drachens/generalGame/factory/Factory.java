@@ -173,11 +173,10 @@ public class Factory extends BuildTypes {
         Province province = building.getProvince();
         long initialDelay = new Random().nextLong(0, 200);
         scheduler.buildTask(() -> {
-            TextDisplay textDisplay = TextDisplay.create(province, text)
-                    .followPlayer(true)
-                    .lineWidth(40)
-                    .offset(true)
-                    .build();
+            TextDisplay textDisplay = new TextDisplay.create(province, text)
+                    .setFollowPlayer(true)
+                    .setLineWidth(40)
+                    .withOffset().build();
             building.getCountry().addANotSavedTextDisplay(textDisplay);
             scheduler.buildTask(() -> {
                 textDisplay.moveNoRotation(new Pos(0, 4, 0), 40, true);

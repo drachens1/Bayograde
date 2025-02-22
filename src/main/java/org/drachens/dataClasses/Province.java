@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.annotations.JsonAdapter;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -354,23 +355,18 @@ public class Province implements Saveable {
         return ContinentalManagers.world(instance).provinceManager().getProvince((int) (pos.x() + x), (int) (pos.z() + z));
     }
 
-    public JsonElement getReference(){
-        return new JsonPrimitive(pos.x()+","+ pos.z());
+    public JsonElement getActualJson(){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("p",toJson());//province
+        if (combat!=null) jsonObject.add("c", combat.toJson());
+        JsonArray jsonArray2 = new JsonArray();
+        corers.forEach(country -> jsonArray2.add(country.getName()));
+        jsonObject.add("cor",jsonArray2);
+        return jsonObject;
     }
 
     @Override
     public JsonElement toJson() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("pos",new JsonPrimitive(pos.toString()));
-        jsonObject.add("occupier",new JsonPrimitive(occupier.getName()));
-        jsonObject.add("combat", combat.toJson());
-        JsonArray jsonArray = new JsonArray();
-        troops.forEach(troop -> jsonArray.add(troop.toJson()));
-        jsonObject.add("troops",jsonArray);
-        JsonArray jsonArray2 = new JsonArray();
-        corers.forEach(country -> jsonArray2.add(country.getName()));
-        jsonObject.add("corers",jsonArray2);
-        jsonObject.add("city",new JsonPrimitive(city));
-        return jsonObject;
+        return new JsonPrimitive((int) pos.x()+","+ (int) pos.z());
     }
 }

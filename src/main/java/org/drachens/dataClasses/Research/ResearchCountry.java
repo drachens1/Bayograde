@@ -1,5 +1,6 @@
 package org.drachens.dataClasses.Research;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.event.EventDispatcher;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class ResearchCountry {
     private final HashSet<String> completedResearch = new HashSet<>();
+    @Getter
     private final List<Building> researchCentersBuildings = new ArrayList<>();
     private final Modifier researchModifier;
     private ResearchOption current;
@@ -85,10 +87,6 @@ public class ResearchCountry {
 
     public boolean hasResearched(String identifier) {
         return completedResearch.contains(identifier);
-    }
-
-    public List<Building> getResearchCentersBuildings() {
-        return researchCentersBuildings;
     }
 
     public boolean hasResearchedAny(List<String> researches) {

@@ -1,5 +1,7 @@
 package org.drachens.cmd.Dev;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.ng5m.Constants;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.*;
@@ -212,7 +214,7 @@ public class DevCMD extends Command {
         addSubcommand(new CommandCreator("test")
                 .setDefaultExecutor(((sender, context) -> {
                     CPlayer p = (CPlayer) sender;
-                    System.out.println(p.getCountry().toJson());
+                    ContinentalManagers.saveManager.save(p.getInstance());
                 }))
                 .build());
     }

@@ -5,7 +5,7 @@ import org.drachens.dataClasses.Countries.IdeologyTypes;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.interfaces.Saveable;
 
-public class IdeologyGain implements EventsRunner, Saveable {
+public final class IdeologyGain extends EventsRunner implements Saveable {
     private final Country country;
     private final IdeologyTypes ideologyTypes;
     private final float dailyIncrease;

@@ -9,14 +9,8 @@ public class CompleteCreationCMD extends Command {
     public CompleteCreationCMD() {
         super("complete");
 
-        setCondition((sender, s)->{
-            CPlayer p = (CPlayer) sender;
-            return p.isLeaderOfOwnGame();
-        });
-
         setDefaultExecutor((sender, context)->{
             CPlayer p = (CPlayer) sender;
-            if (!p.isLeaderOfOwnGame()) return;
             CustomGameWorld customGameWorld = (CustomGameWorld) ContinentalManagers.worldManager.getWorld(p.getInstance());
             customGameWorld.complete();
         });

@@ -1,5 +1,6 @@
 package org.drachens.Manager;
 
+import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.server.ServerTickMonitorEvent;
 
@@ -13,6 +14,7 @@ public class ServerHealthManager {
     private final LocalTime startupTime = LocalTime.now();
     private final List<TPSData> tpsHistory = new ArrayList<>();
     private long lastTickTime = System.nanoTime();
+    @Getter
     private double tps = 20;
 
     public ServerHealthManager() {
@@ -40,10 +42,6 @@ public class ServerHealthManager {
         if (3000 < this.tpsHistory.size()) {
             tpsHistory.removeFirst();
         }
-    }
-
-    public double getTps() {
-        return tps;
     }
 
     public Double getTpsFromSecondsAgo(int seconds) {

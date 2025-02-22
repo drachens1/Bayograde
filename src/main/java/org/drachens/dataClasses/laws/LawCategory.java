@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.laws;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.interfaces.Saveable;
@@ -64,7 +66,8 @@ public class LawCategory implements Saveable {
 
     @Override
     public JsonElement toJson() {
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        return jsonObject;
     }
 
     public static class Create {
