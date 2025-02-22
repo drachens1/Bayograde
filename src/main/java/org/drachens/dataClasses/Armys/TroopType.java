@@ -19,10 +19,10 @@ public class TroopType {
     private final ItemStack ownTroop;
     private final ItemStack allyTroop;
     private final Animation allyMoveAnimation;
-    private final DynamicAnimation allyShootAnimation;
+    private final DynamicAnimation allyShootingAnimation;
     private final ItemStack enemyTroop;
     private final Animation enemyMoveAnimation;
-    private final DynamicAnimation enemyShootAnimation;
+    private final DynamicAnimation enemyShootingAnimation;
 
     public TroopType(int friendlyModelData, Material friendlyItem, int allyModelData, Material allyItem, int enemyModelData, Material enemyItem, Animation moveAnimation, DynamicAnimation shootingAnimation, AnimationType standstillAnimation) {
         ownTroop = itemBuilder(friendlyItem, friendlyModelData);
@@ -38,7 +38,7 @@ public class TroopType {
             enemyShootingFrames[i][1] += 6;
             System.out.println("EnemyShoot: "+enemyShootingFrames[i][1]);
         }
-        this.enemyShootAnimation =new DynamicAnimation(shootingAnimation.getItem(),enemyShootingFrames);
+        this.enemyShootingAnimation =new DynamicAnimation(shootingAnimation.getItem(),enemyShootingFrames);
 
         int[] enemyMoveFrames = moveAnimation.getFrames().clone();
         for (int i = 0; i < enemyMoveFrames.length; i++) {
@@ -54,7 +54,7 @@ public class TroopType {
             allyShootingFrames[i][1] += 12;
             System.out.println("AllyShoot: "+allyShootingFrames[i][1]);
         }
-        this.allyShootAnimation =new DynamicAnimation(shootingAnimation.getItem(),allyShootingFrames);
+        this.allyShootingAnimation =new DynamicAnimation(shootingAnimation.getItem(),allyShootingFrames);
 
         int[] allyMoveFrames = moveAnimation.getFrames().clone();
         for (int i = 0; i < allyMoveFrames.length; i++) {

@@ -30,8 +30,4 @@ public class ResearchVault {
     public Payment getResearch() {
         return new Payment(research);
     }
-
-    protected List<Currencies> getCustomCurrencies() {
-        return List.of(research);
-    }
 }

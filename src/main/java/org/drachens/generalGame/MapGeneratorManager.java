@@ -252,7 +252,7 @@ public class MapGeneratorManager extends MapGen {
             }
         }
 
-        MinecraftServer.getSchedulerManager().buildTask(this::createCountries).delay(10, ChronoUnit.MILLIS).schedule();
+        createCountries();
     }
 
     private void createCountries() {
@@ -304,12 +304,7 @@ public class MapGeneratorManager extends MapGen {
 
         country.getIdeology().setCurrentIdeology(countryName.ideologiesEnum().getIdeologyTypes());
         country.getIdeology().addIdeology(countryName.ideologiesEnum().getIdeologyTypes(), new Random().nextFloat(40.0f, 80.0f));
-
-        if (!"Soviet-Union".equals(countryName.identifier)) {
-            Modifier m = ModifiersEnum.great_depression.getModifier().independantClone();
-            m.addEventsRunner(new GreatDepressionEventsRunner(country, m));
-            country.addModifier(m);
-        }
+        country.getEconomy().getVault().setCountry(country);
 
         Leader leader = countryName.leader();
         leader.setIdeologyTypes(countryName.ideologiesEnum());
@@ -323,6 +318,12 @@ public class MapGeneratorManager extends MapGen {
             country.setOverlord(countryDataManager.getCountryFromName(countryName.overlord()));
         }
 
+        if (!"Soviet-Union".equals(countryName.identifier)) {
+            Modifier m = ModifiersEnum.great_depression.getModifier().independantClone();
+            m.addEventsRunner(new GreatDepressionEventsRunner(country, m));
+            country.addModifier(m);
+        }
+
         return country;
     }
 
@@ -334,8 +335,9 @@ public class MapGeneratorManager extends MapGen {
         return clonedCurrencies;
     }
 
-    private void floodFill(List<Country> countries) {
+    public void floodFill(List<Country> countries) {
         Queue<FlatPos>[] countryQueues = new Queue[countries.size()];
+
         for (int i = 0; i < countries.size(); i++) {
             countryQueues[i] = new LinkedList<>();
             startCountry(i, countryQueues, countries);
@@ -344,16 +346,13 @@ public class MapGeneratorManager extends MapGen {
         boolean anyQueueHadExpansion;
         do {
             anyQueueHadExpansion = false;
-
             for (int i = 0; i < countries.size(); i++) {
-                Queue<FlatPos> queue = countryQueues[i];
-                Country country = countries.get(i);
-                while (!queue.isEmpty()) {
-                    FlatPos currentPos = queue.poll();
+                if (!countryQueues[i].isEmpty()) {
+                    FlatPos currentPos = countryQueues[i].poll();
                     for (FlatPos neighbor : getNeighbours(currentPos)) {
                         if (land.contains(neighbor) && !countryHashMap.containsKey(neighbor)) {
-                            queue.add(neighbor);
-                            countryHashMap.put(neighbor, country);
+                            countryQueues[i].add(neighbor);
+                            countryHashMap.put(neighbor, countries.get(i));
                             anyQueueHadExpansion = true;
                             land.remove(neighbor);
                         }
@@ -362,7 +361,7 @@ public class MapGeneratorManager extends MapGen {
             }
         } while (anyQueueHadExpansion);
 
-        land.forEach(pos -> instance.setBlock(new Pos(pos.x(), 0, pos.z()), Material.WHITE_TERRACOTTA.block()));
+        land.forEach(z -> instance.setBlock(new Pos(z.x(), 0, z.z()), Material.WHITE_TERRACOTTA.block()));
 
         borders(countries);
     }

@@ -41,12 +41,12 @@ public class Economy {
                    CompletionBarTextDisplay capitulationTextBar, HashMap<String, Modifier> modifiers,
                    HashMap<String, ModifierCommand> modifierCommandsHashMap, List<Modifier> visibleModifiers,
                    HashMap<String, LawCategory> laws, List<EventsRunner> eventsRunners) {
+        this.capitulationTextBar = capitulationTextBar;
         this.vault = vault;
         this.economyFactionType = economyFactionType;
         this.militaryFactionType = militaryFactionType;
         this.loanRequests.putAll(loanRequests);
         this.boostHashmap.putAll(boostHashmap);
-        this.capitulationTextBar = capitulationTextBar;
         this.modifiers.putAll(modifiers);
         this.modifierCommandsHashMap.putAll(modifierCommandsHashMap);
         this.visibleModifiers.addAll(visibleModifiers);

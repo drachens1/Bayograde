@@ -1,6 +1,7 @@
 package org.drachens.generalGame.troops;
 
 import com.google.gson.JsonElement;
+import lombok.Getter;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Province;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Combat implements Saveable {
+    @Getter
     private final Province province;
     private final List<Troop> attackers = new ArrayList<>();
     private final List<Troop> defenders = new ArrayList<>();
@@ -98,10 +100,6 @@ public class Combat implements Saveable {
 
     public boolean isActive() {
         return isActive;
-    }
-
-    public Province getProvince() {
-        return province;
     }
 
     @Override

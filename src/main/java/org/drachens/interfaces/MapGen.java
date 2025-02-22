@@ -1,5 +1,6 @@
 package org.drachens.interfaces;
 
+import lombok.Getter;
 import net.minestom.server.instance.Instance;
 import org.drachens.dataClasses.VotingOption;
 
@@ -10,7 +11,9 @@ import static org.drachens.util.OtherUtil.runThread;
 
 public abstract class MapGen {
     private final List<Instance> generating = new ArrayList<>();
+    @Getter
     private final int sizeX;
+    @Getter
     private final int sizeY;
 
     protected MapGen(int sizeX, int sizeY) {
@@ -22,14 +25,6 @@ public abstract class MapGen {
 
     public void generate(Instance instance, VotingOption votingOption){
         runThread(()-> onGenerate(instance,votingOption));
-    }
-
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public int getSizeY() {
-        return sizeY;
     }
 
     public void addGenerating(Instance instance) {

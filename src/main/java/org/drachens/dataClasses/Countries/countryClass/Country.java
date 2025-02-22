@@ -73,15 +73,28 @@ public abstract class Country implements Cloneable, Saveable {
     protected Country(String name, Component nameComponent, Material block, Material border,
                       Ideology defaultIdeologies, Instance instance,
                       Vault vault, HashMap<String, LawCategory> laws) {
-
-        this.instance=instance;
+        this.diplomacy = new Diplomacy(new ArrayList<>(), new HashSet<>(), new HashMap<>(),
+                new HashMap<>(), new HashMap<>(), new HashMap<>(),
+                new HashMap<>(), new HashSet<>(), new HashMap<>(),
+                new HashMap<>(), new HashMap<>(), new HashSet<>(), this);
 
         HashMap<String, LawCategory> tempLaws = new HashMap<>();
         laws.forEach((key, value) -> tempLaws.put(key, new LawCategory(value, this)));
+        this.economy = new Economy(vault, null, null, new HashMap<>(), new HashMap<>(),
+                null, new HashMap<>(), new HashMap<>(), new ArrayList<>(),tempLaws,new ArrayList<>());
 
-        Ideology tempIdeology = defaultIdeologies.clone(this);
-        Stability tempStability = new Stability(50.0f, this);
-        CountryChat tempCountryChat = new CountryChat(this);
+        AStarPathfinderXZ tempPathfinder = new AStarPathfinderXZ(ContinentalManagers.world(instance).provinceManager());
+
+        this.military = new Military(new ArrayList<>(), new ArrayList<>(), new HashMap<>(),
+                new HashMap<>(), new HashSet<>(), new HashSet<>(),
+                tempPathfinder,instance);
+
+        Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
+                Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
+
+        this.city = new ArrayList<>();
+        this.city.addAll(List.of(tempCities));
+        this.mapGen =ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
 
         ResearchCountry tempResearchCountry = null;
         ResearchVault tempResearchVault = null;
@@ -90,37 +103,22 @@ public abstract class Country implements Cloneable, Saveable {
             tempResearchVault = new ResearchVault(tempResearchCountry);
         }
 
-        AStarPathfinderXZ tempPathfinder = new AStarPathfinderXZ(ContinentalManagers.world(instance).provinceManager());
-
-        this.info = new Info(name, block, border, null, 100.0f, 100.0f, false,
-                Component.text(name, NamedTextColor.BLUE), Component.text("Description"),
-                nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name)),
-                null, null, new ArrayList<>(), instance, tempCountryChat,
-                tempIdeology, tempStability);
-
         if (ContinentalManagers.generalManager.researchEnabled(instance)) {
             this.research = new Research(tempResearchCountry, tempResearchVault);
         } else {
             this.research = null;
         }
 
-        this.diplomacy = new Diplomacy(new ArrayList<>(), new HashSet<>(), new HashMap<>(),
-                new HashMap<>(), new HashMap<>(), new HashMap<>(),
-                new HashMap<>(), new HashSet<>(), new HashMap<>(),
-                new HashMap<>(), new HashMap<>(), new HashSet<>(), this);
+        this.instance=instance;
 
-        this.economy = new Economy(vault, null, null, new HashMap<>(), new HashMap<>(),
-                null, new HashMap<>(), new HashMap<>(), new ArrayList<>(),tempLaws,new ArrayList<>());
+        Ideology tempIdeology = defaultIdeologies.clone(this);
+        CountryChat tempCountryChat = new CountryChat(this);
 
-        this.military = new Military(new ArrayList<>(), new ArrayList<>(), new HashMap<>(),
-                new HashMap<>(), new HashSet<>(), new HashSet<>(),
-                tempPathfinder,instance);
-
-        Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
-                Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
-        this.city = new ArrayList<>();
-        this.city.addAll(List.of(tempCities));
-        this.mapGen =ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
+        this.info = new Info(name, block, border, null, 100.0f, 100.0f, false,
+                Component.text(name, NamedTextColor.BLUE), Component.text("Description"),
+                nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name)),
+                null, null, new ArrayList<>(), instance, tempCountryChat,
+                tempIdeology, new Stability(50.0f, this));
     }
 
     public void init() {
@@ -276,7 +274,9 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void setCapital(Province capital) {
         this.info.setCapital(capital);
-        this.economy.getCapitulationTextBar().getTextDisplay().setPos(capital.getPos().add(0, 3, 0));
+        if (economy.getCapitulationTextBar()!=null){
+            this.economy.getCapitulationTextBar().getTextDisplay().setPos(capital.getPos().add(0, 3, 0));
+        }
     }
 
     public void addPlayer(CPlayer p) {
@@ -395,19 +395,13 @@ public abstract class Country implements Cloneable, Saveable {
     }
 
     public void addClientside(Clientside clientside) {
-        while (true) {
-            info.addClientside(clientside);
-            if (this.hasOverlord()) info.getOverlord().addClientside(clientside);
-            return;
-        }
+        info.addClientside(clientside);
+        if (this.hasOverlord()) info.getOverlord().addClientside(clientside);
     }
 
     public void removeClientside(Clientside clientside) {
-        while (true) {
-            info.removeClientside(clientside);
-            if (this.hasOverlord()) info.getOverlord().removeClientside(clientside);
-            return;
-        }
+        info.removeClientside(clientside);
+        if (this.hasOverlord()) info.getOverlord().removeClientside(clientside);
     }
 
     public void addANotSavedTextDisplay(TextDisplay textDisplay) {
@@ -702,7 +696,7 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void nextDay(NewDay newDay) {
         List<EventsRunner> e = new ArrayList<>();
-        this.economy.getEventsRunners().forEach(eventsRunner -> {
+        new ArrayList<>(this.economy.getEventsRunners()).forEach(eventsRunner -> {
             if (eventsRunner.newDay()) e.add(eventsRunner);
         });
 

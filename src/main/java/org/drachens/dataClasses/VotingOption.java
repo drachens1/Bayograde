@@ -33,7 +33,7 @@ public class VotingOption implements Saveable {
     private final boolean AIEnabled;
     private final boolean factionsEnabled;
     private final boolean researchEnabled;
-    private final long speed;
+    private final long speed = 1L;
     private final long progressionRate;
 
     public static VotingOptionBuilder create(int startingYear, int endYear, Long dayLength, String name) {

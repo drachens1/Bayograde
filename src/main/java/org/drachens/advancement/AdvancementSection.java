@@ -1,6 +1,5 @@
 package org.drachens.advancement;
 
-import lombok.Builder;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.advancements.FrameType;
@@ -9,7 +8,6 @@ import net.minestom.server.item.Material;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
 public class AdvancementSection {
     private final String identifier;

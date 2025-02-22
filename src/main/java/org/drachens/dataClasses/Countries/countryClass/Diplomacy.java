@@ -18,6 +18,7 @@ import java.util.*;
 public class Diplomacy {
     private final List<Country> puppets;
     private final HashSet<String> countryWars;
+    //1 = war 2 = neutral 3 = eco ally 4 = non aggression 5 = puppet/overlord 6 = mil ally
     private final HashMap<String, Integer> diplomacy;
     private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap;
     private final HashMap<String, WarJustification> warJustificationHashMap;
@@ -79,7 +80,7 @@ public class Diplomacy {
     }
 
     public Integer getDiplomaticRelation(String country) {
-        return diplomacy.get(country);
+        return diplomacy.getOrDefault(country,2);
     }
 
     public void addDiplomaticRelation(String country, int value) {

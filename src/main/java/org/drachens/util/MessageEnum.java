@@ -1,9 +1,11 @@
 package org.drachens.util;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
+@Getter
 public enum MessageEnum {
     faction(Component.text()
             .append(Component.text(" | ", NamedTextColor.BLUE, TextDecoration.BOLD))
@@ -52,7 +54,4 @@ public enum MessageEnum {
         this.component = component;
     }
 
-    public Component getComponent() {
-        return component;
-    }
 }
