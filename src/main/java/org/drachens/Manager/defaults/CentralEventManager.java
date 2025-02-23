@@ -189,12 +189,13 @@ public class CentralEventManager {
             Country attacker = e.attacker();
             attacker.addModifier(e.warJustification().modifier());
             attacker.getDiplomacy().removeCompletedWarJustification(defender.getName());
+
             List<Component> warsWith = new ArrayList<>();
             List<Country> atks = new ArrayList<>();
+
             atks.add(attacker);
             if (attacker.hasPuppets()) {
                 atks.addAll(attacker.getDiplomacy().getPuppets());
-                warsWith.removeLast();
             } else if (attacker.hasOverlord()) {
                 atks.addAll(attacker.getInfo().getOverlord().getDiplomacy().getPuppets());
                 atks.add(attacker.getInfo().getOverlord());
@@ -202,14 +203,13 @@ public class CentralEventManager {
 
             List<Component> warsAgainst = new ArrayList<>();
             List<Country> defs = new ArrayList<>();
+
             defs.add(defender);
             if (defender.hasPuppets()) {
                 defs.addAll(defender.getDiplomacy().getPuppets());
             } else if (defender.hasOverlord()) {
                 defs.addAll(defender.getInfo().getOverlord().getDiplomacy().getPuppets());
                 defs.add(defender.getInfo().getOverlord());
-            } else {
-                defender.addCountryWar(attacker);
             }
 
             defs.forEach(country -> atks.forEach(country1 -> {

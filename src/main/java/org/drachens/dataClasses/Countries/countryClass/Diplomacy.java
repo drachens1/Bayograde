@@ -1,6 +1,6 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -12,23 +12,22 @@ import org.drachens.Manager.defaults.enums.InvitesEnum;
 import org.drachens.dataClasses.Diplomacy.Demand;
 import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
-import org.drachens.dataClasses.Province;
 import org.drachens.interfaces.Saveable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 public class Diplomacy implements Saveable {
     private final List<Country> puppets;
-    private final HashSet<String> countryWars;
     //1 = war 2 = neutral 3 = eco ally 4 = non-aggression 5 = puppet/overlord 6 = mil ally
     private final HashMap<String, Integer> diplomacy;
     private final HashMap<String, NonAggressionPact> nonAggressionPactHashMap;
     private final HashMap<String, WarJustification> warJustificationHashMap;
     private final HashMap<String, WarJustification> completedWarJustifications;
-    private final HashMap<String, List<Province>> bordersProvince;
-    private final HashSet<String> bordersWars;
     private final HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap;
     private final HashMap<String, Demand> demandHashMap;
     private final HashMap<String, Demand> outgoingDemands;
@@ -38,19 +37,15 @@ public class Diplomacy implements Saveable {
     public Diplomacy(List<Country> puppets, HashSet<String> countryWars, HashMap<String, Integer> diplomacy,
                      HashMap<String, NonAggressionPact> nonAggressionPactHashMap,
                      HashMap<String, WarJustification> warJustificationHashMap,
-                     HashMap<String, WarJustification> completedWarJustifications,
-                     HashMap<String, List<Province>> bordersProvince, HashSet<String> bordersWars,
+                     HashMap<String, WarJustification> completedWarJustifications, HashSet<String> bordersWars,
                      HashMap<InvitesEnum, HashMap<String, Object>> invitesHashMap,
                      HashMap<String, Demand> demandHashMap, HashMap<String, Demand> outgoingDemands,
                      HashSet<ConditionEnum> conditionEnums) {
         this.puppets = puppets;
-        this.countryWars = countryWars;
         this.diplomacy = diplomacy;
         this.nonAggressionPactHashMap = nonAggressionPactHashMap;
         this.warJustificationHashMap = warJustificationHashMap;
         this.completedWarJustifications = completedWarJustifications;
-        this.bordersProvince = bordersProvince;
-        this.bordersWars = bordersWars;
         this.invitesHashMap = invitesHashMap;
         this.demandHashMap = demandHashMap;
         this.outgoingDemands = outgoingDemands;
@@ -71,32 +66,12 @@ public class Diplomacy implements Saveable {
         return puppets.contains(country);
     }
 
-    public void addCountryWar(String war) {
-        countryWars.add(war);
-    }
-
-    public void removeCountryWar(String war) {
-        countryWars.remove(war);
-    }
-
-    public boolean containsCountryWar(String war) {
-        return countryWars.contains(war);
-    }
-
     public Integer getDiplomaticRelation(String country) {
-        return diplomacy.getOrDefault(country,2);
+        return diplomacy.getOrDefault(country,1);
     }
 
     public void addDiplomaticRelation(String country, int value) {
         diplomacy.put(country, value);
-    }
-
-    public void removeDiplomaticRelation(String country) {
-        diplomacy.remove(country);
-    }
-
-    public boolean containsDiplomaticRelation(String country) {
-        return diplomacy.containsKey(country);
     }
 
     public NonAggressionPact getNonAggressionPact(String country) {
@@ -151,43 +126,8 @@ public class Diplomacy implements Saveable {
         return completedWarJustifications.containsKey(country);
     }
 
-    public List<Province> getBorderProvinces(String country) {
-        return bordersProvince.getOrDefault(country,new ArrayList<>());
-    }
-
-    public void addBorderProvince(String country, Province province) {
-        bordersProvince.computeIfAbsent(country, k -> new ArrayList<>()).add(province);
-    }
-
-    public void removeBorderProvince(String country) {
-        bordersProvince.remove(country);
-    }
-
-    public void removeBorderProvince(String country, Province province) {
-        bordersProvince.computeIfPresent(country, (key, provinces) -> {
-            provinces.remove(province);
-            return provinces.isEmpty() ? null : provinces;
-        });
-    }
-
-    public boolean containsBorderProvince(String country) {
-        return bordersProvince.containsKey(country);
-    }
-
-    public void addBorderWar(String war) {
-        bordersWars.add(war);
-    }
-
-    public void removeBorderWar(String war) {
-        bordersWars.remove(war);
-    }
-
-    public boolean containsBorderWar(String war) {
-        return bordersWars.contains(war);
-    }
-
     public Set<String> getInviteKeys(InvitesEnum invitesEnum){
-        return invitesHashMap.get(invitesEnum).keySet();
+        return invitesHashMap.getOrDefault(invitesEnum,new HashMap<>()).keySet();
     }
 
     public Object getInvite(InvitesEnum inviteType, String key) {
@@ -276,17 +216,52 @@ public class Diplomacy implements Saveable {
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
 
-        json.add("countryWars", gson.toJsonTree(countryWars));
         json.add("diplomacy", gson.toJsonTree(diplomacy));
-        json.add("nonAggressionPactHashMap", gson.toJsonTree(nonAggressionPactHashMap));
-        json.add("warJustificationHashMap", gson.toJsonTree(warJustificationHashMap));
-        json.add("completedWarJustifications", gson.toJsonTree(completedWarJustifications));
-        json.add("bordersProvince", gson.toJsonTree(bordersProvince));
-        json.add("bordersWars", gson.toJsonTree(bordersWars));
+
+        JsonArray nonAggressArray = new JsonArray();
+        nonAggressionPactHashMap.forEach((string, nonAggressionPact) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add(string,nonAggressionPact.toJson());
+            nonAggressArray.add(jsonObject);
+        });
+        json.add("nonAggressionPactHashMap", nonAggressArray);
+
+        JsonArray warJustArray = new JsonArray();
+        warJustificationHashMap.forEach((string, warJustification) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add(string,warJustification.toJson());
+            warJustArray.add(jsonObject);
+        });
+        json.add("warJustificationHashMap", warJustArray);
+
+        JsonArray warCompJustArray = new JsonArray();
+        completedWarJustifications.forEach((string, warJustification) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add(string,warJustification.toJson());
+            warCompJustArray.add(jsonObject);
+        });
+        json.add("completedWarJustifications", warCompJustArray);
         json.add("invitesHashMap", gson.toJsonTree(invitesHashMap));
-        json.add("demandHashMap", gson.toJsonTree(demandHashMap));
-        json.add("outgoingDemands", gson.toJsonTree(outgoingDemands));
-        json.add("conditionEnums", gson.toJsonTree(conditionEnums));
+
+        JsonArray demandArray = new JsonArray();
+        demandHashMap.forEach((string, demand) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add(string,demand.toJson());
+            demandArray.add(jsonObject);
+        });
+        json.add("demandHashMap", demandArray);
+
+        JsonArray outgoingDemandArray = new JsonArray();
+        outgoingDemands.forEach((string, demand) -> {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add(string,demand.toJson());
+            outgoingDemandArray.add(jsonObject);
+        });
+        json.add("outgoingDemands", outgoingDemandArray);
+
+        JsonArray conditionArray = new JsonArray();
+        conditionEnums.forEach(condition-> conditionArray.add(condition.name()));
+        json.add("conditionEnums", conditionArray);
 
         return json;
     }

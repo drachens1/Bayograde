@@ -8,6 +8,7 @@ import net.minestom.server.event.EventDispatcher;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.events.VoteEvent;
+import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class VotingOptionCMD extends Command {
@@ -20,7 +21,7 @@ public class VotingOptionCMD extends Command {
                 p.sendMessage(Component.text("It is not a voting session", NamedTextColor.RED));
                 return;
             }
-            EventDispatcher.call(new VoteEvent(p, votingOption));
+            EventDispatcher.call(new VoteEvent((CPlayer) p, votingOption));
         });
     }
 }

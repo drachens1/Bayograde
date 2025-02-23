@@ -21,7 +21,6 @@ import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.player_types.CPlayer;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -155,7 +154,6 @@ public class Factory extends BuildTypes {
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));
         int add = (num - 1) * 2;
         int[] newFrames = {2 + add, 3 + add};
-        System.out.println(Arrays.toString(newFrames) +" : "+building.getCurrentLvl());
         Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, newFrames);
         smokeAnimation.start(itemDisplay, true);
     }

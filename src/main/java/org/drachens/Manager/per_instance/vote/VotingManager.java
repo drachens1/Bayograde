@@ -64,7 +64,7 @@ public class VotingManager {
         MinecraftServer.getGlobalEventHandler().addListener(VoteEvent.class, e -> {
             broadcast(Component.text()
                             .append(MessageEnum.vote.getComponent())
-                            .append(e.p().getName())
+                            .append(e.p().getCplayerName())
                             .append(Component.text(" has voted for ", NamedTextColor.GREEN))
                             .append(Component.text(e.voted().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
                             .build()

@@ -3,7 +3,6 @@ package org.drachens.dataClasses.Countries.countryClass;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import net.minestom.server.instance.Instance;
@@ -125,6 +124,10 @@ public class Military implements Saveable {
         });
     }
 
+    public boolean containsBorder(String country) {
+        return borderProvinces.containsKey(country);
+    }
+
     public boolean containsBorder(String country, Province province) {
         return borderProvinces.containsKey(country) && borderProvinces.get(country).contains(province);
     }
@@ -178,23 +181,28 @@ public class Military implements Saveable {
         return bordersWars.contains(war);
     }
 
-    public Set<String> getBorderWars() {
-        return new HashSet<>(bordersWars);
-    }
-
     @Override
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.add("occupies", gson.toJsonTree(occupies));
         json.add("cities", gson.toJsonTree(cities));
         json.add("occupiesOthersCores", gson.toJsonTree(occupiesOthersCores));
-        json.add("borderProvinces", gson.toJsonTree(borderProvinces));
+        JsonArray bordersProvinceArray = new JsonArray();
+        borderProvinces.forEach((string, provinces) -> {
+            JsonObject jsonObject = new JsonObject();
+            JsonArray provinceArray = new JsonArray();
+            provinces.forEach(province -> provinceArray.add(province.toJson()));
+            jsonObject.add(string,provinceArray);
+            bordersProvinceArray.add(jsonObject);
+        });
+        json.add("bordersProvince", bordersProvinceArray);
         JsonArray majorBlocks = new JsonArray();
         majorCityBlocks.forEach((province, material) -> {
             JsonObject jsonObject = new JsonObject();
             jsonObject.add(material.name(),province.toJson());
             majorBlocks.add(jsonObject);
         });
+
         json.add("majorCityBlocks", majorBlocks);
         json.add("countryWars", gson.toJsonTree(countryWars));
         json.add("bordersWars", gson.toJsonTree(bordersWars));

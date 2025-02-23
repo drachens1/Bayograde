@@ -33,6 +33,7 @@ import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.generalGame.clicks.ClicksCountry;
 import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.interfaces.MapGen;
+import org.drachens.interfaces.ai.AIManager;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -481,7 +482,11 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void finalLoop(List<Country> countries) {
-        countries.forEach(Country::init);
+        AIManager aiManager = ContinentalManagers.centralAIManager.getAIManagerFor(instance);
+        countries.forEach(country -> {
+            country.init();
+            //aiManager.createAIForCountry(country);
+        });
     }
 
     private enum CityNum {

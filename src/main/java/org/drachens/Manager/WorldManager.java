@@ -10,6 +10,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.*;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.World;
@@ -105,6 +106,7 @@ public class WorldManager {
             if (p.isUsingMod()) playerModsManager.putPlayer(p, e.getInstance());
             playerHashSet.put(p, p.getInstance());
             worldHashMap.get(p.getInstance()).addPlayer(p);
+            p.getInstance().getPlayers().forEach(player -> PacketSendingUtils.sendPacket(p,ContinentalManagers.tabManager.getPacketForPlayer((CPlayer) player)));
         });
     }
 

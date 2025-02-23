@@ -45,7 +45,7 @@ public class ItemDisplay extends Clientside {
 
 
     public ItemDisplay(ItemStack item, Province province, DisplayType displayType) {
-        super(province.getInstance(), province.getPos());
+        super(province.getInstance(), province.getPos().add(0.5,1.5,0.5));
 
         this.item = item;
         this.displayType = displayType.getSerialized();

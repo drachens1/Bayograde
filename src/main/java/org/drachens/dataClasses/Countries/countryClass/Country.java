@@ -1,10 +1,11 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -17,6 +18,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.DemandManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.ColoursEnum;
 import org.drachens.Manager.defaults.enums.ConditionEnum;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Countries.CountryChat;
@@ -41,6 +43,7 @@ import org.drachens.dataClasses.additional.Modifier;
 import org.drachens.dataClasses.additional.ModifierCommand;
 import org.drachens.dataClasses.laws.LawCategory;
 import org.drachens.dataClasses.other.Clientside;
+import org.drachens.dataClasses.other.CompletionBarTextDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
@@ -50,6 +53,7 @@ import org.drachens.generalGame.research.ResearchVault;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.Saveable;
+import org.drachens.interfaces.ai.AI;
 import org.drachens.player_types.CPlayer;
 import org.drachens.util.AStarPathfinderXZ;
 import org.drachens.util.MessageEnum;
@@ -70,14 +74,19 @@ public abstract class Country implements Cloneable, Saveable {
     private final Economy economy;
     private final Military military;
     private final MapGen mapGen;
+    private final String name;
+    @Setter
+    private AI ai;
 
     protected Country(String name, Component nameComponent, Material block, Material border,
                       Ideology defaultIdeologies, Instance instance,
                       Vault vault, HashMap<String, LawCategory> laws) {
         this.diplomacy = new Diplomacy(new ArrayList<>(), new HashSet<>(), new HashMap<>(),
-                new HashMap<>(), new HashMap<>(), new HashMap<>(),
+                new HashMap<>(), new HashMap<>(),
                 new HashMap<>(), new HashSet<>(), new HashMap<>(),
                 new HashMap<>(), new HashMap<>(), new HashSet<>());
+
+        this.name=name;
 
         HashMap<String, LawCategory> tempLaws = new HashMap<>();
         laws.forEach((key, value) -> tempLaws.put(key, new LawCategory(value, this)));
@@ -97,29 +106,36 @@ public abstract class Country implements Cloneable, Saveable {
         this.city.addAll(List.of(tempCities));
         this.mapGen =ContinentalManagers.world(instance).dataStorer().votingOption.getMapGenerator();
 
-        ResearchCountry tempResearchCountry = null;
-        ResearchVault tempResearchVault = null;
-        if (ContinentalManagers.world(instance).dataStorer().votingOption.isResearchEnabled()) {
-            tempResearchCountry = new ResearchCountry(this);
-            tempResearchVault = new ResearchVault(tempResearchCountry);
-        }
-
         if (ContinentalManagers.generalManager.researchEnabled(instance)) {
-            this.research = new Research(tempResearchCountry, tempResearchVault);
+            ResearchCountry tempResearchCountry = new ResearchCountry(this);
+            this.research = new Research(tempResearchCountry, new ResearchVault(tempResearchCountry));
         } else {
             this.research = null;
         }
-
         this.instance=instance;
 
         Ideology tempIdeology = defaultIdeologies.clone(this);
         CountryChat tempCountryChat = new CountryChat(this);
-
         this.info = new Info(name, block, border, null, 100.0f, 100.0f, false,
                 Component.text(name, NamedTextColor.BLUE), Component.text("Description"),
                 nameComponent.clickEvent(ClickEvent.runCommand("/country info general " + name)),
                 null, null, new ArrayList<>(), instance, tempCountryChat,
                 tempIdeology, new Stability(50.0f, this));
+    }
+
+    private Country(Instance instance, Info info, Research research, Diplomacy diplomacy, Economy economy, Military military){
+        this.name=info.getName();
+        this.info=info;
+        this.instance=instance;
+        this.research=research;
+        this.diplomacy=diplomacy;
+        this.economy=economy;
+        this.military=military;
+        Material[] tempCities = {Material.CYAN_GLAZED_TERRACOTTA, Material.GREEN_GLAZED_TERRACOTTA, Material.LIME_GLAZED_TERRACOTTA,
+                Material.YELLOW_GLAZED_TERRACOTTA, Material.RAW_GOLD_BLOCK, Material.GOLD_BLOCK, Material.EMERALD_BLOCK};
+        this.city = new ArrayList<>();
+        this.city.addAll(List.of(tempCities));
+        mapGen=null;
     }
 
     public void init() {
@@ -130,10 +146,6 @@ public abstract class Country implements Cloneable, Saveable {
             this.military.getAllyWorld().addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
             this.diplomacy.getDiplomacy().put(country.getName(), 2);
         }));
-    }
-
-    public String getName(){
-        return this.info.getName();
     }
 
     public boolean isAtWar(String country){
@@ -265,6 +277,7 @@ public abstract class Country implements Cloneable, Saveable {
             provinces.getOccupier().removeBorder(province, getName());
         });
         this.military.removeOccupiedProvince(province);
+        ai.attackedAt(province);
     }
 
     public void captureProvince(Province province) {
@@ -277,6 +290,8 @@ public abstract class Country implements Cloneable, Saveable {
         this.info.setCapital(capital);
         if (economy.getCapitulationTextBar()!=null){
             this.economy.getCapitulationTextBar().getTextDisplay().setPos(capital.getPos().add(0, 3, 0));
+        }else {
+            this.economy.setCapitulationTextBar(new CompletionBarTextDisplay(capital.getPos().add(0.5,1.5,0.5),instance, ColoursEnum.GREEN.getTextColor(),Component.text("")));
         }
     }
 
@@ -384,7 +399,7 @@ public abstract class Country implements Cloneable, Saveable {
     }
 
     public boolean canMinusCost(Payment cost) {
-        return this.economy.getVault().canMinus(cost);
+        return economy.getVault().canMinus(cost);
     }
 
     public boolean canMinusCosts(Payments cost) {
@@ -416,22 +431,22 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void addCountryWar(Country country) {
         String name = country.getName();
-        country.military.addCountryWar(name);
-        country.diplomacy.addDiplomaticRelation(name,1);
-        country.military.getOccupies().forEach(province -> country.military.getWarsWorld().removeGhostBlock(province.getPos()));
-        addClientside(country.economy.getCapitulationTextBar().getTextDisplay());
-        if (this.diplomacy.getBordersProvince().containsKey(name)) {
+        military.addCountryWar(name);
+        diplomacy.addDiplomaticRelation(name,0);
+        military.getOccupies().forEach(province -> military.getWarsWorld().removeGhostBlock(province.getPos()));
+        addClientside(country.getEconomy().getCapitulationTextBar().getTextDisplay());
+        if (this.military.containsBorder(name)) {
             this.military.addBorderWar(name);
         }
     }
 
     public void removeWar(Country country) {
         String name = country.getName();
-        country.military.removeCountryWar(name);
-        country.military.getOccupies().forEach(province -> country.military.getWarsWorld().addGhostBlock(province.getPos(),Block.GRAY_CONCRETE));
+        military.removeCountryWar(name);
+        military.getOccupies().forEach(province -> country.military.getWarsWorld().addGhostBlock(province.getPos(),Block.GRAY_CONCRETE));
         removeClientside(country.economy.getCapitulationTextBar().getTextDisplay());
-        if (!isInAWar()) removeClientside(country.economy.getCapitulationTextBar().getTextDisplay());
-        if (this.diplomacy.getBordersProvince().containsKey(name)) {
+        if (!isInAWar()) removeClientside(economy.getCapitulationTextBar().getTextDisplay());
+        if (this.military.containsBorder(name)) {
             this.military.removeBorderWar(name);
         }
         loadCountriesDiplomacy(country);
@@ -442,11 +457,11 @@ public abstract class Country implements Cloneable, Saveable {
     }
 
     public boolean isInAWar(){
-        return this.diplomacy.getCountryWars().isEmpty();
+        return this.military.getCountryWars().isEmpty();
     }
 
     public Component getPrefix() {
-        return this.info.getPrefix();
+        return info.getOriginalName();
     }
 
     public void sendMessage(Component msg) {
@@ -467,7 +482,7 @@ public abstract class Country implements Cloneable, Saveable {
     }
 
     public float getBoost(BoostEnum boostEnum) {
-        return this.economy.getBoost(boostEnum);
+        return economy.getBoost(boostEnum);
     }
 
     public boolean hasOverlord(){
@@ -578,7 +593,7 @@ public abstract class Country implements Cloneable, Saveable {
             country.info.getPlayers().forEach(puppetChat::addPlayer);
             country.diplomacy.addPuppet(country);
             Country finalOther = other;
-            country.diplomacy.getCountryWars().forEach(country1 -> {
+            country.military.getCountryWars().forEach(country1 -> {
                 Country country2 = ContinentalManagers.world(finalOther.instance).countryDataManager().getCountryFromName(country1);
                 country.addCountryWar(country2);
                 country2.addCountryWar(country);
@@ -605,6 +620,7 @@ public abstract class Country implements Cloneable, Saveable {
     public void endGame() {
         //aiCompetitor.kill();
         this.info.getClientsides().forEach(Clientside::dispose);
+        ContinentalManagers.centralAIManager.getAIManagerFor(instance).removeAi(this);
     }
 
     public boolean canJoinFaction(Faction faction) {
@@ -796,6 +812,9 @@ public abstract class Country implements Cloneable, Saveable {
             this.diplomacy.addDiplomaticRelation(name,2);
             return;
         }
+        if (country.isAtWar(name)){
+            this.diplomacy.addDiplomaticRelation(name,0);
+        }
         this.diplomacy.addDiplomaticRelation(name,1);
     }
 
@@ -812,6 +831,38 @@ public abstract class Country implements Cloneable, Saveable {
         json.add("military",military.toJson());
         json.add("abstract",abstractToJson());
         return json;
+    }
+
+    public static Country fromJson(JsonObject jsonObject){
+        String name = jsonObject.getAsString();
+
+        JsonObject diplomacy = jsonObject.getAsJsonObject("diplomacy");
+        JsonObject economy = jsonObject.getAsJsonObject("economy");
+        JsonObject info = jsonObject.getAsJsonObject("info");
+        JsonObject military = jsonObject.getAsJsonObject("military");
+        JsonObject abstractJson = jsonObject.getAsJsonObject("abstract");
+
+        HashSet<String> countryWars = new HashSet<>();
+        JsonArray countryWarss = diplomacy.getAsJsonArray("countryWars");
+        countryWarss.forEach(countryWar->countryWars.add(countryWar.getAsString()));
+
+        HashMap<String,Integer> diplomacies = new HashMap<>();
+        JsonObject diplomacys = diplomacy.getAsJsonObject("diplomacy");
+        for (Map.Entry<String, JsonElement> entry : diplomacys.entrySet()) {
+            String countryName = entry.getKey();
+            int number = entry.getValue().getAsInt();
+            diplomacies.put(countryName,number);
+        }
+
+//        HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
+//        JsonObject nonAggressionPactJsonObject = diplomacy.getAsJsonObject("nonAggressionPactHashMap");
+//        for (Map.Entry<String, JsonElement> entry : nonAggressionPactJsonObject.entrySet()) {
+//
+//        }
+
+//        Diplomacy diplomacy1 = new Diplomacy(new ArrayList<>(),countryWars,diplomacies,nonAggressionPactHashMap,);
+
+        return null;
     }
 
     public Block getBlockForProvince(Province province) {

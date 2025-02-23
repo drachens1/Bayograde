@@ -41,9 +41,6 @@ public class ContinentalWorld extends World {
     public void addPlayer(CPlayer p) {
         Instance instance = p.getInstance();
         scoreboardManager.openScoreboard(new DefaultScoreboard(), p);
-        final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
-        final Component footer = Component.text("----------------");
-        p.sendPlayerListHeaderAndFooter(header, footer);
         GlobalGameWorldClass globalGameWorldClass = ContinentalManagers.world(instance).getAsGlobalGameWorldClass();
         globalGameWorldClass.getAsGlobalGameWorldClass().votingManager().getVoteBar().addPlayer(p);
         if (null != globalGameWorldClass.getAsGlobalGameWorldClass().votingManager() && null != globalGameWorldClass.dataStorer().votingOption) {

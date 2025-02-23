@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;

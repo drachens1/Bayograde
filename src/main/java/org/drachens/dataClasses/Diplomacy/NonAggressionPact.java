@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.Diplomacy;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minestom.server.event.EventDispatcher;
 import org.drachens.dataClasses.Countdown;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -15,6 +17,10 @@ public record NonAggressionPact(Country from, Country to, int duration) implemen
     }
     @Override
     public JsonElement toJson() {
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("from",from.getReference());
+        jsonObject.add("to",to.getReference());
+        jsonObject.add("duration",new JsonPrimitive(duration));
+        return jsonObject;
     }
 }

@@ -13,11 +13,9 @@ import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.Saveable;
 import org.drachens.interfaces.War;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Builder
 @Getter
@@ -37,7 +35,7 @@ public class VotingOption implements Saveable {
     private final boolean AIEnabled;
     private final boolean factionsEnabled;
     private final boolean researchEnabled;
-    private final long speed = 1L;
+    private final long speed;
     private final long progressionRate;
 
     public static VotingOptionBuilder create(int startingYear, int endYear, Long dayLength, String name) {
@@ -45,6 +43,11 @@ public class VotingOption implements Saveable {
                 .startingYear(startingYear)
                 .endYear(endYear)
                 .dayLength(dayLength)
+                .AIEnabled(true)
+                .factionsEnabled(true)
+                .researchEnabled(true)
+                .progressionRate(1L)
+                .speed(1L)
                 .name(name);
     }
 

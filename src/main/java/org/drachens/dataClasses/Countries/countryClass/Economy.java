@@ -3,7 +3,6 @@ package org.drachens.dataClasses.Countries.countryClass;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
@@ -24,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import static org.drachens.util.OtherUtil.bound;
 
 @Getter
 @Setter
@@ -77,18 +78,29 @@ public class Economy implements Saveable {
 
     public float getBoost(BoostEnum boostType) {
         if (boostType.isPercentage()) {
-            return boostHashmap.getOrDefault(boostType, 1.0f);
+            return bound(20, 0, boostHashmap.getOrDefault(boostType, 1.0f));
         }
         return boostHashmap.getOrDefault(boostType, 0.0f);
     }
 
     public void addBoost(BoostEnum boostType, float value) {
-        boostHashmap.merge(boostType, value, Float::sum);
+        float current = 0f;
+        if (boostType.isPercentage()) {
+            current = boostHashmap.getOrDefault(boostType, 1.0f);
+        }
+        current += value;
+        boostHashmap.put(boostType, current);
     }
 
     public void removeBoost(BoostEnum boostType, float value) {
-        boostHashmap.merge(boostType, -value, Float::sum);
+        float current = 0f;
+        if (boostType.isPercentage()) {
+            current = boostHashmap.getOrDefault(boostType, 1.0f);
+        }
+        current -= value;
+        boostHashmap.put(boostType, current);
     }
+
     public boolean containsBoost(BoostEnum boostType) {
         return boostHashmap.containsKey(boostType);
     }

@@ -32,6 +32,8 @@ public class PlayerJson extends GsonStringMaker {
     private String autoVoteOption;
     private boolean suffixActive;
     private String suffix;
+    private String nickname;
+    private boolean nicknameActive;
 
     public PlayerJson(String json, GameProfile gameProfile) {
         super(json);
@@ -69,6 +71,8 @@ public class PlayerJson extends GsonStringMaker {
         addDefault("","premium","auto-vote","current");
         addDefault("","premium","suffix","current");
         addDefault(new JsonPrimitive(false),"premium","suffix","active");
+        addDefault("","premium","nickname","current");
+        addDefault(new JsonPrimitive(false),"premium","nickname","active");
     }
 
     protected void premiumLoad(){
@@ -86,6 +90,8 @@ public class PlayerJson extends GsonStringMaker {
         autoVoteActive = premium.getAsJsonObject("auto-vote").get("active").getAsBoolean();
         suffixActive = premium.getAsJsonObject("suffix").get("active").getAsBoolean();
         suffix = premium.getAsJsonObject("suffix").get("current").getAsString();
+        nicknameActive = premium.getAsJsonObject("nickname").get("active").getAsBoolean();
+        nickname = premium.getAsJsonObject("nickname").get("current").getAsString();
     }
 
     public void laterInit(){
@@ -166,5 +172,15 @@ public class PlayerJson extends GsonStringMaker {
     public void setSuffix(String suffix){
         this.suffix=suffix;
         set(suffix,"premium","suffix","current");
+    }
+
+    public void setNickNameActive(boolean b){
+        this.nicknameActive=b;
+        set(new JsonPrimitive(b),"premium","nickname","active");
+    }
+
+    public void setNickName(String nickName){
+        this.nickname=nickName;
+        set(nickName,"premium","nickname","current");
     }
 }

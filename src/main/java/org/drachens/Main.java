@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.advancements.FrameType;
 import net.minestom.server.item.Material;
+import org.drachens.Manager.decorational.MotdManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.*;
 import org.drachens.advancement.Advancement;
@@ -146,7 +147,7 @@ public enum Main {
 
         ContinentalManagers.centralAIManager.registerEventManager(new ClicksAI(VotingWinner.ww2_clicks));
         ContinentalManagers.centralAIManager.registerEventManager(new TroopAI(VotingWinner.ww2_troops));
-
+        new MotdManager();
         createWW2VotingOption();
 
         BuildingEnum.university.setBuildType(new ResearchUniversity());

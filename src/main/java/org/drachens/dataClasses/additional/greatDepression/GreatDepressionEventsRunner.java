@@ -11,7 +11,6 @@ import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.EventsRunner;
 import org.drachens.dataClasses.additional.Modifier;
-import org.drachens.interfaces.Saveable;
 import org.drachens.util.MessageEnum;
 
 import java.util.ArrayList;

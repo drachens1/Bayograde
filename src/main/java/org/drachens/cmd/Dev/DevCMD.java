@@ -1,8 +1,7 @@
 package org.drachens.cmd.Dev;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.ng5m.Constants;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.*;
 import net.minestom.server.command.builder.arguments.minecraft.ArgumentEntity;
@@ -18,12 +17,14 @@ import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.PathingEnum;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.Manager.defaults.enums.TroopTypeEnum;
+import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue;
 import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.command.CommandCreator;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.events.system.ResetEvent;
+import org.drachens.events.system.StartGameEvent;
 import org.drachens.generalGame.clicks.ClicksAI;
 import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.player_types.CPlayer;
@@ -163,7 +164,7 @@ public class DevCMD extends Command {
                 })
                 .build());
 
-        Argument<String> s = ArgumentType.String("country-borders")
+        Argument<String> s = ArgumentType.String("border")
                 .setSuggestionCallback((sender, context, suggestion) -> {
                     CPlayer p = (CPlayer) sender;
                     Country country = p.getCountry();
@@ -215,6 +216,31 @@ public class DevCMD extends Command {
                 .setDefaultExecutor(((sender, context) -> {
                     CPlayer p = (CPlayer) sender;
                     ContinentalManagers.saveManager.save(p.getInstance());
+                }))
+                .build());
+
+        ArgumentInteger x = ArgumentType.Integer("x");
+        ArgumentInteger y = ArgumentType.Integer("y");
+        ArgumentInteger z = ArgumentType.Integer("z");
+        addSubcommand(new CommandCreator("set-block")
+                .addSyntax((sender,context)->{},x)
+                .addSyntax((sender,context)->{},x,y)
+                .addSyntax((sender,context)->{
+                    CPlayer p = (CPlayer) sender;
+                    p.getInstance().setBlock(context.get(x),context.get(y),context.get(z),Material.DIAMOND_BLOCK.block());
+                },x,y,z)
+                .build());
+
+        addSubcommand(new CommandCreator("auto-train")
+                .setDefaultExecutor(((sender, context) -> {
+                    CPlayer p = (CPlayer) sender;
+                    Instance instance = p.getInstance();
+                    VotingWinner votingWinner = ContinentalManagers.world(p.getInstance()).dataStorer().votingWinner;
+
+                    MinecraftServer.getGlobalEventHandler().addListener(ResetEvent.class,e->{
+                        if (e.instance()!=instance)return;
+                        EventDispatcher.call(new StartGameEvent(p.getInstance(),votingWinner.getVotingOption()));
+                    });
                 }))
                 .build());
     }

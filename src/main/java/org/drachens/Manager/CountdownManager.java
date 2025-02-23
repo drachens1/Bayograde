@@ -20,8 +20,8 @@ public class CountdownManager {
                     countdown.getRunnable().run();
                     toRemove.add(countdown);
                 }
-                removeCountDowns(toRemove,e.world());
             });
+            removeCountDowns(toRemove,e.world());
 
         });
     }

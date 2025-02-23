@@ -1,11 +1,9 @@
 package org.drachens.bossbars;
 
-import com.google.gson.JsonElement;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.drachens.interfaces.HideableBossBar;
-import org.drachens.interfaces.Saveable;
 
 public class CapitulationBar extends HideableBossBar {
     private final BossBar capBar = getBossBar();

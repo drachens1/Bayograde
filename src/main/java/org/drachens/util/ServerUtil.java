@@ -6,7 +6,6 @@ import dev.ng5m.event.PurchaseEvent;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.command.builder.Command;
@@ -35,7 +34,7 @@ import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.per_instance.vote.VotingManager;
 import org.drachens.Manager.scoreboards.ContinentalScoreboards;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
-import org.drachens.cmd.CosmeticsCMD;
+import org.drachens.cmd.*;
 import org.drachens.cmd.Dev.DevCMD;
 import org.drachens.cmd.Dev.OpMeCMD;
 import org.drachens.cmd.Dev.WhoisCMD;
@@ -43,9 +42,6 @@ import org.drachens.cmd.Fly.FlyCMD;
 import org.drachens.cmd.Fly.FlyspeedCMD;
 import org.drachens.cmd.Msg.MsgCMD;
 import org.drachens.cmd.Msg.ReplyCMD;
-import org.drachens.cmd.SpawnCMD;
-import org.drachens.cmd.StoreCMD;
-import org.drachens.cmd.TeleportCMD;
 import org.drachens.cmd.game.GameCMD;
 import org.drachens.cmd.game.PlaytimeCMD;
 import org.drachens.cmd.gamecreate.GameManageCMD;
@@ -54,7 +50,6 @@ import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
-import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.additional.GlobalGameWorldClass;
 import org.drachens.dataClasses.datastorage.DataStorer;
@@ -170,19 +165,8 @@ public enum ServerUtil {
         Function<PlayerChatEvent, Component> chatEvent = e -> {
             final CPlayer p = (CPlayer) e.getPlayer();
             List<Component> components = new ArrayList<>();
-            Country c = p.getCountry();
-            Component prefix;
-            if (null == c) {
-                prefix = Component.text("spectator", NamedTextColor.GRAY, TextDecoration.BOLD);
-            } else {
-                prefix = c.getPrefix();
-            }
-            Rank rank = p.getDominantRank();
-            components.add(rank.prefix);
-            components.add(Component.text(" "));
-            components.add(prefix);
-            components.add(Component.text(" "));
-            components.add(p.getName().color(rank.color));
+
+            components.add(p.getFullPrefix());
             components.add(Component.text(" : ", NamedTextColor.GRAY));
             components.add(Component.text(e.getRawMessage(), NamedTextColor.GRAY));
             components.add(Component.text(" "));
@@ -271,6 +255,7 @@ public enum ServerUtil {
         commandManager.register(new StartGameCMD(votingOptionsCMD));
         commandManager.register(new GameManageCMD());
         commandManager.register(new GameCMD());
+        commandManager.register(new PingCMD());
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -284,6 +269,12 @@ public enum ServerUtil {
         new CentralEventManager();
         start();
 
+        MinecraftServer.getSchedulerManager().buildShutdownTask(()->{
+            MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> {
+                CPlayer p = (CPlayer) player;
+                p.getPlayerInfoEntry().applyChanges();
+            });
+        });
     }
 
     public static void start() {

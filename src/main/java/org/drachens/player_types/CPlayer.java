@@ -3,7 +3,11 @@ package org.drachens.player_types;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.item.ItemComponent;
@@ -12,6 +16,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.ClientSideExtras;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;
@@ -204,5 +209,41 @@ public class CPlayer extends Player {
 
     public void setInOwnGame(boolean b){
         this.isInOwnGame =b;
+    }
+
+    public Component getCplayerName(){
+        if (hasRank(RankEnum.default_rank.getRank())&&playerJson.isNicknameActive()){
+            return MiniMessage.miniMessage().deserialize(playerJson.getNickname()).hoverEvent(HoverEvent.showText(Component.text()
+                            .append(Component.text("Username: "+getUsername()))
+                            .appendNewline()
+                            .append(Component.text("Click to msg",NamedTextColor.GOLD))
+                    .build())).clickEvent(ClickEvent.suggestCommand("/msg "+getUsername()+" "));
+        }else{
+            Rank rank = getDominantRank();
+            return getName().color(rank.color).hoverEvent(HoverEvent.showText(Component.text("Click to msg",NamedTextColor.GOLD))).clickEvent(ClickEvent.suggestCommand("/msg "+getUsername()+" "));
+        }
+    }
+
+    public Component getFullPrefix(){
+        Rank rank = getDominantRank();
+        Component prefix;
+        Country c = getCountry();
+        if (null == c) {
+            prefix = Component.text("spectator", NamedTextColor.GRAY, TextDecoration.BOLD);
+        } else {
+            prefix = c.getPrefix();
+        }
+        return Component.text()
+                .append(rank.prefix)
+                .append(Component.text(" "))
+                .append(prefix)
+                .append(Component.text(" "))
+                .append(getCplayerName())
+                .build();
+    }
+
+    public void setCountry(Country country){
+        this.country=country;
+        ContinentalManagers.tabManager.updatePlayer(this);
     }
 }

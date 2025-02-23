@@ -7,8 +7,8 @@ import org.drachens.interfaces.AStarPathfinderVoids;
 public class TroopPathing implements AStarPathfinderVoids {
     @Override
     public boolean isWalkable(Province check, Country country) {
-        if (null == check || null == check.getOccupier()) return false;
+        if (null == check.getOccupier()) return false;
         int c = country.getDiplomacy().getDiplomaticRelation(check.getOccupier().getName());
-        return 1 == c || 3 < c || check.getOccupier() == country;
+        return c == 0 || 3 < c || check.getOccupier() == country;
     }
 }

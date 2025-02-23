@@ -20,18 +20,20 @@ import org.drachens.dataClasses.Research.ResearchCountry;
 import org.drachens.dataClasses.Research.tree.ResearchOption;
 import org.drachens.dataClasses.Research.tree.TechTree;
 import org.drachens.events.NewDay;
-import org.drachens.events.countries.war.StartWarEvent;
 import org.drachens.events.countries.warjustification.WarJustificationStartEvent;
 import org.drachens.generalGame.factory.Factory;
-import org.drachens.interfaces.AI;
-import org.drachens.interfaces.AIManager;
+import org.drachens.interfaces.AStarPathfinderVoids;
 import org.drachens.interfaces.Saveable;
+import org.drachens.interfaces.ai.AI;
+import org.drachens.interfaces.ai.AIManager;
+import org.drachens.util.AStarPathfinderXZ;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
+
+import static org.drachens.util.OtherUtil.runThread;
 
 public class ClicksAI implements AIManager, Saveable {
     private final VotingWinner votingWinner;
@@ -39,7 +41,8 @@ public class ClicksAI implements AIManager, Saveable {
 
     public ClicksAI(VotingWinner votingWinner) {
         this.votingWinner = votingWinner;
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> tick(e.world()));
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> runThread(()->tick(e.world())));
+        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> runThread(()->fasterTick(e.world())));
     }
 
     @Override
@@ -49,14 +52,28 @@ public class ClicksAI implements AIManager, Saveable {
 
     @Override
     public AI createAIForCountry(Country country) {
-        AI ai = new GlobalDominationAI(country,(ClickWarSystem) votingWinner.getVotingOption().getWar());
+        AI ai = new UnifiedAI(country,(ClickWarSystem) votingWinner.getVotingOption().getWar());
         ais.put(country, ai);
         return ai;
     }
 
     @Override
     public void tick(Instance instance) {
-        ais.forEach((country, ai) -> ai.tick());
+        ais.forEach((country, ai) -> {
+            if (country.getInfo().getPlayers().isEmpty()) ai.tick();
+        });
+    }
+
+    @Override
+    public void fasterTick(Instance instance) {
+        ais.forEach((country, ai) -> {
+            if (country.getInfo().getPlayers().isEmpty()) ai.fasterTick();
+        });
+    }
+
+    @Override
+    public void removeAi(Country country) {
+        ais.remove(country);
     }
 
     @Override
@@ -65,6 +82,7 @@ public class ClicksAI implements AIManager, Saveable {
     }
 
     static class FactorySpammer extends AI {
+        private final float industriosness = 100; // economist based of this
         private final Factory factory = (Factory) BuildingEnum.factory.getBuildTypes();
         private final Country country;
         private final Random r = new Random();
@@ -79,6 +97,11 @@ public class ClicksAI implements AIManager, Saveable {
             if (canBuild) return;
             int count = (int) (country.getEconomy().getVault().getAmount(CurrencyEnum.production.getCurrencyType()) / 5.0f);
             buildFactory(new ArrayList<>(country.getMilitary().getCities()), count);
+        }
+
+        @Override
+        public void fasterTick() {
+
         }
 
         private void buildFactory(List<Province> cities, int count) {
@@ -106,6 +129,7 @@ public class ClicksAI implements AIManager, Saveable {
     }
 
     static class ResearchGrinder extends AI {
+        private final float research = 100; // researchness based off this
         private final List<Province> centers = new ArrayList<>();
         private final HashMap<Province, List<Province>> availableSpaces = new HashMap<>();
         private final ResearchCountry researchCountry;
@@ -179,19 +203,24 @@ public class ClicksAI implements AIManager, Saveable {
                 startResearch();
             }
         }
+
+        @Override
+        public void fasterTick() {
+
+        }
     }
 
     static class GlobalDominationAI extends AI {
-        private final float aggression = 100;
+        private final float aggression = 100; //aggressiveness based off this
         private final Payment payment = new Payment(CurrencyEnum.production, 1);
         private final Country country;
-        private final Consumer<WarJustification> c;
         private final ClickWarSystem clickWarSystem;
+        private final AStarPathfinderXZ aStarPathfinderXZ;
 
         public GlobalDominationAI(Country country, ClickWarSystem clickWarSystem) {
             this.clickWarSystem = clickWarSystem;
             this.country = country;
-            c = warJust -> EventDispatcher.call(new StartWarEvent(country, warJust.against(), warJust));
+            this.aStarPathfinderXZ=country.getMilitary().getAStarPathfinder();
         }
 
         @Override
@@ -203,6 +232,11 @@ public class ClicksAI implements AIManager, Saveable {
             }
         }
 
+        @Override
+        public void fasterTick() {
+
+        }
+
         public void startAWar() {
             List<String> s = country.getMilitary().getBorders().stream().toList();
             String count = s.get(new Random().nextInt(0,s.size()));
@@ -211,37 +245,52 @@ public class ClicksAI implements AIManager, Saveable {
                 return;
             }
             WarGoalType w = WarGoalTypeEnum.surprise.getWarGoalType();
-            WarJustification warJustification = new WarJustification(atk, country, w.modifier(), w.timeToMake(), w.expires(), c);
+            WarJustification warJustification = new WarJustification(atk, country, w.modifier(), w.timeToMake(), w.expires(), true);
             EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
+        }
+
+        public boolean captureProvince(Province province){
+            if (clickWarSystem.canCapture(province,country)!=null){
+                province.setOccupier(country);
+                country.removePayment(payment);
+                return true;
+            }
+            return false;
         }
 
         public void conquerCountry(List<String> s) {
             while (true) {
                 final Country atk = ContinentalManagers.world(this.country.getInstance()).countryDataManager().getCountryFromName(s.getFirst());
-                final List<Province> provinces = this.country.getMilitary().getBorder(s.getFirst());
-                if (null == provinces) {
-                    s.remove(atk.getName());
-                    if (s.isEmpty()) {
-                        return;
-                    }
-
-                    continue;
-                }
-
-                for (final Province province : new ArrayList<>(provinces)) {
-                    final Province from = this.clickWarSystem.canCapture(province, this.country);
-                    if (null != from) {
-                        this.country.removePayment(this.payment);
-                        province.capture(from.getOccupier());
-                    }
+                List<Province> citiesToCapture = atk.getMilitary().getCities();
+                Province capital = atk.getInfo().getCapital();
+                capturePath(aStarPathfinderXZ.findPath(country.getInfo().getCapital(),capital,country,new Pather()));
+                if (atk.getInfo().isCapitulated()){
                     return;
                 }
-                s.remove(atk.getName());
-                if (s.isEmpty()) {
-                    return;
-                }
-
             }
+        }
+
+        public void capturePath(List<AStarPathfinderXZ.Node> provinces){
+            for (AStarPathfinderXZ.Node node : provinces){
+                Province province = node.province;
+                province.getNeighbours().forEach(neighbour->{
+                    if (country.canFight(neighbour.getOccupier())){
+                        captureProvince(neighbour);
+                    }
+                });
+                if (!captureProvince(province)){
+                    break;
+                }
+            }
+        }
+    }
+
+
+    static class Pather implements AStarPathfinderVoids {
+
+        @Override
+        public boolean isWalkable(Province check, Country country) {
+            return true;
         }
     }
 }

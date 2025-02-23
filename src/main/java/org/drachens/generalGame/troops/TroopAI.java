@@ -9,9 +9,9 @@ import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
 import org.drachens.events.NewDay;
 import org.drachens.generalGame.factory.Factory;
-import org.drachens.interfaces.AI;
-import org.drachens.interfaces.AIManager;
 import org.drachens.interfaces.Saveable;
+import org.drachens.interfaces.ai.AI;
+import org.drachens.interfaces.ai.AIManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +45,16 @@ public class TroopAI implements AIManager, Saveable {
     }
 
     @Override
+    public void fasterTick(Instance instance) {
+
+    }
+
+    @Override
+    public void removeAi(Country country) {
+        ais.remove(country);
+    }
+
+    @Override
     public JsonElement toJson() {
         return null;
     }
@@ -61,6 +71,11 @@ public class TroopAI implements AIManager, Saveable {
         @Override
         public void tick() {
             buildFactory(new ArrayList<>(country.getMilitary().getCities()));
+        }
+
+        @Override
+        public void fasterTick() {
+
         }
 
         private void buildFactory(List<Province> cities) {

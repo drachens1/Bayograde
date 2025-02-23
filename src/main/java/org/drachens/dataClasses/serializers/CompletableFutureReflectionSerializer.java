@@ -1,10 +1,10 @@
 package org.drachens.dataClasses.serializers;
 
 import com.google.gson.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class CompletableFutureReflectionSerializer implements JsonSerializer<CompletableFuture<?>>, JsonDeserializer<CompletableFuture<?>> {
     @Override

@@ -10,6 +10,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.VotingOption;
+import org.drachens.events.CustomTick;
 import org.drachens.events.NewDay;
 import org.drachens.events.system.ResetEvent;
 import org.drachens.interfaces.HideableBossBar;
@@ -21,6 +22,7 @@ public class YearBar extends HideableBossBar {
     private final BossBar yearBar = getBossBar();
     private final Instance instance;
     private Task task;
+    private Task tickTask;
     private int day, month, year;
 
     public YearBar(Instance instance) {
@@ -31,14 +33,18 @@ public class YearBar extends HideableBossBar {
 
     public void cancelTask() {
         if (null != this.task) task.cancel();
+        if (null != this.tickTask) tickTask.cancel();
     }
 
     public void run(VotingOption votingOption) {
         show();
         if (null != this.task) task.cancel();
+        if (null != this.tickTask) tickTask.cancel();
+
         year = votingOption.getStartingYear();
-        day=0;
-        month=0;
+        day = 0;
+        month = 0;
+
         task = MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             final int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
             final int endYear = votingOption.getEndYear();
@@ -56,19 +62,26 @@ public class YearBar extends HideableBossBar {
                     }
                 }
                 EventDispatcher.call(new NewDay(day, month, year, instance));
+
                 if (year >= endYear) {
                     EventDispatcher.call(new ResetEvent(instance));
                 }
             }
-        }).repeat(votingOption.getDayLength()*votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
+        }).repeat(votingOption.getDayLength() * votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
+
+        tickTask = MinecraftServer.getSchedulerManager().buildTask(() ->
+                EventDispatcher.call(new CustomTick(instance)))
+                .repeat(votingOption.getDayLength() * votingOption.getSpeed() / 4, ChronoUnit.MILLIS).schedule();
     }
 
-    public void pause(){
+    public void pause() {
         task.cancel();
+        tickTask.cancel();
     }
 
-    public void unpause(){
+    public void unpause() {
         VotingOption votingOption = ContinentalManagers.world(instance).dataStorer().votingOption;
+
         task = MinecraftServer.getSchedulerManager().buildTask(new Runnable() {
             final int[] daysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
             final int endYear = votingOption.getEndYear();
@@ -86,10 +99,15 @@ public class YearBar extends HideableBossBar {
                     }
                 }
                 EventDispatcher.call(new NewDay(day, month, year, instance));
+
                 if (year >= endYear) {
                     EventDispatcher.call(new ResetEvent(instance));
                 }
             }
-        }).repeat(votingOption.getDayLength()*votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
+        }).repeat(votingOption.getDayLength() * votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
+
+        tickTask = MinecraftServer.getSchedulerManager().buildTask(() ->
+                EventDispatcher.call(new CustomTick(instance)))
+                .repeat(votingOption.getDayLength() * votingOption.getSpeed() / 4, ChronoUnit.MILLIS).schedule();
     }
 }

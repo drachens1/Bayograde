@@ -28,7 +28,7 @@ public class ClickWarSystem implements War {
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1}
     };
 
-    private Province AdjacentBlocks(@NotNull Pos position, Country country, Instance instance) {
+    public Province AdjacentBlocks(@NotNull Pos position, Country country, Instance instance) {
         int adjacentCount = 0;
 
         for (int[] direction : directions) {
@@ -36,7 +36,7 @@ public class ClickWarSystem implements War {
             int offsetY = direction[1];
 
             Province province = ContinentalManagers.world(instance).provinceManager().getProvince(position.add(offsetX, 0, offsetY));
-            if (null != province && null != province.getOccupier() && country.isMilitaryFriend(province.getOccupier())) {
+            if (null != province && null != province.getOccupier() && (country.isMilitaryFriend(province.getOccupier())||country==province.getOccupier())) {
                 adjacentCount++;
                 if (3 <= adjacentCount) {
                     return province;

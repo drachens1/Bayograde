@@ -81,9 +81,6 @@ public class CustomGameWorld extends World {
         p.refreshCommands();
         Instance instance = p.getInstance();
         scoreboardManager.openScoreboard(new DefaultScoreboard(), p);
-        final Component header = Component.text("ContinentalMC", NamedTextColor.BLUE);
-        final Component footer = Component.text("----------------");
-        p.sendPlayerListHeaderAndFooter(header, footer);
         InventoryEnum inventoryEnum = ContinentalManagers.world(instance).dataStorer().votingOption.getDefaultInventory();
         if (null != inventoryEnum) ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
         if (null == ContinentalManagers.yearManager.getYearBar(instance)) {
