@@ -1,6 +1,7 @@
 package org.drachens.cmd.Dev;
 
 import dev.ng5m.Constants;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.*;
@@ -8,6 +9,7 @@ import net.minestom.server.command.builder.arguments.minecraft.ArgumentEntity;
 import net.minestom.server.command.builder.arguments.minecraft.ArgumentItemStack;
 import net.minestom.server.command.builder.arguments.number.ArgumentInteger;
 import net.minestom.server.command.builder.arguments.number.ArgumentLong;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.instance.Instance;
@@ -23,6 +25,7 @@ import org.drachens.dataClasses.Armys.Troop;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.command.CommandCreator;
 import org.drachens.dataClasses.other.ItemDisplay;
+import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.events.system.ResetEvent;
 import org.drachens.events.system.StartGameEvent;
 import org.drachens.generalGame.clicks.ClicksAI;
@@ -113,24 +116,26 @@ public class DevCMD extends Command {
                 })
                 .build());
 
+        var gm = ArgumentType.Word("")
+                        .from("survival","creative");
+
         addSubcommand(new CommandCreator("gamemode")
                 .setCondition((sender,s)->{
                     CPlayer p = (CPlayer) sender;
                     return p.hasPermission("gamemode");
                 })
                 .setDefaultExecutor((sender,context)-> sender.sendMessage("Proper usage /gamemode <choice>"))
-                .addSubCommand(new CommandCreator("survival")
-                        .setDefaultExecutor((sender,context)->{
-                            CPlayer p = (CPlayer) sender;
+                .addSyntax((sender, context) -> {
+                    CPlayer p = (CPlayer) sender;
+                    switch (context.get(gm)){
+                        case "survival":
                             p.setGameMode(GameMode.SURVIVAL);
-                        })
-                        .build())
-                .addSubCommand(new CommandCreator("creative")
-                        .setDefaultExecutor((sender,context)->{
-                            CPlayer p = (CPlayer) sender;
+                            break;
+                        case "creative":
                             p.setGameMode(GameMode.CREATIVE);
-                        })
-                        .build())
+                            break;
+                    }
+                },gm)
                 .build());
 
         ArgumentInteger modelData = ArgumentType.Integer("ModelData");
@@ -145,6 +150,21 @@ public class DevCMD extends Command {
                     ItemDisplay i = new ItemDisplay(itemBuilder(itemStack.material(), modelDatas), p.getPosition(), ItemDisplay.DisplayType.GROUND, p.getInstance());
                     i.addViewer(p);
                 }, item, modelData)
+                .setCondition((sender, s) -> {
+                    CPlayer p = (CPlayer) sender;
+                    return p.hasPermission("summon");
+                })
+                .build());
+
+        ArgumentString text = ArgumentType.String("text");
+
+        addSubcommand(new CommandCreator("summon-text")
+                .addSyntax((sender, context) -> {
+                    CPlayer p = (CPlayer) sender;
+                    TextDisplay textDisplay = new TextDisplay.create(p.getPosition(),p.getInstance(), Component.text(context.get(text)))
+                            .setBoundingBox(1,1, new Pos(0,0,0), player1 -> player1.sendMessage("hi")).build();
+                    textDisplay.addViewer(p);
+                },text)
                 .setCondition((sender, s) -> {
                     CPlayer p = (CPlayer) sender;
                     return p.hasPermission("summon");

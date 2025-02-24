@@ -7,7 +7,7 @@ public class HelpCMD extends Command {
         super("help");
 
         //Subcommand
-        addSubcommand(new CmdsHelpCMD());
+        addSubcommand(new HelpCountryCMD());
         addSubcommand(new HelpPluginsCMD());
     }
 }

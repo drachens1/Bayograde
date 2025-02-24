@@ -51,6 +51,16 @@ public class VotingOption implements Saveable {
                 .name(name);
     }
 
+    public static VotingOptionBuilder create(VotingOption votingOption) {
+        return VotingOption.builder()
+                .startingYear(votingOption.startingYear)
+                .endYear(votingOption.endYear)
+                .mapGenerator(votingOption.mapGenerator)
+                .defaultInventory(votingOption.defaultInventory)
+                .defaultCurrencies(votingOption.defaultCurrencies)
+                .war(votingOption.war);
+    }
+
     @Override
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();

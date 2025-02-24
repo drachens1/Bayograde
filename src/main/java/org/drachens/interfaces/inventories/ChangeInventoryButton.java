@@ -1,7 +1,7 @@
 package org.drachens.interfaces.inventories;
 
 import net.minestom.server.item.ItemStack;
-import org.drachens.Manager.InventoryManager;
+import org.drachens.Manager.decorational.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 

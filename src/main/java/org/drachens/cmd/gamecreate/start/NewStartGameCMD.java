@@ -1,37 +1,27 @@
 package org.drachens.cmd.gamecreate.start;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.arguments.ArgumentWord;
-import org.drachens.Manager.defaults.enums.VotingWinner;
-import org.drachens.cmd.vote.VotingOptionCMD;
-import org.drachens.dataClasses.customgame.CustomGameWorld;
+import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.dataClasses.customgame.IntermissionGameWorld;
 import org.drachens.player_types.CPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NewStartGameCMD extends Command {
-    public NewStartGameCMD(List<VotingOptionCMD> votingOptionsCMD) {
+    public NewStartGameCMD() {
         super("new");
-
-        List<String> strings = new ArrayList<>();
-        votingOptionsCMD.forEach(votingOption -> strings.add(votingOption.getName()));
-        ArgumentWord votingOptions = ArgumentType.Word("voting")
-                .from(strings.toArray(new String[0]));
-
         ArgumentWord name = ArgumentType.Word("name");
-
-        addSyntax((sender, context)->{},votingOptions);
 
         addSyntax((sender, context)->{
             CPlayer p = (CPlayer) sender;
-            if (!strings.contains(context.get(votingOptions))){
-                p.sendMessage(Component.text("Not a valid option"));
+            String nam = context.get(name);
+            if (!ContinentalManagers.chatCensor.isOkay(nam)){
+                p.sendMessage(Component.text("Your input didn't pass the chat censor", NamedTextColor.RED));
                 return;
             }
-            new CustomGameWorld(p,VotingWinner.valueOf(context.get(votingOptions)).getVotingOption());
-        },votingOptions,name);
+            new IntermissionGameWorld(p,nam);
+        },name);
     }
 }

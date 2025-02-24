@@ -22,6 +22,7 @@ import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.Weather;
+import net.minestom.server.network.packet.client.play.ClientInteractEntityPacket;
 import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import org.drachens.InventorySystem.GUIManager;
@@ -50,6 +51,7 @@ import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
+import org.drachens.dataClasses.Delay;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.additional.GlobalGameWorldClass;
 import org.drachens.dataClasses.datastorage.DataStorer;
@@ -252,10 +254,18 @@ public enum ServerUtil {
         commandManager.register(new OpMeCMD());
 
         commandManager.register(new SettingsCMD(votingOptionsCMD));
-        commandManager.register(new StartGameCMD(votingOptionsCMD));
+        commandManager.register(new StartGameCMD());
         commandManager.register(new GameManageCMD());
         commandManager.register(new GameCMD());
         commandManager.register(new PingCMD());
+
+        Delay delay = new Delay(200L);
+        MinecraftServer.getPacketListenerManager().setPlayListener(ClientInteractEntityPacket.class, (packet, player) -> {
+            if (!delay.hasCooldown(player)){
+                delay.startCooldown(player);
+                ContinentalManagers.interactableEntityManager.onInteract(packet.targetId(), (CPlayer) player);
+            }
+        });
 
         for (Command command : cmd) {
             MinecraftServer.getCommandManager().register(command);
@@ -269,12 +279,10 @@ public enum ServerUtil {
         new CentralEventManager();
         start();
 
-        MinecraftServer.getSchedulerManager().buildShutdownTask(()->{
-            MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> {
-                CPlayer p = (CPlayer) player;
-                p.getPlayerInfoEntry().applyChanges();
-            });
-        });
+        MinecraftServer.getSchedulerManager().buildShutdownTask(()-> MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> {
+            CPlayer p = (CPlayer) player;
+            p.getPlayerInfoEntry().applyChanges();
+        }));
     }
 
     public static void start() {

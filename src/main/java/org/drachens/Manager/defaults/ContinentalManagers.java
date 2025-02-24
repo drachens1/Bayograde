@@ -3,6 +3,8 @@ package org.drachens.Manager.defaults;
 import net.minestom.server.instance.Instance;
 import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.*;
+import org.drachens.Manager.decorational.InteractableEntityManager;
+import org.drachens.Manager.decorational.InventoryManager;
 import org.drachens.Manager.decorational.TabManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.advancement.AdvancementManager;
@@ -37,6 +39,7 @@ public enum ContinentalManagers {
     public static final SaveManager saveManager = new SaveManager();
     public static final CountdownManager countdownManager = new CountdownManager();
     public static final TabManager tabManager = new TabManager();
+    public static final InteractableEntityManager interactableEntityManager = new InteractableEntityManager();
     public static Database database;
 
     public static WorldClasses world(Instance instance) {

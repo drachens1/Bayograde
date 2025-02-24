@@ -55,6 +55,7 @@ public class CPlayer extends Player {
     private boolean isUsingMod;
     private boolean leaderOfOwnGame;
     private boolean isInOwnGame;
+    private boolean isInIntermission;
 
     public CPlayer(@NotNull PlayerConnection playerConnection, @NotNull GameProfile gameProfile) {
         super(playerConnection, gameProfile);
@@ -211,7 +212,7 @@ public class CPlayer extends Player {
         this.isInOwnGame =b;
     }
 
-    public Component getCplayerName(){
+    public Component getCPlayerName(){
         if (hasRank(RankEnum.default_rank.getRank())&&playerJson.isNicknameActive()){
             return MiniMessage.miniMessage().deserialize(playerJson.getNickname()).hoverEvent(HoverEvent.showText(Component.text()
                             .append(Component.text("Username: "+getUsername()))
@@ -238,7 +239,7 @@ public class CPlayer extends Player {
                 .append(Component.text(" "))
                 .append(prefix)
                 .append(Component.text(" "))
-                .append(getCplayerName())
+                .append(getCPlayerName())
                 .build();
     }
 

@@ -9,7 +9,7 @@ public class CreationCMD extends Command {
 
         setCondition((sender, s)->{
             CPlayer p = (CPlayer) sender;
-            return p.isLeaderOfOwnGame();
+            return p.isLeaderOfOwnGame()&&p.isInIntermission();
         });
 
         addSubcommand(new CancelCreationCMD());

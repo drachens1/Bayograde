@@ -6,7 +6,7 @@ import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.Argument;
 import org.drachens.Manager.DemandManager;
-import org.drachens.Manager.InventoryManager;
+import org.drachens.Manager.decorational.InventoryManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;

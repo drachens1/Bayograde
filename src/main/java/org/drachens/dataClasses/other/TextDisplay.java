@@ -20,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TextDisplay extends Clientside {
     private final boolean followPlayer;
@@ -34,6 +35,18 @@ public class TextDisplay extends Clientside {
 
     private TextDisplay(create c) {
         super(c.instance, c.pos);
+        this.text = c.text;
+        this.lineWidth = c.lineWidth;
+        this.backgroundColor = c.backgroundColor;
+        this.opacity = c.opacity;
+        this.bitmask = c.bitmask;
+        this.followPlayer = c.followPlayer;
+        entityTeleportPacket = new EntityTeleportPacket(entityId, pos, pos, 0, false);
+        createEntityMetaDataPacket();
+    }
+
+    private TextDisplay(create c,float hitBoxWidth, float hitBoxHeight, Consumer<CPlayer> consumer) {
+        super(c.instance, c.pos,hitBoxHeight,hitBoxWidth, c.offset, consumer);
         this.text = c.text;
         this.lineWidth = c.lineWidth;
         this.backgroundColor = c.backgroundColor;
@@ -139,6 +152,7 @@ public class TextDisplay extends Clientside {
                 0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
+
         PacketSendingUtils.sendPacket(p, entityMetaDataPacket);
 
         PacketSendingUtils.sendPacket(p, entityTeleportPacket);
@@ -182,6 +196,7 @@ public class TextDisplay extends Clientside {
     }
 
     public static class create {
+        private float hitBoxWidth, hitBoxHeight = -1;
         private final Instance instance;
         private final Component text;
         public int lineWidth = 200;
@@ -190,6 +205,8 @@ public class TextDisplay extends Clientside {
         public byte bitmask = 1;
         private Pos pos;
         private boolean followPlayer = false;
+        private Consumer<CPlayer> consumer;
+        private Pos offset;
 
         public create(Pos pos, Instance instance, Component text) {
             this.pos = pos;
@@ -201,6 +218,14 @@ public class TextDisplay extends Clientside {
             this.pos = province.getPos();
             this.instance = province.getInstance();
             this.text = text;
+        }
+
+        public create setBoundingBox(float hitBoxWidth, float hitBoxHeight, Pos offset, Consumer<CPlayer> consumer){
+            this.hitBoxWidth=hitBoxWidth;
+            this.hitBoxHeight=hitBoxHeight;
+            this.consumer=consumer;
+            this.offset=offset;
+            return this;
         }
 
         public create setFollowPlayer(boolean active) {
@@ -234,6 +259,9 @@ public class TextDisplay extends Clientside {
         }
 
         public TextDisplay build() {
+            if (hitBoxHeight!=-1){
+                return new TextDisplay(this,hitBoxWidth,hitBoxHeight,consumer);
+            }
             return new TextDisplay(this);
         }
     }
