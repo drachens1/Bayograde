@@ -69,6 +69,12 @@ public class Payment implements Cloneable, Saveable {
         amount *= multiply;
     }
 
+    public void divide(Payment payment) {
+        if (payment.currencyType!=currencyType)return;
+        amount /= payment.getAmount();
+    }
+
+
     @Override
     public Payment clone() {
         try {

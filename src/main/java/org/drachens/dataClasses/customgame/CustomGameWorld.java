@@ -29,42 +29,43 @@ import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.events.system.StartGameEvent;
 import org.drachens.generalGame.scoreboards.DefaultScoreboard;
 import org.drachens.player_types.CPlayer;
+import org.drachens.util.MessageEnum;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drachens.util.Messages.broadcast;
+
 public class CustomGameWorld extends World {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     private final VotingOption votingOption;
     private final List<CPlayer> players = new ArrayList<>();
-    private final Component welcomeMessage;
     private boolean started;
 
     public CustomGameWorld(CPlayer p, VotingOption votingOption){
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
         getInstance().setBlock(0,0,0,Block.DIAMOND_BLOCK);
         ContinentalManagers.worldManager.registerWorld(this);
-        welcomeMessage =Component.text()
-                .append(Component.text("| Welcome to a custom game.\n| These are basically the same as the global one but\n| the owner: "+p.getUsername()+" can activate certain DLC's \n| Also there is no voting period\n|\n| You are currently in the waiting period you can do anything but time wont advance\n| Until "+p.getUsername()+" starts the game", NamedTextColor.GREEN))
-                .build();
         this.votingOption=votingOption;
-        p.sendMessage(Component.text()
-                        .append(Component.text("| Welcome to a custom game.\n| You can activate any DLC's if you have any\n| Commands:\n| /manage creation complete #Starts the game\n| /manage creation cancel #Cancels the waiting period\n| /manage invite <player> #Invites a player\n| /manage kick <player> #Kicks a player\n| /manage options #Shows the options/clickable options for commands to make it easier\n| You need to start the game for time to advance\n| That's all! have fun!",NamedTextColor.GREEN))
-                .build());
         p.setLeaderOfOwnGame(true);
-        ContinentalManagers.putWorldClass(getInstance(),new CustomGameWorldClass(new CountryDataManager(getInstance(), new ArrayList<>()),
+        ContinentalManagers.putWorldClass(getInstance(),new CustomGameWorldClass(
+                new CountryDataManager(getInstance(), new ArrayList<>()),
                 new ClientEntsToLoad(),
                 new ProvinceManager(),
                 new DataStorer()
                 ));
         EventDispatcher.call(new StartGameEvent(getInstance(), votingOption));
         votingOption.getMapGenerator().generate(getInstance(),votingOption);
-        p.setInstance(getInstance());
         ContinentalManagers.yearManager.getYearBar(getInstance()).cancelTask();
     }
 
     public void complete(){
+        players.forEach(player -> player.setInIntermission(false));
+        broadcast(Component.text()
+                .append(MessageEnum.system.getComponent())
+                .append(Component.text("Game has started!",NamedTextColor.GREEN))
+                .build(),getInstance());
         started =true;
         ContinentalManagers.yearManager.getYearBar(getInstance()).run(votingOption);
     }
@@ -76,12 +77,11 @@ public class CustomGameWorld extends World {
     @Override
     public void addPlayer(CPlayer p) {
         players.add(p);
-        if (!p.isLeaderOfOwnGame()) p.sendMessage(welcomeMessage);
         p.setInOwnGame(true);
         p.refreshCommands();
         Instance instance = p.getInstance();
         scoreboardManager.openScoreboard(new DefaultScoreboard(), p);
-        InventoryEnum inventoryEnum = ContinentalManagers.world(instance).dataStorer().votingOption.getDefaultInventory();
+        InventoryEnum inventoryEnum = votingOption.getDefaultInventory();
         if (null != inventoryEnum) ContinentalManagers.inventoryManager.assignInventory(p, inventoryEnum);
         if (null == ContinentalManagers.yearManager.getYearBar(instance)) {
             ContinentalManagers.yearManager.addBar(instance);

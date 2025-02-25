@@ -9,6 +9,8 @@ import net.minestom.server.timer.Task;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.dataClasses.Armys.DivisionTrainingQueue.TrainedTroop;
 import org.drachens.dataClasses.Countries.countryClass.Country;
+import org.drachens.dataClasses.Economics.currency.Payment;
+import org.drachens.dataClasses.Economics.currency.Payments;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.generalGame.troops.Combat;
@@ -37,6 +39,7 @@ public class Troop implements Saveable {
     private Combat battle;
     private float strength;
     private float health;
+    private float maxHealth;
     private float damage;
     private float defence;
     private float speed;
@@ -45,6 +48,7 @@ public class Troop implements Saveable {
     private Task t;
     private final HashSet<Country> countries = new HashSet<>();
     private boolean dead;
+    private final Payments costPerPercent;
 
     public Troop(Province province, TrainedTroop trainedTroop, AStarPathfinderVoids troopPathing) {
         this.troopPathing = troopPathing;
@@ -62,6 +66,9 @@ public class Troop implements Saveable {
         this.speed = design.getSpeed();
         this.country.addTroop(this);
         this.organisation = trainedTroop.getDesign().getOrg();
+        this.maxHealth=health;
+        this.costPerPercent = trainedTroop.getDesign().getCost();
+        costPerPercent.multiply(0.01f);
         province.addTroop(this);
         cull();
     }
@@ -105,8 +112,8 @@ public class Troop implements Saveable {
             moveToFriendly(to);
         } else moveToEnemy(to);
 
-        countries.clear();
         Set<Country> removed = new HashSet<>(countries);
+        countries.clear();
         to.getNeighbours().forEach(p -> {
             Country occp = p.getOccupier();
             if (country !=occp){
@@ -181,12 +188,36 @@ public class Troop implements Saveable {
 
     private void moveNear(){
         for (Province neigh : province.getNeighbours()) {
-            if (country.isMilitaryFriend(neigh.getOccupier())) {
+            if (country.isMilitaryFriend(neigh.getOccupier())||country==neigh.getOccupier()) {
                 moveBlock(neigh);
                 return;
             }
         }
         kill();
+    }
+
+    public void setHealth(float health){
+        if (this.health<maxHealth){
+            float lostStrength = strength*(health/maxHealth);
+            Payments cost = new Payments(costPerPercent);
+            cost.multiply(lostStrength);
+            Payments remainder = country.getEconomy().getVault().minusMaximumPossible(cost);
+            remainder.compress();
+            country.getEconomy().getVault().minusPayments(remainder);
+            remainder.divide(costPerPercent);
+            float toRemove = 0f;
+            for (Payment payment : remainder.getPayments()){
+                if (toRemove>payment.getAmount()){
+                    return;
+                }else if (toRemove<payment.getAmount()){
+                    toRemove=payment.getAmount();
+                }
+            }
+            strength-=toRemove;
+            if (strength<5){
+                this.health=health;
+            }
+        }
     }
 
     public void kill() {

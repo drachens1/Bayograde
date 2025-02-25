@@ -109,9 +109,10 @@ public class CPlayer extends Player {
         ownedCosmetics.addAll(rank.getCosmetics());
         playerJson.addRank(rank.getIdentifier());
         if (!"default_rank".equalsIgnoreCase(rank.getIdentifier())){
-            refreshCommands();
             playerJson.setPremium(true);
         }
+        refreshCommands();
+        ContinentalManagers.tabManager.updatePlayer(this);
     }
 
     public void removeRank(Rank rank){
@@ -121,6 +122,8 @@ public class CPlayer extends Player {
         if (!ranks.contains(RankEnum.deratus.getRank())|| ranks.contains(RankEnum.legatus.getRank())) {
             playerJson.setPremium(false);
         }
+        ContinentalManagers.tabManager.updatePlayer(this);
+        refreshCommands();
     }
 
     public boolean hasRank(Rank rank){

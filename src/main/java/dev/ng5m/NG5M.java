@@ -47,15 +47,20 @@ public class NG5M {
                     os.close();
                     return;
                 }
-
                 InputStream req = exchange.getRequestBody();
-
                 String json = new String(req.readAllBytes(), StandardCharsets.UTF_8);
-
-                PurchaseGson purchaseGson = new Gson().fromJson(json, PurchaseGson.class);
+                PurchaseGson purchaseGson = PurchaseGson.create(json);
                 boolean success = purchaseGson.verify();
-
-                EventDispatcher.call(new PurchaseEvent(purchaseGson, success));
+                System.out.println(json);
+                if (success){
+                    purchaseGson.updateId();
+                    EventDispatcher.call(new PurchaseEvent(purchaseGson));
+                    String response = "Webhook received successfully";
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream outputStream = exchange.getResponseBody();
+                    outputStream.write(response.getBytes());
+                    outputStream.close();
+                }
             });
 
             httpServer.createContext("/purchase_cancel", exchange -> {
@@ -76,11 +81,20 @@ public class NG5M {
                 PurchaseGson purchaseGson = new Gson().fromJson(json, PurchaseGson.class);
                 boolean success = purchaseGson.verify();
 
-                EventDispatcher.call(new CancelPurchaseEvent(purchaseGson, success));
+                if (success){
+                    purchaseGson.updateId();
+                    EventDispatcher.call(new CancelPurchaseEvent(purchaseGson));
+                    String response = "Webhook received successfully";
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream outputStream = exchange.getResponseBody();
+                    outputStream.write(response.getBytes());
+                    outputStream.close();
+                }
             });
 
             httpServer.setExecutor(Executors.newFixedThreadPool(10));
             httpServer.start();
+            System.out.println("Setup http server");
         } catch (Exception x) {
             throw new RuntimeException(x);
         }

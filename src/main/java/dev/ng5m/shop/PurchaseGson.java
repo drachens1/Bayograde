@@ -1,20 +1,39 @@
 package dev.ng5m.shop;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.drachens.Manager.defaults.ContinentalManagers;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class PurchaseGson {
-    public int productID;
+    public String productID;
     public String username;
     public String randomBytes;
-    public int[] signature;
+    public String signature;
+
+    public PurchaseGson(String productID, String username, String randomBytes, String signature){
+        this.productID=productID;
+        this.username=username;
+        this.randomBytes=randomBytes;
+        this.signature=signature;
+    }
+
+    public static PurchaseGson create(String json){
+        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+        return new PurchaseGson(jsonObject.get("productID").getAsString(),
+                jsonObject.get("username").getAsString(),
+                jsonObject.get("nonce").getAsString(),
+                jsonObject.get("signature").getAsString());
+    }
 
     private byte[] generateHMAC(String randomBytes) {
         try {
             Mac hmac = Mac.getInstance("HmacSHA256");
-            final String secret = ":w#tK9--kJ.$kLUT?EJWvcSX;)%D8e%(B,RwZr4rz3WJ{M@=;a$*ZhAE$-59/%gbY:+}4!.BbEwn#=%7mZHA7i5uK?d3_agS_.qfy{T:=TrL3WE_uk,c@H@v-BVt[_.NT*jQN9%T[SX2.u,Z7X06Uv/8=[i?wD14{Mm?C;WmDXW}h}?Qr,K.SgVQ{Am&HbKXN2iQz#Z8&zr&t_-@wDQ#Y8fiDSM+n.jm}aJyx340Q;SBtX,7rZbq3XBMZ&DD+g$m";
+            final String secret = ContinentalManagers.configFileManager.getStoreSecretFile().getSecret();
             SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             hmac.init(secretKey);
             return hmac.doFinal(randomBytes.getBytes(StandardCharsets.UTF_8));
@@ -23,21 +42,27 @@ public class PurchaseGson {
         }
     }
 
-    private byte[] iToB() {
-        byte[] bytes = new byte[signature.length];
+    public void updateId(){
+        productID = ContinentalManagers.configFileManager.getStoreSecretFile().getIdMap().get(productID);
+    }
 
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) signature[i];
+    private byte[] hexStringToByteArray(String hex) {
+        int len = hex.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
+                    + Character.digit(hex.charAt(i+1), 16));
         }
+        return data;
+    }
 
-        return bytes;
+    private byte[] iToB() {
+        return hexStringToByteArray(signature);
     }
 
     public boolean verify() {
         byte[] received = iToB();
         byte[] expected = generateHMAC(randomBytes);
-
         return Arrays.equals(received, expected);
     }
-
 }

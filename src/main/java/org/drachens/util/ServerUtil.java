@@ -29,6 +29,7 @@ import org.drachens.InventorySystem.GUIManager;
 import org.drachens.Manager.WorldManager;
 import org.drachens.Manager.defaults.CentralEventManager;
 import org.drachens.Manager.defaults.ContinentalManagers;
+import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
@@ -75,8 +76,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static org.drachens.Manager.defaults.ContinentalManagers.putWorldClass;
-import static org.drachens.util.Messages.logCmd;
+import static org.drachens.util.Messages.*;
 import static org.drachens.util.OtherUtil.runThread;
+import static org.drachens.util.PlayerUtil.getUUIDFromName;
 
 @Getter
 public enum ServerUtil {
@@ -178,7 +180,11 @@ public enum ServerUtil {
             return Component.text().append(components).build();
         };
 
-        globEHandler.addListener(PlayerChatEvent.class, e -> e.setFormattedMessage(chatEvent.apply(e)));
+        globEHandler.addListener(PlayerChatEvent.class, e -> {
+            e.setFormattedMessage(chatEvent.apply(e));
+            broadcast(e.getFormattedMessage(),e.getInstance());
+            e.setCancelled(true);
+        });
 
         globEHandler.addListener(PlayerCommandEvent.class, e -> {
             final Player p = e.getPlayer();
@@ -273,8 +279,22 @@ public enum ServerUtil {
 
         globEHandler.addListener(PlayerBlockPlaceEvent.class, e -> e.setCancelled(true));
 
-        globEHandler.addListener(PurchaseEvent.class,e-> System.out.println(e.success() +" : "+ e.request()));
-        globEHandler.addListener(CancelPurchaseEvent.class, e-> System.out.println(e.success() +" : "+ e.request()));
+        globEHandler.addListener(PurchaseEvent.class,e-> {
+            String playerName = e.request().username;
+            CPlayer player = (CPlayer) MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(playerName);
+            if (player!=null){
+                globalBroadcast(Component.text()
+                        .append(MessageEnum.system.getComponent())
+                        .append(player.getName())
+                        .append(Component.text(" has bought a rank from the store",NamedTextColor.GREEN))
+                        .build());
+                RankEnum.valueOf(e.request().productID).getRank().addPlayer(player);
+                return;
+            }
+            UUID uuid = getUUIDFromName(playerName);
+            System.out.println(" Something "+ e.request().productID+" user: "+e.request().username);
+        });
+        globEHandler.addListener(CancelPurchaseEvent.class, e-> System.out.println(" : "+ e.request().productID));
 
         new CentralEventManager();
         start();

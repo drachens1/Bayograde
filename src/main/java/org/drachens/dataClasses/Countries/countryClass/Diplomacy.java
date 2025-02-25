@@ -34,7 +34,7 @@ public class Diplomacy implements Saveable {
     private final HashSet<ConditionEnum> conditionEnums;
     private final DemandManager demandManager = ContinentalManagers.demandManager;
 
-    public Diplomacy(List<Country> puppets, HashSet<String> countryWars, HashMap<String, Integer> diplomacy,
+    public Diplomacy(List<Country> puppets, HashMap<String, Integer> diplomacy,
                      HashMap<String, NonAggressionPact> nonAggressionPactHashMap,
                      HashMap<String, WarJustification> warJustificationHashMap,
                      HashMap<String, WarJustification> completedWarJustifications, HashSet<String> bordersWars,

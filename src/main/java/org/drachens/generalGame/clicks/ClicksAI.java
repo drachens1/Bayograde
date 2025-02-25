@@ -245,7 +245,7 @@ public class ClicksAI implements AIManager, Saveable {
                 return;
             }
             WarGoalType w = WarGoalTypeEnum.surprise.getWarGoalType();
-            WarJustification warJustification = new WarJustification(atk, country, w.modifier(), w.timeToMake(), w.expires(), true);
+            WarJustification warJustification = new WarJustification(atk, country, w.modifier(), w.timeToMake(), w.expires(), true, atk.getInstance());
             EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
         }
 

@@ -229,7 +229,14 @@ public class DevCMD extends Command {
                     RankEnum rank = RankEnum.valueOf(context.get(ranks));
                     CPlayer p = (CPlayer) sender;
                     rank.getRank().addPlayer(p);
-                })
+                },ranks)
+                .build());
+        addSubcommand(new CommandCreator("remove-rank")
+                .addSyntax((sender,context)->{
+                    RankEnum rank = RankEnum.valueOf(context.get(ranks));
+                    CPlayer p = (CPlayer) sender;
+                    rank.getRank().removePlayer(p);
+                },ranks)
                 .build());
 
         addSubcommand(new CommandCreator("test")

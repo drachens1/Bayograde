@@ -62,12 +62,18 @@ public class Combat implements Saveable {
 
     private void resolveAttack() {
         for (Troop attacker : new ArrayList<>(attackers)) {
+            if (attacker.isDead()){
+                removeAttacker(attacker);
+            }
             for (Troop defender : new ArrayList<>(defenders)) {
+                if (defender.isDead()){
+                    removeDefender(defender);
+                }
                 float attackerDamage = attacker.getDamage() * (attacker.getStrength() / 100);
                 float defenderDamage = defender.getDamage() * (defender.getStrength() / 100);
 
                 float attackerDamageReduction = defender.getDefence() / (defender.getDefence() + attacker.getDamage());
-                float defenderDamageReduction = attacker.getDefence() / (attacker.getDefence() + defender.getDamage());
+                float defenderDamageReduction = attacker.getDefence() / (attacker.getDefence()*1.1f + defender.getDamage());
 
                 defender.setHealth(defender.getHealth() - (attackerDamage * (1 - defenderDamageReduction)));
                 defender.setOrg(defender.getOrg() - (attackerDamage * (1 - defenderDamageReduction) * 0.2f));

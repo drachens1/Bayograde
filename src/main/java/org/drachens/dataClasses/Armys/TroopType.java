@@ -36,14 +36,12 @@ public class TroopType {
                 .toArray(int[][]::new);
         for (int i = 0; i < enemyShootingFrames.length; i++) {
             enemyShootingFrames[i][1] += 6;
-            System.out.println("EnemyShoot: "+enemyShootingFrames[i][1]);
         }
         this.enemyShootingAnimation =new DynamicAnimation(shootingAnimation.getItem(),enemyShootingFrames);
 
         int[] enemyMoveFrames = moveAnimation.getFrames().clone();
         for (int i = 0; i < enemyMoveFrames.length; i++) {
             enemyMoveFrames[i] += 6;
-            System.out.println("EnemyMove: "+enemyMoveFrames[i]);
         }
         this.enemyMoveAnimation =new Animation(moveAnimation.getDelayBetween(), moveAnimation.getItem(), enemyMoveFrames);
 
@@ -52,14 +50,12 @@ public class TroopType {
                 .toArray(int[][]::new);
         for (int i = 0; i < allyShootingFrames.length; i++) {
             allyShootingFrames[i][1] += 12;
-            System.out.println("AllyShoot: "+allyShootingFrames[i][1]);
         }
         this.allyShootingAnimation =new DynamicAnimation(shootingAnimation.getItem(),allyShootingFrames);
 
         int[] allyMoveFrames = moveAnimation.getFrames().clone();
         for (int i = 0; i < allyMoveFrames.length; i++) {
             allyMoveFrames[i] += 12;
-            System.out.println("AllyMove: "+allyMoveFrames[i]);
         }
         this.allyMoveAnimation =new Animation(moveAnimation.getDelayBetween(), moveAnimation.getItem(), allyMoveFrames);
     }

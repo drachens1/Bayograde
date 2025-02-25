@@ -2,6 +2,7 @@ package org.drachens.fileManagement;
 
 import lombok.Getter;
 import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
+import org.drachens.fileManagement.customTypes.StoreSecretFile;
 import org.drachens.fileManagement.customTypes.WhitelistFile;
 
 import java.io.File;
@@ -15,6 +16,7 @@ public class ConfigFileManager {
     private String logCmds;
     private final ServerPropertiesFile serverPropertiesFile = new ServerPropertiesFile();
     private final WhitelistFile whitelistFile = new WhitelistFile();
+    private final StoreSecretFile storeSecretFile = new StoreSecretFile();
 
     public void startup()  {
         System.out.println("Creating logs");

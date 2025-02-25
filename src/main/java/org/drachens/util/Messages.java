@@ -52,6 +52,16 @@ public enum Messages {
         }
     }
 
+
+    public static void broadcast(CPlayer sender, Component msg, Instance world) {
+        logMsg(sender.getUsername(), msg, null);
+        for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+            if (p.getInstance() == world) {
+                p.sendMessage(msg);
+            }
+        }
+    }
+
     public static void logCmd(String playerName, String cmd, Instance w) {
         System.out.println(playerName + " : " + cmd);
         try {

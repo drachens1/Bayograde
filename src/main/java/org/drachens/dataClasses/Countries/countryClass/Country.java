@@ -1,6 +1,5 @@
 package org.drachens.dataClasses.Countries.countryClass;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -25,6 +24,7 @@ import org.drachens.dataClasses.Countries.CountryChat;
 import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Countries.Leader;
 import org.drachens.dataClasses.Diplomacy.Demand;
+import org.drachens.dataClasses.Diplomacy.Justifications.WarJustification;
 import org.drachens.dataClasses.Diplomacy.NonAggressionPact;
 import org.drachens.dataClasses.Diplomacy.PuppetChat;
 import org.drachens.dataClasses.Diplomacy.faction.EconomyFactionType;
@@ -81,7 +81,7 @@ public abstract class Country implements Cloneable, Saveable {
     protected Country(String name, Component nameComponent, Material block, Material border,
                       Ideology defaultIdeologies, Instance instance,
                       Vault vault, HashMap<String, LawCategory> laws) {
-        this.diplomacy = new Diplomacy(new ArrayList<>(), new HashSet<>(), new HashMap<>(),
+        this.diplomacy = new Diplomacy(new ArrayList<>(), new HashMap<>(),
                 new HashMap<>(), new HashMap<>(),
                 new HashMap<>(), new HashSet<>(), new HashMap<>(),
                 new HashMap<>(), new HashMap<>(), new HashSet<>());
@@ -277,7 +277,7 @@ public abstract class Country implements Cloneable, Saveable {
             provinces.getOccupier().removeBorder(province, getName());
         });
         this.military.removeOccupiedProvince(province);
-        ai.attackedAt(province);
+        if (ai != null) ai.attackedAt(province);
     }
 
     public void captureProvince(Province province) {
@@ -317,6 +317,7 @@ public abstract class Country implements Cloneable, Saveable {
         EventDispatcher.call(new CountryLeaveEvent(this, p));
         this.military.getCapitulationBar().removePlayer(p);
         this.info.removePlayer(p);
+        p.setBelowNameTag(null);
         p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(this.info.getOriginalName()).build()).build());
         this.info.getClientsides().forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
@@ -833,7 +834,7 @@ public abstract class Country implements Cloneable, Saveable {
         return json;
     }
 
-    public static Country fromJson(JsonObject jsonObject){
+    public static Country fromJson(JsonObject jsonObject, Instance instance){
         String name = jsonObject.getAsString();
 
         JsonObject diplomacy = jsonObject.getAsJsonObject("diplomacy");
@@ -841,10 +842,6 @@ public abstract class Country implements Cloneable, Saveable {
         JsonObject info = jsonObject.getAsJsonObject("info");
         JsonObject military = jsonObject.getAsJsonObject("military");
         JsonObject abstractJson = jsonObject.getAsJsonObject("abstract");
-
-        HashSet<String> countryWars = new HashSet<>();
-        JsonArray countryWarss = diplomacy.getAsJsonArray("countryWars");
-        countryWarss.forEach(countryWar->countryWars.add(countryWar.getAsString()));
 
         HashMap<String,Integer> diplomacies = new HashMap<>();
         JsonObject diplomacys = diplomacy.getAsJsonObject("diplomacy");
@@ -854,13 +851,19 @@ public abstract class Country implements Cloneable, Saveable {
             diplomacies.put(countryName,number);
         }
 
-//        HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
-//        JsonObject nonAggressionPactJsonObject = diplomacy.getAsJsonObject("nonAggressionPactHashMap");
+        HashMap<String, NonAggressionPact> nonAggressionPactHashMap = new HashMap<>();
+        JsonObject nonAggressionPactJsonObject = diplomacy.getAsJsonObject("nonAggressionPactHashMap");
 //        for (Map.Entry<String, JsonElement> entry : nonAggressionPactJsonObject.entrySet()) {
-//
+//            nonAggressionPactHashMap.put(entry.getKey(),NonAggressionPact.fromJson(entry.getValue().getAsJsonObject(),instance));
 //        }
 
-//        Diplomacy diplomacy1 = new Diplomacy(new ArrayList<>(),countryWars,diplomacies,nonAggressionPactHashMap,);
+        HashMap<String, WarJustification> warJustificationHashMap = new HashMap<>();
+        JsonObject warJustificationObject = diplomacy.getAsJsonObject("warJustificationHashMap");
+//        for (Map.Entry<String, JsonElement> entry : warJustificationObject.entrySet()) {
+//            warJustificationHashMap.put(entry.getKey(),WarJustification.fromJson(entry.getValue().getAsJsonObject(),instance));
+//        }
+//
+//        Diplomacy diplomacy1 = new Diplomacy(new ArrayList<>(),diplomacies,nonAggressionPactHashMap,warJustificationHashMap,);
 
         return null;
     }

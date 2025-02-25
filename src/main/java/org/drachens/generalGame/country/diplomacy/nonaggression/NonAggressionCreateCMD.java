@@ -31,7 +31,7 @@ public class NonAggressionCreateCMD extends Command {
             Country country = p.getCountry();
             Country to = ContinentalManagers.world(p.getInstance()).countryDataManager().getCountryFromName(context.get(countries));
             if (null == to) return;
-            NonAggressionPact nonAggressionPact = new NonAggressionPact(country, to, context.get(length));
+            NonAggressionPact nonAggressionPact = new NonAggressionPact(country, to, context.get(length),to.getInstance());
             EventDispatcher.call(new NonAggressionOfferEvent(nonAggressionPact));
         }, countries, length);
     }

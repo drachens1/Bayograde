@@ -160,7 +160,7 @@ public abstract class Clientside {
         }
 
         public void dispose(){
-            players.forEach(this::removePlayer);
+            new ArrayList<>(players).forEach(this::removePlayer);
             ContinentalManagers.interactableEntityManager.unRegister(this);
         }
     }

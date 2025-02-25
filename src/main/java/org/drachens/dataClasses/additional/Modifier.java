@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.additional;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -242,12 +243,12 @@ public class Modifier implements Saveable, Cloneable  {
 
     @Override
     public JsonElement toJson() {
-        System.out.println("identifier");
         return new JsonPrimitive(identifier);
     }
 
     public JsonElement actualJson() {
-        return new JsonPrimitive(identifier);
+        JsonObject jsonObject = new JsonObject();
+        return jsonObject;
     }
 
     public static class create {

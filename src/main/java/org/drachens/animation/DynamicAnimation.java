@@ -24,7 +24,6 @@ public class DynamicAnimation extends AnimationType {
     public DynamicAnimation(Material item, int[][] frames) {
         this.item = item;
         this.frames = frames;
-        System.out.println(Arrays.deepToString(frames) +" Frames");
     }
 
     @Override
@@ -40,7 +39,6 @@ public class DynamicAnimation extends AnimationType {
 
         taskHashMap.put(itemDisplay, scheduler.buildTask(() -> {
             itemDisplay.setItem(itemBuilder(item, frames[current][1]));
-            System.out.println(frames[current][1] +" Current frame: "+current);
 
             int nextFrame = current + 1;
             if (nextFrame >= frames.length) {

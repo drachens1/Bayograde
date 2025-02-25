@@ -67,11 +67,11 @@ public class YearBar extends HideableBossBar {
                     EventDispatcher.call(new ResetEvent(instance));
                 }
             }
-        }).repeat(votingOption.getDayLength() * votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
+        }).repeat((long) (votingOption.getDayLength() * votingOption.getSpeed()), ChronoUnit.MILLIS).schedule();
 
         tickTask = MinecraftServer.getSchedulerManager().buildTask(() ->
                 EventDispatcher.call(new CustomTick(instance)))
-                .repeat(votingOption.getDayLength() * votingOption.getSpeed() / 4, ChronoUnit.MILLIS).schedule();
+                .repeat((long) (votingOption.getDayLength() * votingOption.getSpeed() / 4), ChronoUnit.MILLIS).schedule();
     }
 
     public void pause() {
@@ -104,10 +104,10 @@ public class YearBar extends HideableBossBar {
                     EventDispatcher.call(new ResetEvent(instance));
                 }
             }
-        }).repeat(votingOption.getDayLength() * votingOption.getSpeed(), ChronoUnit.MILLIS).schedule();
+        }).repeat((long) (votingOption.getDayLength() * votingOption.getSpeed()), ChronoUnit.MILLIS).schedule();
 
         tickTask = MinecraftServer.getSchedulerManager().buildTask(() ->
                 EventDispatcher.call(new CustomTick(instance)))
-                .repeat(votingOption.getDayLength() * votingOption.getSpeed() / 4, ChronoUnit.MILLIS).schedule();
+                .repeat((long) (votingOption.getDayLength() * votingOption.getSpeed() / 4), ChronoUnit.MILLIS).schedule();
     }
 }

@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.scoreboard.BelowNameTag;
 import org.drachens.dataClasses.Countries.CountryChat;
 import org.drachens.dataClasses.Countries.Ideology;
 import org.drachens.dataClasses.Countries.Leader;
@@ -45,6 +46,7 @@ public class Info implements Saveable {
     private PuppetChat puppetChat;
     private final Ideology ideology;
     private final Stability stability;
+    private final BelowNameTag belowNameTag;
 
     public Info(String name, Material block, Material border, Province capital,
                 float capitulationPoints, float maxCapitulationPoints, boolean capitulated,
@@ -68,6 +70,7 @@ public class Info implements Saveable {
         this.countryChat = countryChat;
         this.ideology = ideology;
         this.stability = stability;
+        this.belowNameTag = new BelowNameTag(name,originalName);
     }
 
     public void addMaxCapitulationPoints(float amount){

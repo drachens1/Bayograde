@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import net.minestom.server.network.player.GameProfile;
+import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.fileManagement.filetypes.GsonStringMaker;
 import org.drachens.player_types.CPlayer;
@@ -167,11 +168,17 @@ public class PlayerJson extends GsonStringMaker {
     public void setSuffixActive(boolean b){
         this.suffixActive =b;
         set(new JsonPrimitive(b),"premium","suffix","active");
+        if (suffixActive){
+            ContinentalManagers.tabManager.updatePlayer(p);
+        }
     }
 
     public void setSuffix(String suffix){
         this.suffix=suffix;
         set(suffix,"premium","suffix","current");
+        if (suffixActive){
+            ContinentalManagers.tabManager.updatePlayer(p);
+        }
     }
 
     public void setNickNameActive(boolean b){

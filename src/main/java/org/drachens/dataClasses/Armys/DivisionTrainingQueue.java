@@ -140,7 +140,7 @@ public class DivisionTrainingQueue implements Saveable {
                 float amount = country.subtractMaximumAmountPossible(payment);
                 fulfillment.add(amount / payment.getAmount());
             });
-            strength = calculateMean(fulfillment);
+            strength = 100f - calculateMean(fulfillment);
         }
 
         private float calculateMean(HashSet<Float> stuff) {

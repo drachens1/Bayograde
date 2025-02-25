@@ -55,7 +55,7 @@ public class JustifyAgainstCMD extends Command {
             }
             WarGoalTypeEnum warGoalTypeEnum = WarGoalTypeEnum.valueOf(choice);
             WarGoalType w = warGoalTypeEnum.getWarGoalType();
-            WarJustification warJustification = new WarJustification(country,against,w.modifier(),w.timeToMake(),w.expires(),false);
+            WarJustification warJustification = new WarJustification(country,against,w.modifier(),w.timeToMake(),w.expires(),false, against.getInstance());
             EventDispatcher.call(new WarJustificationStartEvent(warJustification, country));
         }, option, countries);
     }

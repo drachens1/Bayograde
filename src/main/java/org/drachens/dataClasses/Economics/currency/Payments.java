@@ -12,6 +12,14 @@ import java.util.List;
 public class Payments implements Saveable {
     private final HashSet<Payment> payments;
 
+    public Payments(List<Payment> payments) {
+        this.payments = new HashSet<>(payments);
+    }
+
+    public Payments(Payments payments) {
+        this.payments = new HashSet<>(payments.getPayments());
+    }
+
     public Payments(Payment... payments) {
         this.payments = new HashSet<>(List.of(payments));
     }
@@ -60,6 +68,10 @@ public class Payments implements Saveable {
             current += payment.getAmount();
             amountHashMap.put(payment.getCurrencyType(), current);
         });
+    }
+
+    public void divide(Payments payments){
+        getPayments().forEach(payment -> payments.getPayments().forEach(payment::divide));
     }
 
     @Override

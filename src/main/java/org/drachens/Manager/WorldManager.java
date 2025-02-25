@@ -52,7 +52,7 @@ public class WorldManager {
             player -> Component.text()
                     .append(Component.text(player.getUsername(), NamedTextColor.GRAY))
                     .append(Component.text("[", NamedTextColor.GRAY))
-                    .append(Component.text("-", NamedTextColor.GREEN))
+                    .append(Component.text("-", NamedTextColor.RED))
                     .append(Component.text("]", NamedTextColor.GRAY))
                     .build()
     );

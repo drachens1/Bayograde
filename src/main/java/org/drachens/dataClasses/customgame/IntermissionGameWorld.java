@@ -1,33 +1,35 @@
 package org.drachens.dataClasses.customgame;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.network.packet.client.play.ClientChatSessionUpdatePacket;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
 import org.drachens.dataClasses.Countries.countryClass.Country;
+import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.World;
 import org.drachens.dataClasses.datastorage.DataStorer;
 import org.drachens.dataClasses.other.ClientEntsToLoad;
 import org.drachens.dataClasses.other.Clientside;
 import org.drachens.dataClasses.other.TextDisplay;
-import org.drachens.generalGame.scoreboards.DefaultScoreboard;
 import org.drachens.player_types.CPlayer;
+import org.drachens.util.MessageEnum;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drachens.util.Messages.broadcast;
+
 public class IntermissionGameWorld extends World {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
+    private final CPlayer opener;
     private final List<CPlayer> players = new ArrayList<>();
     private final Component welcomeMessage;
     private final List<Clientside> clientsides = new ArrayList<>();
@@ -37,14 +39,15 @@ public class IntermissionGameWorld extends World {
     private boolean researchEnabled = true;
     private int speedChoice = 5;
     private int progressionRateChoice = 5;
-    private double speed = 1L;
-    private double progressionRate = 1L;
+    private double speed = 1;
+    private double progressionRate = 1;
     private int votingChoice = 1;
     private VotingWinner votingWinner;
 
     public IntermissionGameWorld(CPlayer p, String name) {
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
         fill(new Pos(-10,0,-10),new Pos(10,0,10),Block.GRAY_CONCRETE);
+        this.opener=p;
         ContinentalManagers.worldManager.registerWorld(this);
         welcomeMessage =Component.text()
                 .append(Component.text("| Welcome to a custom game.\n| These are basically the same as the global one but\n| the owner: "+p.getUsername()+" can activate certain DLC's \n| Also there is no voting period\n|\n| You are currently in the waiting period you can do anything but time wont advance\n| Until "+p.getUsername()+" starts the game", NamedTextColor.GREEN))
@@ -151,6 +154,7 @@ public class IntermissionGameWorld extends World {
         VotingWinner[] votingsOptions = new VotingWinner[]{VotingWinner.ww2_clicks, VotingWinner.ww2_troops};
         TextDisplay votingDisplay = new TextDisplay.create(new Pos(-2.5,1.5,8.5).withYaw(215),getInstance(),Component.text("<  Option : ww2_clicks  >"))
                 .build();
+        votingWinner=votingsOptions[1];
         votingDisplay.addBoundingBox(0.4f,0.4f, new Pos(1.2,0,0.9),player -> {
             if (votingChoice>=votingsOptions.length-1){
                 return;
@@ -176,7 +180,7 @@ public class IntermissionGameWorld extends World {
 
         TextDisplay start = new TextDisplay.create(new Pos(1.1,2,10).withYaw(180),getInstance(),Component.text("START",NamedTextColor.DARK_GRAY,TextDecoration.BOLD)).build();
 
-        start.addBoundingBox(1f,1f,new Pos(0,0,0),player -> {
+        start.addBoundingBox(1f,0.2f,new Pos(0,0,0),player -> {
             if (!player.isLeaderOfOwnGame()){
                 return;
             }
@@ -197,6 +201,19 @@ public class IntermissionGameWorld extends World {
     }
 
     private void complete(){
+        broadcast(Component.text()
+                .append(MessageEnum.system.getComponent())
+                .append(Component.text("Loading...",NamedTextColor.GREEN))
+                .build(),getInstance());
+        CustomGameWorld customGameWorld = new CustomGameWorld(opener, VotingOption.create(votingWinner.getVotingOption())
+                .factionsEnabled(factionsEnabled)
+                .instaBuild(instaBuild)
+                .researchEnabled(researchEnabled)
+                .speed(speed)
+                .progressionRate(progressionRateChoice)
+                .AIEnabled(aiEnabled)
+                .build());
+        players.forEach(customGameWorld::addPlayer);
 
     }
 

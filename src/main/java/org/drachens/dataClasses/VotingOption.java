@@ -35,7 +35,7 @@ public class VotingOption implements Saveable {
     private final boolean AIEnabled;
     private final boolean factionsEnabled;
     private final boolean researchEnabled;
-    private final long speed;
+    private final double speed;
     private final long progressionRate;
 
     public static VotingOptionBuilder create(int startingYear, int endYear, Long dayLength, String name) {
@@ -58,6 +58,7 @@ public class VotingOption implements Saveable {
                 .mapGenerator(votingOption.mapGenerator)
                 .defaultInventory(votingOption.defaultInventory)
                 .defaultCurrencies(votingOption.defaultCurrencies)
+                .ideologyTypes(votingOption.ideologyTypes)
                 .war(votingOption.war);
     }
 
