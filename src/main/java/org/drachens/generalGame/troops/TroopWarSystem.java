@@ -23,6 +23,7 @@ public class TroopWarSystem implements War {
         if (null == country) return;
         if (BuildingEnum.barracks != province.getBuilding().getBuildTypes()) return;
         Barracks barracks = (Barracks) BuildingEnum.barracks.getBuildTypes();
+        if (!barracks.isBuilt(province.getBuilding()))return;
         barracks.openGui(p, province.getBuilding());
     }
 

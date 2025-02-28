@@ -17,7 +17,7 @@ public abstract class ResearchBuilding extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, CPlayer p) {
+    public void onBuild(Country country, Province province, CPlayer p, float yaw) {
         if (!canBuild(country, province, p)) return;
         new Building(this, province);
     }

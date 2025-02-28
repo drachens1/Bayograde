@@ -98,15 +98,14 @@ public class CentralEventManager {
             yearBar.run(e.votingOption());
 
             if (ContinentalManagers.world(instance).isGlobalGameWorldClass()) {
-                broadcast(Component.text().append(MessageEnum.system.getComponent())
+                broadcast(Component.text().append(MessageEnum.vote.getComponent())
                         .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
                         .append(Component.text(" has won!!", NamedTextColor.GREEN)).build(), e.instance());
             } else if (ContinentalManagers.world(instance).isCustomGameWorldClass()) {
-                broadcast(Component.text().append(MessageEnum.system.getComponent())
+                broadcast(Component.text().append(MessageEnum.vote.getComponent())
                         .append(Component.text(e.votingOption().getName(), NamedTextColor.GREEN, TextDecoration.BOLD))
                         .append(Component.text(" has started", NamedTextColor.GREEN)).build(), e.instance());
             }
-
         });
 
         Delay provinceDelay = new Delay(100L);
@@ -158,7 +157,7 @@ public class CentralEventManager {
             if (worldClasses.isCustomGameWorldClass()){
                 CustomGameWorldClass customGameWorldClass = worldClasses.getAsCustomGameWorldClass();
                 YearBar yearBar = ContinentalManagers.yearManager.getYearBar(instance);
-                yearBar.cancelTask();
+                if (yearBar!=null) yearBar.cancelTask();
                 CountryDataManager countryDataManager = customGameWorldClass.countryDataManager();
                 countryDataManager.getCountries().forEach(Country::endGame);
                 ClientEntsToLoad clientEntsToLoad = customGameWorldClass.clientEntsToLoad();
@@ -188,7 +187,6 @@ public class CentralEventManager {
             Country defender = e.defender();
             Country attacker = e.attacker();
             attacker.addModifier(e.warJustification().modifier());
-            attacker.getDiplomacy().removeCompletedWarJustification(defender.getName());
 
             List<Component> warsWith = new ArrayList<>();
             List<Country> atks = new ArrayList<>();
@@ -230,11 +228,13 @@ public class CentralEventManager {
             warsAgainst.removeLast();
 
             broadcast(Component.text()
-                    .append(MessageEnum.system.getComponent())
+                    .append(MessageEnum.country.getComponent())
                     .append(warsWith)
                     .append(Component.text(" started a war with ", NamedTextColor.RED))
                     .append(warsAgainst)
                     .build(), e.attacker().getInstance());
+
+            attacker.getDiplomacy().removeCompletedWarJustification(defender.getName());
         });
 
         globEHandler.addListener(EndWarEvent.class, e -> {

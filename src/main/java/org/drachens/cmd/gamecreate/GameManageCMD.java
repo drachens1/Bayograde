@@ -17,6 +17,6 @@ public class GameManageCMD extends Command {
         addSubcommand(new CreationCMD());
         addSubcommand(new KickPlayerCustomGameCMD());
         addSubcommand(new GameOptionsManageOptionsCMD());
-        addSubcommand(new SaveCustomGameCMD());
+        addSubcommand(new TickCMD());
     }
 }

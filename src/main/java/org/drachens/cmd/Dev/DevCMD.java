@@ -28,7 +28,6 @@ import org.drachens.dataClasses.other.ItemDisplay;
 import org.drachens.dataClasses.other.TextDisplay;
 import org.drachens.events.system.ResetEvent;
 import org.drachens.events.system.StartGameEvent;
-import org.drachens.generalGame.clicks.ClicksAI;
 import org.drachens.generalGame.troops.TroopCountry;
 import org.drachens.player_types.CPlayer;
 
@@ -46,6 +45,8 @@ public class DevCMD extends Command {
             CPlayer p = (CPlayer) sender;
             return p.hasPermission("operator");
         });
+
+        addSubcommand(new CreateCMD());
 
         ArgumentString player = ArgumentType.String("player");
         ArgumentEntity playerEntity = ArgumentType.Entity("player");
@@ -178,9 +179,9 @@ public class DevCMD extends Command {
         addSubcommand(new CommandCreator("ai")
                 .setDefaultExecutor((sender, context) -> {
                     CPlayer p = (CPlayer) sender;
+                    System.out.println("1");
                     Country country = p.getCountry();
-                    ClicksAI clicksAI = (ClicksAI) ContinentalManagers.centralAIManager.getAIManagerFor(p.getInstance());
-                    clicksAI.createAIForCountry(country);
+                    ContinentalManagers.centralAIManager.getAIManagerFor(p.getInstance()).createAIForCountry(country);
                 })
                 .build());
 

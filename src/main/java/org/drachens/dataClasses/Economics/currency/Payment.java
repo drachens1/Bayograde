@@ -74,7 +74,6 @@ public class Payment implements Cloneable, Saveable {
         amount /= payment.getAmount();
     }
 
-
     @Override
     public Payment clone() {
         try {

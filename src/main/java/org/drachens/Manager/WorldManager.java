@@ -28,9 +28,13 @@ public class WorldManager {
     private final PlayerModsManager playerModsManager;
     private final HashMap<Instance, World> worldHashMap = new HashMap<>();
     private final HashMap<CPlayer, Instance> playerHashSet = new HashMap<>();
-    private final ResourcePackInfo resourcePackInfo = ResourcePackInfo.resourcePackInfo()
-            .uri(URI.create("https://download.mc-packs.net/pack/60f880067ca235c61abbc7949269cba5a0f0d01e.zip"))
-            .hash("60f880067ca235c61abbc7949269cba5a0f0d01e").build();
+    private final  ResourcePackRequest request = ResourcePackRequest.resourcePackRequest()
+            .packs(ResourcePackInfo.resourcePackInfo()
+                    .uri(URI.create("https://download.mc-packs.net/pack/4e84fe7eca361b6bb4962a367bb517421056d740.zip"))
+                    .hash("4e84fe7eca361b6bb4962a367bb517421056d740").build())
+            .prompt(Component.text("Please download the resource pack!"))
+            .required(true)
+            .build();
 
     private final LoginMessage def = new LoginMessage(
             player -> Component.text()
@@ -113,7 +117,7 @@ public class WorldManager {
     public void initialJoin(CPlayer p) {
         p.setHead();
         p.getPlayerJson().laterInit();
-        //sendResourcePack(p);
+        //p.sendResourcePacks(request);
         ContinentalManagers.permissions.playerOp(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
@@ -141,16 +145,6 @@ public class WorldManager {
         } else {
             broadcast(clr.toMessage(msg, p), instance);
         }
-    }
-
-    private void sendResourcePack(CPlayer p) {
-        final ResourcePackRequest request = ResourcePackRequest.resourcePackRequest()
-                .packs(resourcePackInfo)
-                .prompt(Component.text("Please download the resource pack!"))
-                .required(true)
-                .build();
-
-        //p.sendResourcePacks(request);
     }
 
     private void generalChanges(CPlayer p){

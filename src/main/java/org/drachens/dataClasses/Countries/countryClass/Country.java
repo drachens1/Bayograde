@@ -51,6 +51,7 @@ import org.drachens.events.countries.CountryLeaveEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
 import org.drachens.generalGame.research.ResearchVault;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
+import org.drachens.generalGame.scoreboards.DefaultScoreboard;
 import org.drachens.interfaces.MapGen;
 import org.drachens.interfaces.Saveable;
 import org.drachens.interfaces.ai.AI;
@@ -144,7 +145,7 @@ public abstract class Country implements Cloneable, Saveable {
         countries.forEach(country -> this.military.getOccupies().forEach(province -> {
             this.military.getWarsWorld().addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
             this.military.getAllyWorld().addGhostBlock(province.getPos(), Block.GRAY_CONCRETE);
-            this.diplomacy.getDiplomacy().put(country.getName(), 2);
+            loadCountriesDiplomacy(country);
         }));
     }
 
@@ -317,7 +318,6 @@ public abstract class Country implements Cloneable, Saveable {
         EventDispatcher.call(new CountryLeaveEvent(this, p));
         this.military.getCapitulationBar().removePlayer(p);
         this.info.removePlayer(p);
-        p.setBelowNameTag(null);
         p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(this.info.getOriginalName()).build()).build());
         this.info.getClientsides().forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
@@ -329,8 +329,9 @@ public abstract class Country implements Cloneable, Saveable {
         onRemovePlayer(p);
         this.military.getWarsWorld().removePlayer(p);
         this.military.getAllyWorld().removePlayer(p);
-        p.refreshCommands();
+        ContinentalManagers.scoreboardManager.openScoreboard(new DefaultScoreboard(),p);
         p.setCountry(null);
+        p.refreshCommands();
     }
 
     protected abstract void onRemovePlayer(CPlayer p);
@@ -374,7 +375,9 @@ public abstract class Country implements Cloneable, Saveable {
             p.capture(attacker);
         }
         if (!this.diplomacy.getPuppets().isEmpty()) {
-            this.diplomacy.getPuppets().forEach(puppet -> EventDispatcher.call(new CapitulationEvent(puppet, attacker)));
+            this.diplomacy.getPuppets().forEach(puppet -> {
+                if (!puppet.getInfo().isCapitulated()) EventDispatcher.call(new CapitulationEvent(puppet, attacker));
+            });
         }
     }
 
@@ -578,30 +581,26 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void addPuppet(Country country) {
         Country other = this;
-        while (true) {
-            other.diplomacy.addDiplomaticRelation(country.getName(), 5);
-            if (other.hasOverlord()) {
-                final Country overlord = country.info.getOverlord();
-                country.setOverlord(overlord);
-                other = overlord;
-                continue;
-            }
-            if (!other.hasPuppets()) {
-                country.info.setPuppetChat(new PuppetChat(other));
-            }
-            other.createInfo();
-            PuppetChat puppetChat = country.info.getPuppetChat();
-            country.info.getPlayers().forEach(puppetChat::addPlayer);
-            country.diplomacy.addPuppet(country);
-            Country finalOther = other;
-            country.military.getCountryWars().forEach(country1 -> {
-                Country country2 = ContinentalManagers.world(finalOther.instance).countryDataManager().getCountryFromName(country1);
-                country.addCountryWar(country2);
-                country2.addCountryWar(country);
-            });
-            country.info.getClientsides().forEach(other::addClientside);
-            return;
+        other.diplomacy.addDiplomaticRelation(country.getName(), 5);
+        if (other.hasOverlord()) {
+            final Country overlord = country.info.getOverlord();
+            country.setOverlord(overlord);
+            other = overlord;
         }
+        if (!other.hasPuppets()) {
+            country.info.setPuppetChat(new PuppetChat(other));
+        }
+        other.createInfo();
+        PuppetChat puppetChat = country.info.getPuppetChat();
+        country.info.getPlayers().forEach(puppetChat::addPlayer);
+        country.diplomacy.addPuppet(country);
+        Country finalOther = other;
+        country.military.getCountryWars().forEach(country1 -> {
+            Country country2 = ContinentalManagers.world(finalOther.instance).countryDataManager().getCountryFromName(country1);
+            country.addCountryWar(country2);
+            country2.addCountryWar(country);
+        });
+        country.info.getClientsides().forEach(other::addClientside);
     }
 
     public void removePuppet(Country country) {
@@ -616,10 +615,13 @@ public abstract class Country implements Cloneable, Saveable {
     public void setOverlord(Country country) {
         this.info.setOverlord(country);
         this.diplomacy.addDiplomaticRelation(country.getName(),5);
+        country.getDiplomacy().getPuppets().forEach(country1 -> {
+            if (country1==country)return;
+            diplomacy.addDiplomaticRelation(country1.getName(),5);
+        });
     }
 
     public void endGame() {
-        //aiCompetitor.kill();
         this.info.getClientsides().forEach(Clientside::dispose);
         ContinentalManagers.centralAIManager.getAIManagerFor(instance).removeAi(this);
     }
@@ -738,16 +740,21 @@ public abstract class Country implements Cloneable, Saveable {
         return !cantStartAWarWith(country);
     }
 
+    public boolean canJustifyAgainst(Country country){
+        return canFight(country)&&getDiplomacy().getCompletedWarJustification(country.getName())==null&&getDiplomacy().getWarJustification(country.getName())==null
+                &&!isAtWar(country.getName())&&!getDiplomacy().hasCondition(ConditionEnum.cant_start_a_war)&&(!country.getInfo().isCapitulated()||getInfo().isCapitulated());
+    }
+
     public int getDiplomaticRelations(String country){
         return this.diplomacy.getDiplomaticRelation(country);
     }
 
     public boolean isMilitaryFriend(Country country) {
-        return 3 < country.getDiplomaticRelations(country.getName());
+        return 3 < country.getDiplomaticRelations(country.getName())||country==this;
     }
 
     public boolean cantStartAWarWith(Country country) {
-        return 2 < country.getDiplomaticRelations(country.getName());
+        return 2 < country.getDiplomaticRelations(country.getName())||country==this;
     }
 
     public void addOthersCores(String country, Province province) {
@@ -790,14 +797,14 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void loadCountriesDiplomacy(Country country){
         String name = country.getName();
-        if (country.hasPuppets()) {
-            if (this.diplomacy.containsPuppet(country)) {
-                this.diplomacy.addDiplomaticRelation(name, 5);
+        if (hasPuppets()) {
+            if (diplomacy.containsPuppet(country)) {
+                diplomacy.addDiplomaticRelation(name, 5);
                 return;
             }
         }
-        if (country.hasOverlord()) {
-            if (Objects.equals(name, this.info.getOverlord().getName())) {
+        if (hasOverlord()) {
+            if (Objects.equals(name, getInfo().getOverlord().getName())) {
                 this.diplomacy.addDiplomaticRelation(name, 5);
             }
         }
@@ -813,7 +820,7 @@ public abstract class Country implements Cloneable, Saveable {
             this.diplomacy.addDiplomaticRelation(name,2);
             return;
         }
-        if (country.isAtWar(name)){
+        if (getMilitary().containsCountryWar(name)){
             this.diplomacy.addDiplomaticRelation(name,0);
         }
         this.diplomacy.addDiplomaticRelation(name,1);

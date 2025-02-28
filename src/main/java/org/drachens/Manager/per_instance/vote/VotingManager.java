@@ -44,6 +44,13 @@ public class VotingManager {
         voted = true;
     }
 
+    public void removeVote(Player p){
+        votes.remove(p);
+        if (votes.isEmpty()){
+            voted=false;
+        }
+    }
+
     public void setWinner() {
         final int wc = 0;
         winner = null;

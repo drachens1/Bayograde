@@ -27,7 +27,7 @@ public class ResearchCenter extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, CPlayer p) {
+    public void onBuild(Country country, Province province, CPlayer p, float yaw) {
         country.removePayments(payments);
         new Building(this, province);
         ResearchCountry c = country.getResearch().researchCountry();

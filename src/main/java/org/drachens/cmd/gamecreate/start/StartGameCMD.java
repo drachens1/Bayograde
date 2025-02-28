@@ -7,6 +7,5 @@ public class StartGameCMD extends Command {
         super("start-game");
 
         addSubcommand(new NewStartGameCMD());
-        addSubcommand(new LoadStartGameCMD());
     }
 }

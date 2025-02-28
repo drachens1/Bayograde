@@ -55,10 +55,13 @@ public class VotingOption implements Saveable {
         return VotingOption.builder()
                 .startingYear(votingOption.startingYear)
                 .endYear(votingOption.endYear)
+                .dayLength(votingOption.dayLength)
                 .mapGenerator(votingOption.mapGenerator)
                 .defaultInventory(votingOption.defaultInventory)
                 .defaultCurrencies(votingOption.defaultCurrencies)
                 .ideologyTypes(votingOption.ideologyTypes)
+                .name(votingOption.name)
+                .countries(votingOption.countries)
                 .war(votingOption.war);
     }
 

@@ -61,7 +61,9 @@ public class Factory extends BuildTypes {
             }
             return itemBuilder(Material.CYAN_DYE, building.getCurrentLvl() * 2 + 23);
                 });
-        produces = new Payment(CurrencyEnum.production, 1000.0f);
+
+        setBuildTime(14);
+        produces = new Payment(CurrencyEnum.production, 1f);
         materialLvls.put(Material.CYAN_GLAZED_TERRACOTTA, 1);
         materialLvls.put(Material.GREEN_GLAZED_TERRACOTTA, 2);
         materialLvls.put(Material.LIME_GLAZED_TERRACOTTA, 3);
@@ -72,20 +74,13 @@ public class Factory extends BuildTypes {
     }
 
     @Override
-    public void onBuild(Country country, Province province, CPlayer p) {
-        country.removePayment(payment);
-        Building factory = new Building(this, province);
-        ItemDisplay itemDisplay = factory.getItemDisplay();
-        smokeAnimation.start(itemDisplay, true);
-    }
-
-    @Override
     public void onBuild(Country country, Province province, CPlayer p, float yaw) {
         country.removePayment(payment);
         Building factory = new Building(this, province);
         ItemDisplay itemDisplay = factory.getItemDisplay();
         itemDisplay.addYaw(yaw);
         smokeAnimation.start(itemDisplay, true);
+        ContinentalManagers.world(country.getInstance()).dataStorer().addFactory();
     }
 
     @Override
@@ -144,11 +139,18 @@ public class Factory extends BuildTypes {
     }
 
     @Override
-    protected void onUpgrade(int amount, Building building) {
+    protected void onUpgrade(int amount, Building building, Country country) {
         int num = building.getCurrentLvl() + amount;
         ItemDisplay itemDisplay = building.getItemDisplay();
         if (0 >= num) {
             building.delete();
+        }
+        if (amount==1){
+            country.getEconomy().getVault().addPayment(payment);
+        }else {
+            Payment p = payment.clone();
+            p.multiply(amount);
+            country.getEconomy().getVault().addPayment(p);
         }
         building.setCurrent(num);
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));
@@ -156,9 +158,13 @@ public class Factory extends BuildTypes {
         int[] newFrames = {2 + add, 3 + add};
         Animation smokeAnimation = new Animation(1000, Material.CYAN_DYE, newFrames);
         smokeAnimation.start(itemDisplay, true);
+        ContinentalManagers.world(building.getProvince().getInstance()).dataStorer().addFactory();
     }
 
     public Payment generate(Building building) {
+        if (isBuilt(building)){
+            return new Payment(CurrencyEnum.production, 0f);
+        }
         Country country = building.getCountry();
         Payment payment = produces.clone();
         payment.multiply(ContinentalManagers.world(country.getInstance()).dataStorer().votingOption.getProgressionRate());

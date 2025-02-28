@@ -6,4 +6,8 @@ import org.drachens.dataClasses.VotingOption;
 public class DataStorer {
     public VotingWinner votingWinner = VotingWinner.none;
     public VotingOption votingOption;
+    public int factoryCount = 0;
+    public void addFactory(){
+        factoryCount++;
+    }
 }

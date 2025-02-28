@@ -1,13 +1,11 @@
 package org.drachens.generalGame.troops;
 
 import com.google.gson.JsonElement;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
 import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Province;
-import org.drachens.events.NewDay;
 import org.drachens.generalGame.factory.Factory;
 import org.drachens.interfaces.Saveable;
 import org.drachens.interfaces.ai.AI;
@@ -24,7 +22,6 @@ public class TroopAI implements AIManager, Saveable {
 
     public TroopAI(VotingWinner votingWinner) {
         this.votingWinner = votingWinner;
-        MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> tick(e.world()));
     }
 
     @Override

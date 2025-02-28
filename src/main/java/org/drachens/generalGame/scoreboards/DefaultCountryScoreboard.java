@@ -214,6 +214,7 @@ public class DefaultCountryScoreboard extends ContinentalScoreboards {
     }
 
     private void updateLine(Sidebar sidebar, String id, Component content, int lineNum) {
+        if (sidebar.getLines().size()==15)return;
         if (null == sidebar.getLine(id)) {
             sidebar.createLine(new Sidebar.ScoreboardLine(id, content, lineNum));
         } else {

@@ -8,7 +8,6 @@ import net.minestom.server.timer.Task;
 import org.drachens.dataClasses.other.ItemDisplay;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.drachens.util.ItemStackUtil.itemBuilder;

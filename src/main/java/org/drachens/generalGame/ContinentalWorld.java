@@ -23,6 +23,7 @@ import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.World;
 import org.drachens.dataClasses.additional.GlobalGameWorldClass;
 import org.drachens.events.VoteEvent;
+import org.drachens.events.system.ResetEvent;
 import org.drachens.generalGame.scoreboards.DefaultScoreboard;
 import org.drachens.player_types.CPlayer;
 
@@ -63,12 +64,19 @@ public class ContinentalWorld extends World {
     public void removePlayer(CPlayer p) {
         ContinentalManagers.world(getInstance()).getAsGlobalGameWorldClass().votingManager().getVoteBar().removePlayer(p);
         ContinentalManagers.yearManager.getYearBar(getInstance()).removePlayer(p);
+        if (ContinentalManagers.world(getInstance()).isGlobalGameWorldClass()){
+            GlobalGameWorldClass globalGameWorldClass = ContinentalManagers.world(getInstance()).getAsGlobalGameWorldClass();
+            globalGameWorldClass.votingManager().removeVote(p);
+        }
         if (null != p.getCountry()) {
             p.getCountry().removePlayer(p);
         }
         p.addPlayTime(LocalTime.now());
         Country country = p.getCountry();
         if (null != country) country.removePlayer(p);
+        if (getInstance().getPlayers().isEmpty()){
+            EventDispatcher.call(new ResetEvent(p.getInstance()));
+        }
     }
 
     @Override

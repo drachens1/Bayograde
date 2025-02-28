@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.drachens.util.CommandsUtil.getSuggestionBasedOnInput;
 
-public class CooperateCMD extends Command {
+public class  CooperateCMD extends Command {
     public CooperateCMD() {
         super("co-op");
         Argument<String> players = ArgumentType.String("Username")

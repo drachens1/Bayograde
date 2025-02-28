@@ -1,6 +1,8 @@
 package org.drachens.dataClasses.customgame;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
@@ -41,14 +43,14 @@ public class CustomGameWorld extends World {
     private final ScoreboardManager scoreboardManager = ContinentalManagers.scoreboardManager;
     private final VotingOption votingOption;
     private final List<CPlayer> players = new ArrayList<>();
-    private boolean started;
+    private final CPlayer opener;
 
-    public CustomGameWorld(CPlayer p, VotingOption votingOption){
+    public CustomGameWorld(List<CPlayer> players, CPlayer opener, VotingOption votingOption){
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
         getInstance().setBlock(0,0,0,Block.DIAMOND_BLOCK);
         ContinentalManagers.worldManager.registerWorld(this);
+        this.opener=opener;
         this.votingOption=votingOption;
-        p.setLeaderOfOwnGame(true);
         ContinentalManagers.putWorldClass(getInstance(),new CustomGameWorldClass(
                 new CountryDataManager(getInstance(), new ArrayList<>()),
                 new ClientEntsToLoad(),
@@ -56,8 +58,19 @@ public class CustomGameWorld extends World {
                 new DataStorer()
                 ));
         EventDispatcher.call(new StartGameEvent(getInstance(), votingOption));
-        votingOption.getMapGenerator().generate(getInstance(),votingOption);
         ContinentalManagers.yearManager.getYearBar(getInstance()).cancelTask();
+        opener.setLeaderOfOwnGame(true);
+        players.forEach(player -> player.setInstance(getInstance()));
+        opener.sendMessage(Component.text()
+                        .append(Component.text()
+                                .append(Component.text("[COMPLETE] ",NamedTextColor.GOLD, TextDecoration.BOLD))
+                                .clickEvent(ClickEvent.runCommand("/manage creation complete"))
+                                .hoverEvent(HoverEvent.showText(Component.text("Click to start the game",NamedTextColor.GREEN))))
+                .append(Component.text()
+                        .append(Component.text(" [CANCEL]",NamedTextColor.GOLD, TextDecoration.BOLD))
+                        .clickEvent(ClickEvent.runCommand("/manage creation cancel"))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click to cancel the game",NamedTextColor.GREEN))))
+                .build());
     }
 
     public void complete(){
@@ -66,12 +79,15 @@ public class CustomGameWorld extends World {
                 .append(MessageEnum.system.getComponent())
                 .append(Component.text("Game has started!",NamedTextColor.GREEN))
                 .build(),getInstance());
-        started =true;
         ContinentalManagers.yearManager.getYearBar(getInstance()).run(votingOption);
     }
 
     public void delete(){
-
+        opener.setLeaderOfOwnGame(false);
+        players.forEach(player -> {
+            player.setInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
+            player.setInIntermission(false);
+        });
     }
 
     @Override
@@ -102,6 +118,10 @@ public class CustomGameWorld extends World {
         p.addPlayTime(LocalTime.now());
         Country country = p.getCountry();
         if (null != country) country.removePlayer(p);
+        if (getInstance().getPlayers().isEmpty()){
+            ContinentalManagers.removeWorldClass(getInstance());
+            ContinentalManagers.worldManager.registerWorld(this);
+        }
     }
 
     @Override
@@ -181,9 +201,5 @@ public class CustomGameWorld extends World {
             if (null == province.getOccupier()) return;
             p.sendActionBar(province.getOccupier().getComponentName());
         }
-    }
-
-    public boolean hasStarted(){
-        return started;
     }
 }

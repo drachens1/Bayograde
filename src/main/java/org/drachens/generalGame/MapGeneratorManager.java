@@ -244,9 +244,8 @@ public class MapGeneratorManager extends MapGen {
         for (int x = -getSizeX(); x < getSizeX(); x++) {
             for (int y = -getSizeY(); y < getSizeY(); y++) {
                 double noiseValue = noisePipeline.evaluateNoise(x, y);
-                Pos pos = new Pos(x, 0, y);
                 if (noiseValue < 0.01) {
-                    instance.setBlock(pos, Material.BLUE_STAINED_GLASS.block());
+                    instance.setBlock(new Pos(x, 0, y), Material.BLUE_STAINED_GLASS.block());
                 } else {
                     land.add(new FlatPos(x, y));
                 }
@@ -257,6 +256,7 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void createCountries() {
+        System.out.println("2");
         List<Country> countries = new ArrayList<>();
         for (int i = 0; i < this.countries; i++) {
             Country newCountry = createCountry(i);
@@ -485,7 +485,8 @@ public class MapGeneratorManager extends MapGen {
         AIManager aiManager = ContinentalManagers.centralAIManager.getAIManagerFor(instance);
         countries.forEach(country -> {
             country.init();
-            //aiManager.createAIForCountry(country);
+            if (votingOption.isAIEnabled())
+                aiManager.createAIForCountry(country);
         });
     }
 

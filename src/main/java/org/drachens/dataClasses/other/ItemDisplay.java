@@ -1,6 +1,7 @@
 package org.drachens.dataClasses.other;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
@@ -34,6 +35,8 @@ public class ItemDisplay extends Clientside {
     private boolean hidden;
     private EntityMetaDataPacket interpolation;
     private float yaw;
+    @Setter
+    private Pos scale;
 
     public ItemDisplay(ItemStack item, Pos pos, DisplayType displayType, Instance instance) {
         super(instance, pos);
@@ -142,6 +145,8 @@ public class ItemDisplay extends Clientside {
         map.put(11, Metadata.Vector3(new Pos(0, 0, 0)));
         map.put(23, Metadata.ItemStack(item));
         map.put(24, Metadata.Byte(displayType));
+        if (scale!=null)
+            map.put(12,Metadata.Vector3(scale));
         return new EntityMetaDataPacket(
                 this.entityId,
                 map

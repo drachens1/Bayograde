@@ -16,7 +16,6 @@ public class Countdown {
         ContinentalManagers.countdownManager.addCountDown(this,instance);
     }
     public int removeOne(){
-        timeLeft--;
-        return timeLeft;
+        return timeLeft--;
     }
 }

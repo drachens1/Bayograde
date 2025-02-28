@@ -4,6 +4,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.InventoryEnum;
+import org.drachens.generalGame.troops.inventory.FrontLineCreator;
 import org.drachens.generalGame.troops.inventory.TroopMover;
 import org.drachens.interfaces.inventories.ChangeInventoryButton;
 import org.drachens.interfaces.inventories.HotbarInventory;
@@ -16,7 +17,10 @@ import static org.drachens.util.ItemStackUtil.itemBuilder;
 import static org.drachens.util.OtherUtil.addToList;
 
 public class TroopsDefaultInventory implements HotbarInventory {
-    private final List<HotbarItemButton> defaultButtons = List.of(new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.troops_build_menu),new TroopMover(),new ChangeInventoryButton(itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv));
+    private final List<HotbarItemButton> defaultButtons = List.of(
+            new ChangeInventoryButton(itemBuilder(Material.BROWN_DYE), InventoryEnum.troops_build_menu),new TroopMover(),
+            new ChangeInventoryButton(itemBuilder(Material.BOOK), InventoryEnum.scoreboardInv),
+            new FrontLineCreator());
     public TroopsDefaultInventory() {
 
     }

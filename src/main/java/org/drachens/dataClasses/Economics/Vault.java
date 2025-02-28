@@ -2,7 +2,6 @@ package org.drachens.dataClasses.Economics;
 
 import lombok.Getter;
 import org.drachens.Manager.defaults.enums.BuildingEnum;
-import org.drachens.Manager.defaults.enums.CurrencyEnum;
 import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.Economics.currency.Currencies;
 import org.drachens.dataClasses.Economics.currency.CurrencyTypes;

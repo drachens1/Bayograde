@@ -29,11 +29,7 @@ public class Barracks extends BuildTypes {
         super(new int[]{19}, Material.ORANGE_DYE, BuildingEnum.barracks,
                 province -> itemBuilder(Material.ORANGE_DYE,24),
                 province -> itemBuilder(Material.ORANGE_DYE,25));
-    }
-
-    @Override
-    public void onBuild(Country country, Province province, CPlayer p) {
-        new Building(this, province);
+        setBuildTime(7);
     }
 
     @Override

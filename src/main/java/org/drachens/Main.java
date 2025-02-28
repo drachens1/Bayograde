@@ -235,7 +235,7 @@ public enum Main {
 
         HashMap<CurrencyTypes, Currencies> c = new HashMap<>();
         CurrencyTypes production = CurrencyEnum.production.getCurrencyType();
-        c.put(production, new Currencies(production, 1000.0f));
+        c.put(production, new Currencies(production, 20f));
 
         Material capMaterial = Material.CYAN_DYE;
         Material effMaterial = Material.CYAN_DYE;
@@ -244,7 +244,7 @@ public enum Main {
         Material radMaterial = Material.SADDLE;
         Material planMaterial = Material.BROWN_DYE;
 
-        VotingWinner.ww2_clicks.setVotingOption(VotingOption.create(1936, 1960, 1000L, "ww2_clicks")
+        VotingWinner.ww2_clicks.setVotingOption(VotingOption.create(1939, 1945, 1000L, "ww2_clicks")
                 .mapGenerator(new MapGeneratorManager())
                 .war(new ClickWarSystem())
                 .countries(63)
@@ -407,7 +407,7 @@ public enum Main {
                 .defaultInventory(InventoryEnum.defaultInv)
                 .build());
 
-        VotingWinner.ww2_troops.setVotingOption(VotingOption.create(1936, 1960, 1000L, "ww2_troops")
+        VotingWinner.ww2_troops.setVotingOption(VotingOption.create(1939, 1945, 1000L, "ww2_troops")
                 .mapGenerator(new MapGeneratorManager())
                 .war(new TroopWarSystem())
                 .countries(63)

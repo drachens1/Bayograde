@@ -22,8 +22,8 @@ public record WarJustification(Country from, Country against, Modifier modifier,
         new Countdown(timeLeft,()->{
             EventDispatcher.call(new WarJustificationCompletionEvent(this, from));
             expiration.start(instance);
-            from.getDiplomacy().removeWarJustification(against.getName());
             from.getDiplomacy().addCompletedWarJustification(against.getName(),this);
+            from.getDiplomacy().removeWarJustification(against.getName());
             if (declare_war){
                 EventDispatcher.call(new StartWarEvent(from, against, this));
             }

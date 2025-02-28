@@ -11,7 +11,6 @@ import org.drachens.Manager.defaults.enums.VotingWinner;
 import org.drachens.Manager.per_instance.CountryDataManager;
 import org.drachens.Manager.per_instance.ProvinceManager;
 import org.drachens.Manager.scoreboards.ScoreboardManager;
-import org.drachens.dataClasses.Countries.countryClass.Country;
 import org.drachens.dataClasses.VotingOption;
 import org.drachens.dataClasses.World;
 import org.drachens.dataClasses.datastorage.DataStorer;
@@ -43,6 +42,7 @@ public class IntermissionGameWorld extends World {
     private double progressionRate = 1;
     private int votingChoice = 1;
     private VotingWinner votingWinner;
+    private boolean creation = false;
 
     public IntermissionGameWorld(CPlayer p, String name) {
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
@@ -55,7 +55,6 @@ public class IntermissionGameWorld extends World {
         p.sendMessage(Component.text()
                 .append(Component.text("| Welcome to a custom game.\n| You can activate any DLC's if you have any\n| Commands:\n| /manage creation complete #Starts the game\n| /manage creation cancel #Cancels the waiting period\n| /manage invite <player> #Invites a player\n| /manage kick <player> #Kicks a player\n| /manage options #Shows the options/clickable options for commands to make it easier\n| You need to start the game for time to advance\n| That's all! have fun!",NamedTextColor.GREEN))
                 .build());
-        p.setLeaderOfOwnGame(true);
         ContinentalManagers.putWorldClass(getInstance(),new CustomGameWorldClass(new CountryDataManager(getInstance(), new ArrayList<>()),
                 new ClientEntsToLoad(),
                 new ProvinceManager(),
@@ -154,7 +153,7 @@ public class IntermissionGameWorld extends World {
         VotingWinner[] votingsOptions = new VotingWinner[]{VotingWinner.ww2_clicks, VotingWinner.ww2_troops};
         TextDisplay votingDisplay = new TextDisplay.create(new Pos(-2.5,1.5,8.5).withYaw(215),getInstance(),Component.text("<  Option : ww2_clicks  >"))
                 .build();
-        votingWinner=votingsOptions[1];
+        votingWinner=votingsOptions[0];
         votingDisplay.addBoundingBox(0.4f,0.4f, new Pos(1.2,0,0.9),player -> {
             if (votingChoice>=votingsOptions.length-1){
                 return;
@@ -181,7 +180,7 @@ public class IntermissionGameWorld extends World {
         TextDisplay start = new TextDisplay.create(new Pos(1.1,2,10).withYaw(180),getInstance(),Component.text("START",NamedTextColor.DARK_GRAY,TextDecoration.BOLD)).build();
 
         start.addBoundingBox(1f,0.2f,new Pos(0,0,0),player -> {
-            if (!player.isLeaderOfOwnGame()){
+            if (player!=opener){
                 return;
             }
             complete();
@@ -197,15 +196,19 @@ public class IntermissionGameWorld extends World {
         clientsides.add(ownerName);
         clientsides.add(start);
         clientsides.add(displayName);
+
+        p.setLeaderOfOwnGame(true);
         p.setInstance(getInstance());
     }
 
     private void complete(){
+        creation = true;
         broadcast(Component.text()
                 .append(MessageEnum.system.getComponent())
                 .append(Component.text("Loading...",NamedTextColor.GREEN))
                 .build(),getInstance());
-        CustomGameWorld customGameWorld = new CustomGameWorld(opener, VotingOption.create(votingWinner.getVotingOption())
+
+        new CustomGameWorld(players, opener, VotingOption.create(votingWinner.getVotingOption())
                 .factionsEnabled(factionsEnabled)
                 .instaBuild(instaBuild)
                 .researchEnabled(researchEnabled)
@@ -213,12 +216,11 @@ public class IntermissionGameWorld extends World {
                 .progressionRate(progressionRateChoice)
                 .AIEnabled(aiEnabled)
                 .build());
-        players.forEach(customGameWorld::addPlayer);
-
     }
 
     @Override
     public void addPlayer(CPlayer p) {
+        p.teleport(getSpawnPoint());
         players.add(p);
         p.setInOwnGame(true);
         p.setInIntermission(true);
@@ -231,19 +233,15 @@ public class IntermissionGameWorld extends World {
     @Override
     public void removePlayer(CPlayer p) {
         players.remove(p);
-        p.setInIntermission(false);
-        p.setLeaderOfOwnGame(false);
-        p.setInOwnGame(false);
-        p.refreshCommands();
-        if (null != p.getCountry()) {
-            p.getCountry().removePlayer(p);
-        }
-        p.addPlayTime(LocalTime.now());
-        Country country = p.getCountry();
-        if (null != country) country.removePlayer(p);
         if (players.isEmpty()){
             clientsides.forEach(Clientside::dispose);
             ContinentalManagers.worldManager.unregisterWorld(this);
         }
+        if (creation)return;
+        p.setInIntermission(false);
+        p.setLeaderOfOwnGame(false);
+        p.setInOwnGame(false);
+        p.refreshCommands();
+        p.addPlayTime(LocalTime.now());
     }
 }
