@@ -162,7 +162,7 @@ public class Factory extends BuildTypes {
     }
 
     public Payment generate(Building building) {
-        if (isBuilt(building)){
+        if (!isBuilt(building)){
             return new Payment(CurrencyEnum.production, 0f);
         }
         Country country = building.getCountry();

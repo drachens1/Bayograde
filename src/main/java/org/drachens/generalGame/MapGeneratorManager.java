@@ -256,7 +256,6 @@ public class MapGeneratorManager extends MapGen {
     }
 
     private void createCountries() {
-        System.out.println("2");
         List<Country> countries = new ArrayList<>();
         for (int i = 0; i < this.countries; i++) {
             Country newCountry = createCountry(i);
@@ -282,6 +281,7 @@ public class MapGeneratorManager extends MapGen {
             String overlord = countryNames.get(i).overlord();
             if (overlord != null) {
                 Country overlordCountry = countryDataManager.getCountryFromName(overlord);
+                System.out.println(overlordCountry.getName()+" overlord of "+country.getName());
                 country.setOverlord(overlordCountry);
                 overlordCountry.addPuppet(country);
             }

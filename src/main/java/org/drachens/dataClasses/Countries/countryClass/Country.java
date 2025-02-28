@@ -49,6 +49,7 @@ import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
+import org.drachens.generalGame.clicks.ClickWarSystem;
 import org.drachens.generalGame.research.ResearchVault;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.generalGame.scoreboards.DefaultScoreboard;
@@ -338,6 +339,7 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void cityCaptured(Country attacker, Province capturedCity) {
         removeCity(capturedCity);
+
         if (!this.info.isCapitulated()) {
             if (this.info.getCapital() == capturedCity) {
                 broadcast(Component.text()
@@ -349,16 +351,21 @@ public abstract class Country implements Cloneable, Saveable {
                         .build(), this.info.getInstance());
             }
         }
+
         float capPercentage = bound(0.5f * this.economy.getBoost(BoostEnum.capitulation));
-        if (1.0f <= capPercentage) capPercentage = 0.85f;
+        if (capPercentage >= 1.0f) capPercentage = 0.85f;
+
         float capPoints = this.info.getMaxCapitulationPoints() * capPercentage;
-        float progress = this.info.getMaxCapitulationPoints() / capPoints;
-        this.economy.getCapitulationTextBar().setProgress(1.0f - progress);
+        float currentPoints = this.info.getCapitulationPoints();
+        float progress = currentPoints / capPoints;
+
         this.economy.getCapitulationTextBar().setProgress(progress);
-        if (info.getMaxCapitulationPoints() >= capPoints && !this.info.isCapitulated()) {
+
+        if (currentPoints >= capPoints && !this.info.isCapitulated()) {
             EventDispatcher.call(new CapitulationEvent(this, attacker));
         }
     }
+
 
     private float bound(float d) {
         if (1 < d) return 1;
@@ -552,7 +559,7 @@ public abstract class Country implements Cloneable, Saveable {
             extraInfo.add(Component.newline());
             extraInfo.add(Component.text()
                     .append(Component.text("Overlord: "))
-                    .append(this.info.getOverlord().info.getOriginalName())
+                    .append(this.info.getOverlord().getInfo().getOriginalName())
                     .build());
         }
 
@@ -591,9 +598,9 @@ public abstract class Country implements Cloneable, Saveable {
             country.info.setPuppetChat(new PuppetChat(other));
         }
         other.createInfo();
-        PuppetChat puppetChat = country.info.getPuppetChat();
+        PuppetChat puppetChat = info.getPuppetChat();
         country.info.getPlayers().forEach(puppetChat::addPlayer);
-        country.diplomacy.addPuppet(country);
+        diplomacy.addPuppet(country);
         Country finalOther = other;
         country.military.getCountryWars().forEach(country1 -> {
             Country country2 = ContinentalManagers.world(finalOther.instance).countryDataManager().getCountryFromName(country1);

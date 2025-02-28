@@ -18,6 +18,11 @@ public class ResearchLab extends ResearchBuilding {
     }
 
     @Override
+    public Payment getCost() {
+        return cost;
+    }
+
+    @Override
     public Payment generate(Building building) {
         return new Payment(CurrencyEnum.research, 5.0f);
     }

@@ -62,6 +62,7 @@ public class VotingOption implements Saveable {
                 .ideologyTypes(votingOption.ideologyTypes)
                 .name(votingOption.name)
                 .countries(votingOption.countries)
+                .tree(votingOption.tree)
                 .war(votingOption.war);
     }
 

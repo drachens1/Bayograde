@@ -186,6 +186,12 @@ public class CentralEventManager {
         globEHandler.addListener(StartWarEvent.class, e -> {
             Country defender = e.defender();
             Country attacker = e.attacker();
+            if (attacker.getInfo().isCapitulated()){
+                return;
+            }
+            if (defender.getInfo().isCapitulated()){
+                return;
+            }
             attacker.addModifier(e.warJustification().modifier());
 
             List<Component> warsWith = new ArrayList<>();

@@ -18,6 +18,11 @@ public class ResearchLibrary extends ResearchBuilding {
     }
 
     @Override
+    public Payment getCost() {
+        return cost;
+    }
+
+    @Override
     public boolean canBuild(Country country, Province province, CPlayer p) {
         if (province.getOccupier() != country || null != province.getBuilding()) return false;
         if (!country.canMinusCost(cost)) return false;

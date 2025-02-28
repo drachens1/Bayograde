@@ -6,31 +6,36 @@ import org.drachens.dataClasses.Countdown;
 import org.drachens.events.NewDay;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CountdownManager {
     private final Map<UUID, List<Countdown>> countdownHashMap = new WeakHashMap<>();
 
     public CountdownManager() {
         MinecraftServer.getGlobalEventHandler().addListener(NewDay.class, e -> {
-            List<Countdown> countDowns = countdownHashMap.get(e.world().getUuid());
+            UUID worldUUID = e.world().getUuid();
+            List<Countdown> countDowns = countdownHashMap.get(worldUUID);
             if (countDowns == null) return;
 
-            Iterator<Countdown> iterator = new ArrayList<>(countDowns).iterator();
-            while (iterator.hasNext()) {
-                Countdown countdown = iterator.next();
-                if (countdown.removeOne() <= 0) {
+            List<Countdown> updatedList = new ArrayList<>();
+            for (Countdown countdown : new ArrayList<>(countDowns)) {
+                if (countdown.removeOne() > 0) {
+                    updatedList.add(countdown);
+                } else {
                     countdown.getRunnable().run();
-                    iterator.remove();
                 }
             }
 
-            if (countDowns.isEmpty()) {
-                countdownHashMap.remove(e.world().getUuid());
+            if (updatedList.isEmpty()) {
+                countdownHashMap.remove(worldUUID);
+            } else {
+                countdownHashMap.put(worldUUID, updatedList);
             }
         });
     }
 
     public void addCountDown(Countdown countdown, Instance instance) {
-        countdownHashMap.computeIfAbsent(instance.getUuid(), k -> new ArrayList<>()).add(countdown);
+        countdownHashMap.computeIfAbsent(instance.getUuid(), k -> new CopyOnWriteArrayList<>()).add(countdown);
     }
 }
+

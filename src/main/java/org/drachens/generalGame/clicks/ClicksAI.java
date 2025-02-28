@@ -33,10 +33,7 @@ public class ClicksAI implements AIManager, Saveable {
     @Override
     public void tick(Instance instance) {
         ais.forEach((country, ai) -> {
-            if (country.getInfo().getPlayers().isEmpty()){
-                System.out.println("tick");
-                ai.tick();
-            }
+            ai.tick();
         });
     }
 

@@ -17,6 +17,7 @@ import org.drachens.interfaces.War;
 import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import static org.drachens.util.OtherUtil.bound;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 
 
@@ -74,7 +75,7 @@ public class ClickWarSystem implements War {
     }
 
     public Province canCapture(Province province, Country country){
-        Payment payment = new Payment(cost, (float) ContinentalManagers.world(country.getInstance()).dataStorer().factoryCount / 100);
+        Payment payment = new Payment(cost, bound(1000f,1f, (float) ContinentalManagers.world(country.getInstance()).dataStorer().factoryCount / 100));
         if (null == province || null == province.getOccupier() || !province.getOccupier().isAtWar(country.getName()) || !country.canMinusCost(payment))
             return null;
         return AdjacentBlocks(province.getPos(), country, country.getInstance());

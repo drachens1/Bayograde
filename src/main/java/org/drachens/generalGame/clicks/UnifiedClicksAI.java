@@ -59,6 +59,8 @@ public class UnifiedClicksAI extends AI {
         this.researchCenter = (ResearchCenter) BuildingEnum.researchCenter.getBuildTypes();
         this.factory = (Factory) BuildingEnum.factory.getBuildTypes();
 
+        factory.build(country,country.getInfo().getCapital(),null);
+
         country.setAi(this);
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveQTable));
         loadQTable();
@@ -79,12 +81,14 @@ public class UnifiedClicksAI extends AI {
         double reward = executeAndGetReward(action);
 
         if (countActiveWars() > 1) reward -= 10 * countActiveWars();
+
         if (country.getInfo().isCapitulated()) {
             qLearning.updateQValue(stateKey, actionType, -1000, state.toString());
-            capped = true;
-        } else {
-            qLearning.updateQValue(stateKey, actionType, reward, gatherGameState().toString());
+            capped=true;
+            return;
         }
+
+        qLearning.updateQValue(stateKey, actionType, reward, gatherGameState().toString());
 
         if (++tickCounter % 100 == 0) saveQTable();
     }
@@ -146,7 +150,7 @@ public class UnifiedClicksAI extends AI {
             case CONQUER -> attemptConquest(action.targetCountry()) ? 15 : -1;
             case START_WAR -> startWar();
             case RESEARCH -> startResearch(action.researchOption()) ? 2 : -2;
-            case BUILD_FACTORY -> { buildFactory(country.getMilitary().getCities()); yield 1; }
+            case BUILD_FACTORY -> { buildFactory(country.getMilitary().getCities()); yield 5; }
             case BUILD_RESEARCH -> { buildResearch(); yield 1; }
             case DEFEND -> defendTerritory() ? 10 : -3;
             case NOTHING -> 0;
@@ -175,12 +179,13 @@ public class UnifiedClicksAI extends AI {
         return 5;
     }
 
-    private boolean defendTerritory() {
+    private synchronized boolean defendTerritory() {
         if (attackedAt.isEmpty()) {
             return false;
         }
 
         List<Province> toRemove = new ArrayList<>();
+        boolean defendedAtLeastOne = false;
 
         for (Province attackedProvince : new ArrayList<>(attackedAt)) {
             if (attackedProvince.getOccupier() == country) {
@@ -188,16 +193,14 @@ public class UnifiedClicksAI extends AI {
                 continue;
             }
 
-            if (isValidAdjacentProvince(attackedProvince)) {
-                if (captureProvince(attackedProvince)) {
-                    toRemove.add(attackedProvince);
-                    return true;
-                }
+            if (isValidAdjacentProvince(attackedProvince) && captureProvince(attackedProvince)) {
+                toRemove.add(attackedProvince);
+                defendedAtLeastOne = true;
             }
         }
 
         attackedAt.removeAll(toRemove);
-        return !toRemove.isEmpty();
+        return defendedAtLeastOne;
     }
 
 
@@ -208,7 +211,7 @@ public class UnifiedClicksAI extends AI {
             if (provinces.isEmpty())return;
             Province province = provinces.get(r.nextInt(provinces.size()));
             if (researchCenter.canBuild(country, province, null)) {
-                researchCenter.forceBuild(country, province, null);
+                researchCenter.build(country, province, null);
                 availableSpaces.put(province, new ArrayList<>(province.getNeighbours()));
                 centers.add(province);
             }
@@ -225,19 +228,19 @@ public class UnifiedClicksAI extends AI {
                 case 0:
                     BuildTypes b = BuildingEnum.researchLab.getBuildTypes();
                     if (b.canBuild(country, selected, null)) {
-                        b.forceBuild(country, selected, null);
+                        b.build(country, selected, null);
                     }
                     break;
                 case 1:
                     BuildTypes bc = BuildingEnum.library.getBuildTypes();
                     if (bc.canBuild(country, selected, null)) {
-                        bc.forceBuild(country, selected, null);
+                        bc.build(country, selected, null);
                     }
                     break;
                 case 2:
                     BuildTypes bd = BuildingEnum.university.getBuildTypes();
                     if (bd.canBuild(country, selected, null)) {
-                        bd.forceBuild(country, selected, null);
+                        bd.build(country, selected, null);
                     }
                     break;
             }
@@ -255,7 +258,7 @@ public class UnifiedClicksAI extends AI {
             if (this.factory.requirementsToUpgrade(province.getBuilding(), this.country, 1, null))
                 this.factory.upgrade(1, province.getBuilding(), this.country, null);
         } else if (this.factory.canBuild(this.country, province, null))
-            this.factory.forceBuild(this.country, province, null);
+            this.factory.build(this.country, province, null);
         else {
             cities.remove(province);
             this.buildFactory(cities);
