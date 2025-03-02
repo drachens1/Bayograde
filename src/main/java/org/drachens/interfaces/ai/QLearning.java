@@ -23,11 +23,15 @@ public class QLearning {
                 .orElseGet(() -> UnifiedClicksAI.Action.ActionType.values()[(int) (Math.random() * UnifiedClicksAI.Action.ActionType.values().length)]);
     }
 
-    public void updateQValue(String state, UnifiedClicksAI.Action.ActionType action, double reward, String nextState) {
+    public synchronized void updateQValue(String state, UnifiedClicksAI.Action.ActionType action, double reward, String nextState) {
         qTable.putIfAbsent(state, new HashMap<>());
         HashMap<UnifiedClicksAI.Action.ActionType, Double> actions = qTable.get(state);
         double oldQ = actions.getOrDefault(action, 0.0);
-        double maxFutureQ = qTable.getOrDefault(nextState, new HashMap<>()).values().stream().mapToDouble(v -> v).max().orElse(0.0);
+        double maxFutureQ = qTable.getOrDefault(nextState, new HashMap<>()).values()
+                .stream()
+                .mapToDouble(v -> v)
+                .max()
+                .orElse(0.0);
 
         double learningRate = 0.1;
         double discountFactor = 0.9;

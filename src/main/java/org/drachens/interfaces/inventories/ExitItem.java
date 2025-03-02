@@ -13,13 +13,27 @@ public class ExitItem extends HotbarItemButton {
         super(itemBuilder(Material.BARRIER, 10));
     }
 
-    @Override
-    public void onRightClick(OnUse onUse) {
+    private void used(OnUse onUse){
         inventoryManager.assignInventory(onUse.player(), ContinentalManagers.world(onUse.instance()).dataStorer().votingOption.getDefaultInventory());
     }
 
     @Override
+    public void onLeftClick(OnUse onUse) {
+        used(onUse);
+    }
+
+    @Override
+    public void onLeftClickOnBlock(OnUse onUse) {
+        used(onUse);
+    }
+
+    @Override
+    public void onRightClick(OnUse onUse) {
+        used(onUse);
+    }
+
+    @Override
     public void onRightClickOnBlock(OnUse onUse) {
-        inventoryManager.assignInventory(onUse.player(), ContinentalManagers.world(onUse.instance()).dataStorer().votingOption.getDefaultInventory());
+        used(onUse);
     }
 }

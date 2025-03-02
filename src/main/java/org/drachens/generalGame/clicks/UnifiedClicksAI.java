@@ -43,7 +43,6 @@ public class UnifiedClicksAI extends AI {
     private final AStarPathfinderXZ aStarPathfinderXZ;
     private final ProvinceManager provinceManager;
     private final QLearning qLearning = new QLearning();
-    private final Payment payment = new Payment(CurrencyEnum.production, 1);
     private final ResearchCenter researchCenter;
     private final Factory factory;
     private static final String Q_TABLE_SAVE_PATH = "qtable.ser";
@@ -349,6 +348,7 @@ public class UnifiedClicksAI extends AI {
     }
 
     public boolean captureProvince(Province province) {
+        Payment payment = clickWarSystem.getCost(country.getInstance());
         if (clickWarSystem.canCapture(province, country) != null && country.canMinusCost(payment)) {
             province.setOccupier(country);
             country.removePayment(payment);

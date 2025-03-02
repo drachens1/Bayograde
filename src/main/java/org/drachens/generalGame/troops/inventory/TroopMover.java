@@ -21,7 +21,7 @@ public class TroopMover extends HotbarItemButton {
     private final HashMap<Player, List<Troop>> nextProv = new HashMap<>();
 
     public TroopMover() {
-        super(itemBuilder(Material.CYAN_DYE, "Hi", NamedTextColor.GOLD));
+        super(itemBuilder(Material.CYAN_DYE, "Troop Mover", NamedTextColor.GOLD));
     }
 
     @Override
@@ -58,14 +58,14 @@ public class TroopMover extends HotbarItemButton {
         if (p.isSneaking()){
             List<Troop> troops = nextProv.getOrDefault(p, new ArrayList<>());
             troops.addAll(selected);
-            troops.forEach(troop -> troop.getTroop().setGlowing(true));
+            troops.forEach(troop -> troop.getTroop().setGlowingForPlayer(true,p,1424689));
             nextProv.put(p,troops);
         }else {
             if (nextProv.containsKey(p)) {
                 List<Troop> troops = nextProv.getOrDefault(p, new ArrayList<>());
-                troops.forEach(troop1 -> troop1.getTroop().setGlowing(false));
+                troops.forEach(troop1 -> troop1.getTroop().setGlowingForPlayer(false,p,1424689));
             }
-            selected.forEach(troop -> troop.getTroop().setGlowing(true));
+            selected.forEach(troop -> troop.getTroop().setGlowingForPlayer(true,p,1424689));
             nextProv.put(p, selected);
         }
     }

@@ -85,7 +85,7 @@ public class TroopAI implements AIManager, Saveable {
                     if (this.factory.requirementsToUpgrade(province.getBuilding(), this.country, 1, null))
                         this.factory.upgrade(1, province.getBuilding(), this.country, null);
                 } else if (this.factory.canBuild(this.country, province, null))
-                    this.factory.forceBuild(this.country, province, null);
+                    this.factory.build(this.country, province, null);
                 else {
                     cities.remove(province);
                     continue;

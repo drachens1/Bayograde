@@ -48,6 +48,7 @@ public class IntermissionGameWorld extends World {
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
         fill(new Pos(-10,0,-10),new Pos(10,0,10),Block.GRAY_CONCRETE);
         this.opener=p;
+        System.out.println("2");
         ContinentalManagers.worldManager.registerWorld(this);
         welcomeMessage =Component.text()
                 .append(Component.text("| Welcome to a custom game.\n| These are basically the same as the global one but\n| the owner: "+p.getUsername()+" can activate certain DLC's \n| Also there is no voting period\n|\n| You are currently in the waiting period you can do anything but time wont advance\n| Until "+p.getUsername()+" starts the game", NamedTextColor.GREEN))
@@ -233,6 +234,7 @@ public class IntermissionGameWorld extends World {
     @Override
     public void removePlayer(CPlayer p) {
         players.remove(p);
+        clientsides.forEach(clientside -> clientside.removeViewer(p));
         if (players.isEmpty()){
             clientsides.forEach(Clientside::dispose);
             ContinentalManagers.worldManager.unregisterWorld(this);

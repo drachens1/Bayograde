@@ -49,7 +49,6 @@ import org.drachens.events.NewDay;
 import org.drachens.events.countries.CountryJoinEvent;
 import org.drachens.events.countries.CountryLeaveEvent;
 import org.drachens.events.countries.war.CapitulationEvent;
-import org.drachens.generalGame.clicks.ClickWarSystem;
 import org.drachens.generalGame.research.ResearchVault;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.generalGame.scoreboards.DefaultScoreboard;
@@ -599,6 +598,10 @@ public abstract class Country implements Cloneable, Saveable {
         }
         other.createInfo();
         PuppetChat puppetChat = info.getPuppetChat();
+        if (puppetChat==null){
+            info.setPuppetChat(new PuppetChat(this));
+            puppetChat=info.getPuppetChat();
+        }
         country.info.getPlayers().forEach(puppetChat::addPlayer);
         diplomacy.addPuppet(country);
         Country finalOther = other;

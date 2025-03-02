@@ -56,6 +56,7 @@ public abstract class BuildTypes {
 
     public void forceBuild(Country country, Province province, CPlayer p) {
         onBuild(country, province, p, 0f);
+        if (buildtimeEnabled) built.add(province.getBuilding());
     }
 
     public boolean isBuilt(Building building){

@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TabManager {
-
     private final Tag<Boolean> firstSpawnTag = Tag.Boolean("InstanceViewHook:FirstSpawn").defaultValue(true);
     private final TextAnimation titleAnim = new TextAnimation(500L,
-            Component.text("Welcome to the Server!", NamedTextColor.GOLD),
-            Component.text("Enjoy Your Stay!", NamedTextColor.GREEN)
+            Component.text("Die!", NamedTextColor.GOLD),
+            Component.text("KYS!", NamedTextColor.GREEN)
     );
 
     public TabManager() {
@@ -68,13 +67,13 @@ public class TabManager {
             }
         });
 
-//        MinecraftServer.getSchedulerManager().buildTask(() -> {
-//            Component footer = getFooter();
-//            Component header = getHeader();
-//            for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-//                player.sendPlayerListHeaderAndFooter(header, footer);
-//            }
-//        }).repeat(300L, ChronoUnit.MILLIS).schedule();
+        MinecraftServer.getSchedulerManager().buildTask(() -> {
+            Component footer = getFooter();
+            Component header = getHeader();
+            for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+                player.sendPlayerListHeaderAndFooter(header, footer);
+            }
+        }).repeat(300L, ChronoUnit.MILLIS).schedule();
     }
 
     public void updatePlayer(CPlayer p) {
@@ -103,6 +102,7 @@ public class TabManager {
                 .append(Component.text("\uD83E\uDD82"))
                 .appendNewline()
                 .append(Component.text("Beta Release",NamedTextColor.GOLD, TextDecoration.BOLD))
+                .appendNewline()
                 .build();
     }
 

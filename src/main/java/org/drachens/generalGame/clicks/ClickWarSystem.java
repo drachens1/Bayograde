@@ -63,7 +63,7 @@ public class ClickWarSystem implements War {
         Province province = ContinentalManagers.world(instance).provinceManager().getProvince(blockVecToPos(e.getBlockPosition()));
         if (null == province || null == province.getOccupier() || !province.getOccupier().isAtWar(country.getName()))
             return;
-        Payment payment = new Payment(cost, (float) ContinentalManagers.world(instance).dataStorer().factoryCount / 100);
+        Payment payment = getCost(instance);
         if (!country.canMinusCost(payment)) {
             p.sendActionBar(Component.text("You cannot afford this", NamedTextColor.RED));
             return;
@@ -79,5 +79,9 @@ public class ClickWarSystem implements War {
         if (null == province || null == province.getOccupier() || !province.getOccupier().isAtWar(country.getName()) || !country.canMinusCost(payment))
             return null;
         return AdjacentBlocks(province.getPos(), country, country.getInstance());
+    }
+
+    public Payment getCost(Instance instance){
+        return new Payment(cost, (float) ContinentalManagers.world(instance).dataStorer().factoryCount / 100);
     }
 }

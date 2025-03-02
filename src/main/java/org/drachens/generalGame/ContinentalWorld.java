@@ -72,10 +72,8 @@ public class ContinentalWorld extends World {
             p.getCountry().removePlayer(p);
         }
         p.addPlayTime(LocalTime.now());
-        Country country = p.getCountry();
-        if (null != country) country.removePlayer(p);
         if (getInstance().getPlayers().isEmpty()){
-            EventDispatcher.call(new ResetEvent(p.getInstance()));
+            EventDispatcher.call(new ResetEvent(getInstance()));
         }
     }
 

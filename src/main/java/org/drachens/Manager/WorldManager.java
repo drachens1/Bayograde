@@ -14,6 +14,7 @@ import net.minestom.server.utils.PacketSendingUtils;
 import org.drachens.Manager.defaults.ContinentalManagers;
 import org.drachens.Manager.defaults.enums.RankEnum;
 import org.drachens.dataClasses.World;
+import org.drachens.fileManagement.customTypes.ServerPropertiesFile;
 import org.drachens.fileManagement.customTypes.player.CustomLoginRecord;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.LoginMessage;
@@ -28,13 +29,7 @@ public class WorldManager {
     private final PlayerModsManager playerModsManager;
     private final HashMap<Instance, World> worldHashMap = new HashMap<>();
     private final HashMap<CPlayer, Instance> playerHashSet = new HashMap<>();
-    private final  ResourcePackRequest request = ResourcePackRequest.resourcePackRequest()
-            .packs(ResourcePackInfo.resourcePackInfo()
-                    .uri(URI.create("https://download.mc-packs.net/pack/4e84fe7eca361b6bb4962a367bb517421056d740.zip"))
-                    .hash("4e84fe7eca361b6bb4962a367bb517421056d740").build())
-            .prompt(Component.text("Please download the resource pack!"))
-            .required(true)
-            .build();
+    private final ResourcePackRequest request;
 
     private final LoginMessage def = new LoginMessage(
             player -> Component.text()
@@ -112,6 +107,15 @@ public class WorldManager {
             worldHashMap.get(p.getInstance()).addPlayer(p);
             p.getInstance().getPlayers().forEach(player -> PacketSendingUtils.sendPacket(p,ContinentalManagers.tabManager.getPacketForPlayer((CPlayer) player)));
         });
+
+        ServerPropertiesFile serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
+        request = ResourcePackRequest.resourcePackRequest()
+                .packs(ResourcePackInfo.resourcePackInfo()
+                        .uri(URI.create(serverPropertiesFile.getResourcePackHash()))
+                        .hash(serverPropertiesFile.getResourcePackHash()).build())
+                .prompt(Component.text("Please download the resource pack!"))
+                .required(true)
+                .build();
     }
 
     public void initialJoin(CPlayer p) {

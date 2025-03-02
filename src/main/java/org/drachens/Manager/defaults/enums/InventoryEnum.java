@@ -11,6 +11,8 @@ import org.drachens.generalGame.scoreboards.items.ShowEconomy;
 import org.drachens.generalGame.scoreboards.items.ShowGeneralInfo;
 import org.drachens.generalGame.scoreboards.items.ShowIdeology;
 import org.drachens.generalGame.troops.TroopsDefaultInventory;
+import org.drachens.generalGame.troops.frontlineinv.FrontLineInventory;
+import org.drachens.generalGame.troops.frontlineinv.frontlinelist.FrontLineListInventory;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ExitItem;
 import org.drachens.interfaces.inventories.HotbarInventory;
@@ -33,6 +35,8 @@ public enum InventoryEnum {
     defaultInv(new ClicksDefaultInventory()),
 
     troops_build_menu(new NoneCustomisableInventory(new HotbarItemButton[]{new FactoryButton(),new BuildItem(itemBuilder(Material.GOLD_INGOT), BuildingEnum.barracks),new ExitItem()})),
+
+    front_line_create(new FrontLineInventory()),
 
     troops_default(new TroopsDefaultInventory());
 

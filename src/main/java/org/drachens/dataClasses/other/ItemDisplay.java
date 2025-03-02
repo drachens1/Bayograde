@@ -121,14 +121,26 @@ public class ItemDisplay extends Clientside {
         interpolation =entityMetaDataPacket1;
     }
 
-    public void setGlowing(boolean glowing) {
+    public void setGlowing(boolean glowing, int colour) {
         this.glowing = glowing;
         HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
-        if (glowing) {
+        if (glowing) {{
+            map.put(22,Metadata.VarInt(colour));
             map.put(0, Metadata.Byte((byte) 0x40));
+        }
         } else map.put(0, Metadata.Byte((byte) 0));
         EntityMetaDataPacket entityMetaDataPacket = new EntityMetaDataPacket(entityId, map);
         PacketSendingUtils.sendGroupedPacket(getAsPlayers(), entityMetaDataPacket);
+    }
+
+    public void setGlowingForPlayer(boolean glowing, CPlayer p, int colour) {
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+        if (glowing) {
+            map.put(22,Metadata.VarInt(colour));
+            map.put(0, Metadata.Byte((byte) 0x40));
+        } else map.put(0, Metadata.Byte((byte) 0));
+        EntityMetaDataPacket entityMetaDataPacket = new EntityMetaDataPacket(entityId, map);
+        PacketSendingUtils.sendPacket(p, entityMetaDataPacket);
     }
 
     public void setPosWithOffset(Province province) {

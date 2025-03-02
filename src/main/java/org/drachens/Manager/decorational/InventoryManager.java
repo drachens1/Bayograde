@@ -104,7 +104,7 @@ public class InventoryManager {
         changeInventory(p, inventory.getHotbarInventory());
     }
 
-    private void changeInventory(CPlayer p, HotbarInventory inventory) {
+    public void changeInventory(CPlayer p, HotbarInventory inventory) {
         p.getInventory().clear();
         inventory.getItems(p).forEach(itemStack -> p.getInventory().addItemStack(itemStack.getItem()));
         activeHotBar.put(p, inventory);

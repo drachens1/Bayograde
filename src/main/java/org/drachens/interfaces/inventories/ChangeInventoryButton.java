@@ -7,20 +7,25 @@ import org.drachens.Manager.defaults.enums.InventoryEnum;
 
 public class ChangeInventoryButton extends HotbarItemButton {
     private final InventoryManager inventoryManager = ContinentalManagers.inventoryManager;
-    private final InventoryEnum inventoryEnum;
+    private final HotbarInventory inventoryEnum;
 
     public ChangeInventoryButton(ItemStack item, InventoryEnum inventoryEnum) {
         super(item);
-        this.inventoryEnum = inventoryEnum;
+        this.inventoryEnum = inventoryEnum.getHotbarInventory();
+    }
+
+    public ChangeInventoryButton(ItemStack item, HotbarInventory hotbarInventory) {
+        super(item);
+        this.inventoryEnum = hotbarInventory;
     }
 
     @Override
     public void onRightClick(OnUse onUse) {
-        inventoryManager.assignInventory(onUse.player(), inventoryEnum);
+        inventoryManager.changeInventory(onUse.player(), inventoryEnum);
     }
 
     @Override
     public void onRightClickOnBlock(OnUse onUse) {
-        inventoryManager.assignInventory(onUse.player(), inventoryEnum);
+        inventoryManager.changeInventory(onUse.player(), inventoryEnum);
     }
 }

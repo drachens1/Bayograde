@@ -3,7 +3,6 @@ package org.drachens.dataClasses.other;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
@@ -26,9 +25,7 @@ import java.util.function.Consumer;
 @Setter
 @SuperBuilder
 public abstract class Clientside {
-    public static final List<Clientside> INSTANCES = new ArrayList<>();
     public final int entityId;
-    public final BoundingBox boundingBox;
     public final UUID uuid;
     public final Instance instance;
     private final List<CPlayer> VIEWERS = new ArrayList<>();
@@ -41,9 +38,6 @@ public abstract class Clientside {
         this.uuid = UUID.randomUUID();
         this.instance = instance;
         this.pos = pos;
-        this.boundingBox = new BoundingBox(
-                pos.x() - 0.5, pos.y(), pos.z() - 0.5
-        );
     }
 
     protected Clientside(Instance instance, Pos pos, float hitBoxHeight, float hitBoxWidth, Pos offset, Consumer<CPlayer> consumer) {
@@ -51,9 +45,6 @@ public abstract class Clientside {
         this.uuid = UUID.randomUUID();
         this.instance = instance;
         this.pos = pos;
-        this.boundingBox = new BoundingBox(
-                pos.x() - 0.5, pos.y(), pos.z() - 0.5
-        );
         this.interactionEntity.add(new InteractionEntity(this,hitBoxHeight,hitBoxWidth, consumer,offset));
     }
 
@@ -66,7 +57,6 @@ public abstract class Clientside {
     public abstract void removeViewer(CPlayer p);
 
     public void dispose() {
-        INSTANCES.remove(this);
         new ArrayList<>(VIEWERS).forEach(this::removeViewer);
         if (interactionEntity!=null){
             interactionEntity.forEach(InteractionEntity::dispose);
@@ -77,28 +67,28 @@ public abstract class Clientside {
 
     public abstract DestroyEntitiesPacket getDestroyPacket();
 
-    public void addPlayer(CPlayer p) {
+    protected void addPlayer(CPlayer p) {
         VIEWERS.add(p);
         if (interactionEntity!=null){
             interactionEntity.forEach(i->i.addPlayer(p));
         }
     }
 
-    public void removePlayer(CPlayer p) {
+    protected void removePlayer(CPlayer p) {
         VIEWERS.remove(p);
         if (interactionEntity!=null){
             interactionEntity.forEach(i->i.removePlayer(p));
         }
     }
 
-    public void addPlayers(List<CPlayer> p) {
+    protected void addPlayers(List<CPlayer> p) {
         VIEWERS.addAll(p);
         if (interactionEntity!=null){
             interactionEntity.forEach(i->p.forEach(i::addPlayer));
         }
     }
 
-    public void removePlayers(List<CPlayer> p) {
+    protected void removePlayers(List<CPlayer> p) {
         VIEWERS.removeAll(p);
         if (interactionEntity!=null){
             interactionEntity.forEach(i->p.forEach(i::removePlayer));
@@ -121,6 +111,28 @@ public abstract class Clientside {
         private final List<Player> players = new ArrayList<>();
         @Getter
         private final int entityId;
+
+        public InteractionEntity(Pos pos, float hitBoxHeight, float hitBoxWidth){
+            UUID uuid = UUID.randomUUID();
+            entityId = Entity.generateId();
+            this.spawnEntityPacket = new SpawnEntityPacket(
+                    entityId,
+                    uuid,
+                    EntityType.INTERACTION.id(),
+                    pos,
+                    0f, 0, (short) 0, (short) 0, (short) 0
+            );
+            Map<Integer, Metadata.Entry<?>> entries = new HashMap<>();
+            entries.put(8,Metadata.Float(hitBoxWidth));
+            entries.put(9,Metadata.Float(hitBoxHeight));
+            this.entityMetaDataPacket = new EntityMetaDataPacket(
+                    entityId,
+                    entries
+            );
+            this.destroyEntitiesPacket = new DestroyEntitiesPacket(entityId);
+            ContinentalManagers.interactableEntityManager.register(this);
+            onInteract = player -> {};
+        }
 
         public InteractionEntity(Clientside clientside, float hitBoxHeight, float hitBoxWidth, Consumer<CPlayer> onInteract, Pos offset){
             this.onInteract=onInteract;

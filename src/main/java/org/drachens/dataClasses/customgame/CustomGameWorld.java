@@ -47,7 +47,6 @@ public class CustomGameWorld extends World {
 
     public CustomGameWorld(List<CPlayer> players, CPlayer opener, VotingOption votingOption){
         super(MinecraftServer.getInstanceManager().createInstanceContainer(), new Pos(0, 1, 0));
-        getInstance().setBlock(0,0,0,Block.DIAMOND_BLOCK);
         ContinentalManagers.worldManager.registerWorld(this);
         this.opener=opener;
         this.votingOption=votingOption;

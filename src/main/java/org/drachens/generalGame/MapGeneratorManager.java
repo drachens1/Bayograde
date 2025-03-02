@@ -129,7 +129,7 @@ public class MapGeneratorManager extends MapGen {
                 new CountryType(IdeologiesEnum.ww2_fascist,  Component.text("Hungary", ColoursEnum.GRAY.getTextColor()), "Hungary", Material.SCULK, Material.BLACK_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Miklós Horthy")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_neutral, Component.text("Ireland", ColoursEnum.LIME.getTextColor()), "Ireland", Material.LIME_CONCRETE_POWDER, Material.LIME_CONCRETE, CityNum.minor, null, new Leader.create(Component.text("Domhnall Ua Buachalla")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_fascist,  Component.text("Italy", ColoursEnum.GREEN.getTextColor()), "Italy", Material.LIME_TERRACOTTA, Material.LIME_CONCRETE_POWDER, CityNum.major, null, new Leader.create(Component.text("Benito Mussolini")).build(), null),
-                new CountryType(IdeologiesEnum.ww2_conservatist, Component.text("Latvia", ColoursEnum.CYAN.getTextColor()), "Latvia", Material.CRIMSON_PLANKS, Material.PURPLE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Alberts Kviesis")).build(), null),
+                new CountryType(IdeologiesEnum.ww2_conservatist, Component.text("Latvia", ColoursEnum.PURPLE.getTextColor()), "Latvia", Material.CRIMSON_PLANKS, Material.PURPLE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Alberts Kviesis")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_conservatist, Component.text("Lithuania", ColoursEnum.YELLOW.getTextColor()), "Lithuania", Material.SPONGE, Material.YELLOW_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Antanas Smetona")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_liberalist, Component.text("Luxembourg", ColoursEnum.GREEN.getTextColor()), "Luxembourg", Material.GREEN_CONCRETE, Material.GREEN_CONCRETE_POWDER, CityNum.irrelevant, null, new Leader.create(Component.text("Charlotte Adelgonde Elisabeth Marie Wilhelmine")).build(), null),
                 new CountryType(IdeologiesEnum.ww2_liberalist, Component.text("Netherlands", ColoursEnum.ORANGE.getTextColor()), "Netherlands", Material.ORANGE_CONCRETE, Material.ORANGE_CONCRETE_POWDER, CityNum.minor, null, new Leader.create(Component.text("Hendrikus Colijn")).build(), null),
@@ -281,7 +281,6 @@ public class MapGeneratorManager extends MapGen {
             String overlord = countryNames.get(i).overlord();
             if (overlord != null) {
                 Country overlordCountry = countryDataManager.getCountryFromName(overlord);
-                System.out.println(overlordCountry.getName()+" overlord of "+country.getName());
                 country.setOverlord(overlordCountry);
                 overlordCountry.addPuppet(country);
             }
