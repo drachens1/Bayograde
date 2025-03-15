@@ -44,6 +44,20 @@ public class BlockDisplay extends Clientside {
         destroyEntitiesPacket = new DestroyEntitiesPacket(getEntityId());
     }
 
+    public BlockDisplay(Pos pos, Instance instance, Block block, boolean glowing, int colour) {
+        super(instance,pos);
+        spawnEntityPacket=new SpawnEntityPacket(getEntityId(),getUuid(),15,pos,0f,0, (short) 0, (short) 0, (short) 0);
+
+        HashMap<Integer, Metadata.Entry<?>> map = new HashMap<>();
+        map.put(23,Metadata.BlockState(block));
+        map.put(22,Metadata.VarInt(colour));
+        map.put(12,Metadata.Vector3(new Pos(1,0.99,1)));
+        map.put(0, Metadata.Byte((byte) 0x40));
+
+        entityMetaDataPacket = new EntityMetaDataPacket(getEntityId(),map);
+        destroyEntitiesPacket = new DestroyEntitiesPacket(getEntityId());
+    }
+
     @Override
     public void addCountry(Country country) {
         List<Player> p = new ArrayList<>(country.getInfo().getPlayers());

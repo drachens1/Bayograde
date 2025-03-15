@@ -180,7 +180,6 @@ public class ItemDisplay extends Clientside {
                 0.0f, 0, (short) 0, (short) 0, (short) 0
         ));
 
-
         PacketSendingUtils.sendGroupedPacket(players1, getEntityMetaDataPacket());
 
         PacketSendingUtils.sendGroupedPacket(players1, entityTeleportPacket);

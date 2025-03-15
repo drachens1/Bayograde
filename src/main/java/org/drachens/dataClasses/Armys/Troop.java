@@ -81,6 +81,22 @@ public class Troop implements Saveable {
         this.organisation = org;
     }
 
+    public void moveBecauseOfFrontLine(Province to, Frontline frontline){
+        if (null != this.task && task.isAlive()) task.cancel();
+        startMoveAnimation();
+        if (1 >= this.province.distance(to)){
+            task = scheduler.buildTask(()-> {
+                frontline.removeProvince(getProvince());
+                frontline.addProvince(to);
+                moveBlock(to);
+                if (battle==null){
+                    frontline.getAtkForTroop(this);
+                }
+            }).delay(1200, ChronoUnit.MILLIS).schedule();
+            return;
+        }
+    }
+
     public void move(Province to) {
         if (null != this.task && task.isAlive()) task.cancel();
         startMoveAnimation();
@@ -182,7 +198,6 @@ public class Troop implements Saveable {
     }
 
     public void retreat() {
-        System.out.println("Retreat");
         moveNear();
     }
 
@@ -224,7 +239,6 @@ public class Troop implements Saveable {
         if (this.dead) {
             return;
         }
-        System.out.println("dead");
         dead = true;
         province.removeTroop(this);
         country.removeTroop(this);
@@ -243,10 +257,13 @@ public class Troop implements Saveable {
         ally.dispose();
         enemy.dispose();
     }
+
     private void cull(){
-        if (2 <= this.province.getTroops().size()){
+        if (1 < this.province.getTroops().size()){
             if (province.getTroops().getFirst()!=this) {
                 hideDisplays();
+            }else {
+                showDisplays();
             }
         }else {
             showDisplays();

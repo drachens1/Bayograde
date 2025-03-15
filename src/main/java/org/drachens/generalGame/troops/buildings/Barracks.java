@@ -22,7 +22,7 @@ import static org.drachens.util.Messages.sendMessage;
 public class Barracks extends BuildTypes {
     private final Payment payment = new Payment(CurrencyEnum.production, 10.0f);
     private final Component cantAffordMsg = Component.text()
-            .append(Component.text("You cannot afford the barracks : 5 Production", NamedTextColor.RED))
+            .append(Component.text("You cannot afford the barracks : 10 Production", NamedTextColor.RED))
             .build();
 
     public Barracks() {
@@ -35,6 +35,7 @@ public class Barracks extends BuildTypes {
     @Override
     public void onBuild(Country country, Province province, CPlayer p, float yaw) {
         new Building(this, province).getItemDisplay().addYaw(yaw);
+        country.removePayment(payment);
     }
 
     @Override
