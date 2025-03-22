@@ -38,7 +38,7 @@ import org.drachens.interfaces.ai.AIManager;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static org.drachens.util.Messages.logMsg;
+import static org.drachens.util.Messages.LOGGER;
 
 public class MapGeneratorManager extends MapGen {
     private final HashMap<String, LawCategory> laws = new HashMap<>();
@@ -198,7 +198,7 @@ public class MapGeneratorManager extends MapGen {
     @Override
     public void onGenerate(Instance instance, VotingOption votingOption) {
         if (isGenerating(instance)) {
-            logMsg("server", "Tried to generate a new map when a map was generating", instance);
+            LOGGER.info("server Tried to generate a new map when a map was generating "+instance);
             return;
         }
 

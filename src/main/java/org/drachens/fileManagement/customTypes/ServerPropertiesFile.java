@@ -25,6 +25,7 @@ public class ServerPropertiesFile extends GsonFileType {
         addDefault(new JsonPrimitive(25560), "database", "port");
         addDefault("", "database", "user");
         addDefault("", "database", "password");
+        addDefault(new JsonPrimitive(false),"resource-pack","active");
         addDefault("","resource-pack","link");
         addDefault("","resource-pack","hash");
         saveToFile();
@@ -68,5 +69,9 @@ public class ServerPropertiesFile extends GsonFileType {
 
     public String getResourcePackHash(){
         return getConfig().getAsJsonObject("resource-pack").get("hash").getAsString();
+    }
+
+    public boolean isActive(){
+        return getConfig().getAsJsonObject("resource-pack").get("active").getAsBoolean();
     }
 }

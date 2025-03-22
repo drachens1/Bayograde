@@ -188,7 +188,7 @@ public enum ServerUtil {
 
         globEHandler.addListener(PlayerCommandEvent.class, e -> {
             final Player p = e.getPlayer();
-            logCmd(p.getUsername(), e.getCommand(), p.getInstance());
+            LOGGER.info(p.getUsername()+" : "+ e.getCommand()+" : "+ p.getInstance());
         });
 
         GUIManager guiManager = ContinentalManagers.guiManager;

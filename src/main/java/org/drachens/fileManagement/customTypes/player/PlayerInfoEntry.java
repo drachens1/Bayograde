@@ -102,6 +102,8 @@ public class PlayerInfoEntry implements Entry {
 
     public void setPlayer(CPlayer p){
         p.setPlayerDataFile(this);
-        playerJson.setPlayer(p);
+        if (playerJson!=null){
+            playerJson.setPlayer(p);
+        }
     }
 }

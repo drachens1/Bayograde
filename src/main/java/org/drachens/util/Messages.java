@@ -12,30 +12,32 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Logger;
 
 public enum Messages {
     ;
 
+    public static final Logger LOGGER = Logger.getLogger("bayograde");
     public static void sendMessage(CPlayer p, Component msg) {
         if (null != p) p.sendMessage(msg);
     }
 
     public static void globalBroadcast(String msg) {
-        logMsg("server", msg, null);
+        LOGGER.info("server "+msg);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
         }
     }
 
     public static void globalBroadcast(Component msg) {
-        logMsg("server", msg, null);
+        LOGGER.info("server " + msg);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             p.sendMessage(msg);
         }
     }
 
     public static void broadcast(String msg, Instance world) {
-        logMsg("server", msg, world);
+        LOGGER.info("server " + msg +" : "+ world.getDimensionName());
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
@@ -44,7 +46,7 @@ public enum Messages {
     }
 
     public static void broadcast(Component msg, Instance world) {
-        logMsg("server", msg, null);
+        LOGGER.info("server "+ msg);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
@@ -54,71 +56,11 @@ public enum Messages {
 
 
     public static void broadcast(CPlayer sender, Component msg, Instance world) {
-        logMsg(sender.getUsername(), msg, null);
+        LOGGER.info(sender.getUsername()+" : "+msg);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
             }
-        }
-    }
-
-    public static void logCmd(String playerName, String cmd, Instance w) {
-        System.out.println(playerName + " : " + cmd);
-        try {
-            FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogCmds(), true);
-            try {
-                if (null != w) {
-                    f.write(w.getDimensionName() + ' ' + getTime() + ' ' + playerName + ':' + cmd);
-                } else {
-                    f.write(getTime() + ' ' + playerName + ':' + cmd);
-                }
-                f.write("\n");
-                f.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void logMsg(String playerName, String msg, Instance w) {
-        try {
-            FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
-            try {
-                if (null != w) {
-                    f.write(w.getDimensionName() + ' ' + getTime() + ' ' + playerName + ':' + msg);
-                } else {
-                    f.write(getTime() + ' ' + playerName + ':' + msg);
-                }
-                f.write("\n");
-                f.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void logMsg(String playerName, Component msg, Instance w) {
-        String msgS = PlainTextComponentSerializer.plainText().serialize(msg);
-        System.out.println(playerName + " : " + msgS);
-        try {
-            FileWriter f = new FileWriter(ContinentalManagers.configFileManager.getLogMsg(), true);
-            try {
-                if (null != w) {
-                    f.write(w.getDimensionName() + ' ' + getTime() + ' ' + playerName + ':' + msgS);
-                } else {
-                    f.write(getTime() + ' ' + playerName + ':' + msgS);
-                }
-                f.write("\n");
-                f.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

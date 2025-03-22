@@ -30,6 +30,7 @@ public class WorldManager {
     private final HashMap<Instance, World> worldHashMap = new HashMap<>();
     private final HashMap<CPlayer, Instance> playerHashSet = new HashMap<>();
     private final ResourcePackRequest request;
+    private final ServerPropertiesFile serverPropertiesFile;
 
     private final LoginMessage def = new LoginMessage(
             player -> Component.text()
@@ -108,7 +109,8 @@ public class WorldManager {
             p.getInstance().getPlayers().forEach(player -> PacketSendingUtils.sendPacket(p,ContinentalManagers.tabManager.getPacketForPlayer((CPlayer) player)));
         });
 
-        ServerPropertiesFile serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
+
+        serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
         request = ResourcePackRequest.resourcePackRequest()
                 .packs(ResourcePackInfo.resourcePackInfo()
                         .uri(URI.create(serverPropertiesFile.getResourcePackHash()))
@@ -121,7 +123,6 @@ public class WorldManager {
     public void initialJoin(CPlayer p) {
         p.setHead();
         p.getPlayerJson().laterInit();
-        //p.sendResourcePacks(request);
         ContinentalManagers.permissions.playerOp(p);
         p.getInstance().enableAutoChunkLoad(false);
         p.setAllowFlying(true);
@@ -140,6 +141,7 @@ public class WorldManager {
         if (p.hasPermission("admin")) {
             ContinentalManagers.adminManager.addAdmin(p);
         }
+        if (serverPropertiesFile.isActive()) p.sendResourcePacks(request);
         //p.sendPluginMessage("continentalmod", "joined");
     }
 
