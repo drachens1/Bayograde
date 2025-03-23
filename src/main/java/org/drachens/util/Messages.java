@@ -37,7 +37,6 @@ public enum Messages {
     }
 
     public static void broadcast(String msg, Instance world) {
-        LOGGER.info("server " + msg +" : "+ world.getDimensionName());
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
@@ -46,7 +45,6 @@ public enum Messages {
     }
 
     public static void broadcast(Component msg, Instance world) {
-        LOGGER.info("server "+ msg);
         for (Player p : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             if (p.getInstance() == world) {
                 p.sendMessage(msg);
