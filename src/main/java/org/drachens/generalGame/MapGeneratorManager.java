@@ -484,8 +484,6 @@ public class MapGeneratorManager extends MapGen {
         AIManager aiManager = ContinentalManagers.centralAIManager.getAIManagerFor(instance);
         countries.forEach(country -> {
             country.init();
-            if (votingOption.isAIEnabled())
-                aiManager.createAIForCountry(country);
         });
     }
 

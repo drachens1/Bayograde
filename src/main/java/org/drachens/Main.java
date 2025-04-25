@@ -41,6 +41,7 @@ import org.drachens.generalGame.research.ResearchUniversity;
 import org.drachens.generalGame.troops.TroopAI;
 import org.drachens.generalGame.troops.TroopWarSystem;
 import org.drachens.generalGame.troops.buildings.Barracks;
+import org.drachens.help.TimelyMessages;
 import org.drachens.store.StoreCategory;
 import org.drachens.store.items.Hat;
 
@@ -148,6 +149,11 @@ public enum Main {
         ContinentalManagers.centralAIManager.registerEventManager(new ClicksAI(VotingWinner.ww2_clicks));
         ContinentalManagers.centralAIManager.registerEventManager(new TroopAI(VotingWinner.ww2_troops));
         new MotdManager();
+        new TimelyMessages.Builder()
+                .addMessage(Component.text(""))
+                .addMessage(Component.text("2"))
+                .build();
+        
         createWW2VotingOption();
 
         BuildingEnum.university.setBuildType(new ResearchUniversity());

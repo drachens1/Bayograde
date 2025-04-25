@@ -14,5 +14,6 @@ public class Info extends Command {
         addSubcommand(new BordersInfoCMD());
         addSubcommand(new InfoOptionsCMD());
         addSubcommand(new Leader());
+        addSubcommand(new PlayersCMD());
     }
 }

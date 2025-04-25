@@ -48,7 +48,6 @@ import org.drachens.cmd.game.GameCMD;
 import org.drachens.cmd.game.PlaytimeCMD;
 import org.drachens.cmd.gamecreate.GameManageCMD;
 import org.drachens.cmd.gamecreate.start.StartGameCMD;
-import org.drachens.cmd.help.HelpCMD;
 import org.drachens.cmd.settings.SettingsCMD;
 import org.drachens.cmd.vote.VoteCMD;
 import org.drachens.cmd.vote.VotingOptionCMD;
@@ -68,6 +67,7 @@ import org.drachens.generalGame.country.CountryCMD;
 import org.drachens.generalGame.faction.FactionCMD;
 import org.drachens.generalGame.scoreboards.DefaultCountryScoreboard;
 import org.drachens.generalGame.view_modes.ViewModesCMD;
+import org.drachens.help.HelpCMD;
 import org.drachens.player_types.CPlayer;
 import org.drachens.store.other.Rank;
 
@@ -123,7 +123,7 @@ public enum ServerUtil {
         List<VotingOption> votingOptions = new ArrayList<>();
         votingOptions.add(VotingWinner.ww2_troops.getVotingOption());
         votingOptions.add(VotingWinner.ww2_clicks.getVotingOption());
-
+        
         for (Instance instance : MinecraftServer.getInstanceManager().getInstances()) {
             instance.createInitializeWorldBorderPacket();
             instance.setWeather(Weather.CLEAR);
@@ -146,8 +146,8 @@ public enum ServerUtil {
 
         globEHandler.addListener(AsyncPlayerConfigurationEvent.class, e -> {
             final Player p = e.getPlayer();
-            runThread(()->playerUUIDMap.remove(p.getUuid()).setPlayer((CPlayer) p));
             e.setSpawningInstance(ContinentalManagers.worldManager.getDefaultWorld().getInstance());
+            playerUUIDMap.remove(p.getUuid()).setPlayer((CPlayer) p);
             p.setRespawnPoint(new Pos(0, 1, 0));
         });
 
@@ -163,7 +163,8 @@ public enum ServerUtil {
                 return;
             }
             playerRanks.put(e.getConnection(), new ArrayList<>());
-            playerUUIDMap.put(gameProfile.uuid(),new PlayerInfoEntry(gameProfile, ContinentalManagers.database.getTable("player_info")));
+            PlayerInfoEntry entry = new PlayerInfoEntry(gameProfile, ContinentalManagers.database.getTable("player_info"));
+            playerUUIDMap.put(gameProfile.uuid(),entry);
         });
 
         Function<PlayerChatEvent, Component> chatEvent = e -> {
@@ -203,7 +204,6 @@ public enum ServerUtil {
                 p.teleport(ContinentalManagers.worldManager.getWorld(p.getInstance()).getSpawnPoint());
             }
         });
-
 
         globEHandler.addListener(CountryJoinEvent.class, e -> e.p().setCountry(e.joined()));
 

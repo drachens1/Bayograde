@@ -7,10 +7,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.EventDispatcher;
-import net.minestom.server.event.player.PlayerBlockInteractEvent;
-import net.minestom.server.event.player.PlayerMoveEvent;
-import net.minestom.server.event.player.PlayerStartDiggingEvent;
-import net.minestom.server.event.player.PlayerUseItemEvent;
+import net.minestom.server.event.player.*;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import org.drachens.Manager.defaults.ContinentalManagers;
@@ -58,6 +55,11 @@ public class ContinentalWorld extends World {
                 EventDispatcher.call(new VoteEvent(p, VotingWinner.valueOf(p.getPlayerJson().getAutoVoteOption()).getVotingOption()));
             }
         }
+    }
+
+    @Override
+    public void playerDisconnect(PlayerDisconnectEvent e) {
+        removePlayer((CPlayer) e.getPlayer());
     }
 
     @Override

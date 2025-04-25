@@ -307,7 +307,9 @@ public abstract class Country implements Cloneable, Saveable {
         DefaultCountryScoreboard defaultCountryScoreboard = (DefaultCountryScoreboard) scoreboardManager.getScoreboard(p);
         defaultCountryScoreboard.openEconomy();
         this.info.getClientsides().forEach(clientside -> clientside.addViewer(p));
-        if (null == info.getPlayerLeader()) setPlayerLeader(p);
+        if (null == info.getPlayerLeader()) {
+            setPlayerLeader(p);
+        }
         p.refreshCommands();
         onAddPlayer(p);
     }
@@ -316,15 +318,19 @@ public abstract class Country implements Cloneable, Saveable {
 
     public void removePlayer(CPlayer p) {
         EventDispatcher.call(new CountryLeaveEvent(this, p));
-        this.military.getCapitulationBar().removePlayer(p);
         this.info.removePlayer(p);
-        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(this.info.getOriginalName()).build()).build());
-        this.info.getClientsides().forEach(clientside -> clientside.removeViewer(p));
         if (isPlayerLeader(p)) {
+            System.out.println("left2 : "+this.info.getPlayers().size());
+            System.out.println(this.info.getPlayers());
             if (this.info.getPlayers().isEmpty()) {
                 setPlayerLeader(null);
-            } else setPlayerLeader(this.info.getPlayers().getFirst());
+                System.out.println("success");
+            } else
+                setPlayerLeader(this.info.getPlayers().getFirst());
         }
+        this.military.getCapitulationBar().removePlayer(p);
+        p.sendMessage(Component.text().append(MessageEnum.country.getComponent()).append(Component.text().append(Component.text("You have left ", NamedTextColor.BLUE)).append(this.info.getOriginalName()).build()).build());
+        this.info.getClientsides().forEach(clientside -> clientside.removeViewer(p));
         demandManager.removeActive(p.getCountry());
         onRemovePlayer(p);
         this.military.getWarsWorld().removePlayer(p);
@@ -708,7 +714,16 @@ public abstract class Country implements Cloneable, Saveable {
     }
 
     public void setPlayerLeader(CPlayer player) {
-        if (null != info.getPlayerLeader()) this.info.getPlayerLeader().refreshCommands();
+        if (null != info.getPlayerLeader()) {
+            this.info.getPlayerLeader().refreshCommands();
+        }
+        if (null != player){
+            sendMessage(Component.text()
+                    .append(MessageEnum.country.getComponent())
+                    .append(player.getCPlayerName())
+                    .append(Component.text(" has became country leader",NamedTextColor.GREEN))
+                    .build());
+        }
         this.info.setPlayerLeader(player);
     }
 

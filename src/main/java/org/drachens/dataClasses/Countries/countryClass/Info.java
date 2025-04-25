@@ -94,7 +94,7 @@ public class Info implements Saveable {
     }
 
     public void removePlayer(CPlayer player){
-        players.add(player);
+        players.remove(player);
     }
 
     public boolean containsPlayer(CPlayer player){

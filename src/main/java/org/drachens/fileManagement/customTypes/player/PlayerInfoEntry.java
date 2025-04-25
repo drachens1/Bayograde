@@ -51,6 +51,7 @@ public class PlayerInfoEntry implements Entry {
             } catch (SQLException e) {
                 System.err.println("Error inserting the info " + e.getMessage());
             }
+            System.out.println("Created a new playerJson 1");
             playerJson = new PlayerJson("", gameProfile);
         } else {
             load();
@@ -70,6 +71,7 @@ public class PlayerInfoEntry implements Entry {
                 String jsonData = resultSet.getString(2);
 
                 if (null == jsonData || jsonData.isEmpty()) {
+                    System.out.println("Created a new playerJson 2");
                     playerJson = new PlayerJson("", gameProfile);
                 } else {
                     playerJson = new PlayerJson(jsonData, gameProfile);
@@ -102,8 +104,6 @@ public class PlayerInfoEntry implements Entry {
 
     public void setPlayer(CPlayer p){
         p.setPlayerDataFile(this);
-        if (playerJson!=null){
-            playerJson.setPlayer(p);
-        }
+        playerJson.setPlayer(p);
     }
 }
