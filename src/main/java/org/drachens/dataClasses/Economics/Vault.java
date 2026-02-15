@@ -48,16 +48,21 @@ public abstract class Vault implements Saveable {
     }
 
     public void minusPayment(Payment payment) {
+        System.out.println("Minus payment from vault");
         amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
             if (null == existingCurrency) {
                 return new Currencies(key, -payment.getAmount());
             }
+            float prev_value = payment.getAmount();
+            float amount = existingCurrency.getAmount();
             existingCurrency.minus(payment);
+            System.out.println("Payment amount: " + prev_value + " pre "+ amount + " post " + existingCurrency.getAmount());
             return existingCurrency;
         });
     }
 
     public void minusPayment(Payment payment, Country beneficiary) {
+        System.out.println("Minus payment from beneficiary vault");
         beneficiary.getEconomy().getVault().addPayment(payment);
         amount.compute(payment.getCurrencyType(), (key, existingCurrency) -> {
             if (null == existingCurrency) {

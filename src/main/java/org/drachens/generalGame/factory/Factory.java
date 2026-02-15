@@ -146,11 +146,11 @@ public class Factory extends BuildTypes {
             building.delete();
         }
         if (amount==1){
-            country.getEconomy().getVault().addPayment(payment);
+            country.getEconomy().getVault().minusPayment(payment);
         }else {
             Payment p = payment.clone();
             p.multiply(amount);
-            country.getEconomy().getVault().addPayment(p);
+            country.getEconomy().getVault().minusPayment(p);
         }
         building.setCurrent(num);
         itemDisplay.setItem(itemBuilder(getMaterial(), getLvl(num)));

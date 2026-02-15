@@ -41,6 +41,7 @@ public abstract class Faction {
         countryDataManager.addFaction(this);
         addCountry(leader);
         factionChat = new FactionChat(this);
+        createDescription();
     }
 
     public void createDescription() {

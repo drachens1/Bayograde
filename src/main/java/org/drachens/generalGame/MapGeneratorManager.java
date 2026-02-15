@@ -318,12 +318,6 @@ public class MapGeneratorManager extends MapGen {
             country.setOverlord(countryDataManager.getCountryFromName(countryName.overlord()));
         }
 
-        if (!"Soviet-Union".equals(countryName.identifier)) {
-            Modifier m = ModifiersEnum.great_depression.getModifier().independantClone();
-            m.addEventsRunner(new GreatDepressionEventsRunner(country, m));
-            country.addModifier(m);
-        }
-
         return country;
     }
 

@@ -10,17 +10,6 @@ import org.drachens.dataClasses.additional.greatDepression.GreatDepression;
 
 @Getter
 public enum ModifiersEnum {
-    great_depression(new Modifier.create(Component.text("Great Depression", ColoursEnum.RED.getTextColor()), "great_depression")
-            .addBoost(BoostEnum.production, -0.5f)
-            .addBoost(BoostEnum.stabilityBase, -10.0f)
-            .addBoost(BoostEnum.relations, -5.0f)
-            .addBoost(BoostEnum.gunCost, +0.2f)
-            .addBoost(BoostEnum.buildingSlotBoost, -1)
-            .addBoost(BoostEnum.capitulation, -0.1f)
-            .addModifierCommand(new GreatDepression())
-            .setDisplay(true)
-            .build()),
-
     ww2_fascist(new Modifier.create(Component.text("Fascist", TextColor.color(204, 0, 0)), "fascist")
             .addBoost(BoostEnum.production, 0.15f)
             .addBoost(BoostEnum.stabilityBase, 5.0f)

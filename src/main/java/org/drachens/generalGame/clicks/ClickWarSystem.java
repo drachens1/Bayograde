@@ -17,6 +17,7 @@ import org.drachens.interfaces.War;
 import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import static java.lang.Math.min;
 import static org.drachens.util.OtherUtil.bound;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 
@@ -82,6 +83,6 @@ public class ClickWarSystem implements War {
     }
 
     public Payment getCost(Instance instance){
-        return new Payment(cost, (float) ContinentalManagers.world(instance).dataStorer().factoryCount / 100);
+        return new Payment(cost, (float) ContinentalManagers.world(instance).dataStorer().factoryCount / 100 + 1);
     }
 }

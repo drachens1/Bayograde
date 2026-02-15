@@ -107,7 +107,7 @@ public enum ServerUtil {
         ServerPropertiesFile serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
         if (serverPropertiesFile.isVelocity()) {
             VelocityProxy.enable(serverPropertiesFile.getSecret());
-        } else MojangAuth.init();
+        } //else MojangAuth.init();
         srv.start(serverPropertiesFile.getHost(), serverPropertiesFile.getPort());
     }
 

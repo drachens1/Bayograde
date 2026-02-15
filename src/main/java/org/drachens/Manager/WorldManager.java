@@ -113,7 +113,7 @@ public class WorldManager {
         serverPropertiesFile = ContinentalManagers.configFileManager.getServerPropertiesFile();
         request = ResourcePackRequest.resourcePackRequest()
                 .packs(ResourcePackInfo.resourcePackInfo()
-                        .uri(URI.create(serverPropertiesFile.getResourcePackHash()))
+                        .uri(URI.create(serverPropertiesFile.getResourcePackLink()))
                         .hash(serverPropertiesFile.getResourcePackHash()).build())
                 .prompt(Component.text("Please download the resource pack!"))
                 .required(true)
