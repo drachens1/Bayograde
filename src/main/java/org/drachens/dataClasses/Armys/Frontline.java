@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.drachens.dataClasses.Province;
 import org.drachens.dataClasses.other.BlockDisplay;
 import org.drachens.player_types.CPlayer;
-import org.drachens.util.AStarPathfinderXZ;
 
 import java.util.*;
 

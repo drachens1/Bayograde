@@ -17,7 +17,6 @@ import org.drachens.interfaces.War;
 import org.drachens.player_types.CPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import static java.lang.Math.min;
 import static org.drachens.util.OtherUtil.bound;
 import static org.drachens.util.ServerUtil.blockVecToPos;
 

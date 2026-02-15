@@ -12,7 +12,6 @@ import org.drachens.generalGame.scoreboards.items.ShowGeneralInfo;
 import org.drachens.generalGame.scoreboards.items.ShowIdeology;
 import org.drachens.generalGame.troops.TroopsDefaultInventory;
 import org.drachens.generalGame.troops.frontlineinv.FrontLineInventory;
-import org.drachens.generalGame.troops.frontlineinv.frontlinelist.FrontLineListInventory;
 import org.drachens.interfaces.inventories.BuildItem;
 import org.drachens.interfaces.inventories.ExitItem;
 import org.drachens.interfaces.inventories.HotbarInventory;

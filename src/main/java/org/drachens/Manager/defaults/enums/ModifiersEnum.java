@@ -6,7 +6,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.drachens.dataClasses.additional.BoostEnum;
 import org.drachens.dataClasses.additional.Modifier;
-import org.drachens.dataClasses.additional.greatDepression.GreatDepression;
 
 @Getter
 public enum ModifiersEnum {
